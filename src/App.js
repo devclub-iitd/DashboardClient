@@ -1,28 +1,41 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom";
 
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
+import CircularProgress from "@material-ui/core/CircularProgress";
+
+import DashboardComponent from "./components/DashboardComponent";
+import SidebarComponent from "./components/SidebarComponent";
+import HeaderComponent from "./components/HeaderComponent";
+import LoginComponent from "./components/LoginComponent";
+
+function App() {
+  const showLoader = false;
+  const isLoggedIn = true;
+  return (
+    <Router>
+      <div>
+        {showLoader ?
+          <div className="page-loader">
+            <CircularProgress />
+          </div>
+          :
+          isLoggedIn ?
+            <div>
+              <HeaderComponent />
+              <div>
+                <SidebarComponent />
+                <Switch>
+                  <Route exact path="/" component={DashboardComponent} />
+                  <Redirect to="/" />
+                </Switch>
+              </div>
+            </div>
+            :
+            <LoginComponent />
+        }
       </div>
-    );
-  }
+    </Router>
+  )
 }
 
 export default App;
