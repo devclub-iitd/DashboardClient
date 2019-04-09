@@ -1,7 +1,11 @@
-import { ACCESS_TOKEN_KEY } from "./Constant";
+import { ACCESS_TOKEN_KEY,SELF_URL,SERVER_URL as BASE} from "./Constant";
 
-const BASE = "https://851fb489.ngrok.io/api"
-
+export const Login = {
+    serverAuth: () => BASE+"/user/github_login",
+    redirectURI: () => "github_oauth",
+    fullRedirectURI: () => `${SELF_URL}/github_oauth`,
+    githubLogin: (client_id,redirect_uri) => createQueryURL("https://github.com/login/oauth/authorize",{client_id,redirect_uri})
+}
 
 export const User = {
     getAll: () => BASE + "/user",
@@ -27,10 +31,14 @@ export const Event = {
     put: (id) => BASE + `/event/${id}`
 }
 
-const makeRequest = (method,urlString,params={},body={}) => {
+export const createQueryURL = (urlString,params={}) => {
     const url = new URL(urlString);
     Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
+    return url.toString();
+}
 
+const makeRequest = (method,urlString,params={},body={}) => {
+    const url = createQueryURL(urlString,params);
     const options = {
         method, // *GET, POST, PUT, DELETE, etc.
         mode: "cors", // no-cors, cors, *same-origin
@@ -49,7 +57,13 @@ const makeRequest = (method,urlString,params={},body={}) => {
     }
 
     return fetch(url, options)
-    .then(response => response.json()); // parses JSON response into native Javascript objects
+    .then(response => {
+        if(!response.ok) {
+            return response.json().then((resp)=> {throw new Error(resp.message);})
+        }
+        return response;
+    })
+    .then(response => response.json()) // parses JSON response into native Javascript objects
 }
 
 export const getRequest = (url, params = {}) => makeRequest("GET",url,params);

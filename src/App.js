@@ -10,10 +10,11 @@ import DashboardComponent from "./components/DashboardComponent";
 import SidebarComponent from "./components/SidebarComponent";
 import HeaderComponent from "./components/HeaderComponent";
 import LoginComponent from "./components/LoginComponent";
-
+import {Login as LoginAPI} from "./utils/Api";
 
 import {useLoginState,useErrorState} from "./utils/Hook";
 import {GlobalContext} from "./utils/Context";
+import {GITHUB_OAUTH_CLIENT_ID} from "./utils/Constant";
 
 
 function App() {
@@ -30,6 +31,8 @@ function App() {
     clearError
   };
 
+  console.log(`Re rendering! isLoggedIn: ${loginState}`);
+
   return (
     <GlobalContext.Provider value={globals}>
       <Router>
@@ -38,7 +41,9 @@ function App() {
             <div className="page-loader">
               <CircularProgress />
             </div>
-            :
+            :null
+          }
+          {
             loginState.isLoggedIn ?
               <div>
                 <HeaderComponent />
@@ -51,7 +56,10 @@ function App() {
                 </div>
               </div>
               :
-              <LoginComponent />
+              <Switch>
+                <Route exact path={"/"+LoginAPI.redirectURI()} component={LoginComponent} />
+                <Route component={() => { window.location = LoginAPI.githubLogin(GITHUB_OAUTH_CLIENT_ID,LoginAPI.fullRedirectURI()); return null;} }/>
+              </Switch>
           }
           <button onClick={()=>{showError("You click error!");}}>Show error!</button>
           <Snackbar open={errorMessage.length!==0} message={errorMessage} autoHideDuration={10000}

@@ -16,7 +16,8 @@ const defaultUser = {
     displayOnWebsite: false,
     links: {},
     createdAt: new Date(),
-    updatedAt: new Date()
+    updatedAt: new Date(),
+    isFilled: false,
 };
 
 class User {
@@ -37,6 +38,7 @@ class User {
         this.intro = user.intro;
         this.displayOnWebsite = user.displayOnWebsite;
         this.links = user.links;
+        this.isFilled = user.isFilled;
         this.createdAt = new Date(user.createdAt);
         this.updatedAt = new Date(user.updatedAt);
     }

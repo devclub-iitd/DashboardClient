@@ -1,33 +1,36 @@
 import {useState,useEffect} from 'react';
 import {USER_ID_KEY, ACCESS_TOKEN_KEY} from "./Constant";
 
-const loggedOutState = {userId: null,accessToken: null,isLoggedIn: false};
+const getCurrentState = () => {
+    const accessToken = window.localStorage.getItem(ACCESS_TOKEN_KEY);
+    const userId = window.localStorage.getItem(USER_ID_KEY);
+    let isLoggedIn = false;
+    if(accessToken) {
+        isLoggedIn = true;
+    }
+    return {accessToken,userId,isLoggedIn};
+}
+
+const defaultState = getCurrentState();
 
 export const useLoginState = () => {
-    const [loginState, setLoginState] = useState(loggedOutState);
+    const [loginState, setLoginState] = useState(defaultState);
 
     useEffect(() => {
         console.log("useLoginState hook effect called!");
-
-        const accessToken = window.localStorage.getItem(ACCESS_TOKEN_KEY);
-        const userId = window.localStorage.getItem(USER_ID_KEY);
-        let isLoggedIn = false;
-        if(accessToken != null) {
-            isLoggedIn = true;
-        }
-        setLoginState({isLoggedIn,accessToken,userId});
+        setLoginState(getCurrentState());
     },[loginState.isLoggedIn]);
     
     const logout = () => {
         window.localStorage.removeItem(ACCESS_TOKEN_KEY);
         window.localStorage.removeItem(USER_ID_KEY);
-        setLoginState(loggedOutState);
+        setLoginState({...loginState,isLoggedIn:false});
     }
 
     const login = (accessToken,userId) => {
         window.localStorage.setItem(ACCESS_TOKEN_KEY,accessToken);
         window.localStorage.setItem(USER_ID_KEY,userId);
-        setLoginState({...loggedOutState,isLoggedIn:true});
+        setLoginState({...loginState,isLoggedIn:true});
     }
     
     return {loginState,logout,login};
