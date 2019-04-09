@@ -18,7 +18,7 @@ const defaultProject = {
 
 class Project {
     constructor(project=defaultProject) {
-        this.id = project._id,
+        this.id = project._id;
         this.name = project.name;
         this.description = project.description;
         this.members = project.members;

@@ -14,7 +14,7 @@ const defaultItem = {
 
 class Item {
     constructor(item=defaultItem) {
-        this.id = item._id,
+        this.id = item._id;
         this.parentId = item.parentId;
         this.title = item.title;
         this.description = item.description;

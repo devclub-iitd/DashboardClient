@@ -1,7 +1,6 @@
 import {useState,useEffect} from 'react';
+import {USER_ID_KEY, ACCESS_TOKEN_KEY} from "./Constant";
 
-const USER_ID_KEY = "userId";
-const ACCESS_TOKEN_KEY = "accessToken";
 const loggedOutState = {userId: null,accessToken: null,isLoggedIn: false};
 
 export const useLoginState = () => {

@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import {GlobalContext} from "../utils/context";
+import {GlobalContext} from "../utils/Context";
 
 const LoginComponent = () => {
     const {login} = useContext(GlobalContext);

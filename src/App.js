@@ -12,8 +12,8 @@ import HeaderComponent from "./components/HeaderComponent";
 import LoginComponent from "./components/LoginComponent";
 
 
-import {useLoginState,useErrorState} from "./utils/hooks";
-import {GlobalContext} from "./utils/context";
+import {useLoginState,useErrorState} from "./utils/Hook";
+import {GlobalContext} from "./utils/Context";
 
 
 function App() {

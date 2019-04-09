@@ -12,7 +12,7 @@ const defaultEvent = {
 
 class Event {
     constructor(event=defaultEvent) {
-        this.id = event._id,
+        this.id = event._id;
         this.name = event.name;
         this.description = event.description;
         this.startDate = new Date(event.startDate);

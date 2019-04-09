@@ -1,5 +1,5 @@
 import React,{useContext} from 'react';
-import {GlobalContext} from "../utils/context";
+import {GlobalContext} from "../utils/Context";
 
 const HeaderComponent = () => {
     const globals = useContext(GlobalContext);
