@@ -10,9 +10,10 @@ import DashboardComponent from "./components/DashboardComponent";
 import SidebarComponent from "./components/SidebarComponent";
 import HeaderComponent from "./components/HeaderComponent";
 import LoginComponent from "./components/LoginComponent";
+import SignupComponent from "./components/SignupComponent";
 import {Login as LoginAPI} from "./utils/Api";
 
-import {useLoginState,useErrorState} from "./utils/Hook";
+import {useLoginState,useErrorState,useLoggedInUser} from "./utils/Hook";
 import {GlobalContext} from "./utils/Context";
 import {GITHUB_OAUTH_CLIENT_ID} from "./utils/Constant";
 
@@ -20,6 +21,7 @@ import {GITHUB_OAUTH_CLIENT_ID} from "./utils/Constant";
 function App() {
   const [showLoader,setLoading] = useState(false);
   const {loginState,logout,login} = useLoginState();
+  const {loggedInUser,refetchUser} = useLoggedInUser(loginState.isLoggedIn,loginState.userId);
   const {errorMessage,showError,clearError} = useErrorState();
 
   const globals = {
@@ -28,7 +30,9 @@ function App() {
     login,
     setLoading,
     showError,
-    clearError
+    clearError,
+    loggedInUser,
+    refetchUser
   };
 
   console.log(`Re rendering! isLoggedIn: ${loginState}`);
@@ -49,10 +53,18 @@ function App() {
                 <HeaderComponent />
                 <div>
                   <SidebarComponent />
-                  <Switch>
-                    <Route exact path="/" component={DashboardComponent} />
-                    <Redirect to="/" />
-                  </Switch>
+                  {
+                    (!loggedInUser.isFilled) ?
+                    <Switch>
+                      <Route exact path="/signup" component={SignupComponent} />
+                      <Redirect to="/signup" />
+                    </Switch>
+                    :
+                    <Switch>
+                      <Route exact path="/" component={DashboardComponent} />
+                      <Redirect to="/" />
+                    </Switch>
+                  }
                 </div>
               </div>
               :

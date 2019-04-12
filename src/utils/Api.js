@@ -82,6 +82,7 @@ export const createBasicHooks = (api,model) => {
     }
     
     const update = (id,data) => {
+        console.log(`id: ${id} url: ${api.put(id)}`);
         return putRequest(api.put(id),{},data)
         .then((result)=>new model(result.data));
     }
