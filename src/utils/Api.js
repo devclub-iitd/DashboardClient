@@ -4,7 +4,7 @@ export const Login = {
     serverAuth: () => BASE+"/user/github_login",
     redirectURI: () => "github_oauth",
     fullRedirectURI: () => `${SELF_URL}/github_oauth`,
-    githubLogin: (client_id,redirect_uri) => createQueryURL("https://github.com/login/oauth/authorize",{client_id,redirect_uri,allow_signup: false})
+    githubLogin: (client_id,redirect_uri) => createQueryURL("https://github.com/login/oauth/authorize",{client_id,redirect_uri,allow_signup: false,scope:'user:email'})
 }
 
 export const User = {
