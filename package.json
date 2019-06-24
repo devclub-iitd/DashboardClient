@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@material-ui/core": "^4.1.1",
-    "@material-ui/icons": "^4.2.0",
+    "@material-ui/core": "^4.1.2",
+    "@material-ui/icons": "^4.2.1",
     "clsx": "^1.0.4",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
@@ -13,7 +13,7 @@
     "react-scripts": "3.0.1",
     "redux": "^4.0.1",
     "redux-logger": "^3.0.6",
-    "redux-promise-middleware": "^6.1.0",
+    "redux-promise-middleware": "^6.1.1",
     "redux-thunk": "^2.3.0",
     "typeface-roboto": "0.0.54"
   },
@@ -21,7 +21,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint": "eslint --fix src/**/*.js src/**/*.jsx"
   },
   "eslintConfig": {
     "extends": "airbnb",
@@ -29,8 +30,6 @@
       "ecmaVersion": 2018
     },
     "env": {
-      "node": true,
-      "es6": true,
       "browser": true
     },
     "parser": "babel-eslint"
@@ -51,6 +50,6 @@
     "eslint-config-airbnb": "^17.1.0",
     "eslint-plugin-import": "^2.17.3",
     "eslint-plugin-jsx-a11y": "^6.2.1",
-    "eslint-plugin-react": "^7.13.0"
+    "eslint-plugin-react": "^7.14.0"
   }
 }
