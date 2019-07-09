@@ -1,8 +1,17 @@
-const simpleAction = () => (dispatch) => {
+import { postRegisterAPI } from '../data/api_links';
+
+const postRegister = dispatch => (body) => {
   dispatch({
-    type: 'SIMPLE_ACTION',
-    payload: 'result_of_simple_action',
+    type: 'POST_REGISTER',
+    payload: fetch(postRegisterAPI, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    }),
   });
 };
 
-export default simpleAction;
+export default postRegister;
