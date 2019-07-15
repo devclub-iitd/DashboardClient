@@ -1,4 +1,8 @@
-export default (state = {}, action) => {
+const initState = {
+  errorMsg: '',
+};
+
+export default (state = initState, action) => {
   switch (action.type) {
     case 'SIMPLE_ACTION':
       return {

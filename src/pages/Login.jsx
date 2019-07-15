@@ -3,15 +3,17 @@ import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
 import Link from '@material-ui/core/Link';
 import Paper from '@material-ui/core/Paper';
 import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import { FormLabel } from '@material-ui/core';
+import login from '../actions/loginActions';
 
 function MadeWithLove() {
   return (
@@ -25,7 +27,7 @@ function MadeWithLove() {
   );
 }
 
-const useStyles = makeStyles(theme => ({
+const styles = theme => ({
   root: {
     height: '100vh',
   },
@@ -52,10 +54,10 @@ const useStyles = makeStyles(theme => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
-}));
+});
 
-export default function SignInSide() {
-  const classes = useStyles();
+function SignInSide(props) {
+  const { classes, handleSubmit, errorMsg } = props;
 
   return (
     <Grid container component="main" className={classes.root}>
@@ -69,7 +71,7 @@ export default function SignInSide() {
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
-          <form className={classes.form} noValidate>
+          <form className={classes.form} onSubmit={handleSubmit}>
             <TextField
               variant="outlined"
               margin="normal"
@@ -92,10 +94,6 @@ export default function SignInSide() {
               id="password"
               autoComplete="current-password"
             />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            />
             <Button
               type="submit"
               fullWidth
@@ -106,17 +104,15 @@ export default function SignInSide() {
               Sign In
             </Button>
             <Grid container>
-              <Grid item xs>
-                <Link href="#" variant="body2">
-                  Forgot password?
-                </Link>
-              </Grid>
               <Grid item>
                 <Link href="/register" variant="body2">
                   {"Don't have an account? Sign Up"}
                 </Link>
               </Grid>
             </Grid>
+            <FormLabel error>
+              {errorMsg}
+            </FormLabel>
             <Box mt={5}>
               <MadeWithLove />
             </Box>
@@ -126,3 +122,20 @@ export default function SignInSide() {
     </Grid>
   );
 }
+
+
+SignInSide.propTypes = {
+  classes: PropTypes.objectOf(PropTypes.string).isRequired,
+  handleSubmit: PropTypes.func.isRequired,
+  errorMsg: PropTypes.string.isRequired,
+};
+
+const mapStateToProps = state => ({
+  errorMsg: state.loginReducer.errorMsg,
+});
+
+const mapDispatchToProps = dispatch => ({
+  handleSubmit: login(dispatch),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(SignInSide));

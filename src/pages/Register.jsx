@@ -11,10 +11,15 @@ import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { connect } from 'react-redux';
-import postRegister from '../actions/actions';
+import PropTypes from 'prop-types';
+import { FormLabel } from '@material-ui/core';
+import postRegister from '../actions/registerActions';
+
+const mapStateToProps = state => ({
+  errorMsg: state.registerReducer.errorMsg,
+});
 
 const mapDispatchToProps = dispatch => ({
-  // dispatching plain actions
   postRegister: postRegister(dispatch),
 });
 
@@ -70,7 +75,9 @@ class SignUp extends React.Component {
   handleSubmit(e) {
     e.preventDefault();
 
-    if (this.state.confirmPassError) {
+    const { confirmPassError } = this.state;
+
+    if (confirmPassError) {
       return;
     }
 
@@ -83,20 +90,24 @@ class SignUp extends React.Component {
       password: target.password.value,
     };
 
-    this.props.postRegister(body);
+    const { postRegister: postReg } = this.props;
+
+    postReg(body);
   }
 
   handleChange(e, type) {
     const { value } = e.target;
     this.setState({ [type]: value });
     if (type === 'confirmPassword') {
-      this.setState({ confirmPassError: (value !== this.state.password) });
+      const { password } = this.state;
+      this.setState({ confirmPassError: (value !== password) });
     }
   }
 
   render() {
-    const { classes } = this.props;
+    const { classes, errorMsg } = this.props;
 
+    const { confirmPassError } = this.state;
     return (
       <Container component="main" maxWidth="xs">
         <CssBaseline />
@@ -167,7 +178,7 @@ class SignUp extends React.Component {
                   type="password"
                   id="confirmPassword"
                   autoComplete="confirm-password"
-                  error={this.state.confirmPassError}
+                  error={confirmPassError}
                   onChange={e => this.handleChange(e, 'confirmPassword')}
                 />
               </Grid>
@@ -188,6 +199,9 @@ class SignUp extends React.Component {
                 </Link>
               </Grid>
             </Grid>
+            <FormLabel error>
+              {errorMsg}
+            </FormLabel>
           </form>
         </div>
         <Box mt={5}>
@@ -198,4 +212,10 @@ class SignUp extends React.Component {
   }
 }
 
-export default connect(null, mapDispatchToProps)(withStyles(styles)(SignUp));
+SignUp.propTypes = {
+  classes: PropTypes.objectOf(PropTypes.string).isRequired,
+  postRegister: PropTypes.func.isRequired,
+  errorMsg: PropTypes.string.isRequired,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(SignUp));
