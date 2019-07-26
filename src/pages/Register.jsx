@@ -122,7 +122,6 @@ class SignUp extends React.Component {
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <TextField
-                  autoComplete="name"
                   name="name"
                   variant="outlined"
                   required
@@ -134,7 +133,6 @@ class SignUp extends React.Component {
               </Grid>
               <Grid item xs={12}>
                 <TextField
-                  autoComplete="entrynumber"
                   name="entryNumber"
                   variant="outlined"
                   required
@@ -152,7 +150,6 @@ class SignUp extends React.Component {
                   id="email"
                   label="Email Address"
                   name="email"
-                  autoComplete="email"
                 />
               </Grid>
               <Grid item xs={12}>
@@ -164,7 +161,6 @@ class SignUp extends React.Component {
                   label="Password"
                   type="password"
                   id="password"
-                  autoComplete="current-password"
                   onChange={e => this.handleChange(e, 'password')}
                 />
               </Grid>
@@ -177,7 +173,6 @@ class SignUp extends React.Component {
                   label="Confirm Password"
                   type="password"
                   id="confirmPassword"
-                  autoComplete="confirm-password"
                   error={confirmPassError}
                   onChange={e => this.handleChange(e, 'confirmPassword')}
                 />

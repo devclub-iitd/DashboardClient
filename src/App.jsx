@@ -1,17 +1,21 @@
 import React from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { Redirect, BrowserRouter as Router, Route } from 'react-router-dom';
+import { createBrowserHistory } from 'history';
 import Login from './pages/Login';
 import Register from './pages/Register';
-import Home from './pages/Home';
+import Dashboard from './pages/Dashboard';
 import './App.css';
+
+const hist = createBrowserHistory();
 
 function App() {
   return (
-    <Router>
+    <Router history={hist}>
       <div>
-        <Route exact path="/" component={Login} />
+        <Route exact path="/login" component={Login} />
         <Route path="/register" component={Register} />
-        <Route path="/home" component={Home} />
+        <Route path="/dashboard" component={Dashboard} />
+        <Redirect from="/" to="/dashboard" />
       </div>
     </Router>
   );

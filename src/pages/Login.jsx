@@ -80,7 +80,6 @@ function SignInSide(props) {
               id="email"
               label="Email Address"
               name="email"
-              autoComplete="email"
               autoFocus
             />
             <TextField
@@ -92,7 +91,6 @@ function SignInSide(props) {
               label="Password"
               type="password"
               id="password"
-              autoComplete="current-password"
             />
             <Button
               type="submit"
