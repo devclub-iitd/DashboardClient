@@ -12,10 +12,10 @@ function App() {
   return (
     <Router history={hist}>
       <div>
-        <Route exact path="/login" component={Login} />
+        <Route path="/login" component={Login} />
         <Route path="/register" component={Register} />
-        <Route path="/dashboard" component={Dashboard} />
-        <Redirect from="/" to="/dashboard" />
+        <Route path="/dashboard/:subPage" component={Dashboard} />
+        <Redirect from="/" to="/dashboard/home" />
       </div>
     </Router>
   );

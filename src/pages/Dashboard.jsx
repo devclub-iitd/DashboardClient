@@ -11,13 +11,17 @@ import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import Badge from '@material-ui/core/Badge';
 import Container from '@material-ui/core/Container';
-import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
 import Link from '@material-ui/core/Link';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import NotificationsIcon from '@material-ui/icons/Notifications';
-import { mainListItems, secondaryListItems } from '../components/listItems';
+import MainListItems from '../components/MainListItems';
+import Home from '../components/Home';
+import Profile from '../components/Profile';
+import ChangePassword from '../components/ChangePassword';
+import ApproveUsers from '../components/ApproveUsers';
+import CreateTasks from '../components/CreateTasks';
+import AssignTasks from '../components/AssignTasks';
 
 function MadeWithLove() {
   return (
@@ -112,7 +116,18 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function Dashboard() {
+function renderPage(subPage) {
+  switch (subPage) {
+    case 'profile': return (<div><Profile /></div>);
+    case 'changePassword': return (<div><ChangePassword /></div>);
+    case 'approveUsers': return (<div><ApproveUsers /></div>);
+    case 'createTasks': return (<div><CreateTasks /></div>);
+    case 'assignTasks': return (<div><AssignTasks /></div>);
+    default: return (<div><Home /></div>);
+  }
+}
+
+export default function Dashboard(props) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(true);
   const handleDrawerOpen = () => {
@@ -122,6 +137,10 @@ export default function Dashboard() {
     setOpen(false);
   };
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+
+  const { match } = props;
+  const { params } = match;
+  const { subPage } = params;
 
   return (
     <div className={classes.root}>
@@ -138,7 +157,7 @@ export default function Dashboard() {
             <MenuIcon />
           </IconButton>
           <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-            Dashboard
+            {subPage}
           </Typography>
           <IconButton color="inherit">
             <Badge badgeContent={4} color="secondary">
@@ -160,27 +179,14 @@ export default function Dashboard() {
           </IconButton>
         </div>
         <Divider />
-        <List>{mainListItems}</List>
-        <Divider />
-        <List>{secondaryListItems}</List>
+        <List>
+          <MainListItems />
+        </List>
       </Drawer>
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
         <Container maxWidth="lg" className={classes.container}>
-          <Grid container spacing={3}>
-            {/* Chart */}
-            <Grid item xs={12} md={8} lg={9}>
-              <Paper className={fixedHeightPaper} />
-            </Grid>
-            {/* Recent Deposits */}
-            <Grid item xs={12} md={4} lg={3}>
-              <Paper className={fixedHeightPaper} />
-            </Grid>
-            {/* Recent Orders */}
-            <Grid item xs={12}>
-              <Paper className={classes.paper} />
-            </Grid>
-          </Grid>
+          {renderPage(subPage)}
         </Container>
         <MadeWithLove />
       </main>
