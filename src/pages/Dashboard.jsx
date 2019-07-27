@@ -116,14 +116,14 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function renderPage(subPage) {
+function renderPage(subPage, classProp, classPaper) {
   switch (subPage) {
     case 'profile': return (<div><Profile /></div>);
     case 'changePassword': return (<div><ChangePassword /></div>);
     case 'approveUsers': return (<div><ApproveUsers /></div>);
     case 'createTasks': return (<div><CreateTasks /></div>);
     case 'assignTasks': return (<div><AssignTasks /></div>);
-    default: return (<div><Home /></div>);
+    default: return (<div><Home fixedHeightPaper={classProp} paperClass={classPaper} /></div>);
   }
 }
 
@@ -136,6 +136,7 @@ export default function Dashboard(props) {
   const handleDrawerClose = () => {
     setOpen(false);
   };
+
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
   const { match } = props;
@@ -186,7 +187,7 @@ export default function Dashboard(props) {
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
         <Container maxWidth="lg" className={classes.container}>
-          {renderPage(subPage)}
+          {renderPage(subPage, fixedHeightPaper, classes.paper)}
         </Container>
         <MadeWithLove />
       </main>
