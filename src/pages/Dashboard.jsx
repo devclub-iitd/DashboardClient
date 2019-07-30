@@ -138,7 +138,7 @@ export default function Dashboard(props) {
   };
 
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
-
+  console.log(props);
   const { match } = props;
   const { params } = match;
   const { subPage } = params;

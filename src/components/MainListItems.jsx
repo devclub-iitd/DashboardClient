@@ -14,8 +14,6 @@ function MainListItems(props) {
     props.history.push(`/dashboard/${subPath}`);
   };
 
-  console.log(props);
-
   return (
     <div>
       <ListItem button onClick={redirectFunc('home')}>
@@ -46,13 +44,13 @@ function MainListItems(props) {
         <ListItemIcon>
           <LayersIcon />
         </ListItemIcon>
-        <ListItemText primary="Create Tasks" />
+        <ListItemText primary="Create Tasks/Events" />
       </ListItem>
       <ListItem button onClick={redirectFunc('assignTasks')}>
         <ListItemIcon>
           <LayersIcon />
         </ListItemIcon>
-        <ListItemText primary="Assign Tasks" />
+        <ListItemText primary="Assign Tasks/Events" />
       </ListItem>
     </div>
   );
