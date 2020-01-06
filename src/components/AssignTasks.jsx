@@ -26,8 +26,21 @@ import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
+import {
+  Grid, Card, CardActionArea, CardContent, Button, FormGroup,
+} from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
+import Dialog from '@material-ui/core/Dialog';
+import MuiDialogTitle from '@material-ui/core/DialogTitle';
+import MuiDialogContent from '@material-ui/core/DialogContent';
+import MuiDialogActions from '@material-ui/core/DialogActions';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import { dumUsers } from './dumUser';
+import { dumTasks } from './dumTasks';
 
 const suggestions = [
   { label: 'Afghanistan' },
@@ -117,6 +130,19 @@ const useStyles = makeStyles(theme => ({
   },
   divider: {
     height: theme.spacing(2),
+  },
+  card: {
+    marginTop: '1em',
+    marginBottom: '1em',
+    backgroundColor: '#e8eaf6',
+  },
+  formgroup: {
+    margin: '2em',
+  },
+  typeClass: {
+    // border: '3px solid',
+    textAlign: 'center',
+    margin: '0.5em',
   },
 }));
 
@@ -629,10 +655,165 @@ export default function IntegrationReactSelect() {
     }),
   };
 
+
+  // function taskCard() {
+
+  //   return (
+
+  //   );
+  // }
+
+  // const handleUserSelectChange = name => event => {
+  //   setState
+  // }
+  // onChange={handleUserSelectChange(user.name)}
+
+  const userList = dumUsers.map(user => (
+    <FormControlLabel
+      control={<Checkbox checked={false} value={user.id} />}
+      label={user.name}
+    />
+  ));
+
+  const [selectedTask, setSelTask] = React.useState({
+    task: '',
+  });
+  // let selectedTask = '';
+  const [open, setOpen] = React.useState(false);
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleCardClick = task => (event) => {
+    setSelTask({
+      ...selectedTask,
+      [task]: event.target.value,
+    });
+    setOpen(true);
+  };
+
+  // function handleCardClick(name) {
+  //   // setSelTask(name);
+  //   // selectedTask = name;
+  //   setSelTask({
+
+  //   })
+  //   setOpen(true);
+  // handleClickOpen();
+  // return (
+  // <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+  //   <DialogTitle id="form-dialog-title">
+  //     <Typography variant="h5">
+  //       Select Collaborators for:
+  //       {name}
+  //     </Typography>
+  //   </DialogTitle>
+  /* <DialogContent> */
+  /* <DialogContentText>
+            To subscribe to this website, please enter your email address here. We will send updates
+            occasionally.
+          </DialogContentText>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="name"
+            label="Email Address"
+            type="email"
+            fullWidth
+          /> */
+  /* <FormGroup>
+          {userList}
+        </FormGroup> */
+  /* </DialogContent> */
+  /* <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleClose} color="primary">
+            Subscribe
+          </Button>
+        </DialogActions>
+      </Dialog> */
+  // );
+  // }
+
+  const taskCards = dumTasks.map(task => (
+    <Grid item xs={8} md={5}>
+      <Card className={classes.card} backgroundColor="#c5cae9">
+        <CardActionArea onClick={handleCardClick(task.name)}>
+          <CardContent>
+            <Typography gutterBottom variant="h5">
+              {task.name}
+            </Typography>
+            <Typography variant="body1" color="textSecondary">
+              {task.description}
+            </Typography>
+            <Typography variant="body2" color="textSecondary" align="right">
+              Priority:
+              {task.priority}
+            </Typography>
+            <Typography variant="body2" color="textSecondary" align="right">
+              No. of members working:
+              {task.numMemAssigned}
+            </Typography>
+          </CardContent>
+        </CardActionArea>
+      </Card>
+      <Dialog className={classes.dialogClass} open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+        <DialogTitle id="form-dialog-title">
+          <Typography variant="h5">
+            Select Collaborators for
+            {selectedTask.task}
+          </Typography>
+        </DialogTitle>
+        <FormGroup className={classes.formgroup}>
+          {userList}
+        </FormGroup>
+        {/* </DialogContent> */}
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleClose} color="primary">
+            Done
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </Grid>
+    // <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+    //   <DialogTitle id="form-dialog-title">Subscribe</DialogTitle>
+    //   <DialogContent>
+    //     <DialogContentText>
+    //       To subscribe to this website, please enter your email address here. We will send updates
+    //       occasionally.
+    //     </DialogContentText>
+    //     <TextField
+    //       autoFocus
+    //       margin="dense"
+    //       id="name"
+    //       label="Email Address"
+    //       type="email"
+    //       fullWidth
+    //     />
+    //   </DialogContent>
+    //   <DialogActions>
+    //     <Button onClick={handleClose} color="primary">
+    //       Cancel
+    //     </Button>
+    //     <Button onClick={handleClose} color="primary">
+    //       Subscribe
+    //     </Button>
+    //   </DialogActions>
+    // </Dialog>
+  ));
+
   return (
     <div>
 
-      <div className={classes.root}>
+      {/* <div className={classes.root}>
         <NoSsr>
           <div className={classes.divider} />
           <Select
@@ -654,10 +835,10 @@ export default function IntegrationReactSelect() {
             isMulti
           />
         </NoSsr>
-      </div>
+      </div> */}
 
       <Paper className={classes.paper}>
-        <EnhancedTableToolbar numSelected={selected.length} />
+        {/* <EnhancedTableToolbar numSelected={selected.length} />
         <div className={classes.tableWrapper}>
           <Table
             className={classes.table}
@@ -727,7 +908,15 @@ export default function IntegrationReactSelect() {
           }}
           onChangePage={handleChangePage}
           onChangeRowsPerPage={handleChangeRowsPerPage}
-        />
+        /> */}
+        <Grid container justify="space-evenly">
+          <Grid item xs={9}>
+            <Typography variant="h4" className={classes.typeClass}>
+              Select Task to assign
+            </Typography>
+          </Grid>
+          {taskCards}
+        </Grid>
       </Paper>
     </div>
   );

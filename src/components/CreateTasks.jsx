@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
-import Select from 'react-select';
+// import Select from 'react-select';
 import { emphasize, makeStyles, useTheme } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import NoSsr from '@material-ui/core/NoSsr';
@@ -10,6 +10,12 @@ import Paper from '@material-ui/core/Paper';
 import Chip from '@material-ui/core/Chip';
 import MenuItem from '@material-ui/core/MenuItem';
 import CancelIcon from '@material-ui/icons/Cancel';
+import {
+  Grid, FormControl, FormControlLabel, InputLabel, Button, FormLabel, RadioGroup, Radio, Select,
+} from '@material-ui/core';
+import DateFnsUtils from '@date-io/date-fns';
+import { MuiPickersUtilsProvider, KeyboardDatePicker, KeyboardTimePicker } from '@material-ui/pickers';
+import { dumUsers } from './dumUser';
 
 const suggestions = [
   { label: 'Afghanistan' },
@@ -99,6 +105,25 @@ const useStyles = makeStyles(theme => ({
   },
   divider: {
     height: theme.spacing(2),
+  },
+  form: {
+    width: '100%', // Fix IE 11 issue.
+    marginTop: theme.spacing(1),
+  },
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 120,
+  },
+  margin: {
+    // margin: theme.spacing(1),
+    marginTop: '1em',
+    marginBottom: '2em',
+    width: '100%',
+  },
+  head: {
+    marginBottom: '0.5em',
+    marginTop: '1em',
+    textAlign: 'center',
   },
 }));
 
@@ -370,69 +395,168 @@ export default function IntegrationReactSelect() {
     }),
   };
 
+  const [selectedDate, setSelectedDate] = React.useState(new Date('2014-08-18T21:11:54'));
+
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
+  };
+  const [radioValue, setValue] = React.useState('low');
+
+  const handleRadioChange = (event) => {
+    setValue(event.target.value);
+  };
+  const [typeState, setTypeState] = React.useState({
+    type: '',
+  });
+  const inputLabel = React.useRef(null);
+  const [labelWidth, setLabelWidth] = React.useState(0);
+  React.useEffect(() => {
+    setLabelWidth(inputLabel.current.offsetWidth);
+  }, []);
+  const handleTypeChange = type => (event) => {
+    setTypeState({
+      ...typeState,
+      [type]: event.target.value,
+    });
+  };
+
   return (
     <div>
 
-      {'Change type of field (date/checkbox/text) accordingly'}
-      <br />
+      {/* {'Change type of field (date/checkbox/text) accordingly'}
+      <br /> */}
+      <Grid container direction="row" justify="center">
+        <Grid item sm={8} lg={6}>
+          <Paper elevation={3}>
+            {/* <For */}
+            <Typography variant="h4" className={classes.head}>
+              Create a new Task
+            </Typography>
+            <Grid container justify="center">
+              <Grid item sm={10}>
+                <form className={classes.form} noValidate autoComplete="off">
+                  {/* <TextField
+                    required
+                    id="filled-required"
+                    label=""
+                    placeholder="Task Name"
+                    variant="filled"
+                  /> */}
+                  <TextField
+                    variant="outlined"
+                    margin="normal"
+                    required
+                    fullWidth
+                    id="taskName"
+                    label="Task Name"
+                    name="taskName"
+                    autoFocus
+                  />
+                  <TextField
+                    variant="outlined"
+                    margin="normal"
+                    required
+                    fullWidth
+                    id="taskDescription"
+                    label="Task Description"
+                    name="taskDescription"
+                  />
+                  <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                    <KeyboardDatePicker
+                      disableToolbar
+                      variant="inline"
+                      format="MM/dd/yyyy"
+                      margin="normal"
+                      id="taskDeadline"
+                      label="Task Deadline"
+                      value={selectedDate}
+                      onChange={handleDateChange}
+                      KeyboardButtonProps={{
+                        'aria-label': 'change date',
+                      }}
+                    />
+                  </MuiPickersUtilsProvider>
+                  <FormLabel component="legend">Priority</FormLabel>
+                  <RadioGroup row value={radioValue} onChange={handleRadioChange}>
+                    <FormControlLabel
+                      value="low"
+                      label="Low"
+                      control={(
+                        <Radio />
+                        )}
+                    />
+                    <FormControlLabel
+                      value="medium"
+                      label="Medium"
+                      control={(
+                        <Radio />
+                        )}
+                    />
+                    <FormControlLabel
+                      value="high"
+                      label="High"
+                      control={(
+                        <Radio />
+                      )}
+                    />
+                  </RadioGroup>
+                  <FormControl variant="outlined" className={classes.formControl}>
+                    <InputLabel ref={inputLabel} htmlFor="type">
+                      Type
+                    </InputLabel>
+                    <Select
+                      native
+                      value={typeState.type}
+                      onChange={handleTypeChange('type')}
+                      labelWidth={labelWidth}
+                      inputProps={{
+                        name: 'type',
+                        id: 'type',
+                      }}
+                    >
+                      <option value="" />
+                      <option value={0}>Project</option>
+                      <option value={1}>Event</option>
+                      <option value={2}>Resource</option>
+                    </Select>
+                  </FormControl>
+                  <br />
+                  <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                    <KeyboardTimePicker
+                      margin="normal"
+                      id="startTime"
+                      label="Select start time"
+                      value={selectedDate}
+                      onChange={handleDateChange}
+                      KeyboardButtonProps={{
+                        'aria-label': 'change time',
+                      }}
+                    />
+                    <KeyboardTimePicker
+                      margin="normal"
+                      id="endTime"
+                      label="Select end time"
+                      value={selectedDate}
+                      onChange={handleDateChange}
+                      KeyboardButtonProps={{
+                        'aria-label': 'change time',
+                      }}
+                    />
+                  </MuiPickersUtilsProvider>
+                  <Grid container justify="center">
+                    <Grid item xs={6}>
+                      <Button variant="contained" size="large" color="primary" className={classes.margin}>
+                        Create Task
+                      </Button>
+                    </Grid>
+                  </Grid>
+                </form>
+              </Grid>
+            </Grid>
+          </Paper>
+        </Grid>
+      </Grid>
 
-      <TextField
-        id="name"
-        label="Task Name"
-        className={classes.textField}
-        margin="normal"
-      />
-      <br />
-
-
-      <TextField
-        id="description"
-        label="Task Description"
-        className={classes.textField}
-        margin="normal"
-      />
-      <br />
-
-
-      <TextField
-        id="deadline"
-        label="Task Deadline(Make this a date selector)"
-        className={classes.textField}
-        margin="normal"
-      />
-      <br />
-
-      <TextField
-        id="priority"
-        label="Priority Level(Make this a checkbox)"
-        className={classes.textField}
-        margin="normal"
-      />
-      <br />
-
-      <TextField
-        id="type"
-        label="Type of task(Make this a selection)"
-        className={classes.textField}
-        margin="normal"
-      />
-      <br />
-
-      <TextField
-        id="start-time"
-        label="Start Time"
-        className={classes.textField}
-        margin="normal"
-      />
-      <br />
-
-      <TextField
-        id="end-time"
-        label="End Time"
-        className={classes.textField}
-        margin="normal"
-      />
-      <br />
 
       <div className={classes.root}>
         <NoSsr>

@@ -11,18 +11,18 @@ export default function Home(props) {
       <Grid container spacing={3}>
         {/* Chart */}
         <Grid item xs={12} md={8} lg={9}>
-          <Paper className={fixedHeightPaper}>
+          <Paper className="">
             <PendingTasks />
           </Paper>
         </Grid>
         {/* Recent Deposits */}
-        <Grid item xs={12} md={4} lg={3}>
+        {/* <Grid item xs={12} md={8} lg={9}>
           <Paper className={fixedHeightPaper} />
         </Grid>
-        {/* Recent Orders */}
+        Recent Orders
         <Grid item xs={12}>
           <Paper className={paperClass} />
-        </Grid>
+        </Grid> */}
       </Grid>
     </div>
   );

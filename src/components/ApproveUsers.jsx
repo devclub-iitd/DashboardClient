@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { lighten, makeStyles } from '@material-ui/core/styles';
@@ -19,6 +19,10 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
+import {
+  Grid, Card, CardActionArea, CardContent, Dialog, DialogTitle, DialogActions, Button, FormGroup,
+} from '@material-ui/core';
+import { dumUsers } from './dumUser';
 
 function createData(name, calories, fat, carbs, protein) {
   return {
@@ -157,6 +161,11 @@ const useToolbarStyles = makeStyles(theme => ({
   title: {
     flex: '0 0 auto',
   },
+  card: {
+    marginTop: '1em',
+    marginBottom: '1em',
+    backgroundColor: '#e8eaf6',
+  },
 }));
 
 const EnhancedTableToolbar = (props) => {
@@ -221,7 +230,57 @@ const useStyles = makeStyles(theme => ({
   tableWrapper: {
     overflowX: 'auto',
   },
+  card: {
+    marginTop: '1em',
+    marginBottom: '1em',
+    backgroundColor: '#e8eaf6',
+  },
+  typeClass: {
+    // border: '3px solid',
+    textAlign: 'center',
+    margin: '0.5em',
+  },
 }));
+
+// class DialogComponent extends Component {
+//   constructor(props) {
+//     super(props);
+//     this.state = {
+//       user: props.user,
+//       open: false,
+//     };
+//   }
+
+//   render() {
+//     const handleClose = () => {
+//       this.setState({
+//         open: false,
+//       });
+//     };
+//     return (
+//       <Dialog className={classes.dialogClass} open={this.state.open} onClose={handleClose} aria-labelledby="form-dialog-title">
+//         <DialogTitle id="form-dialog-title">
+//           <Typography variant="h5">
+//             Select Collaborators for
+//             {this.state.user.name}
+//           </Typography>
+//         </DialogTitle>
+//         {/* <FormGroup className={classes.formgroup}>
+//           {userList}
+//         </FormGroup> */}
+//         {/* </DialogContent> */}
+//         <DialogActions>
+//           <Button onClick={handleClose} color="primary">
+//             Cancel
+//           </Button>
+//           <Button onClick={handleClose} color="primary">
+//             Done
+//           </Button>
+//         </DialogActions>
+//       </Dialog>
+//     );
+//   }
+// }
 
 export default function EnhancedTable() {
   const classes = useStyles();
@@ -284,10 +343,114 @@ export default function EnhancedTable() {
 
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
+  const [open, setOpen] = React.useState(true);
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+
+  function showUserDialog(user) {
+    // setOpen(true);
+    return (
+      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+        <DialogTitle id="form-dialog-title">
+          <Typography variant="h5">
+            Select Collaborators for
+            {user.name}
+          </Typography>
+        </DialogTitle>
+        {/* <FormGroup className={classes.formgroup}>
+          {userList}
+        </FormGroup> */}
+        {/* </DialogContent> */}
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleClose} color="primary">
+            Done
+          </Button>
+        </DialogActions>
+      </Dialog>
+    );
+  }
+
+  const userCards = dumUsers.map(user => (
+    <Grid item xs={9} md={5}>
+      <Card className={classes.card} backgroundColor="#c5cae9">
+        <CardActionArea onClick={showUserDialog(user)}>
+          <CardContent>
+            <Typography gutterBottom variant="h5">
+              {user.name}
+            </Typography>
+            <Typography variant="body1" color="textSecondary">
+              {user.intro}
+            </Typography>
+            <Typography variant="body2" color="textSecondary" align="right">
+              {/* No. of members working: */}
+              {user.url}
+              {/* {task.numMemAssigned} */}
+            </Typography>
+          </CardContent>
+        </CardActionArea>
+      </Card>
+    </Grid>
+  ));
+
+  // const taskCards = dumTasks.map(task => (
+  //   <Grid item xs={5}>
+  //     <Card className={classes.card} backgroundColor="#c5cae9">
+  //       <CardActionArea onClick={handleCardClick(task.name)}>
+  //         <CardContent>
+  //           <Typography gutterBottom variant="h5">
+  //             {task.name}
+  //           </Typography>
+  //           <Typography variant="body1" color="textSecondary">
+  //             {task.description}
+  //           </Typography>
+  //           <Typography variant="body2" color="textSecondary" align="right">
+  //             No. of members working:
+  //             {task.numMemAssigned}
+  //           </Typography>
+  //         </CardContent>
+  //       </CardActionArea>
+  //     </Card>
+  //     <Dialog className={classes.dialogClass} open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+  //       <DialogTitle id="form-dialog-title">
+  //         <Typography variant="h5">
+  //           Select Collaborators for
+  //           {selectedTask.task}
+  //         </Typography>
+  //       </DialogTitle>
+  //       <FormGroup className={classes.formgroup}>
+  //         {userList}
+  //       </FormGroup>
+  //       {/* </DialogContent> */}
+  //       <DialogActions>
+  //         <Button onClick={handleClose} color="primary">
+  //           Cancel
+  //         </Button>
+  //         <Button onClick={handleClose} color="primary">
+  //           Done
+  //         </Button>
+  //       </DialogActions>
+  //     </Dialog>
+  //   </Grid>
+  // ));
+
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <EnhancedTableToolbar numSelected={selected.length} />
+        <Grid container justify="space-evenly">
+          <Grid item xs={9}>
+            <Typography variant="h4" className={classes.typeClass}>
+              Select user for approval
+            </Typography>
+          </Grid>
+          {userCards}
+        </Grid>
+        {/* <EnhancedTableToolbar numSelected={selected.length} />
         <div className={classes.tableWrapper}>
           <Table
             className={classes.table}
@@ -357,7 +520,7 @@ export default function EnhancedTable() {
           }}
           onChangePage={handleChangePage}
           onChangeRowsPerPage={handleChangeRowsPerPage}
-        />
+        /> */}
       </Paper>
       <FormControlLabel
         control={<Switch checked={dense} onChange={handleChangeDense} />}

@@ -65,10 +65,13 @@ function SignInSide(props) {
       <Grid item xs={false} sm={4} md={7} className={classes.image} />
       <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
         <div className={classes.paper}>
+          <Typography className="h1" variant="h3">
+            Club DashBoard
+          </Typography>
           <Avatar className={classes.avatar}>
             <LockOutlinedIcon />
           </Avatar>
-          <Typography component="h1" variant="h5">
+          <Typography component="h2" variant="h5">
             Sign in
           </Typography>
           <form className={classes.form} onSubmit={handleSubmit}>
@@ -112,7 +115,7 @@ function SignInSide(props) {
               {errorMsg}
             </FormLabel>
             <Box mt={5}>
-              <MadeWithLove />
+              {/* <MadeWithLove /> */}
             </Box>
           </form>
         </div>

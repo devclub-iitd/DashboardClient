@@ -3,10 +3,15 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import DashboardIcon from '@material-ui/icons/Dashboard';
-import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
+// import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import PeopleIcon from '@material-ui/icons/People';
 import BarChartIcon from '@material-ui/icons/BarChart';
 import LayersIcon from '@material-ui/icons/Layers';
+import PersonIcon from '@material-ui/icons/Person';
+import VpnKeyIcon from '@material-ui/icons/VpnKey';
+import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt';
+import AddBoxIcon from '@material-ui/icons/AddBox';
+import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
 import { withRouter } from 'react-router-dom';
 
 function MainListItems(props) {
@@ -24,31 +29,31 @@ function MainListItems(props) {
       </ListItem>
       <ListItem button onClick={redirectFunc('profile')}>
         <ListItemIcon>
-          <ShoppingCartIcon />
+          <PersonIcon />
         </ListItemIcon>
         <ListItemText primary="Profile" />
       </ListItem>
       <ListItem button onClick={redirectFunc('changePassword')}>
         <ListItemIcon>
-          <PeopleIcon />
+          <VpnKeyIcon />
         </ListItemIcon>
         <ListItemText primary="Change Password" />
       </ListItem>
       <ListItem button onClick={redirectFunc('approveUsers')}>
         <ListItemIcon>
-          <BarChartIcon />
+          <ThumbUpAltIcon />
         </ListItemIcon>
         <ListItemText primary="Approve Users" />
       </ListItem>
       <ListItem button onClick={redirectFunc('createTasks')}>
         <ListItemIcon>
-          <LayersIcon />
+          <AddBoxIcon />
         </ListItemIcon>
         <ListItemText primary="Create Tasks/Events" />
       </ListItem>
       <ListItem button onClick={redirectFunc('assignTasks')}>
         <ListItemIcon>
-          <LayersIcon />
+          <AssignmentIndIcon />
         </ListItemIcon>
         <ListItemText primary="Assign Tasks/Events" />
       </ListItem>
