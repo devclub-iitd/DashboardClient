@@ -161,6 +161,7 @@ export default function Dashboard(props) {
             {subPage}
           </Typography>
           <IconButton color="inherit">
+            Welcome Anweshan!
             <Badge badgeContent={4} color="secondary">
               <NotificationsIcon />
             </Badge>
@@ -189,7 +190,7 @@ export default function Dashboard(props) {
         <Container maxWidth="lg" className={classes.container}>
           {renderPage(subPage, fixedHeightPaper, classes.paper)}
         </Container>
-        <MadeWithLove />
+        {/* <MadeWithLove /> */}
       </main>
     </div>
   );
