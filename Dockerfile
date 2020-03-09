@@ -12,4 +12,8 @@ RUN npm run build
 FROM nginx:1.16.0-alpine
 COPY --from=build /app/build /usr/share/nginx/html
 EXPOSE 80
+<<<<<<< HEAD
 CMD ["nginx", "-g", "daemon off;"]
+=======
+CMD ["nginx", "-g", "daemon off;"]
+>>>>>>> 59022dc59f5e34d91611fe93dd6cf6955497ae22
