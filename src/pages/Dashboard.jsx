@@ -22,6 +22,8 @@ import ChangePassword from '../components/ChangePassword';
 import ApproveUsers from '../components/ApproveUsers';
 import CreateTasks from '../components/CreateTasks';
 import AssignTasks from '../components/AssignTasks';
+import {connect} from 'react-redux';
+import {fetchUserProfile} from '../redux/userActionCreator';
 
 function MadeWithLove() {
   return (
@@ -123,7 +125,8 @@ function renderPage(subPage, classProp, classPaper) {
     case 'approveUsers': return (<div><ApproveUsers /></div>);
     case 'createTasks': return (<div><CreateTasks /></div>);
     case 'assignTasks': return (<div><AssignTasks /></div>);
-    default: return (<div><Home fixedHeightPaper={classProp} paperClass={classPaper} /></div>);
+    // default: return (<div><Home fixedHeightPaper={classProp} paperClass={classPaper} /></div>);
+    default: return (<div><Home/></div>);
   }
 }
 
