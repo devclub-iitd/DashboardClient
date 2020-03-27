@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import React from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
@@ -11,51 +12,17 @@ import Chip from '@material-ui/core/Chip';
 import MenuItem from '@material-ui/core/MenuItem';
 import CancelIcon from '@material-ui/icons/Cancel';
 import {
-  Grid, FormControl, FormControlLabel, InputLabel, Button, FormLabel, RadioGroup, Radio, Select,
+  Grid, FormControl, FormControlLabel, InputLabel, FormLabel, RadioGroup, Radio, Select, Switch,
 } from '@material-ui/core';
+import {
+  Card, CardText, CardBody, CardTitle, Row, Col, Label, Button, ButtonGroup,
+} from 'reactstrap';
+import {
+  Control, Form, LocalForm, Errors,
+} from 'react-redux-form';
 import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider, KeyboardDatePicker, KeyboardTimePicker } from '@material-ui/pickers';
 import { dumUsers } from './dumUser';
-
-const suggestions = [
-  { label: 'Afghanistan' },
-  { label: 'Aland Islands' },
-  { label: 'Albania' },
-  { label: 'Algeria' },
-  { label: 'American Samoa' },
-  { label: 'Andorra' },
-  { label: 'Angola' },
-  { label: 'Anguilla' },
-  { label: 'Antarctica' },
-  { label: 'Antigua and Barbuda' },
-  { label: 'Argentina' },
-  { label: 'Armenia' },
-  { label: 'Aruba' },
-  { label: 'Australia' },
-  { label: 'Austria' },
-  { label: 'Azerbaijan' },
-  { label: 'Bahamas' },
-  { label: 'Bahrain' },
-  { label: 'Bangladesh' },
-  { label: 'Barbados' },
-  { label: 'Belarus' },
-  { label: 'Belgium' },
-  { label: 'Belize' },
-  { label: 'Benin' },
-  { label: 'Bermuda' },
-  { label: 'Bhutan' },
-  { label: 'Bolivia, Plurinational State of' },
-  { label: 'Bonaire, Sint Eustatius and Saba' },
-  { label: 'Bosnia and Herzegovina' },
-  { label: 'Botswana' },
-  { label: 'Bouvet Island' },
-  { label: 'Brazil' },
-  { label: 'British Indian Ocean Territory' },
-  { label: 'Brunei Darussalam' },
-].map(suggestion => ({
-  value: suggestion.label,
-  label: suggestion.label,
-}));
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -127,297 +94,66 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function NoOptionsMessage(props) {
-  return (
-    <Typography
-      color="textSecondary"
-      className={props.selectProps.classes.noOptionsMessage}
-      {...props.innerProps}
-    >
-      {props.children}
-    </Typography>
-  );
-}
-
-NoOptionsMessage.propTypes = {
-  /**
-   * The children to be rendered.
-   */
-  children: PropTypes.node,
-  /**
-   * Props to be passed on to the wrapper.
-   */
-  innerProps: PropTypes.object.isRequired,
-  selectProps: PropTypes.object.isRequired,
-};
-
-function inputComponent({ inputRef, ...props }) {
-  return <div ref={inputRef} {...props} />;
-}
-
-inputComponent.propTypes = {
-  inputRef: PropTypes.oneOfType([
-    PropTypes.func,
-    PropTypes.shape({
-      current: PropTypes.any.isRequired,
-    }),
-  ]),
-};
-
-function Control(props) {
-  const {
-    children,
-    innerProps,
-    innerRef,
-    selectProps: { classes, TextFieldProps },
-  } = props;
-
-  return (
-    <TextField
-      fullWidth
-      InputProps={{
-        inputComponent,
-        inputProps: {
-          className: classes.input,
-          ref: innerRef,
-          children,
-          ...innerProps,
-        },
-      }}
-      {...TextFieldProps}
-    />
-  );
-}
-
-Control.propTypes = {
-  /**
-   * Children to render.
-   */
-  children: PropTypes.node,
-  /**
-   * The mouse down event and the innerRef to pass down to the controller element.
-   */
-  innerProps: PropTypes.shape({
-    onMouseDown: PropTypes.func.isRequired,
-  }).isRequired,
-  innerRef: PropTypes.oneOfType([
-    PropTypes.oneOf([null]),
-    PropTypes.func,
-    PropTypes.shape({
-      current: PropTypes.any.isRequired,
-    }),
-  ]).isRequired,
-  selectProps: PropTypes.object.isRequired,
-};
-
-function Option(props) {
-  return (
-    <MenuItem
-      ref={props.innerRef}
-      selected={props.isFocused}
-      component="div"
-      style={{
-        fontWeight: props.isSelected ? 500 : 400,
-      }}
-      {...props.innerProps}
-    >
-      {props.children}
-    </MenuItem>
-  );
-}
-
-Option.propTypes = {
-  /**
-   * The children to be rendered.
-   */
-  children: PropTypes.node,
-  /**
-   * props passed to the wrapping element for the group.
-   */
-  innerProps: PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    key: PropTypes.string.isRequired,
-    onClick: PropTypes.func.isRequired,
-    onMouseMove: PropTypes.func.isRequired,
-    onMouseOver: PropTypes.func.isRequired,
-    tabIndex: PropTypes.number.isRequired,
-  }).isRequired,
-  /**
-   * Inner ref to DOM Node
-   */
-  innerRef: PropTypes.oneOfType([
-    PropTypes.oneOf([null]),
-    PropTypes.func,
-    PropTypes.shape({
-      current: PropTypes.any.isRequired,
-    }),
-  ]).isRequired,
-  /**
-   * Whether the option is focused.
-   */
-  isFocused: PropTypes.bool.isRequired,
-  /**
-   * Whether the option is selected.
-   */
-  isSelected: PropTypes.bool.isRequired,
-};
-
-function Placeholder(props) {
-  const { selectProps, innerProps = {}, children } = props;
-  return (
-    <Typography color="textSecondary" className={selectProps.classes.placeholder} {...innerProps}>
-      {children}
-    </Typography>
-  );
-}
-
-Placeholder.propTypes = {
-  /**
-   * The children to be rendered.
-   */
-  children: PropTypes.node,
-  /**
-   * props passed to the wrapping element for the group.
-   */
-  innerProps: PropTypes.object,
-  selectProps: PropTypes.object.isRequired,
-};
-
-function SingleValue(props) {
-  return (
-    <Typography className={props.selectProps.classes.singleValue} {...props.innerProps}>
-      {props.children}
-    </Typography>
-  );
-}
-
-SingleValue.propTypes = {
-  /**
-   * The children to be rendered.
-   */
-  children: PropTypes.node,
-  /**
-   * Props passed to the wrapping element for the group.
-   */
-  innerProps: PropTypes.any.isRequired,
-  selectProps: PropTypes.object.isRequired,
-};
-
-function ValueContainer(props) {
-  return <div className={props.selectProps.classes.valueContainer}>{props.children}</div>;
-}
-
-ValueContainer.propTypes = {
-  /**
-   * The children to be rendered.
-   */
-  children: PropTypes.node,
-  selectProps: PropTypes.object.isRequired,
-};
-
-function MultiValue(props) {
-  return (
-    <Chip
-      tabIndex={-1}
-      label={props.children}
-      className={clsx(props.selectProps.classes.chip, {
-        [props.selectProps.classes.chipFocused]: props.isFocused,
-      })}
-      onDelete={props.removeProps.onClick}
-      deleteIcon={<CancelIcon {...props.removeProps} />}
-    />
-  );
-}
-
-MultiValue.propTypes = {
-  children: PropTypes.node,
-  isFocused: PropTypes.bool.isRequired,
-  removeProps: PropTypes.shape({
-    onClick: PropTypes.func.isRequired,
-    onMouseDown: PropTypes.func.isRequired,
-    onTouchEnd: PropTypes.func.isRequired,
-  }).isRequired,
-  selectProps: PropTypes.object.isRequired,
-};
-
-function Menu(props) {
-  return (
-    <Paper square className={props.selectProps.classes.paper} {...props.innerProps}>
-      {props.children}
-    </Paper>
-  );
-}
-
-Menu.propTypes = {
-  /**
-   * The children to be rendered.
-   */
-  children: PropTypes.element.isRequired,
-  /**
-   * Props to be passed to the menu wrapper.
-   */
-  innerProps: PropTypes.object.isRequired,
-  selectProps: PropTypes.object.isRequired,
-};
-
-const components = {
-  Control,
-  Menu,
-  MultiValue,
-  NoOptionsMessage,
-  Option,
-  Placeholder,
-  SingleValue,
-  ValueContainer,
-};
-
 export default function IntegrationReactSelect() {
   const classes = useStyles();
   const theme = useTheme();
-  const [single, setSingle] = React.useState(null);
-  const [multi, setMulti] = React.useState(null);
 
-  function handleChangeSingle(value) {
-    setSingle(value);
-  }
-
-  function handleChangeMulti(value) {
-    setMulti(value);
-  }
-
-  const selectStyles = {
-    input: base => ({
-      ...base,
-      color: theme.palette.text.primary,
-      '& input': {
-        font: 'inherit',
-      },
-    }),
+  const [itemType, setItemType] = React.useState(null);
+  const handleTypeChange = (value) => {
+    setItemType(value);
   };
 
-  const [selectedDate, setSelectedDate] = React.useState(new Date('2014-08-18T21:11:54'));
-
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
+  const [endDate, setEndDate] = React.useState(new Date(Date.now()));
+  const endDateChange = (date) => {
+    setEndDate(date);
   };
-  const [radioValue, setValue] = React.useState('low');
 
-  const handleRadioChange = (event) => {
-    setValue(event.target.value);
+  const [startDate, setStartDate] = React.useState(new Date(Date.now()));
+  const startDateChange = (date) => {
+    setStartDate(date);
   };
-  const [typeState, setTypeState] = React.useState({
-    type: '',
-  });
-  const inputLabel = React.useRef(null);
-  const [labelWidth, setLabelWidth] = React.useState(0);
-  React.useEffect(() => {
-    setLabelWidth(inputLabel.current.offsetWidth);
-  }, []);
-  const handleTypeChange = type => (event) => {
-    setTypeState({
-      ...typeState,
-      [type]: event.target.value,
-    });
+
+  const [displayState, setDisplayState] = React.useState(false);
+  const changeDisplayState = (event) => {
+    setDisplayState(event.target.checked);
+  };
+
+  const required = val => val && val.length;
+  const maxLength = len => val => !(val) || (val.length <= len);
+  const minLength = len => val => (val) && (val.length >= len);
+
+  const [urlState, setUrlState] = React.useState({});
+  const UrlInput = () => {
+    const code = null;
+    return (
+      <div>
+        <TextField
+          required
+          id="standard-required"
+          label="Type"
+        />
+        <TextField
+          required
+          id="standard-required"
+          label="Type"
+        />
+        {/* <Fab>
+          <AddIcon />
+        </Fab> */}
+      </div>
+    );
+  };
+
+  const handleSubmit = (values) => {
+    // const nvalues = {
+    //   ...values,
+    //   deadline: selectedDate,
+    //   type: itemType,
+    // };
+    // const nvalues = JSON.stringify(values);
+    // nvalues.deadline = selectedDate;
+    // values.add('deadline', selectedDate);
+    console.log('Values received: ', JSON.stringify(values));
   };
 
   return (
@@ -426,15 +162,306 @@ export default function IntegrationReactSelect() {
       {/* {'Change type of field (date/checkbox/text) accordingly'}
       <br /> */}
       <Grid container direction="row" justify="center">
-        <Grid item sm={8} lg={6}>
+        <Grid item sm={10} lg={6}>
           <Paper elevation={3}>
-            {/* <For */}
-            <Typography variant="h4" className={classes.head}>
-              Create a new Task
-            </Typography>
-            <Grid container justify="center">
-              <Grid item sm={10}>
-                <form className={classes.form} noValidate autoComplete="off">
+            <Card>
+              <CardBody>
+                <CardTitle>
+                  <Typography variant="h4" className={classes.head}>
+                    Create a new Item
+                  </Typography>
+                </CardTitle>
+                <Row className="form-group">
+                  <Label htmlFor="type" sm={12}><h6>Type of Item:</h6></Label>
+                  <Grid container direction="row" justify="space-evenly">
+                    <Grid item sm={3}>
+                      <Button outline active={itemType === 'event'} color="primary" onClick={() => handleTypeChange('event')}>Event</Button>
+                    </Grid>
+                    <Grid item sm={3}>
+                      <Button outline active={itemType === 'project'} color="primary" onClick={() => handleTypeChange('project')}>Project</Button>
+                    </Grid>
+                    <Grid item sm={3}>
+                      <Button outline active={itemType === 'resource'} color="primary" onClick={() => handleTypeChange('resource')}>Resource</Button>
+                    </Grid>
+                  </Grid>
+                </Row>
+                {
+                  itemType === 'event'
+                    ? (
+                      <LocalForm model="createEvent" onSubmit={values => handleSubmit(values)}>
+                        <Row className="form-group">
+                          <Label htmlFor="name" md={4}><h6>Name of Event:</h6></Label>
+                          <Col md={8}>
+                            <Control.text
+                              model=".name"
+                              id="name"
+                              name="name"
+                              placeholder="Event Name*"
+                              className="form-control"
+                              validators={{
+                                required, minLength: minLength(1), maxLength: maxLength(20),
+                              }}
+                            />
+                            <Errors
+                              className="text-danger"
+                              model=".name"
+                              show="touched"
+                              messages={{
+                                required: 'Required ',
+                                minLength: 'Must be greater than 2 characters',
+                                maxLength: 'Must be 25 characters or less',
+                              }}
+                            />
+                          </Col>
+                        </Row>
+                        <Row className="form-group">
+                          <Label htmlFor="description" md={12}><h6>Description:</h6></Label>
+                          <Col md={12}>
+                            <Control.textarea
+                              model=".description"
+                              id="description"
+                              name="description"
+                              placeholder="Event Description*"
+                              rows="8"
+                              className="form-control"
+                              validators={{
+                                required,
+                              }}
+                            />
+                            <Errors
+                              className="text-danger"
+                              model=".description"
+                              show="touched"
+                              messages={{
+                                required: 'Required',
+                              }}
+                            />
+                          </Col>
+                        </Row>
+                        <Row className="form-group">
+                          <Col>
+                            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                              <KeyboardDatePicker
+                                margin="normal"
+                                id="date-picker-dialog"
+                                label="Select Start Date of Event"
+                                format="MM/dd/yyyy"
+                                value={startDate}
+                                onChange={startDateChange}
+                                minDate={Date.now()}
+                                KeyboardButtonProps={{
+                                  'aria-label': 'change date',
+                                }}
+                              />
+                            </MuiPickersUtilsProvider>
+                          </Col>
+                        </Row>
+                        <Row className="form-group">
+                          <Col>
+                            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                              <KeyboardDatePicker
+                                margin="normal"
+                                id="date-picker-dialog"
+                                label="Select End Date of Event"
+                                format="MM/dd/yyyy"
+                                value={endDate}
+                                onChange={endDateChange}
+                                minDate={startDate}
+                                KeyboardButtonProps={{
+                                  'aria-label': 'change date',
+                                }}
+                              />
+                            </MuiPickersUtilsProvider>
+                          </Col>
+                        </Row>
+                        <Row className="form-group">
+                          <Label htmlFor="embed_code" md={12}><h6>Embedded Code:</h6></Label>
+                          <Col md={{ size: 8, offset: 2 }}>
+                            <Control.textarea
+                              model=".embed_code"
+                              id="embed_code"
+                              name="embed_code"
+                              placeholder="Type embedded code"
+                              rows="4"
+                              className="form-control"
+                              validators={{
+                                required,
+                              }}
+                            />
+                            <Errors
+                              className="text-danger"
+                              model=".embed_code"
+                              show="touched"
+                              messages={{
+                                required: 'Required',
+                              }}
+                            />
+                          </Col>
+                        </Row>
+                        <Row className="form-group">
+                          <Col>
+                            <Label htmlFor="embed_code" sm={5}><h6>Display on website:  </h6></Label>
+                            <FormControlLabel
+                              sm={2}
+                              // label="Display on Website"
+                              control={<Switch checked={displayState} onChange={changeDisplayState} />}
+                            />
+                          </Col>
+                        </Row>
+                        <Row className="form-group">
+                          <Label htmlFor="url" md={12}><h6>Url:</h6></Label>
+                          <Col md={{ size: 8, offset: 2 }}>
+                            <Control.textarea
+                              model=".url"
+                              id="url"
+                              name="url"
+                              placeholder="Url"
+                              rows="4"
+                              className="form-control"
+                              validators={{
+                                required,
+                              }}
+                            />
+                            <Errors
+                              className="text-danger"
+                              model=".url"
+                              show="touched"
+                              messages={{
+                                required: 'Required',
+                              }}
+                            />
+                          </Col>
+                        </Row>
+                        <Row className="form-group">
+                          <FormLabel component="legend">Type of Item</FormLabel>
+                          <RadioGroup row value={itemType}>
+                            <FormControlLabel
+                              value="event"
+                              label="Event"
+                              control={(
+                                <Radio />
+                            )}
+                            />
+                            <FormControlLabel
+                              value="project"
+                              label="Project"
+                              control={(
+                                <Radio />
+                            )}
+                            />
+                            <FormControlLabel
+                              value="resource"
+                              label="Resource"
+                              control={(
+                                <Radio />
+                          )}
+                            />
+                          </RadioGroup>
+                        </Row>
+                        <Row className="form-group">
+                          <Label htmlFor="telnum" md={2}>Contact Tel.</Label>
+                          <Col md={10}>
+                            <Control.text
+                              model=".telnum"
+                              id="telnum"
+                              name="telnum"
+                              placeholder="Tel. Number"
+                              className="form-control"
+                              validators={{
+                                required, minLength: minLength(3), maxLength: maxLength(15),
+                              }}
+                            />
+                            <Errors
+                              className="text-danger"
+                              model=".telnum"
+                              show="touched"
+                              messages={{
+                                required: 'Required',
+                                minLength: 'Must be greater than 2 numbers',
+                                maxLength: 'Must be 15 numbers or less',
+                                isNumber: 'Must be a number',
+                              }}
+                            />
+                          </Col>
+                        </Row>
+                        <Row className="form-group">
+                          <Label htmlFor="email" md={2}>Email</Label>
+                          <Col md={10}>
+                            <Control.text
+                              model=".email"
+                              id="email"
+                              name="email"
+                              placeholder="Email"
+                              className="form-control"
+                              validators={{
+                                required,
+                              }}
+                            />
+                            <Errors
+                              className="text-danger"
+                              model=".email"
+                              show="touched"
+                              messages={{
+                                required: 'Required',
+                                validEmail: 'Invalid Email Address',
+                              }}
+                            />
+                          </Col>
+                        </Row>
+                        <Row className="form-group">
+                          <Col md={{ size: 6, offset: 2 }}>
+                            <div className="form-check">
+                              <Label check>
+                                <Control.checkbox
+                                  model=".agree"
+                                  name="agree"
+                                  className="form-check-input"
+                                />
+                                {' '}
+                                {' '}
+                                <strong>May we contact you?</strong>
+                              </Label>
+                            </div>
+                          </Col>
+                          <Col md={{ size: 3, offset: 1 }}>
+                            <Control.select
+                              model=".contactType"
+                              name="contactType"
+                              className="form-control"
+                            >
+                              <option>Tel.</option>
+                              <option>Email</option>
+                            </Control.select>
+                          </Col>
+                        </Row>
+                        <Row className="form-group">
+                          <Label htmlFor="message" md={2}>Your Feedback</Label>
+                          <Col md={10}>
+                            <Control.textarea
+                              model=".message"
+                              id="message"
+                              name="message"
+                              rows="12"
+                              className="form-control"
+                            />
+                          </Col>
+                        </Row>
+                        <Row className="form-group">
+                          <Col md={{ size: 10, offset: 2 }}>
+                            <Button type="submit" color="primary">
+                                          Send Feedback
+                            </Button>
+                          </Col>
+                        </Row>
+                      </LocalForm>
+                    )
+                    : null
+                }
+
+                {/* </div> */}
+              </CardBody>
+            </Card>
+            {/* <form className={classes.form} noValidate autoComplete="off">
                   {/* <TextField
                     required
                     id="filled-required"
@@ -442,7 +469,7 @@ export default function IntegrationReactSelect() {
                     placeholder="Task Name"
                     variant="filled"
                   /> */}
-                  <TextField
+            {/* <TextField
                     variant="outlined"
                     margin="normal"
                     required
@@ -550,37 +577,13 @@ export default function IntegrationReactSelect() {
                       </Button>
                     </Grid>
                   </Grid>
-                </form>
-              </Grid>
-            </Grid>
+                </form> */}
+
+            {/* </Grid>
+            </Grid> */}
           </Paper>
         </Grid>
       </Grid>
-
-
-      <div className={classes.root}>
-        <NoSsr>
-          <div className={classes.divider} />
-          <Select
-            classes={classes}
-            styles={selectStyles}
-            inputId="react-select-multiple"
-            TextFieldProps={{
-              label: 'Assign People',
-              InputLabelProps: {
-                htmlFor: 'react-select-multiple',
-                shrink: true,
-              },
-            }}
-            placeholder="Select multiple people"
-            options={suggestions}
-            components={components}
-            value={multi}
-            onChange={handleChangeMulti}
-            isMulti
-          />
-        </NoSsr>
-      </div>
     </div>
   );
 }

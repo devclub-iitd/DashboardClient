@@ -17,13 +17,13 @@ import * as ActionTypes from '../actions/ActionTypes';
 // The auth reducer. The starting state sets authentication
 // based on a token being in local storage. In a real app,
 // we would also want a util to check if the token is expired.
-export default Auth = (state = {
+export default function Auth(state = {
   isLoading: false,
   isAuthenticated: (localStorage.getItem('token') != null),
   token: localStorage.getItem('token'),
   user: localStorage.getItem('creds') ? JSON.parse(localStorage.getItem('creds')) : null,
   errMess: null,
-}, action) => {
+}, action) {
   switch (action.type) {
     case ActionTypes.LOGIN_REQUEST:
       return {
@@ -64,4 +64,4 @@ export default Auth = (state = {
     default:
       return state;
   }
-};
+}

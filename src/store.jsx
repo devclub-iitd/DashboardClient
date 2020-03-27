@@ -11,18 +11,29 @@
 //     applyMiddleware(promise, thunk, logger),
 //   );
 // }
-import { createStore, applyMiddleware } from 'redux';
+import { createStore, applyMiddleware, combineReducers } from 'redux';
 import thunk from 'redux-thunk';
+import { createForms } from 'react-redux-form';
 import logger from 'redux-logger';
-import rootReducer from './reducers/rootReducer';
+import Auth from './reducers/loginReducer';
+import { InitialFeedback } from './reducers/forms';
 
-let configureStore;
+// import rootReducer from './reducers/rootReducer';
+
+// let configureStore;
 // eslint-disable-next-line no-undef
-export default configureStore = () => {
+export default function configureStore() {
   const store = createStore(
-    rootReducer,
+    combineReducers({
+      Auth,
+      // profileReducer,
+      // registerReducer,
+      ...createForms({
+        createTask: InitialFeedback,
+      }),
+    }),
     applyMiddleware(thunk, logger),
   );
 
   return store;
-};
+}
