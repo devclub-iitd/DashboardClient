@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -24,6 +24,7 @@ import CreateTasks from '../components/CreateTasks';
 import AssignTasks from '../components/AssignTasks';
 import {connect} from 'react-redux';
 import {fetchUserProfile} from '../redux/userActionCreator';
+import { actions } from 'react-redux-form';
 
 function MadeWithLove() {
   return (
@@ -118,19 +119,32 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function renderPage(subPage, classProp, classPaper) {
+// const classes = useStyles;
+
+function renderPage(subPage, classProp, classPaper, props) {
   switch (subPage) {
     case 'profile': return (<div><Profile /></div>);
     case 'changePassword': return (<div><ChangePassword /></div>);
     case 'approveUsers': return (<div><ApproveUsers /></div>);
-    case 'createTasks': return (<div><CreateTasks /></div>);
+    case 'createTasks': return (<div><CreateTasks resetEventForm={props.resetEventForm} resetProjectForm={props.resetProjectForm} resetResourceForm={props.resetResourceForm}/></div>);
     case 'assignTasks': return (<div><AssignTasks /></div>);
     // default: return (<div><Home fixedHeightPaper={classProp} paperClass={classPaper} /></div>);
     default: return (<div><Home/></div>);
   }
 }
 
-export default function Dashboard(props) {
+const mapStateToProps = (state) => {
+  return {};
+};
+
+const mapDispatchToProps = (dispatch) => ({
+  resetEventForm: () => { dispatch(actions.reset('eventForm')) },
+  resetProjectForm: () => { dispatch(actions.reset('projectForm')) },
+  resetResourceForm: () => { dispatch(actions.reset('resourceForm')) },
+});
+
+function Dashboard(props) {
+  
   const classes = useStyles();
   const [open, setOpen] = React.useState(true);
   const handleDrawerOpen = () => {
@@ -191,10 +205,12 @@ export default function Dashboard(props) {
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
         <Container maxWidth="lg" className={classes.container}>
-          {renderPage(subPage, fixedHeightPaper, classes.paper)}
+          {renderPage(subPage, fixedHeightPaper, classes.paper, props)}
         </Container>
         {/* <MadeWithLove /> */}
       </main>
     </div>
   );
 }
+
+export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);

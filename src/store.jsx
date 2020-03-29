@@ -16,20 +16,22 @@ import thunk from 'redux-thunk';
 import { createForms } from 'react-redux-form';
 import logger from 'redux-logger';
 import Auth from './reducers/loginReducer';
-import { InitialFeedback } from './reducers/forms';
+import { initialEventForm, initialProjectForm, initialResourceForm } from './reducers/forms';
 
 // import rootReducer from './reducers/rootReducer';
 
 // let configureStore;
 // eslint-disable-next-line no-undef
-export default function configureStore() {
+export default function ConfigureStore() {
   const store = createStore(
     combineReducers({
       Auth,
       // profileReducer,
       // registerReducer,
       ...createForms({
-        createTask: InitialFeedback,
+        eventForm: initialEventForm,
+        projectForm: initialProjectForm,
+        resourceForm: initialResourceForm,
       }),
     }),
     applyMiddleware(thunk, logger),

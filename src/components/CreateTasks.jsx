@@ -1,5 +1,6 @@
+/* eslint-disable react/no-array-index-key */
 /* eslint-disable no-console */
-import React from 'react';
+import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 // import Select from 'react-select';
@@ -12,7 +13,7 @@ import Chip from '@material-ui/core/Chip';
 import MenuItem from '@material-ui/core/MenuItem';
 import CancelIcon from '@material-ui/icons/Cancel';
 import {
-  Grid, FormControl, FormControlLabel, InputLabel, FormLabel, RadioGroup, Radio, Select, Switch,
+  Grid, FormControl, FormControlLabel, InputLabel, FormLabel, RadioGroup, Radio, Select, Switch, Fab,
 } from '@material-ui/core';
 import {
   Card, CardText, CardBody, CardTitle, Row, Col, Label, Button, ButtonGroup,
@@ -21,7 +22,10 @@ import {
   Control, Form, LocalForm, Errors,
 } from 'react-redux-form';
 import DateFnsUtils from '@date-io/date-fns';
+import AddIcon from '@material-ui/icons/Add';
 import { MuiPickersUtilsProvider, KeyboardDatePicker, KeyboardTimePicker } from '@material-ui/pickers';
+import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutline';
+import isURL from 'validator/lib/isURL';
 import { dumUsers } from './dumUser';
 
 const useStyles = makeStyles(theme => ({
@@ -94,7 +98,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function IntegrationReactSelect() {
+export default function CreateTasks(props) {
   const classes = useStyles();
   const theme = useTheme();
 
@@ -118,30 +122,84 @@ export default function IntegrationReactSelect() {
     setDisplayState(event.target.checked);
   };
 
+  const [archiveState, setArchiveState] = React.useState(false);
+  const changeArchiveState = (event) => {
+    setArchiveState(event.target.checked);
+  };
+
+  const [newState, setNewState] = React.useState(false);
+  const changeNewState = (event) => {
+    setNewState(event.target.checked);
+  };
+
+  const [internalState, setInternalState] = React.useState(false);
+  const changeInternalState = (event) => {
+    setInternalState(event.target.checked);
+  };
+
   const required = val => val && val.length;
   const maxLength = len => val => !(val) || (val.length <= len);
   const minLength = len => val => (val) && (val.length >= len);
 
-  const [urlState, setUrlState] = React.useState({});
-  const UrlInput = () => {
-    const code = null;
-    return (
-      <div>
-        <TextField
-          required
-          id="standard-required"
-          label="Type"
-        />
-        <TextField
-          required
-          id="standard-required"
-          label="Type"
-        />
-        {/* <Fab>
-          <AddIcon />
-        </Fab> */}
-      </div>
-    );
+  const [urlFields, setUrlFields] = React.useState([
+    { type: '', url: '' },
+  ]);
+  const handleAddUrlFields = () => {
+    const values = [...urlFields];
+    values.push({ type: '', url: '' });
+    setUrlFields(values);
+  };
+
+  const handleRemoveUrlFields = (index) => {
+    const values = [...urlFields];
+    values.splice(index, 1);
+    setUrlFields(values);
+  };
+
+  const handleUrlFieldChange = (index, event) => {
+    const values = [...urlFields];
+    if (event.target.name === 'type') {
+      values[index].type = event.target.value;
+    } else {
+      values[index].url = event.target.value;
+    }
+    setUrlFields(values);
+  };
+
+  const handleEventFormReset = () => {
+    console.log('Reset Event form');
+    props.resetEventForm();
+  };
+
+  const [labelFields, setLabelFields] = React.useState([
+    '',
+  ]);
+  const handleAddLabelFields = () => {
+    const values = [...labelFields];
+    values.push('');
+    setLabelFields(values);
+  };
+
+  const handleRemoveLabelFields = (index) => {
+    const values = [...labelFields];
+    values.splice(index, 1);
+    setLabelFields(values);
+  };
+
+  const handleLabelFieldChange = (index, event) => {
+    const values = [...labelFields];
+    values[index] = event.target.value;
+    setLabelFields(values);
+  };
+
+  const handleProjectFormReset = () => {
+    console.log('Reset Project form');
+    props.resetProjectForm();
+  };
+
+  const handleResourceFormReset = () => {
+    console.log('Reset Resource form');
+    props.resetResourceForm();
   };
 
   const handleSubmit = (values) => {
@@ -173,22 +231,24 @@ export default function IntegrationReactSelect() {
                 </CardTitle>
                 <Row className="form-group">
                   <Label htmlFor="type" sm={12}><h6>Type of Item:</h6></Label>
-                  <Grid container direction="row" justify="space-evenly">
-                    <Grid item sm={3}>
-                      <Button outline active={itemType === 'event'} color="primary" onClick={() => handleTypeChange('event')}>Event</Button>
+                  <Col sm={12}>
+                    <Grid container direction="row" justify="space-evenly">
+                      <Grid item sm={3}>
+                        <Button outline active={itemType === 'event'} color="primary" onClick={() => handleTypeChange('event')}>Event</Button>
+                      </Grid>
+                      <Grid item sm={3}>
+                        <Button outline active={itemType === 'project'} color="primary" onClick={() => handleTypeChange('project')}>Project</Button>
+                      </Grid>
+                      <Grid item sm={3}>
+                        <Button outline active={itemType === 'resource'} color="primary" onClick={() => handleTypeChange('resource')}>Resource</Button>
+                      </Grid>
                     </Grid>
-                    <Grid item sm={3}>
-                      <Button outline active={itemType === 'project'} color="primary" onClick={() => handleTypeChange('project')}>Project</Button>
-                    </Grid>
-                    <Grid item sm={3}>
-                      <Button outline active={itemType === 'resource'} color="primary" onClick={() => handleTypeChange('resource')}>Resource</Button>
-                    </Grid>
-                  </Grid>
+                  </Col>
                 </Row>
                 {
                   itemType === 'event'
                     ? (
-                      <LocalForm model="createEvent" onSubmit={values => handleSubmit(values)}>
+                      <Form model="eventForm" onSubmit={values => handleSubmit(values)}>
                         <Row className="form-group">
                           <Label htmlFor="name" md={4}><h6>Name of Event:</h6></Label>
                           <Col md={8}>
@@ -309,278 +369,553 @@ export default function IntegrationReactSelect() {
                           </Col>
                         </Row>
                         <Row className="form-group">
-                          <Label htmlFor="url" md={12}><h6>Url:</h6></Label>
-                          <Col md={{ size: 8, offset: 2 }}>
-                            <Control.textarea
-                              model=".url"
-                              id="url"
-                              name="url"
-                              placeholder="Url"
-                              rows="4"
-                              className="form-control"
-                              validators={{
-                                required,
-                              }}
-                            />
-                            <Errors
-                              className="text-danger"
-                              model=".url"
-                              show="touched"
-                              messages={{
-                                required: 'Required',
-                              }}
-                            />
+                          <Label htmlFor="urlFields" md={12}><h6>Url:</h6></Label>
+                          <Col sm={12}>
+                            {urlFields.map((urlField, index) => (
+                              <Fragment key={`${urlField}~${index}`}>
+                                <Row className="form-group">
+                                  <Col sm={{ size: 4, offset: 1 }}>
+                                    <TextField
+                                      sm={5}
+                                      label="type"
+                                      className="form-control"
+                                      id="type"
+                                      name="type"
+                                      variant="filled"
+                                      value={urlField.type}
+                                      onChange={event => handleUrlFieldChange(index, event)}
+                                    />
+                                  </Col>
+                                  <Col sm={4}>
+                                    <TextField
+                                      sm={5}
+                                      label="url"
+                                      className="form-control"
+                                      id="url"
+                                      name="url"
+                                      variant="filled"
+                                      value={urlField.url}
+                                      onChange={event => handleUrlFieldChange(index, event)}
+                                    />
+                                  </Col>
+                                  <Col sm={2}>
+                                    <Fab sm={2} size="small" aria-label="delete" onClick={() => handleRemoveUrlFields(index)}>
+                                      <DeleteOutlinedIcon />
+                                    </Fab>
+                                  </Col>
+                                </Row>
+                              </Fragment>
+                            ))}
+                            <Fab size="small" color="primary" aria-label="add" onClick={() => handleAddUrlFields()}>
+                              <AddIcon />
+                            </Fab>
                           </Col>
                         </Row>
                         <Row className="form-group">
-                          <FormLabel component="legend">Type of Item</FormLabel>
-                          <RadioGroup row value={itemType}>
-                            <FormControlLabel
-                              value="event"
-                              label="Event"
-                              control={(
-                                <Radio />
-                            )}
-                            />
-                            <FormControlLabel
-                              value="project"
-                              label="Project"
-                              control={(
-                                <Radio />
-                            )}
-                            />
-                            <FormControlLabel
-                              value="resource"
-                              label="Resource"
-                              control={(
-                                <Radio />
-                          )}
-                            />
-                          </RadioGroup>
-                        </Row>
-                        <Row className="form-group">
-                          <Label htmlFor="telnum" md={2}>Contact Tel.</Label>
-                          <Col md={10}>
-                            <Control.text
-                              model=".telnum"
-                              id="telnum"
-                              name="telnum"
-                              placeholder="Tel. Number"
-                              className="form-control"
-                              validators={{
-                                required, minLength: minLength(3), maxLength: maxLength(15),
-                              }}
-                            />
-                            <Errors
-                              className="text-danger"
-                              model=".telnum"
-                              show="touched"
-                              messages={{
-                                required: 'Required',
-                                minLength: 'Must be greater than 2 numbers',
-                                maxLength: 'Must be 15 numbers or less',
-                                isNumber: 'Must be a number',
-                              }}
-                            />
-                          </Col>
-                        </Row>
-                        <Row className="form-group">
-                          <Label htmlFor="email" md={2}>Email</Label>
-                          <Col md={10}>
-                            <Control.text
-                              model=".email"
-                              id="email"
-                              name="email"
-                              placeholder="Email"
-                              className="form-control"
-                              validators={{
-                                required,
-                              }}
-                            />
-                            <Errors
-                              className="text-danger"
-                              model=".email"
-                              show="touched"
-                              messages={{
-                                required: 'Required',
-                                validEmail: 'Invalid Email Address',
-                              }}
-                            />
-                          </Col>
-                        </Row>
-                        <Row className="form-group">
-                          <Col md={{ size: 6, offset: 2 }}>
-                            <div className="form-check">
-                              <Label check>
-                                <Control.checkbox
-                                  model=".agree"
-                                  name="agree"
-                                  className="form-check-input"
-                                />
-                                {' '}
-                                {' '}
-                                <strong>May we contact you?</strong>
-                              </Label>
-                            </div>
-                          </Col>
-                          <Col md={{ size: 3, offset: 1 }}>
-                            <Control.select
-                              model=".contactType"
-                              name="contactType"
-                              className="form-control"
-                            >
-                              <option>Tel.</option>
-                              <option>Email</option>
-                            </Control.select>
-                          </Col>
-                        </Row>
-                        <Row className="form-group">
-                          <Label htmlFor="message" md={2}>Your Feedback</Label>
-                          <Col md={10}>
-                            <Control.textarea
-                              model=".message"
-                              id="message"
-                              name="message"
-                              rows="12"
-                              className="form-control"
-                            />
-                          </Col>
-                        </Row>
-                        <Row className="form-group">
-                          <Col md={{ size: 10, offset: 2 }}>
+                          <Col sm={{ size: 4, offset: 3 }}>
                             <Button type="submit" color="primary">
-                                          Send Feedback
+                              Create Event
+                            </Button>
+                          </Col>
+                          <Col sm={{ size: 2 }}>
+                            <Button type="reset" color="primary" onClick={() => handleEventFormReset()}>
+                              Reset
                             </Button>
                           </Col>
                         </Row>
-                      </LocalForm>
+                      </Form>
                     )
                     : null
                 }
-
-                {/* </div> */}
+                {
+                  itemType === 'project'
+                    ? (
+                      <Form model="projectForm" onSubmit={values => handleSubmit(values)}>
+                        <Row className="form-group">
+                          <Label htmlFor="name" md={4}><h6>Name of Project:</h6></Label>
+                          <Col md={8}>
+                            <Control.text
+                              model=".name"
+                              id="name"
+                              name="name"
+                              placeholder="Project Name*"
+                              className="form-control"
+                              validators={{
+                                required, minLength: minLength(1), maxLength: maxLength(20),
+                              }}
+                            />
+                            <Errors
+                              className="text-danger"
+                              model=".name"
+                              show="touched"
+                              messages={{
+                                required: 'Required ',
+                                minLength: 'Must be greater than 2 characters',
+                                maxLength: 'Must be 25 characters or less',
+                              }}
+                            />
+                          </Col>
+                        </Row>
+                        <Row className="form-group">
+                          <Label htmlFor="description" md={12}><h6>Description:</h6></Label>
+                          <Col md={12}>
+                            <Control.textarea
+                              model=".description"
+                              id="description"
+                              name="description"
+                              placeholder="Project Description*"
+                              rows="8"
+                              className="form-control"
+                              validators={{
+                                required,
+                              }}
+                            />
+                            <Errors
+                              className="text-danger"
+                              model=".description"
+                              show="touched"
+                              messages={{
+                                required: 'Required',
+                              }}
+                            />
+                          </Col>
+                        </Row>
+                        <Row className="form-group">
+                          <Col>
+                            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                              <KeyboardDatePicker
+                                margin="normal"
+                                id="date-picker-dialog"
+                                label="Select proposed Start Date of Project"
+                                format="MM/dd/yyyy"
+                                value={startDate}
+                                onChange={startDateChange}
+                                minDate={Date.now()}
+                                KeyboardButtonProps={{
+                                  'aria-label': 'change date',
+                                }}
+                              />
+                            </MuiPickersUtilsProvider>
+                          </Col>
+                        </Row>
+                        <Row className="form-group">
+                          <Col>
+                            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                              <KeyboardDatePicker
+                                margin="normal"
+                                id="date-picker-dialog"
+                                label="Select proposed End Date of Project"
+                                format="MM/dd/yyyy"
+                                value={endDate}
+                                onChange={endDateChange}
+                                minDate={startDate}
+                                KeyboardButtonProps={{
+                                  'aria-label': 'change date',
+                                }}
+                              />
+                            </MuiPickersUtilsProvider>
+                          </Col>
+                        </Row>
+                        <Row className="form-group">
+                          <Label htmlFor="origin" md={4}><h6>Origin of Project:</h6></Label>
+                          <Col md={8}>
+                            <Control.text
+                              model=".origin"
+                              id="origin"
+                              name="origin"
+                              placeholder="Origin*"
+                              className="form-control"
+                              validators={{
+                                required,
+                              }}
+                            />
+                            <Errors
+                              className="text-danger"
+                              model=".origin"
+                              show="touched"
+                              messages={{
+                                required: 'Required ',
+                              }}
+                            />
+                          </Col>
+                        </Row>
+                        <Row className="form-group">
+                          <Label htmlFor="origin_contact" md={4}><h6>Contact of Origin:</h6></Label>
+                          <Col md={8}>
+                            <Control.text
+                              model=".origin_contact"
+                              id="origin_contact"
+                              name="origin_contact"
+                              placeholder="Origin Contact*"
+                              className="form-control"
+                              validators={{
+                                required,
+                              }}
+                            />
+                            <Errors
+                              className="text-danger"
+                              model=".origin_contact"
+                              show="touched"
+                              messages={{
+                                required: 'Required ',
+                              }}
+                            />
+                          </Col>
+                        </Row>
+                        <Row className="form-group">
+                          <Label htmlFor="perks" md={4}><h6>Perks:</h6></Label>
+                          <Col md={8}>
+                            <Control.text
+                              model=".perks"
+                              id="perks"
+                              name="perks"
+                              placeholder="Perks*"
+                              className="form-control"
+                              validators={{
+                                required,
+                              }}
+                            />
+                            <Errors
+                              className="text-danger"
+                              model=".perks"
+                              show="touched"
+                              messages={{
+                                required: 'Required ',
+                              }}
+                            />
+                          </Col>
+                        </Row>
+                        <Row className="form-group">
+                          <Label htmlFor="requirements" md={4}><h6>Requirements:</h6></Label>
+                          <Col md={8}>
+                            <Control.text
+                              model=".requirements"
+                              id="requirements"
+                              name="requirements"
+                              placeholder="Requirements*"
+                              className="form-control"
+                              validators={{
+                                required,
+                              }}
+                            />
+                            <Errors
+                              className="text-danger"
+                              model=".requirements"
+                              show="touched"
+                              messages={{
+                                required: 'Required ',
+                              }}
+                            />
+                          </Col>
+                        </Row>
+                        <Row className="form-group">
+                          <Col>
+                            <Label htmlFor="embed_code" sm={5}><h6>Display on website:  </h6></Label>
+                            <FormControlLabel
+                              sm={2}
+                              // label="Display on Website"
+                              control={<Switch checked={displayState} onChange={changeDisplayState} />}
+                            />
+                          </Col>
+                        </Row>
+                        <Row className="form-group">
+                          <Col>
+                            <Label htmlFor="embed_code" sm={5}><h6>Internal Project:  </h6></Label>
+                            <FormControlLabel
+                              sm={2}
+                              // label="Display on Website"
+                              control={<Switch checked={internalState} onChange={changeInternalState} />}
+                            />
+                          </Col>
+                        </Row>
+                        <Row className="form-group">
+                          <Label htmlFor="labelFields" md={12}><h6>Add Label:</h6></Label>
+                          <Col sm={12}>
+                            {labelFields.map((labelField, index) => (
+                              <Fragment key={`${labelField}~${index}`}>
+                                <Row className="form-group">
+                                  <Col sm={{ size: 4, offset: 4 }}>
+                                    <TextField
+                                      label="label"
+                                      className="form-control"
+                                      id="label"
+                                      name="label"
+                                      variant="filled"
+                                      value={labelField}
+                                      onChange={event => handleLabelFieldChange(index, event)}
+                                    />
+                                  </Col>
+                                  <Col sm={2}>
+                                    <Fab size="small" aria-label="delete" onClick={() => handleRemoveLabelFields(index)}>
+                                      <DeleteOutlinedIcon />
+                                    </Fab>
+                                  </Col>
+                                </Row>
+                              </Fragment>
+                            ))}
+                            <Fab size="small" color="primary" aria-label="add" onClick={() => handleAddLabelFields()}>
+                              <AddIcon />
+                            </Fab>
+                          </Col>
+                        </Row>
+                        <Row className="form-group">
+                          <Label htmlFor="urlFields" md={12}><h6>Url:</h6></Label>
+                          <Col sm={12}>
+                            {urlFields.map((urlField, index) => (
+                              <Fragment key={`${urlField}~${index}`}>
+                                <Row className="form-group">
+                                  <Col sm={{ size: 4, offset: 1 }}>
+                                    <TextField
+                                      sm={5}
+                                      label="type"
+                                      className="form-control"
+                                      id="type"
+                                      name="type"
+                                      variant="filled"
+                                      value={urlField.type}
+                                      onChange={event => handleUrlFieldChange(index, event)}
+                                    />
+                                  </Col>
+                                  <Col sm={4}>
+                                    <TextField
+                                      sm={5}
+                                      label="url"
+                                      className="form-control"
+                                      id="url"
+                                      name="url"
+                                      variant="filled"
+                                      value={urlField.url}
+                                      onChange={event => handleUrlFieldChange(index, event)}
+                                    />
+                                  </Col>
+                                  <Col sm={2}>
+                                    <Fab sm={2} size="small" aria-label="delete" onClick={() => handleRemoveUrlFields(index)}>
+                                      <DeleteOutlinedIcon />
+                                    </Fab>
+                                  </Col>
+                                </Row>
+                              </Fragment>
+                            ))}
+                            <Fab size="small" color="primary" aria-label="add" onClick={() => handleAddUrlFields()}>
+                              <AddIcon />
+                            </Fab>
+                          </Col>
+                        </Row>
+                        <Row className="form-group">
+                          <Col sm={{ size: 4, offset: 3 }}>
+                            <Button type="submit" color="primary">
+                              Create Event
+                            </Button>
+                          </Col>
+                          <Col sm={{ size: 2 }}>
+                            <Button type="reset" color="primary" onClick={() => handleProjectFormReset()}>
+                              Reset
+                            </Button>
+                          </Col>
+                        </Row>
+                      </Form>
+                    )
+                    : null
+                }
+                {
+                  itemType === 'resource'
+                    ? (
+                      <Form model="resourceForm" onSubmit={values => handleSubmit(values)}>
+                        <Row className="form-group">
+                          <Label htmlFor="internal_name" md={4}><h6>Internal Name:</h6></Label>
+                          <Col md={8}>
+                            <Control.text
+                              model=".internal_name"
+                              id="internal_name"
+                              name="internal_name"
+                              placeholder="Internal Name*"
+                              className="form-control"
+                              validators={{
+                                required, minLength: minLength(1), maxLength: maxLength(20),
+                              }}
+                            />
+                            <Errors
+                              className="text-danger"
+                              model=".internal_name"
+                              show="touched"
+                              messages={{
+                                required: 'Required ',
+                                minLength: 'Must be greater than 2 characters',
+                                maxLength: 'Must be 25 characters or less',
+                              }}
+                            />
+                          </Col>
+                        </Row>
+                        <Row className="form-group">
+                          <Label htmlFor="directory_year" md={4}><h6>Directory year:</h6></Label>
+                          <Col md={8}>
+                            <Control.text
+                              model=".directory_year"
+                              id="directory_year"
+                              name="directory_year"
+                              placeholder="Directory Year*"
+                              className="form-control"
+                              validators={{
+                                required, minLength: minLength(1), maxLength: maxLength(20),
+                              }}
+                            />
+                            <Errors
+                              className="text-danger"
+                              model=".directory_year"
+                              show="touched"
+                              messages={{
+                                required: 'Required ',
+                                minLength: 'Must be greater than 2 characters',
+                                maxLength: 'Must be 25 characters or less',
+                              }}
+                            />
+                          </Col>
+                        </Row>
+                        <Row className="form-group">
+                          <Label htmlFor="sub_directory" md={4}><h6>Sub-Directory:</h6></Label>
+                          <Col md={8}>
+                            <Control.text
+                              model=".sub_directory"
+                              id="sub_directory"
+                              name="sub_directory"
+                              placeholder="Sub-Directory*"
+                              className="form-control"
+                              validators={{
+                                required, minLength: minLength(1), maxLength: maxLength(20),
+                              }}
+                            />
+                            <Errors
+                              className="text-danger"
+                              model=".sub_directory"
+                              show="touched"
+                              messages={{
+                                required: 'Required ',
+                                minLength: 'Must be greater than 2 characters',
+                                maxLength: 'Must be 25 characters or less',
+                              }}
+                            />
+                          </Col>
+                        </Row>
+                        <Row className="form-group">
+                          <Label htmlFor="name" md={4}><h6>Name of Resource:</h6></Label>
+                          <Col md={8}>
+                            <Control.text
+                              model=".name"
+                              id="name"
+                              name="name"
+                              placeholder="Resource Name*"
+                              className="form-control"
+                              validators={{
+                                required, minLength: minLength(1), maxLength: maxLength(30),
+                              }}
+                            />
+                            <Errors
+                              className="text-danger"
+                              model=".name"
+                              show="touched"
+                              messages={{
+                                required: 'Required ',
+                                minLength: 'Must be greater than 2 characters',
+                                maxLength: 'Must be 25 characters or less',
+                              }}
+                            />
+                          </Col>
+                        </Row>
+                        <Row className="form-group">
+                          <Label htmlFor="description" md={12}><h6>Description:</h6></Label>
+                          <Col md={12}>
+                            <Control.textarea
+                              model=".description"
+                              id="description"
+                              name="description"
+                              placeholder="Resource Description*"
+                              rows="8"
+                              className="form-control"
+                              validators={{
+                                required,
+                              }}
+                            />
+                            <Errors
+                              className="text-danger"
+                              model=".description"
+                              show="touched"
+                              messages={{
+                                required: 'Required',
+                              }}
+                            />
+                          </Col>
+                        </Row>
+                        <Row className="form-group">
+                          <Label htmlFor="url" md={4}><h6>Url of Resource:</h6></Label>
+                          <Col md={8}>
+                            <Control.text
+                              model=".url"
+                              id="url"
+                              name="url"
+                              placeholder="Resource Url*"
+                              className="form-control"
+                              validators={{
+                                required,
+                              }}
+                            />
+                            <Errors
+                              className="text-danger"
+                              model=".url"
+                              show="touched"
+                              messages={{
+                                required: 'Required ',
+                              }}
+                            />
+                          </Col>
+                        </Row>
+                        <Row className="form-group">
+                          <Col>
+                            <Label htmlFor="displayOnWebsite" sm={5}><h6>Display on website:  </h6></Label>
+                            <FormControlLabel
+                              sm={2}
+                              // label="Display on Website"
+                              control={<Switch checked={displayState} onChange={changeDisplayState} />}
+                            />
+                          </Col>
+                        </Row>
+                        <Row className="form-group">
+                          <Col>
+                            <Label htmlFor="archive" sm={5}><h6>Archive:  </h6></Label>
+                            <FormControlLabel
+                              sm={2}
+                              // label="Display on Website"
+                              control={<Switch checked={archiveState} onChange={changeArchiveState} />}
+                            />
+                          </Col>
+                        </Row>
+                        <Row className="form-group">
+                          <Col>
+                            <Label htmlFor="new" sm={5}><h6>New Resource:  </h6></Label>
+                            <FormControlLabel
+                              sm={2}
+                              // label="Display on Website"
+                              control={<Switch checked={newState} onChange={changeNewState} />}
+                            />
+                          </Col>
+                        </Row>
+                        <Row className="form-group">
+                          <Col sm={{ size: 5, offset: 2 }}>
+                            <Button type="submit" color="primary">
+                              Create Resource
+                            </Button>
+                          </Col>
+                          <Col sm={{ size: 2 }}>
+                            <Button type="reset" color="primary" onClick={() => handleResourceFormReset()}>
+                              Reset
+                            </Button>
+                          </Col>
+                        </Row>
+                      </Form>
+                    )
+                    : null
+                }
               </CardBody>
             </Card>
-            {/* <form className={classes.form} noValidate autoComplete="off">
-                  {/* <TextField
-                    required
-                    id="filled-required"
-                    label=""
-                    placeholder="Task Name"
-                    variant="filled"
-                  /> */}
-            {/* <TextField
-                    variant="outlined"
-                    margin="normal"
-                    required
-                    fullWidth
-                    id="taskName"
-                    label="Task Name"
-                    name="taskName"
-                    autoFocus
-                  />
-                  <TextField
-                    variant="outlined"
-                    margin="normal"
-                    required
-                    fullWidth
-                    id="taskDescription"
-                    label="Task Description"
-                    name="taskDescription"
-                  />
-                  <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                    <KeyboardDatePicker
-                      disableToolbar
-                      variant="inline"
-                      format="MM/dd/yyyy"
-                      margin="normal"
-                      id="taskDeadline"
-                      label="Task Deadline"
-                      value={selectedDate}
-                      onChange={handleDateChange}
-                      KeyboardButtonProps={{
-                        'aria-label': 'change date',
-                      }}
-                    />
-                  </MuiPickersUtilsProvider>
-                  <FormLabel component="legend">Priority</FormLabel>
-                  <RadioGroup row value={radioValue} onChange={handleRadioChange}>
-                    <FormControlLabel
-                      value="low"
-                      label="Low"
-                      control={(
-                        <Radio />
-                        )}
-                    />
-                    <FormControlLabel
-                      value="medium"
-                      label="Medium"
-                      control={(
-                        <Radio />
-                        )}
-                    />
-                    <FormControlLabel
-                      value="high"
-                      label="High"
-                      control={(
-                        <Radio />
-                      )}
-                    />
-                  </RadioGroup>
-                  <FormControl variant="outlined" className={classes.formControl}>
-                    <InputLabel ref={inputLabel} htmlFor="type">
-                      Type
-                    </InputLabel>
-                    <Select
-                      native
-                      value={typeState.type}
-                      onChange={handleTypeChange('type')}
-                      labelWidth={labelWidth}
-                      inputProps={{
-                        name: 'type',
-                        id: 'type',
-                      }}
-                    >
-                      <option value="" />
-                      <option value={0}>Project</option>
-                      <option value={1}>Event</option>
-                      <option value={2}>Resource</option>
-                    </Select>
-                  </FormControl>
-                  <br />
-                  <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                    <KeyboardTimePicker
-                      margin="normal"
-                      id="startTime"
-                      label="Select start time"
-                      value={selectedDate}
-                      onChange={handleDateChange}
-                      KeyboardButtonProps={{
-                        'aria-label': 'change time',
-                      }}
-                    />
-                    <KeyboardTimePicker
-                      margin="normal"
-                      id="endTime"
-                      label="Select end time"
-                      value={selectedDate}
-                      onChange={handleDateChange}
-                      KeyboardButtonProps={{
-                        'aria-label': 'change time',
-                      }}
-                    />
-                  </MuiPickersUtilsProvider>
-                  <Grid container justify="center">
-                    <Grid item xs={6}>
-                      <Button variant="contained" size="large" color="primary" className={classes.margin}>
-                        Create Task
-                      </Button>
-                    </Grid>
-                  </Grid>
-                </form> */}
-
-            {/* </Grid>
-            </Grid> */}
           </Paper>
         </Grid>
       </Grid>

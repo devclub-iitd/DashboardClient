@@ -367,3 +367,117 @@ const [single, setSingle] = React.useState(null);
                                   'aria-label': 'change date',
                                 }}
                               />
+{/* <Row className="form-group">
+                          <FormLabel component="legend">Type of Item</FormLabel>
+                          <RadioGroup row value={itemType}>
+                            <FormControlLabel
+                              value="event"
+                              label="Event"
+                              control={(
+                                <Radio />
+                            )}
+                            />
+                            <FormControlLabel
+                              value="project"
+                              label="Project"
+                              control={(
+                                <Radio />
+                            )}
+                            />
+                            <FormControlLabel
+                              value="resource"
+                              label="Resource"
+                              control={(
+                                <Radio />
+                          )}
+                            />
+                          </RadioGroup>
+                        </Row>
+                        <Row className="form-group">
+                          <Label htmlFor="telnum" md={2}>Contact Tel.</Label>
+                          <Col md={10}>
+                            <Control.text
+                              model=".telnum"
+                              id="telnum"
+                              name="telnum"
+                              placeholder="Tel. Number"
+                              className="form-control"
+                              validators={{
+                                required, minLength: minLength(3), maxLength: maxLength(15),
+                              }}
+                            />
+                            <Errors
+                              className="text-danger"
+                              model=".telnum"
+                              show="touched"
+                              messages={{
+                                required: 'Required',
+                                minLength: 'Must be greater than 2 numbers',
+                                maxLength: 'Must be 15 numbers or less',
+                                isNumber: 'Must be a number',
+                              }}
+                            />
+                          </Col>
+                        </Row>
+                        <Row className="form-group">
+                          <Label htmlFor="email" md={2}>Email</Label>
+                          <Col md={10}>
+                            <Control.text
+                              model=".email"
+                              id="email"
+                              name="email"
+                              placeholder="Email"
+                              className="form-control"
+                              validators={{
+                                required,
+                              }}
+                            />
+                            <Errors
+                              className="text-danger"
+                              model=".email"
+                              show="touched"
+                              messages={{
+                                required: 'Required',
+                                validEmail: 'Invalid Email Address',
+                              }}
+                            />
+                          </Col>
+                        </Row>
+                        <Row className="form-group">
+                          <Col md={{ size: 6, offset: 2 }}>
+                            <div className="form-check">
+                              <Label check>
+                                <Control.checkbox
+                                  model=".agree"
+                                  name="agree"
+                                  className="form-check-input"
+                                />
+                                {' '}
+                                {' '}
+                                <strong>May we contact you?</strong>
+                              </Label>
+                            </div>
+                          </Col>
+                          <Col md={{ size: 3, offset: 1 }}>
+                            <Control.select
+                              model=".contactType"
+                              name="contactType"
+                              className="form-control"
+                            >
+                              <option>Tel.</option>
+                              <option>Email</option>
+                            </Control.select>
+                          </Col>
+                        </Row>
+                        <Row className="form-group">
+                          <Label htmlFor="message" md={2}>Your Feedback</Label>
+                          <Col md={10}>
+                            <Control.textarea
+                              model=".message"
+                              id="message"
+                              name="message"
+                              rows="12"
+                              className="form-control"
+                            />
+                          </Col>
+                        </Row> */}
