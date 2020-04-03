@@ -146,7 +146,7 @@ const mapDispatchToProps = (dispatch) => ({
 function Dashboard(props) {
   
   const classes = useStyles();
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = React.useState(false);
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -186,7 +186,7 @@ function Dashboard(props) {
         </Toolbar>
       </AppBar>
       <Drawer
-        variant="permanent"
+        // variant="permanent"
         classes={{
           paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
         }}

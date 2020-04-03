@@ -153,8 +153,8 @@ const Profile = () => {
     entry_no: '2018EE30878',
     hostel: 'KUMAON',
     gender: 'male',
-    join_year: '23/07/2018',
-    grad_year: '20/05/2022',
+    join_year: '2019',
+    grad_year: '2022',
     birth_date: '17/06/1999',
     mobile_number: '9582575393',
     hometown: 'Bishnupur, West Bengal',
@@ -238,6 +238,10 @@ const Profile = () => {
   };
 
   const handleSubmit = (values) => {
+    setUser({
+      ...user,
+      values,
+    });
     setUserOrg(user);
     handleClose();
     console.log('Submitting user details update info: ', values);
@@ -252,8 +256,8 @@ const Profile = () => {
   // const required = () => user.name && user.name.length;
 
   const required = val => val && val.length;
-  const maxLength = (val, len) => !(val) || (val.length <= len);
-  const minLength = (val, len) => (val) && (val.length >= len);
+  const maxLength = len => val => !(val) || (val.length <= len);
+  const minLength = len => val => (val) && (val.length >= len);
 
   return (
     <div>
@@ -268,7 +272,7 @@ const Profile = () => {
       </Fab>
       <Grid container direction="row" justify="space-evenly" alignItems="flex-start">
         <div>
-          <Dialog open={isModalOpen} maxWidth="md" fullWidth onClose={() => { handleClose(); cancelEdit(); }} scroll="paper">
+          <Dialog open={isModalOpen} maxWidth="md" fullWidth onClose={() => { cancelEdit(); handleClose(); }} scroll="paper">
             <DialogTitle>
               <Typography variant="h4" className={classes.head}>
                 Edit Your Profile
@@ -284,7 +288,7 @@ const Profile = () => {
                       id="name"
                       name="name"
                       placeholder="Name*"
-                      value={user.name}
+                      defaultValue={user.name}
                       onChange={handleFormValuesChange}
                       className="form-control"
                       validators={{
@@ -310,12 +314,12 @@ const Profile = () => {
                       model=".entry_no"
                       id="entry_no"
                       name="entry_no"
-                      value={user.entry_no}
+                      defaultValue={user.entry_no}
                       onChange={handleFormValuesChange}
                       placeholder="Entry Number*"
                       className="form-control"
                       validators={{
-                        required, minLength: minLength(1), maxLength: maxLength(20),
+                        required, minLength: minLength(11), maxLength: maxLength(11),
                       }}
                     />
                     <Errors
@@ -324,8 +328,8 @@ const Profile = () => {
                       show="touched"
                       messages={{
                         required: 'Required ',
-                        minLength: 'Must be greater than 2 characters',
-                        maxLength: 'Must be 25 characters or less',
+                        minLength: 'Enter 11 character Entry Number',
+                        maxLength: 'Enter 11 character Entry Number',
                       }}
                     />
                   </Col>
@@ -337,12 +341,12 @@ const Profile = () => {
                       model=".email"
                       id="email"
                       name="email"
-                      value={user.email}
+                      defaultValue={user.email}
                       onChange={handleFormValuesChange}
                       placeholder="Email*"
                       className="form-control"
                       validators={{
-                        required, minLength: minLength(1), maxLength: maxLength(20),
+                        required,
                       }}
                     />
                     <Errors
@@ -364,7 +368,7 @@ const Profile = () => {
                       model=".hostel"
                       id="hostel"
                       name="emhostelail"
-                      value={user.hostel}
+                      defaultValue={user.hostel}
                       onChange={handleFormValuesChange}
                       placeholder="Hostel*"
                       className="form-control"
@@ -391,7 +395,7 @@ const Profile = () => {
                       model=".intro"
                       id="intro"
                       name="intro"
-                      value={user.intro}
+                      defaultValue={user.intro}
                       onChange={handleFormValuesChange}
                       placeholder="Introduction*"
                       rows="8"
@@ -461,7 +465,7 @@ const Profile = () => {
                       model=".join_year"
                       id="join_year"
                       name="join_year"
-                      value={user.join_year}
+                      defaultValue={user.join_year}
                       onChange={handleFormValuesChange}
                       placeholder="Joining Year*"
                       className="form-control"
@@ -488,7 +492,7 @@ const Profile = () => {
                       model=".grad_year"
                       id="grad_year"
                       name="grad_year"
-                      value={user.grad_year}
+                      defaultValue={user.grad_year}
                       onChange={handleFormValuesChange}
                       placeholder="Graduation Year*"
                       className="form-control"
@@ -515,7 +519,7 @@ const Profile = () => {
                       model=".mobile_number"
                       id="mobile_number"
                       name="mobile_number"
-                      value={user.mobile_number}
+                      defaultValue={user.mobile_number}
                       onChange={handleFormValuesChange}
                       placeholder="Mobile Number*"
                       className="form-control"
@@ -525,7 +529,7 @@ const Profile = () => {
                     />
                     <Errors
                       className="text-danger"
-                      model=".origin_contact"
+                      model=".mobile_nhumber"
                       show="touched"
                       messages={{
                         required: 'Required ',
@@ -542,7 +546,7 @@ const Profile = () => {
                       model=".hometown"
                       id="hometown"
                       name="hometown"
-                      value={user.hometown}
+                      defaultValue={user.hometown}
                       onChange={handleFormValuesChange}
                       placeholder="Hometown*"
                       className="form-control"
@@ -567,7 +571,7 @@ const Profile = () => {
                       model=".interests"
                       id="interests"
                       name="interests"
-                      value={user.interests}
+                      defaultValue={user.interests}
                       onChange={handleFormValuesChange}
                       placeholder="Interests*"
                       rows="8"
@@ -593,7 +597,7 @@ const Profile = () => {
                       model=".specialization"
                       id="specialization"
                       name="specialization"
-                      value={user.specialization}
+                      defaultValue={user.specialization}
                       onChange={handleFormValuesChange}
                       placeholder="Interests*"
                       rows="8"
@@ -619,7 +623,7 @@ const Profile = () => {
                       model=".category"
                       id="category"
                       name="category"
-                      value={user.category}
+                      defaultValue={user.category}
                       onChange={handleFormValuesChange}
                       placeholder="Category*"
                       className="form-control"

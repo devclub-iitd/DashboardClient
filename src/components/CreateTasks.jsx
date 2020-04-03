@@ -23,7 +23,7 @@ import {
 } from 'react-redux-form';
 import DateFnsUtils from '@date-io/date-fns';
 import AddIcon from '@material-ui/icons/Add';
-import { MuiPickersUtilsProvider, KeyboardDatePicker, KeyboardTimePicker } from '@material-ui/pickers';
+import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutline';
 import isURL from 'validator/lib/isURL';
 import { dumUsers } from './dumUser';
@@ -95,6 +95,9 @@ const useStyles = makeStyles(theme => ({
     marginBottom: '0.5em',
     marginTop: '1em',
     textAlign: 'center',
+  },
+  urlField: {
+    marginBottom: 10,
   },
 }));
 
@@ -374,11 +377,12 @@ export default function CreateTasks(props) {
                             {urlFields.map((urlField, index) => (
                               <Fragment key={`${urlField}~${index}`}>
                                 <Row className="form-group">
-                                  <Col sm={{ size: 4, offset: 1 }}>
+                                  {/* sm={12} md={{ size: 4, offset: 1 }} */}
+                                  <Col sm={12} md={{ size: 4, offset: 1 }}>
                                     <TextField
-                                      sm={5}
                                       label="type"
-                                      className="form-control"
+                                      // className="form-control"
+                                      className={classes.urlField}
                                       id="type"
                                       name="type"
                                       variant="filled"
@@ -386,11 +390,12 @@ export default function CreateTasks(props) {
                                       onChange={event => handleUrlFieldChange(index, event)}
                                     />
                                   </Col>
-                                  <Col sm={4}>
+                                  {/* sm={12} md={4} */}
+                                  <Col sm={12} md={4}>
                                     <TextField
-                                      sm={5}
                                       label="url"
-                                      className="form-control"
+                                      // className="form-control"
+                                      className={classes.urlField}
                                       id="url"
                                       name="url"
                                       variant="filled"
@@ -398,8 +403,9 @@ export default function CreateTasks(props) {
                                       onChange={event => handleUrlFieldChange(index, event)}
                                     />
                                   </Col>
-                                  <Col sm={2}>
-                                    <Fab sm={2} size="small" aria-label="delete" onClick={() => handleRemoveUrlFields(index)}>
+                                  {/* sm={2} */}
+                                  <Col md={2}>
+                                    <Fab size="small" aria-label="delete" onClick={() => handleRemoveUrlFields(index)}>
                                       <DeleteOutlinedIcon />
                                     </Fab>
                                   </Col>
@@ -412,12 +418,14 @@ export default function CreateTasks(props) {
                           </Col>
                         </Row>
                         <Row className="form-group">
-                          <Col sm={{ size: 4, offset: 3 }}>
+                          {/* md={{ size: 4, offset: 3 }} */}
+                          <Col xs={{ size: 7, offset: 1 }} md={{ size: 4, offset: 3 }}>
                             <Button type="submit" color="primary">
                               Create Event
                             </Button>
                           </Col>
-                          <Col sm={{ size: 2 }}>
+                          {/* md={{ size: 2 }} */}
+                          <Col xs={3} md={{ size: 2 }}>
                             <Button type="reset" color="primary" onClick={() => handleEventFormReset()}>
                               Reset
                             </Button>

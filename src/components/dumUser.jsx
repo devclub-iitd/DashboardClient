@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/prefer-default-export
-export const dumUsers = [
+const dumUsers = [
   {
     id: 0,
     email: 'anweshanbor@gmail.com',
@@ -18,10 +18,14 @@ export const dumUsers = [
     intro: 'My name is Anweshan Bor. My name is Anweshan Bor. My name is Anweshan Bor',
     category: 'frontend',
     display_on_website: true,
-    url: 'www.linkedin.com/anweshanbor',
+    url: new Map([
+      ['linkedIn', 'www.linkedin.com/anweshanbor'],
+      ['google', 'wwww.google.com'],
+      ['facebook', 'wwww.facebook.com'],
+    ]),
     created_by: null,
     updated_by: null,
-    privelege_level: 'Approved_User',
+    privelege_level: 'Admin',
   },
   {
     id: 1,
@@ -40,11 +44,15 @@ export const dumUsers = [
     specialization: 'Python, C++, Java, Frontend Webdev',
     intro: 'My name is Anweshan Bor. My name is Anweshan Bor. My name is Anweshan Bor',
     category: 'frontend',
-    display_on_website: true,
-    url: 'www.linkedin.com/anweshanbor',
+    display_on_website: false,
+    url: new Map([
+      ['linkedIn', 'www.linkedin.com/anweshanbor'],
+      ['google', 'wwww.google.com'],
+      ['facebook', 'wwww.facebook.com'],
+    ]),
     created_by: null,
     updated_by: null,
-    privelege_level: 'Approved_User',
+    privelege_level: 'Unapproved_User',
   },
   {
     id: 2,
@@ -64,7 +72,11 @@ export const dumUsers = [
     intro: 'My name is Anweshan Bor. My name is Anweshan Bor. My name is Anweshan Bor',
     category: 'frontend',
     display_on_website: true,
-    url: 'www.linkedin.com/anweshanbor',
+    url: new Map([
+      ['linkedIn', 'www.linkedin.com/anweshanbor'],
+      ['google', 'wwww.google.com'],
+      ['facebook', 'wwww.facebook.com'],
+    ]),
     created_by: null,
     updated_by: null,
     privelege_level: 'Approved_User',
@@ -86,8 +98,12 @@ export const dumUsers = [
     specialization: 'Python, C++, Java, Frontend Webdev',
     intro: 'My name is Anweshan Bor. My name is Anweshan Bor. My name is Anweshan Bor',
     category: 'frontend',
-    display_on_website: true,
-    url: 'www.linkedin.com/anweshanbor',
+    display_on_website: false,
+    url: new Map([
+      ['linkedIn', 'www.linkedin.com/anweshanbor'],
+      ['google', 'wwww.google.com'],
+      ['facebook', 'wwww.facebook.com'],
+    ]),
     created_by: null,
     updated_by: null,
     privelege_level: 'Approved_User',
@@ -110,10 +126,14 @@ export const dumUsers = [
     intro: 'My name is Anweshan Bor. My name is Anweshan Bor. My name is Anweshan Bor',
     category: 'frontend',
     display_on_website: true,
-    url: 'www.linkedin.com/anweshanbor',
+    url: new Map([
+      ['linkedIn', 'www.linkedin.com/anweshanbor'],
+      ['google', 'wwww.google.com'],
+      ['facebook', 'wwww.facebook.com'],
+    ]),
     created_by: null,
     updated_by: null,
-    privelege_level: 'Approved_User',
+    privelege_level: 'Unapproved_User',
   },
   {
     id: 5,
@@ -132,10 +152,16 @@ export const dumUsers = [
     specialization: 'Python, C++, Java, Frontend Webdev',
     intro: 'My name is Anweshan Bor. My name is Anweshan Bor. My name is Anweshan Bor',
     category: 'frontend',
-    display_on_website: true,
-    url: 'www.linkedin.com/anweshanbor',
+    display_on_website: false,
+    url: new Map([
+      ['linkedIn', 'www.linkedin.com/anweshanbor'],
+      ['google', 'wwww.google.com'],
+      ['facebook', 'wwww.facebook.com'],
+    ]),
     created_by: null,
     updated_by: null,
     privelege_level: 'Approved_User',
   },
 ];
+
+export default dumUsers;

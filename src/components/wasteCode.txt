@@ -481,3 +481,202 @@ const [single, setSingle] = React.useState(null);
                             />
                           </Col>
                         </Row> */}
+
+
+
+<div className={classes.borderJ}>
+      <Paper>
+        <Grid className={classes.gcontainer} container justify="space-evenly">
+          <Grid className={classes.gridL} item xs={10} sm={5}>
+            <Typography className={classes.textPadding} variant="h4" align="center">
+              Pending Tasks
+            </Typography>
+            <Typography variant="h1" align="center">
+              {dumTasks.length}
+            </Typography>
+          </Grid>
+          <Divider orientation="vertical" />
+          <Grid className={classes.gridR} item xs={10} sm={5}>
+            {/* <Typography>
+                sfbwsgfb
+            </Typography> */}
+            <TableContainer className={classes.table}>
+              <Table stickyHeader>
+                <TableHead>
+                  <TableRow>
+                    <TableCell><b>Task Name</b></TableCell>
+                    <TableCell align="right"><b>Deadline</b></TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {dumTasks.map(task => (
+                    <TableRow hover key={task.name}>
+                      <TableCell component="th" scope="row">
+                        {task.name}
+                      </TableCell>
+                      <TableCell align="right">{task.deadline}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Grid>
+        </Grid>
+      </Paper>
+      <Paper>
+        <Grid className={classes.gcontainer} container justify="space-evenly">
+          {/* <Divider orientation="vertical" /> */}
+          <Grid className={classes.gridL} item xs={10} sm={5}>
+            {/* <Typography>
+                sfbwsgfb
+            </Typography> */}
+            <TableContainer className={classes.table}>
+              <Table stickyHeader>
+                <TableHead>
+                  <TableRow>
+                    <TableCell><b>Task Name</b></TableCell>
+                    <TableCell align="right"><b>Deadline</b></TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {dumTasks.map(task => (
+                    <TableRow hover key={task.name}>
+                      <TableCell component="th" scope="row">
+                        {task.name}
+                      </TableCell>
+                      <TableCell align="right">{task.deadline}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Grid>
+          <Divider orientation="vertical" />
+          <Grid className={classes.gridR} item xs={10} sm={5}>
+            <Typography className={classes.textPadding} variant="h4" align="center">
+              Completed Tasks
+            </Typography>
+            <Typography variant="h1" align="center">
+              {dumTasks.length}
+            </Typography>
+          </Grid>
+        </Grid>
+      </Paper>
+    </div>
+
+
+
+
+
+<Card>
+                                      <CardHeader>
+                                        <Typography variant='h4'>{event.name}</Typography>
+                                      </CardHeader>
+                                      <CardBody>
+                                        <CardTitle>
+                                          <Typography variant='h6'>{`${event.start_date.toDateString()} - ${event.end_date.toDateString()}`}</Typography>
+                                        </CardTitle>
+                                        <CardText>
+                                          <Typography variant='body1' >{event.description}</Typography>
+                                          {
+                                            Array.from(event.url).map(([key, value]) => {
+                                              return(
+                                                <Typography variant='body1'>{`${key}: `}<CardLink href={value}>{value}</CardLink></Typography>
+                                              );
+                                            })
+                                          }
+                                          Assigned to: {event.assignee !== '' ? event.assignee: 'None'}
+                                        </CardText>
+                                      </CardBody>
+                                      <CardFooter>
+                                        <LocalForm>
+                                          <Row className="form-group">
+                                            <Col>
+                                              <Label htmlFor="display_on_website" sm={5}><h6>Display on website:  </h6></Label>
+                                              <FormControlLabel
+                                                sm={2}
+                                                // label="Display on Website"
+                                                control={<Switch checked={displayEventState} onChange={changeEventDisplayState} />}
+                                              />
+                                            </Col>
+                                          </Row>
+                                          <Row className="form-group">
+                                            <Col>
+                                              {/* <Label htmlFor="assignees" ><h6>Assigned to: </h6></Label> */}
+                                              <InputLabel id="demo-simple-select-outlined-label">
+                                                member
+                                              </InputLabel>
+                                              <Select
+                                                labelId="demo-simple-select-outlined-label"
+                                                id="demo-simple-select-outlined"
+                                                value={eventMember}
+                                                onChange={changeEventMember}
+                                                // labelWidth={labelWidth}
+                                              >
+                                                <MenuItem value="">
+                                                  <em>None</em>
+                                                </MenuItem>
+                                                {
+                                                  dumUsers.filter((user) => user.privelege_level !== 'Unapproved_User')
+                                                  .map((user) => {
+                                                    return(
+                                                      <MenuItem value={user.name}>{user.name}</MenuItem>
+                                                    )
+                                                  })
+                                                }
+                                              </Select>
+                                            </Col>
+                                          </Row>
+                                        </LocalForm>
+                                      </CardFooter>
+                                    </Card>
+                                      <Row className="form-group">
+                                        <Col sm={{ size: 4, offset: 3 }}>
+                                          <Button color="primary" onClick={() => submitEventChanges(index)}>
+                                            Save Changes
+                                          </Button>
+                                        </Col>
+                                        <Col sm={{ size: 2 }}>
+                                          <Button color="primary" onClick={handleEventModalClose}>
+                                            Cancel
+                                          </Button>
+                                        </Col>
+                                      </Row>
+{this.state.urlFields.map((urlField, index) => (
+                    <Fragment key={`${urlField}~${index}`}>
+                      <Row className="form-group">
+                        {/* sm={12} md={{ size: 4, offset: 1 }} */}
+                        <Col sm={12} md={{ size: 4, offset: 1 }}>
+                          <TextField
+                            label="type"
+                            // className="form-control"
+                            // className={classes.urlField}
+                            id="type"
+                            name="type"
+                            variant="filled"
+                            value={urlField.type}
+                            onChange={event => this.handleUrlFieldChange(index, event)}
+                          />
+                        </Col>
+                        {/* sm={12} md={4} */}
+                        <Col sm={12} md={4}>
+                          <TextField
+                            label="url"
+                            // className="form-control"
+                            // className={classes.urlField}
+                            id="url"
+                            name="url"
+                            variant="filled"
+                            value={urlField.url}
+                            onChange={event => this.handleUrlFieldChange(index, event)}
+                          />
+                        </Col>
+                        {/* sm={2} */}
+                        <Col md={2}>
+                          <Fab size="small" aria-label="delete" onClick={() => this.handleRemoveUrlFields(index)}>
+                            <DeleteOutlinedIcon />
+                          </Fab>
+                        </Col>
+                      </Row>
+                    </Fragment>
+                  ))}
