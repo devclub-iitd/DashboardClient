@@ -16,7 +16,7 @@ export const initialProjectForm = {
 export const initialResourceForm = {
   internal_name: '',
   directory_year: '',
-  sub_directory: '',
+  subdirectory: '',
   name: '',
   description: '',
   url: '',

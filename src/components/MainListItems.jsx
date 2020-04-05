@@ -39,24 +39,24 @@ function MainListItems(props) {
         </ListItemIcon>
         <ListItemText primary="Change Password" />
       </ListItem>
-      <ListItem button onClick={redirectFunc('approveUsers')}>
+      {/* <ListItem button onClick={redirectFunc('approveUsers')}>
         <ListItemIcon>
           <ThumbUpAltIcon />
         </ListItemIcon>
         <ListItemText primary="Approve Users" />
-      </ListItem>
+      </ListItem> */}
       <ListItem button onClick={redirectFunc('createTasks')}>
         <ListItemIcon>
           <AddBoxIcon />
         </ListItemIcon>
-        <ListItemText primary="Create Tasks/Events" />
+        <ListItemText primary="Create Tasks" />
       </ListItem>
-      <ListItem button onClick={redirectFunc('assignTasks')}>
+      {/* <ListItem button onClick={redirectFunc('assignTasks')}>
         <ListItemIcon>
           <AssignmentIndIcon />
         </ListItemIcon>
         <ListItemText primary="Assign Tasks/Events" />
-      </ListItem>
+      </ListItem> */}
     </div>
   );
 }

@@ -142,34 +142,37 @@ const userProfile = {
 
 // const uname = 'Anweshan Bor';
 
-const Profile = () => {
+const Profile = (props) => {
   const classes = useStyles();
   // const { user } = this.props;
   // let isModalOpen = false;
-  const [user, setUser] = React.useState({
-    email: 'anweshanbor@gmail.com',
-    name: 'Anweshan Bor',
-    password: '12345678',
-    entry_no: '2018EE30878',
-    hostel: 'KUMAON',
-    gender: 'male',
-    join_year: '2019',
-    grad_year: '2022',
-    birth_date: '17/06/1999',
-    mobile_number: '9582575393',
-    hometown: 'Bishnupur, West Bengal',
-    interests: 'Arduino, Machine Learning, RaspberryPi, Python, WebDev, Signal Processing',
-    specialization: 'Python, C++, Java, Frontend Webdev',
-    intro: 'My name is Anweshan Bor. My name is Anweshan Bor. My name is Anweshan Bor',
-    category: 'frontend',
-    display_on_website: true,
-    url: [
-      { type: 'linkedIn', url: 'www.linkedin.com/anweshanbor' },
-    ],
-    created_by: null,
-    updated_by: null,
-    privelege_level: 'Approved_User',
-  });
+  // const [user, setUser] = React.useState({
+  //   email: 'anweshanbor@gmail.com',
+  //   name: 'Anweshan Bor',
+  //   // password: '12345678',
+  //   entry_no: '2018EE30878',
+  //   hostel: 'KUMAON',
+  //   gender: 'male',
+  //   join_year: new Date('03/25/2018'),
+  //   grad_year: new Date('03/25/2022'),
+  //   birth_date: new Date('06/17/1999'),
+  //   mobile_number: '9582575393',
+  //   hometown: 'Bishnupur, West Bengal',
+  //   interests: 'Arduino, Machine Learning, RaspberryPi, Python, WebDev, Signal Processing',
+  //   specialization: 'Python, C++, Java, Frontend Webdev',
+  //   intro: 'My name is Anweshan Bor. My name is Anweshan Bor. My name is Anweshan Bor',
+  //   category: 'frontend',
+  //   display_on_website: true,
+  //   url: new Map([
+  //     ['linkedIn', 'www.linkedin.com/anweshanbor'],
+  //     ['google', 'wwww.google.com'],
+  //     ['facebook', 'wwww.facebook.com'],
+  //   ]),
+  //   created_by: null,
+  //   updated_by: null,
+  //   privelege_level: 'Approved_User',
+  // });
+  const [user, setUser] = React.useState(props.user);
 
   const [userOrg, setUserOrg] = React.useState(user);
 
@@ -197,58 +200,97 @@ const Profile = () => {
     console.log(isModalOpen);
   };
 
-  const [DOB, setDOB] = React.useState(new Date(Date.now()));
+  const [DOB, setDOB] = React.useState(user.birth_date);
   const DOBChange = (date) => {
     setDOB(date);
   };
 
+  const [joinDate, setJoinYear] = React.useState(user.join_year);
+  const joinChange = (date) => {
+    setJoinYear(date);
+  };
+
+  const [gradDate, setGradYear] = React.useState(user.grad_year);
+  const gradChange = (date) => {
+    setGradYear(date);
+  };
+
   const [urlFields, setUrlFields] = React.useState(user.url);
   const handleAddUrlFields = () => {
-    const values = [...urlFields];
-    values.push({ type: '', url: '' });
-    setUrlFields(values);
+    // const values = [...urlFields];
+    // values.push({ type: '', url: '' });
+    // setUrlFields(values);
+    // setUser({
+    //   ...user,
+    //   url: urlFields,
+    // });
+    const urlVals = user.url;
+    urlVals.set('type', 'url');
     setUser({
       ...user,
-      url: urlFields,
+      url: urlVals,
     });
   };
 
   const handleRemoveUrlFields = (index) => {
-    const values = [...urlFields];
-    values.splice(index, 1);
-    setUrlFields(values);
+    // const values = [...urlFields];
+    // values.splice(index, 1);
+    // setUrlFields(values);
+    // setUser({
+    //   ...user,
+    //   url: urlFields,
+    // });
+    const urlVals = user.url;
+    urlVals.delete(index);
     setUser({
       ...user,
-      url: urlFields,
+      url: urlVals,
     });
   };
 
   const handleUrlFieldChange = (index, event) => {
-    const values = [...urlFields];
-    if (event.target.name === 'type') {
-      values[index].type = event.target.value;
-    } else {
-      values[index].url = event.target.value;
-    }
-    setUrlFields(values);
+    // const values = [...urlFields];
+    // if (event.target.name === 'type') {
+    //   values[index].type = event.target.value;
+    // } else {
+    //   values[index].url = event.target.value;
+    // }
+    // setUrlFields(values);
+    // setUser({
+    //   ...user,
+    //   url: urlFields,
+    // });
+    const urlVals = user.url;
+    urlVals.set(index, event.target.value);
     setUser({
       ...user,
-      url: urlFields,
+      url: urlVals,
     });
   };
 
   const handleSubmit = (values) => {
+    // setUser({
+    //   ...user,
+    //   values,
+    // });
     setUser({
       ...user,
-      values,
+      birth_date: DOB,
+      join_year: joinDate,
+      grad_year: gradDate,
     });
-    setUserOrg(user);
+
+    props.updateUser(user);
+    // setUserOrg(user);
     handleClose();
-    console.log('Submitting user details update info: ', values);
+    console.log('Submitting user details update info: ', user);
   };
 
   const cancelEdit = () => {
-    setUser(userOrg);
+    setUser({
+      ...user,
+      userOrg,
+    });
     handleClose();
     console.log(user);
   };
@@ -423,6 +465,8 @@ const Profile = () => {
                         label="Date of Birth"
                         format="MM/dd/yyyy"
                         value={DOB}
+                        name="birth_date"
+                        // onChange={DOBChange}
                         onChange={DOBChange}
                         maxDate={Date.now()}
                         KeyboardButtonProps={{
@@ -459,9 +503,9 @@ const Profile = () => {
                   </Col>
                 </Row>
                 <Row className="form-group">
-                  <Label htmlFor="join_year" md={4}><h6>Joining Year:</h6></Label>
+                  <Label htmlFor="join_year" md={4}><h6>Date of Joining:</h6></Label>
                   <Col md={8}>
-                    <Control.text
+                    {/* <Control.text
                       model=".join_year"
                       id="join_year"
                       name="join_year"
@@ -482,13 +526,29 @@ const Profile = () => {
                         minLength: 'Enter 4 digit year',
                         maxLength: 'Enter 4 digit year',
                       }}
-                    />
+                    /> */}
+                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                      <KeyboardDatePicker
+                        margin="normal"
+                        id="date-picker-dialog"
+                        label="Date of Joining"
+                        format="MM/dd/yyyy"
+                        value={joinDate}
+                        name="join_year"
+                        // onChange={DOBChange}
+                        onChange={joinChange}
+                        maxDate={Date.now()}
+                        KeyboardButtonProps={{
+                          'aria-label': 'change date',
+                        }}
+                      />
+                    </MuiPickersUtilsProvider>
                   </Col>
                 </Row>
                 <Row className="form-group">
-                  <Label htmlFor="grad_year" md={4}><h6>Graduation Year:</h6></Label>
+                  <Label htmlFor="grad_year" md={4}><h6>Date of Graduation:</h6></Label>
                   <Col md={8}>
-                    <Control.text
+                    {/* <Control.text
                       model=".grad_year"
                       id="grad_year"
                       name="grad_year"
@@ -509,7 +569,23 @@ const Profile = () => {
                         minLength: 'Enter 4 digit year',
                         maxLength: 'Enter 4 digit year',
                       }}
-                    />
+                    /> */}
+                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                      <KeyboardDatePicker
+                        margin="normal"
+                        id="date-picker-dialog"
+                        label="Date of Graduation"
+                        format="MM/dd/yyyy"
+                        value={gradDate}
+                        name="grad_year"
+                        // onChange={DOBChange}
+                        onChange={gradChange}
+                        // maxDate={Date.now()}
+                        KeyboardButtonProps={{
+                          'aria-label': 'change date',
+                        }}
+                      />
+                    </MuiPickersUtilsProvider>
                   </Col>
                 </Row>
                 <Row className="form-group">
@@ -644,7 +720,7 @@ const Profile = () => {
                 <Row className="form-group">
                   <Label htmlFor="urlFields" md={12}><h6>Url:</h6></Label>
                   <Col sm={12}>
-                    {urlFields.map((urlField, index) => (
+                    {/* {urlFields.map((urlField, index) => (
                       <Fragment key={`${urlField}~${index}`}>
                         <Row className="form-group">
                           <Col sm={{ size: 4, offset: 1 }}>
@@ -673,6 +749,44 @@ const Profile = () => {
                           </Col>
                           <Col sm={2}>
                             <Fab sm={2} size="small" aria-label="delete" onClick={() => handleRemoveUrlFields(index)}>
+                              <DeleteOutlinedIcon />
+                            </Fab>
+                          </Col>
+                        </Row>
+                      </Fragment>
+                    ))} */}
+                    {Array.from(user.url).map(([index, value]) => (
+                      <Fragment key={`${index}`}>
+                        <Row className="form-group">
+                          {/* sm={12} md={{ size: 4, offset: 1 }} */}
+                          <Col sm={12} md={{ size: 4, offset: 1 }}>
+                            <TextField
+                              label="type"
+                              // className="form-control"
+                              // className={classes.urlField}
+                              id="type"
+                              name="type"
+                              variant="filled"
+                              value={index}
+                              onChange={event => handleUrlFieldChange(index, event)}
+                            />
+                          </Col>
+                          {/* sm={12} md={4} */}
+                          <Col sm={12} md={4}>
+                            <TextField
+                              label="url"
+                              // className="form-control"
+                              // className={classes.urlField}
+                              id="url"
+                              name="url"
+                              variant="filled"
+                              value={value}
+                              onChange={event => handleUrlFieldChange(index, event)}
+                            />
+                          </Col>
+                          {/* sm={2} */}
+                          <Col md={2}>
+                            <Fab size="small" aria-label="delete" onClick={() => handleRemoveUrlFields(index)}>
                               <DeleteOutlinedIcon />
                             </Fab>
                           </Col>
@@ -778,7 +892,7 @@ const Profile = () => {
                   </Grid>
                   <Grid item xs={5}>
                     <Typography className={classes.pad} gutterBottom variant="p" color="textPrimary" align="left">
-                      {user.join_year}
+                      {user.join_year.toDateString()}
                     </Typography>
                   </Grid>
                   <Grid item xs={5}>
@@ -788,7 +902,7 @@ const Profile = () => {
                   </Grid>
                   <Grid item xs={5}>
                     <Typography className={classes.pad} gutterBottom variant="p" color="textPrimary" align="left">
-                      {user.grad_year}
+                      {user.grad_year.toDateString()}
                     </Typography>
                   </Grid>
                   <Grid item xs={5}>

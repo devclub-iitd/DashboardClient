@@ -62,12 +62,12 @@ const useStyles = makeStyles(theme => ({
   //   maxHeight: 
   // }
   cardBorderL: {
-    border: '3px solid',
+    // border: '3px solid',
     // height: 450,
     // overflowY: 'scroll',
   },
   cardBorderR: {
-    border: '3px solid',
+    // border: '3px solid',
     height: 450,
     overflowY: 'scroll',
   },
@@ -119,14 +119,14 @@ class EditEventForm extends Component {
     super(props);
 
     this.state = {
-      name: dumEvents[this.props.index].name,
-      description: dumEvents[this.props.index].description,
-      start_date: dumEvents[this.props.index].start_date,
-      end_date: dumEvents[this.props.index].end_date,
-      embed_code: dumEvents[this.props.index].embed_code,
-      display_on_website: dumEvents[this.props.index].display_on_website,
-      url: dumEvents[this.props.index].url,
-      assignee: dumEvents[this.props.index].assignee,
+      name: this.props.dumEvents[this.props.index].name,
+      description: this.props.dumEvents[this.props.index].description,
+      start_date: this.props.dumEvents[this.props.index].start_date,
+      end_date: this.props.dumEvents[this.props.index].end_date,
+      embed_code: this.props.dumEvents[this.props.index].embed_code,
+      display_on_website: this.props.dumEvents[this.props.index].display_on_website,
+      url: this.props.dumEvents[this.props.index].url,
+      assignee: this.props.dumEvents[this.props.index].assignee,
       isDailogOpen: false,
     };
 
@@ -236,6 +236,13 @@ class EditEventForm extends Component {
   };
 
   handleSubmit = () => {
+    const updatedEvent = {
+      ...this.props.dumEvents[this.props.index],
+      ...this.state,
+    };
+    delete updatedEvent.isDailogOpen;
+
+    this.props.editEvent(updatedEvent);
     console.log('got values: ', this.state);
     this.handleFormClose();
   };
@@ -445,7 +452,7 @@ class EditEventForm extends Component {
                         <em>None</em>
                       </MenuItem>
                       {
-                        dumUsers.filter((dumUser) => dumUser.privelege_level !== 'Unapproved_User').map((user) => {
+                        this.props.dumUsers.filter((dumUser) => dumUser.privelege_level !== 'Unapproved_User').map((user) => {
                           return(
                             <MenuItem value={user.name}>{user.name}</MenuItem>
                           );
@@ -483,23 +490,23 @@ class EditProjectForm extends Component {
     super(props);
 
     this.state = {
-      name: dumProjects[this.props.index].name,
-      description: dumProjects[this.props.index].description,
-      members: dumProjects[this.props.index].members,
-      status: dumProjects[this.props.index].status,
-      start_date: dumProjects[this.props.index].start_date,
-      end_date: dumProjects[this.props.index].end_date,
-      origin: dumProjects[this.props.index].origin,
-      origin_contact: dumProjects[this.props.index].origin_contact,
-      perks: dumProjects[this.props.index].perks,
-      requirements: dumProjects[this.props.index].requirements,
-      display_on_website: dumProjects[this.props.index].display_on_website,
-      is_internal: dumProjects[this.props.index].is_internal,
-      showcase: dumProjects[this.props.index].showcase,
-      labels: dumProjects[this.props.index].labels,
-      url: dumProjects[this.props.index].url,
-      memberNames: dumUsers.map(user => user.name),
-      selectedMembers: dumProjects[this.props.index].members.map((user) => user.name),
+      name: this.props.dumProjects[this.props.index].name,
+      description: this.props.dumProjects[this.props.index].description,
+      members: this.props.dumProjects[this.props.index].members,
+      status: this.props.dumProjects[this.props.index].status,
+      start_date: this.props.dumProjects[this.props.index].start_date,
+      end_date: this.props.dumProjects[this.props.index].end_date,
+      origin: this.props.dumProjects[this.props.index].origin,
+      origin_contact: this.props.dumProjects[this.props.index].origin_contact,
+      perks: this.props.dumProjects[this.props.index].perks,
+      requirements: this.props.dumProjects[this.props.index].requirements,
+      display_on_website: this.props.dumProjects[this.props.index].display_on_website,
+      is_internal: this.props.dumProjects[this.props.index].is_internal,
+      showcase: this.props.dumProjects[this.props.index].showcase,
+      labels: this.props.dumProjects[this.props.index].labels,
+      url: this.props.dumProjects[this.props.index].url,
+      memberNames: this.props.dumUsers.map(user => user.name),
+      selectedMembers: this.props.dumProjects[this.props.index].members.map((user) => user.name),
       isDailogOpen: false,
     };
 
@@ -701,8 +708,19 @@ class EditProjectForm extends Component {
   handleSubmit = () => {
     this.setState({
       ...this.state,
-      members: this.state.selectedMembers.map((name) => dumUsers.filter((user) => user.name === name)[0]),
-    })
+      members: this.state.selectedMembers.map((name) => this.props.dumUsers.filter((user) => user.name === name)[0]._id),
+    });
+    
+    const updatedProject = {
+      ...this.props.dumProjects[this.props.index],
+      ...this.state,
+    };
+
+    delete updatedProject.memberNames;
+    delete updatedProject.selectedMembers;
+    delete updatedProject.isDailogOpen;
+
+    this.props.editProject(updatedProject);
     console.log('got values: ', this.state);
     this.handleFormClose();
     // console.log('submitting edited event: ', this.state.editEvent);
@@ -1070,15 +1088,15 @@ class EditResourceForm extends Component {
     super(props);
 
     this.state = {
-      internal_name: dumResources[this.props.index].internal_name,
-      directory_year: dumResources[this.props.index].directory_year,
-      subdirectory: dumResources[this.props.index].subdirectory,
-      name: dumResources[this.props.index].name,
-      archive: dumResources[this.props.index].archive,
-      description: dumResources[this.props.index].description,
-      url: dumResources[this.props.index].url,
-      new: dumResources[this.props.index].new,
-      display_on_website: dumResources[this.props.index].display_on_website,
+      internal_name: this.props.dumResources[this.props.index].internal_name,
+      directory_year: this.props.dumResources[this.props.index].directory_year,
+      subdirectory: this.props.dumResources[this.props.index].subdirectory,
+      name: this.props.dumResources[this.props.index].name,
+      archive: this.props.dumResources[this.props.index].archive,
+      description: this.props.dumResources[this.props.index].description,
+      url: this.props.dumResources[this.props.index].url,
+      new: this.props.dumResources[this.props.index].new,
+      display_on_website: this.props.dumResources[this.props.index].display_on_website,
       isDailogOpen: false,
     };
 
@@ -1172,6 +1190,15 @@ class EditResourceForm extends Component {
   };
 
   handleSubmit = () => {
+    const updatedResource = {
+      ...this.props.dumResources[this.props.index],
+      ...this.state,
+    };
+
+    delete updatedResource.isDailogOpen;
+
+    this.props.editResource(updatedResource);
+
     console.log('got values: ', this.state);
     this.handleFormClose();
   };
@@ -1404,9 +1431,14 @@ class EditResourceForm extends Component {
 
 }
 
-export default function Home() {
+export default function Home(props) {
   const classes = useStyles();
-  const curUser = dumUsers[0];
+  // const curUser = dumUsers[0];
+  const curUser = props.user;
+  const dumUsers = props.users;
+  const dumEvents = props.events;
+  const dumProjects = props.projects;
+  const dumResources = props.resources;
 
   const [eventPopOpen, setEventPopOpen] = React.useState(false);
   const toggleEventPop = () => setEventPopOpen(!eventPopOpen);
@@ -1425,8 +1457,8 @@ export default function Home() {
 
   const [isManageUserModal, setManageUserModal] = React.useState(false);
 
-  const [manageUser, setManageUser] = React.useState(dumUsers[0]);
-  const [orgManageUser, setOrgManageUser] = React.useState({});
+  // const [manageUser, setManageUser] = React.useState(dumUsers[0]);
+  // const [orgManageUser, setOrgManageUser] = React.useState({});
 
   // let manageUser = null;
 
@@ -1445,19 +1477,19 @@ export default function Home() {
   }
 
 
-  const initialiseManagedUser = (tUser) => {
-    // manageUser = new Object(tUser);
-    setManageUser(null);
-    setManageUser(tUser);
-    console.log('user selected: ', tUser);
-    // console.log('user selected: ', manageUser);
-    // console.log('urls: ', manageUser.url);
-  }
+  // const initialiseManagedUser = (tUser) => {
+  //   // manageUser = new Object(tUser);
+  //   setManageUser(null);
+  //   setManageUser(tUser);
+  //   console.log('user selected: ', tUser);
+  //   // console.log('user selected: ', manageUser);
+  //   // console.log('urls: ', manageUser.url);
+  // }
 
   const handleUserOpen = () => {
     setManageUserModal(true);
-    console.log('selected user: ', manageUser);
-    console.log('urls: ', manageUser.url);
+    // console.log('selected user: ', manageUser);
+    // console.log('urls: ', manageUser.url);
   };
 
   const handleUserClose = () => {
@@ -1475,85 +1507,85 @@ export default function Home() {
   // };
 
   const submitManageduser = (index) => {
-    const mUser = dumUsers[index];
-    mUser.display_on_website = displayUserState;
-    mUser.privelege_level = userPriv;
+    // const mUser = dumUsers[index];
+    // mUser.display_on_website = displayUserState;
+    // mUser.privelege_level = userPriv;
+    const editedUser = {
+      ...dumUsers[index],
+      dislay_on_website: displayUserState,
+      privelege_level: userPriv,
+    };
 
-    console.log('final user values: ', mUser);
+    props.editOtherUser(editedUser);
+    handleUserClose();
+
+    console.log('final user values: ', editedUser);
   };
 
   const cancelUserEdit = () => {
     handleUserClose();
     // manageUser = null;
-    setManageUser(dumUsers[0]);
+    // setManageUser(dumUsers[0]);
     // setOrgManageUser({
     //   initial: '',
     // });
   };
 
-  const [eventModalOpen, setEventModalOpen] = React.useState(false);
-  const handleEventModalOpen = () => {
-    setEventModalOpen(true);
-  };
-  const handleEventModalClose = () => {
-    setEventModalOpen(false);
-  };
+  // const [eventModalOpen, setEventModalOpen] = React.useState(false);
+  // const handleEventModalOpen = () => {
+  //   setEventModalOpen(true);
+  // };
+  // const handleEventModalClose = () => {
+  //   setEventModalOpen(false);
+  // };
 
-  const [projectModalOpen, setProjectModalOpen] = React.useState(false);
-  const handleProjectModalOpen = () => {
-    setProjectModalOpen(true);
-  };
-  const handleProjectModalClose = () => {
-    setProjectModalOpen(false);
-  };
+  // const [projectModalOpen, setProjectModalOpen] = React.useState(false);
+  // const handleProjectModalOpen = () => {
+  //   setProjectModalOpen(true);
+  // };
+  // const handleProjectModalClose = () => {
+  //   setProjectModalOpen(false);
+  // };
   
-  const [resourceModalOpen, setResourceModalOpen] = React.useState(false);
-  const handleResourceModalOpen = () => {
-    setResourceModalOpen(true);
-  };
-  const handleResourceModalClose = () => {
-    setResourceModalOpen(false);
-  };
+  // const [resourceModalOpen, setResourceModalOpen] = React.useState(false);
+  // const handleResourceModalOpen = () => {
+  //   setResourceModalOpen(true);
+  // };
+  // const handleResourceModalClose = () => {
+  //   setResourceModalOpen(false);
+  // };
  
-  const [displayEventState, setDisplayEventState] = React.useState(false);
-  const initializeDisplayEventState = (index) => {
-    setDisplayEventState(dumEvents[index].display_on_website);
-  }
-  const changeEventDisplayState = (event) => {
-    setDisplayEventState(event.target.checked);
-  }
+  // const [displayEventState, setDisplayEventState] = React.useState(false);
+  // const initializeDisplayEventState = (index) => {
+  //   setDisplayEventState(dumEvents[index].display_on_website);
+  // }
+  // const changeEventDisplayState = (event) => {
+  //   setDisplayEventState(event.target.checked);
+  // }
 
-  const [eventMember, setEventMember] = React.useState('');
-  const initializeEventMember = (index) => {
-    setEventMember(dumEvents[index].assignee);
-  };
-  const changeEventMember = (event) => {
-    setEventMember(event.target.value);
-  }
+  // const submitEventChanges = (index) => {
+  //   let e = dumEvents[index];
+  //   e.display_on_website = displayEventState;
+  //   e.assignee = eventMember;
 
-  const submitEventChanges = (index) => {
-    let e = dumEvents[index];
-    e.display_on_website = displayEventState;
-    e.assignee = eventMember;
+  //   console.log('submitted event changes');
+  // }
 
-    console.log('submitted event changes');
-  }
+  // const [projectDisplayState, setProjectDisplayState] = React.useState(false);
+  // const initializeProjectDisplayState = (index) => {
+  //   setProjectDisplayState(dumEvents[index].display_on_website);
+  // }
+  // const changeProjectDisplayState = (event) => {
+  //   setProjectDisplayState(event.target.checked);
+  // }
 
-  const [projectDisplayState, setProjectDisplayState] = React.useState(false);
-  const initializeProjectDisplayState = (index) => {
-    setProjectDisplayState(dumEvents[index].display_on_website);
-  }
-  const changeProjectDisplayState = (event) => {
-    setProjectDisplayState(event.target.checked);
-  }
-
-  const [resourceDisplayState, setResourceDisplayState] = React.useState(false);
-  const initializeResourceDisplayState = (index) => {
-    setResourceDisplayState(dumResources[index].display_on_website);
-  }
-  const changeResourceDisplayState = (event) => {
-    setResourceDisplayState(event.target.checked);
-  }
+  // const [resourceDisplayState, setResourceDisplayState] = React.useState(false);
+  // const initializeResourceDisplayState = (index) => {
+  //   setResourceDisplayState(dumResources[index].display_on_website);
+  // }
+  // const changeResourceDisplayState = (event) => {
+  //   setResourceDisplayState(event.target.checked);
+  // }
 
   const [eventDailogOpen, setEventDailogOpen] =  React.useState(false);
   const [projectDailogOpen, setProjectDailogOpen] =  React.useState(false);
@@ -1850,7 +1882,7 @@ export default function Home() {
                                 {
                                   curUser.privelege_level === 'Admin'
                                     ?
-                                    <EditEventForm index={index} />
+                                    <EditEventForm dumEvents={props.events} dumUsers={props.users} editEvent={props.editEvent} index={index} />
                                     : null
                                 }
                               </CardFooter>
@@ -1867,8 +1899,8 @@ export default function Home() {
           <Grid item xs={12} sm={6}>
             <Card className="btn" id="projectCard" onClick={handleProjectCardOpen}>
               <CardBody>
-                <CardTitle>{dumProjects.length}</CardTitle>
-                <CardText>5</CardText>
+                <CardTitle>Projects</CardTitle>
+                <CardText>{dumProjects.length}</CardText>
               </CardBody>
             </Card>
             <Dialog open={projectDailogOpen} maxWidth="sm" fullWidth onClose={handleProjectCardClose} scroll="paper">
@@ -2065,7 +2097,7 @@ export default function Home() {
                                 {
                                   curUser.privelege_level === 'Admin'
                                   ?
-                                  <EditProjectForm index={index} />
+                                  <EditProjectForm dumProjects={props.projects} dumUsers={props.users} editProject={props.editProject} index={index} />
                                   : null
                                 }
                               </CardFooter>
@@ -2223,7 +2255,7 @@ export default function Home() {
                                 {
                                   curUser.privelege_level === 'Admin'
                                   ?
-                                  <EditResourceForm index={index} />
+                                  <EditResourceForm dumResources={props.resources} dumUsers={props.users} editResource={props.editResource} index={index} />
                                   : null
                                 }
                               </CardFooter>
@@ -2447,7 +2479,7 @@ export default function Home() {
                                     curUser.privelege_level === 'Admin' && user.privelege_level !== 'Admin'
                                       ?
                                       <Button onClick={() => { 
-                                        initialiseManagedUser(user); 
+                                        // initialiseManagedUser(user); 
                                         initializeUserPriv(index);
                                         initializeDisplayState(index); 
                                         handleUserOpen(); 
@@ -2458,7 +2490,7 @@ export default function Home() {
                                       </Button>
                                       : null
                                   }
-                                  <Dialog open={isManageUserModal} maxWidth="sm" fullWidth onClose={() => { handleUserClose(); cancelUserEdit(); }} scroll="paper">
+                                  <Dialog open={isManageUserModal} maxWidth="sm" fullWidth onClose={() => { handleUserClose(); }} scroll="paper">
                                     <DialogTitle>
                                       <Typography variant="h4">
                                         Manage User
@@ -2490,15 +2522,6 @@ export default function Home() {
                                                 );
                                               })
                                             }
-                                            {/* {
-                                              user.url.entries().map((entry) => {
-                                                () => {
-                                                  return(
-                                                    <Typography variant='body1'>{`${entry.key}: `}<CardLink href={entry.value}>{url}</CardLink></Typography>
-                                                  )
-                                                }
-                                              })
-                                            } */}
                                           </CardText>
                                         </CardBody>
                                         <CardFooter>
@@ -2588,7 +2611,7 @@ export default function Home() {
                   className={classnames({ active: activeTaskTab === 'Upcoming' })}
                   onClick={() => toggleTask('Projects')}
                 >
-                  Pojects
+                  Projects
                 </NavLink>
               </NavItem>
             </Nav>
@@ -2646,6 +2669,7 @@ export default function Home() {
                                 </CardHeader>
                                 <CardBody>
                                   <CardTitle>
+                                    <Typography variant='h6'>{project.status}</Typography>
                                     <Typography variant='h6'>{`${project.start_date.toDateString()} - ${project.end_date.toDateString()}`}</Typography>
                                   </CardTitle>
                                   <CardText>

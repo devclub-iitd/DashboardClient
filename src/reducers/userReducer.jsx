@@ -1,12 +1,11 @@
 /* eslint-disable no-undef */
 import * as ActionTypes from '../actions/ActionTypes';
 
-export default Users = (state = {
+const Users = (state = {
   isLoading: true,
   errMess: null,
   user: null,
-  users: [],
-  unapprovedUsers: [],
+  allUsers: [],
 }, action) => {
   switch (action.type) {
     case ActionTypes.ADD_USER:
@@ -15,18 +14,16 @@ export default Users = (state = {
         isLoading: false,
         errMess: null,
         user: action.payload,
-        users: [],
-        unapprovedUsers: [],
+        allUsers: [],
       };
 
-    case ActionTypes.ADD_USERS:
+    case ActionTypes.ADD_ALL_USERS:
       return {
         ...state,
         isLoading: false,
         errMess: null,
         user: state.user,
-        users: action.payload,
-        unapprovedUsers: [],
+        allUsers: action.payload,
       };
 
     case ActionTypes.USER_LOADING:
@@ -35,8 +32,7 @@ export default Users = (state = {
         isLoading: true,
         errMess: null,
         user: null,
-        users: [],
-        unapprovedUsers: [],
+        allUsers: [],
       };
 
     case ActionTypes.USER_FAILED:
@@ -45,31 +41,30 @@ export default Users = (state = {
         isLoading: false,
         errMess: action.payload,
         user: null,
-        users: [],
-        unapprovedUsers: [],
+        allUsers: [],
       };
 
-    case ActionTypes.ADD_UNAPPROVED_USERS:
+    case ActionTypes.USERS_LOADING:
       return {
         ...state,
-        isLoading: false,
+        isLoading: true,
         errMess: null,
         user: state.user,
-        users: state.users,
-        unapprovedUsers: action.payload,
+        allUsers: [],
       };
 
-    case ActionTypes.UNAPPROVED_USERS_FAILED:
+    case ActionTypes.USERS_FAILED:
       return {
         ...state,
         isLoading: false,
         errMess: action.payload,
         user: state.user,
-        users: state.user,
-        unapprovedUsers: [],
+        allUsers: [],
       };
 
     default:
       return state;
   }
 };
+
+export default Users;

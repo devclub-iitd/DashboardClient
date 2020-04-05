@@ -13,7 +13,9 @@ import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { FormLabel } from '@material-ui/core';
+import { Redirect } from 'react-router-dom';
 import login from '../actions/loginActions';
+import { loginUser } from '../actions/userActions';
 
 function MadeWithLove() {
   return (
@@ -57,7 +59,29 @@ const styles = theme => ({
 });
 
 function SignInSide(props) {
-  const { classes, handleSubmit, errorMsg } = props;
+  const { classes, login, auth } = props;
+
+  const [uname, setUsername] = React.useState('');
+  const changeUsername = (event) => {
+    setUsername(event.target.value);
+  };
+
+  const [pass, setPassword] = React.useState('');
+  const changePassword = (event) => {
+    setPassword(event.target.value);
+  };
+
+  const handleSubmit = () => {
+    const creds = {
+      username: uname,
+      password: pass,
+    };
+    login(creds);
+  };
+
+  if (auth.isAuthenticated) {
+    return <Redirect to="/dashboard/home" />;
+  }
 
   return (
     <Grid container component="main" className={classes.root}>
@@ -80,9 +104,11 @@ function SignInSide(props) {
               margin="normal"
               required
               fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
+              id="username"
+              label="Username"
+              value={uname}
+              onChange={changeUsername}
+              name="username"
               autoFocus
             />
             <TextField
@@ -92,6 +118,8 @@ function SignInSide(props) {
               fullWidth
               name="password"
               label="Password"
+              value={pass}
+              onChange={changePassword}
               type="password"
               id="password"
             />
@@ -112,7 +140,7 @@ function SignInSide(props) {
               </Grid>
             </Grid>
             <FormLabel error>
-              {errorMsg}
+              {/* {errorMsg} */}
             </FormLabel>
             <Box mt={5}>
               {/* <MadeWithLove /> */}
@@ -127,16 +155,18 @@ function SignInSide(props) {
 
 SignInSide.propTypes = {
   classes: PropTypes.objectOf(PropTypes.string).isRequired,
-  handleSubmit: PropTypes.func.isRequired,
-  errorMsg: PropTypes.string.isRequired,
+  // errorMsg: PropTypes.string.isRequired,
+  login: PropTypes.func.isRequired,
+  auth: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({
-  errorMsg: state.loginReducer.errorMsg,
+  // errorMsg: state.loginReducer.errorMsg,
+  auth: state.Auth,
 });
 
 const mapDispatchToProps = dispatch => ({
-  handleSubmit: login(dispatch),
+  login: creds => dispatch(loginUser(creds)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(SignInSide));

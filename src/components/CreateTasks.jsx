@@ -217,6 +217,53 @@ export default function CreateTasks(props) {
     console.log('Values received: ', JSON.stringify(values));
   };
 
+  const submitEventForm = (values) => {
+    const urlMap = new Map();
+    urlFields.map(urlField => urlMap.set(urlField.type, urlField.url));
+    const newEvent = {
+      ...values,
+      start_date: startDate,
+      end_date: endDate,
+      display_on_website: displayState,
+      url: urlMap,
+      assignee: '',
+    };
+    console.log('event: ', newEvent);
+    props.createEvent(newEvent);
+    props.resetEventForm();
+  };
+
+  const submitProjectForm = (values) => {
+    const urlMap = new Map();
+    urlFields.map(urlField => urlMap.set(urlField.type, urlField.url));
+
+    const newProject = {
+      ...values,
+      members: [],
+      start_date: startDate,
+      end_date: endDate,
+      display_on_website: displayState,
+      is_internal: internalState,
+      labels: labelFields,
+      url: urlMap,
+    };
+    console.log('project: ', newProject);
+    props.createProject(newProject);
+    props.resetProjectForm();
+  };
+
+  const submitResourceForm = (values) => {
+    const newResource = {
+      ...values,
+      display_on_website: displayState,
+      archive: archiveState,
+      new: newState,
+    };
+    console.log('resource: ', newResource);
+    props.createResource(newResource);
+    props.resetResourceForm();
+  };
+
   return (
     <div>
 
@@ -251,7 +298,7 @@ export default function CreateTasks(props) {
                 {
                   itemType === 'event'
                     ? (
-                      <Form model="eventForm" onSubmit={values => handleSubmit(values)}>
+                      <Form model="eventForm" onSubmit={values => submitEventForm(values)}>
                         <Row className="form-group">
                           <Label htmlFor="name" md={4}><h6>Name of Event:</h6></Label>
                           <Col md={8}>
@@ -438,7 +485,7 @@ export default function CreateTasks(props) {
                 {
                   itemType === 'project'
                     ? (
-                      <Form model="projectForm" onSubmit={values => handleSubmit(values)}>
+                      <Form model="projectForm" onSubmit={values => submitProjectForm(values)}>
                         <Row className="form-group">
                           <Label htmlFor="name" md={4}><h6>Name of Project:</h6></Label>
                           <Col md={8}>
@@ -728,7 +775,7 @@ export default function CreateTasks(props) {
                 {
                   itemType === 'resource'
                     ? (
-                      <Form model="resourceForm" onSubmit={values => handleSubmit(values)}>
+                      <Form model="resourceForm" onSubmit={values => submitResourceForm(values)}>
                         <Row className="form-group">
                           <Label htmlFor="internal_name" md={4}><h6>Internal Name:</h6></Label>
                           <Col md={8}>
@@ -780,12 +827,12 @@ export default function CreateTasks(props) {
                           </Col>
                         </Row>
                         <Row className="form-group">
-                          <Label htmlFor="sub_directory" md={4}><h6>Sub-Directory:</h6></Label>
+                          <Label htmlFor="subdirectory" md={4}><h6>Sub-Directory:</h6></Label>
                           <Col md={8}>
                             <Control.text
-                              model=".sub_directory"
-                              id="sub_directory"
-                              name="sub_directory"
+                              model=".subdirectory"
+                              id="subdirectory"
+                              name="subdirectory"
                               placeholder="Sub-Directory*"
                               className="form-control"
                               validators={{
@@ -794,7 +841,7 @@ export default function CreateTasks(props) {
                             />
                             <Errors
                               className="text-danger"
-                              model=".sub_directory"
+                              model=".subdirectory"
                               show="touched"
                               messages={{
                                 required: 'Required ',

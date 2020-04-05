@@ -14,14 +14,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { FormLabel } from '@material-ui/core';
 import postRegister from '../actions/registerActions';
-
-const mapStateToProps = state => ({
-  errorMsg: state.registerReducer.errorMsg,
-});
-
-const mapDispatchToProps = dispatch => ({
-  postRegister: postRegister(dispatch),
-});
+import { registerUser } from '../actions/userActions';
 
 function MadeWithLove() {
   return (
@@ -84,15 +77,17 @@ class SignUp extends React.Component {
     const { target } = e;
 
     const body = {
+      username: target.uname.value,
       name: target.name.value,
       entryNumber: target.entrynumber.value,
       email: target.email.value,
       password: target.password.value,
     };
 
-    const { postRegister: postReg } = this.props;
+    const { register, registerUser } = this.props;
 
-    postReg(body);
+    registerUser(body);
+    // postReg(body);
   }
 
   handleChange(e, type) {
@@ -128,6 +123,17 @@ class SignUp extends React.Component {
                   fullWidth
                   id="name"
                   label="Name"
+                  autoFocus
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  name="uname"
+                  variant="outlined"
+                  required
+                  fullWidth
+                  id="uaname"
+                  label="Username"
                   autoFocus
                 />
               </Grid>
@@ -207,10 +213,22 @@ class SignUp extends React.Component {
   }
 }
 
+const mapStateToProps = state => ({
+  // errorMsg: state.registerReducer.errorMsg,
+  register: state.Register,
+});
+
+const mapDispatchToProps = dispatch => ({
+  // postRegister: postRegister(dispatch),
+  registerUser: registerCreds => dispatch(registerUser(registerCreds)),
+});
+
 SignUp.propTypes = {
-  classes: PropTypes.objectOf(PropTypes.string).isRequired,
-  postRegister: PropTypes.func.isRequired,
-  errorMsg: PropTypes.string.isRequired,
+  // classes: PropTypes.objectOf(PropTypes.string).isRequired,
+  // postRegister: PropTypes.func.isRequired,
+  // errorMsg: PropTypes.string.isRequired,
+  register: PropTypes.func.isRequired,
+  registerUser: PropTypes.func.isRequired,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(SignUp));

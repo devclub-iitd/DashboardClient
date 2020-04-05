@@ -22,9 +22,27 @@ import ChangePassword from '../components/ChangePassword';
 import ApproveUsers from '../components/ApproveUsers';
 import CreateTasks from '../components/CreateTasks';
 import AssignTasks from '../components/AssignTasks';
+import { Redirect } from 'react-router-dom';
 import {connect} from 'react-redux';
-import {fetchUserProfile} from '../redux/userActionCreator';
+import PropTypes from 'prop-types';
+// import {fetchUserProfile} from '../redux/userActionCreator';
 import { actions } from 'react-redux-form';
+import { 
+  fetchUser, fetchAllUsers, logoutUser,
+  updateUser, editOtherUser
+} from '../actions/userActions';
+import { 
+  fetchAllEvents, createEvent,
+  editEvent
+} from '../actions/eventActions';
+import {
+  fetchAllProjects, createProject,
+  editProject
+} from '../actions/projectActions';
+import {
+  fetchAllResources, createResource,
+  editResource
+} from '../actions/resourceActions';
 
 function MadeWithLove() {
   return (
@@ -123,27 +141,68 @@ const useStyles = makeStyles(theme => ({
 
 function renderPage(subPage, classProp, classPaper, props) {
   switch (subPage) {
-    case 'profile': return (<div><Profile /></div>);
-    case 'changePassword': return (<div><ChangePassword /></div>);
-    case 'approveUsers': return (<div><ApproveUsers /></div>);
-    case 'createTasks': return (<div><CreateTasks resetEventForm={props.resetEventForm} resetProjectForm={props.resetProjectForm} resetResourceForm={props.resetResourceForm}/></div>);
-    case 'assignTasks': return (<div><AssignTasks /></div>);
+    case 'profile':
+      return (
+        <div>
+          <Profile
+            user={props.users.user}
+            updateUser={props.updateUser}  
+          />
+        </div>
+      );
+    case 'changePassword':
+      return (
+        <div>
+          <ChangePassword />
+        </div>
+      );
+    // case 'approveUsers': return (<div><ApproveUsers /></div>);
+    case 'createTasks':
+      return (
+        <div>
+          <CreateTasks
+            resetEventForm={props.resetEventForm} 
+            resetProjectForm={props.resetProjectForm}
+            resetResourceForm={props.resetResourceForm}
+            createEvent={props.createEvent}
+            createProject={props.createProject}
+            createResource={props.createResource}
+          />
+        </div>
+      );
+    // case 'assignTasks': return (<div><AssignTasks /></div>);
     // default: return (<div><Home fixedHeightPaper={classProp} paperClass={classPaper} /></div>);
-    default: return (<div><Home/></div>);
+    default:
+      return (
+        <div>
+          <Home
+            events={props.events.allEvents}
+            projects={props.projects.allProjects}
+            resource={props.resources.allResources}
+            fetchUser={props.fetchUser}
+            user={props.users.user}
+            users={props.users.allUsers}
+            editEvent={props.editEvent}
+            editProject={props.editProject}
+            editResource={props.editResource}
+            editOtherUser={props.editOtherUser}
+          />
+        </div>
+      );
   }
 }
 
-const mapStateToProps = (state) => {
-  return {};
-};
-
-const mapDispatchToProps = (dispatch) => ({
-  resetEventForm: () => { dispatch(actions.reset('eventForm')) },
-  resetProjectForm: () => { dispatch(actions.reset('projectForm')) },
-  resetResourceForm: () => { dispatch(actions.reset('resourceForm')) },
-});
-
 function Dashboard(props) {
+
+  if(!props.auth.isAuthenticated) {
+    return <Redirect to="/login" />;
+  }
+
+  props.fetchUser();
+  props.fetchAllUsers();
+  props.fetchAllEvents();
+  props.fetchAllProjects();
+  props.fetchAllResources();
   
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
@@ -178,7 +237,7 @@ function Dashboard(props) {
             {subPage}
           </Typography>
           <IconButton color="inherit">
-            Welcome Anweshan!
+            Welcome {props.users.user.name}!
             <Badge badgeContent={4} color="secondary">
               <NotificationsIcon />
             </Badge>
@@ -212,5 +271,60 @@ function Dashboard(props) {
     </div>
   );
 }
+
+const mapStateToProps = (state) => {
+  return {
+    auth: state.Auth,
+    users: state.Users,
+    events: state.Events,
+    projects: state.Projects,
+    resources: state.Resources,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => ({
+  resetEventForm: () => { dispatch(actions.reset('eventForm')) },
+  resetProjectForm: () => { dispatch(actions.reset('projectForm')) },
+  resetResourceForm: () => { dispatch(actions.reset('resourceForm')) },
+  fetchUser: () => { dispatch(fetchUser) },
+  fetchAllUsers: () => { dispatch(fetchAllUsers) },
+  logoutUser: () => { dispatch(logoutUser) },
+  updateUser: (user) => { dispatch(updateUser(user)) },
+  editOtherUser: () => { dispatch(editOtherUser) },
+  fetchAllEvents: () => { dispatch(fetchAllEvents) },
+  createEvent: (newEvent) => { dispatch(createEvent(newEvent)) },
+  editEvent: (updatedEvent) => { dispatch(editEvent(updatedEvent)) },
+  fetchAllProjects: () => { dispatch(fetchAllProjects) },
+  createProject: (newProject) => { dispatch(createProject(newProject)) },
+  editProject: (updatedProject) => { dispatch(editProject(updatedProject)) },
+  fetchAllResources: () => { dispatch(fetchAllResources) },
+  createResource: (newResource) => { dispatch(createResource(newResource)) },
+  editResource: (updatedResource) => { dispatch(editResource(updatedResource)) },
+});
+
+Dashboard.propTypes = {
+  auth: PropTypes.func.isRequired,
+  users: PropTypes.func.isRequired,
+  events: PropTypes.func.isRequired,
+  projects: PropTypes.func.isRequired,
+  resources: PropTypes.func.isRequired,
+  resetEventForm: PropTypes.func.isRequired,
+  resetProjectForm: PropTypes.func.isRequired,
+  resetResourceForm: PropTypes.func.isRequired,
+  fetchUser: PropTypes.func.isRequired,
+  fetchAllUsers: PropTypes.func.isRequired,
+  logoutUser: PropTypes.func.isRequired,
+  updateUser: PropTypes.func.isRequired,
+  editOtherUser: PropTypes.func.isRequired,
+  fetchAllEvents: PropTypes.func.isRequired,
+  createEvent: PropTypes.func.isRequired,
+  editEvent: PropTypes.func.isRequired,
+  fetchAllProjects: PropTypes.func.isRequired,
+  createProject: PropTypes.func.isRequired,
+  editProject: PropTypes.func.isRequired,
+  fetchAllResources: PropTypes.func.isRequired,
+  createResource: PropTypes.func.isRequired,
+  editResource: PropTypes.func.isRequired,
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);

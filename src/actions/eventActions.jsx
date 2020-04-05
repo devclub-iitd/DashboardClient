@@ -1,0 +1,111 @@
+import * as ActionTypes from './ActionTypes';
+import * as API from '../data/api_links';
+
+export const addEvents = events => ({
+  type: ActionTypes.ADD_EVENTS,
+  payload: events,
+});
+
+export const eventsFailed = errmess => ({
+  type: ActionTypes.EVENTS_FAILED,
+  payload: errmess,
+});
+
+export const eventsLoading = () => ({
+  type: ActionTypes.EVENTS_LOADING,
+});
+
+export const fetchAllEvents = () => (dispatch) => {
+  dispatch(eventsLoading(true));
+
+  const bearer = `Bearer ${localStorage.getItem('token')}`;
+
+  return fetch(`${API.eventAPI}`, {
+    method: 'GET',
+    // body: JSON.stringify(newComment),
+    headers: {
+      'Content-Type': 'application/json',
+      // Origin: 'localhost:3001/',
+      Authorization: bearer,
+    },
+    credentials: 'same-origin',
+  })
+    .then((response) => {
+      if (response.ok) {
+        return response;
+      }
+      const error = new Error(`Error ${response.status}: ${response.statusText}`);
+      error.response = response;
+      console.log(error);
+      throw error;
+    },
+    (error) => {
+      const errmess = new Error(error.message);
+      throw errmess;
+    })
+    .then(response => response.json())
+    .then(events => dispatch(addEvents(events)))
+    .catch(error => dispatch(eventsFailed(error.message)));
+};
+
+export const createEvent = event => (dispatch) => {
+  const bearer = `Bearer ${localStorage.getItem('token')}`;
+
+  return fetch(`${API.eventAPI}`, {
+    method: 'POST',
+    body: JSON.stringify(event),
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: bearer,
+    },
+    credentials: 'same-origin',
+  })
+    .then((response) => {
+      if (response.ok) {
+        return response;
+      }
+      const error = new Error(`Error ${response.status}: ${response.statusText}`);
+      error.response = response;
+      throw error;
+    },
+    (error) => {
+      throw error;
+    })
+    .then(response => response.json())
+    .then((cEvent) => {
+      console.log('New Event: ', cEvent);
+      dispatch(fetchAllEvents());
+    })
+    .catch(error => console.log(error));
+};
+
+export const editEvent = event => (dispatch) => {
+  const bearer = `Bearer ${localStorage.getItem('token')}`;
+
+  return fetch(`${API.eventAPI}`, {
+    method: 'PUT',
+    body: JSON.stringify(event),
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: bearer,
+    },
+    credentials: 'same-origin',
+  })
+    .then((response) => {
+      if (response.ok) {
+        return response;
+      }
+      const error = new Error(`Error ${response.status}: ${response.statusText}`);
+      error.response = response;
+      throw error;
+    },
+    (error) => {
+      throw error;
+    })
+    .then(response => response.json())
+    .then((cEvent) => {
+      console.log('Updated Event: ', cEvent);
+      dispatch(fetchAllEvents());
+    })
+    .catch(error => console.log(error));
+};
