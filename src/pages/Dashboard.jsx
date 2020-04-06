@@ -258,7 +258,7 @@ function Dashboard(props) {
         </div>
         <Divider />
         <List>
-          <MainListItems />
+          <MainListItems logout={props.logoutUser} />
         </List>
       </Drawer>
       <main className={classes.content}>
@@ -286,18 +286,18 @@ const mapDispatchToProps = (dispatch) => ({
   resetEventForm: () => { dispatch(actions.reset('eventForm')) },
   resetProjectForm: () => { dispatch(actions.reset('projectForm')) },
   resetResourceForm: () => { dispatch(actions.reset('resourceForm')) },
-  fetchUser: () => { dispatch(fetchUser) },
-  fetchAllUsers: () => { dispatch(fetchAllUsers) },
-  logoutUser: () => { dispatch(logoutUser) },
+  fetchUser: () => { dispatch(fetchUser()) },
+  fetchAllUsers: () => { dispatch(fetchAllUsers()) },
+  logoutUser: () => { dispatch(logoutUser()) },
   updateUser: (user) => { dispatch(updateUser(user)) },
-  editOtherUser: () => { dispatch(editOtherUser) },
-  fetchAllEvents: () => { dispatch(fetchAllEvents) },
+  editOtherUser: () => { dispatch(editOtherUser()) },
+  fetchAllEvents: () => { dispatch(fetchAllEvents()) },
   createEvent: (newEvent) => { dispatch(createEvent(newEvent)) },
   editEvent: (updatedEvent) => { dispatch(editEvent(updatedEvent)) },
-  fetchAllProjects: () => { dispatch(fetchAllProjects) },
+  fetchAllProjects: () => { dispatch(fetchAllProjects()) },
   createProject: (newProject) => { dispatch(createProject(newProject)) },
   editProject: (updatedProject) => { dispatch(editProject(updatedProject)) },
-  fetchAllResources: () => { dispatch(fetchAllResources) },
+  fetchAllResources: () => { dispatch(fetchAllResources()) },
   createResource: (newResource) => { dispatch(createResource(newResource)) },
   editResource: (updatedResource) => { dispatch(editResource(updatedResource)) },
 });

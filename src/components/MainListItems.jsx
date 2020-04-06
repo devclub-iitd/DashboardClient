@@ -11,8 +11,14 @@ import PersonIcon from '@material-ui/icons/Person';
 import VpnKeyIcon from '@material-ui/icons/VpnKey';
 import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt';
 import AddBoxIcon from '@material-ui/icons/AddBox';
+import ExitToAppOutlinedIcon from '@material-ui/icons/ExitToAppOutlined';
 import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
 import { withRouter } from 'react-router-dom';
+import { logoutUser } from '../actions/userActions';
+
+// const mapDispatchToProps = dispatch => {
+//   logout: () => { dispatch(logoutUser()) },
+// };
 
 function MainListItems(props) {
   const redirectFunc = subPath => () => {
@@ -50,6 +56,12 @@ function MainListItems(props) {
           <AddBoxIcon />
         </ListItemIcon>
         <ListItemText primary="Create Tasks" />
+      </ListItem>
+      <ListItem button onClick={() => props.logout()}>
+        <ListItemIcon>
+          <ExitToAppOutlinedIcon />
+        </ListItemIcon>
+        <ListItemText primary="Logout" />
       </ListItem>
       {/* <ListItem button onClick={redirectFunc('assignTasks')}>
         <ListItemIcon>
