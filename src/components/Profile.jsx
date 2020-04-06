@@ -172,6 +172,12 @@ const Profile = (props) => {
   //   updated_by: null,
   //   privelege_level: 'Approved_User',
   // });
+  if (props.error) {
+    return (
+      <h3>Could not fetch user info!!</h3>
+    );
+  }
+
   const [user, setUser] = React.useState(props.user);
 
   const [userOrg, setUserOrg] = React.useState(user);

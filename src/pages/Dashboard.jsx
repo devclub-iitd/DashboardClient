@@ -146,6 +146,7 @@ function renderPage(subPage, classProp, classPaper, props) {
         <div>
           <Profile
             user={props.users.user}
+            error={props.users.errMess}
             updateUser={props.updateUser}  
           />
         </div>
@@ -176,12 +177,12 @@ function renderPage(subPage, classProp, classPaper, props) {
       return (
         <div>
           <Home
-            events={props.events.allEvents}
-            projects={props.projects.allProjects}
-            resource={props.resources.allResources}
+            events={props.events}
+            projects={props.projects}
+            resources={props.resources}
             fetchUser={props.fetchUser}
             user={props.users.user}
-            users={props.users.allUsers}
+            users={props.users}
             editEvent={props.editEvent}
             editProject={props.editProject}
             editResource={props.editResource}

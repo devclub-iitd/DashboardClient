@@ -1434,7 +1434,7 @@ class EditResourceForm extends Component {
 export default function Home(props) {
   const classes = useStyles();
   // const curUser = dumUsers[0];
-  const curUser = props.users.user;
+  const curUser = props.user;
   const dumUsers = props.users.allUsers;
   const dumEvents = props.events.allEvents;
   const dumProjects = props.projects.allProjects;
