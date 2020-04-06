@@ -19,7 +19,8 @@ import * as ActionTypes from '../actions/ActionTypes';
 // we would also want a util to check if the token is expired.
 export default function Auth(state = {
   isLoading: false,
-  isAuthenticated: (localStorage.getItem('token') != null),
+  // isAuthenticated: (localStorage.getItem('token') != null),
+  isAuthenticated: true,
   token: localStorage.getItem('token'),
   user: localStorage.getItem('creds') ? JSON.parse(localStorage.getItem('creds')) : null,
   errMess: null,

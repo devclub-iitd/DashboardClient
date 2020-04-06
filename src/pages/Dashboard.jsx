@@ -195,15 +195,15 @@ function renderPage(subPage, classProp, classPaper, props) {
 
 function Dashboard(props) {
 
-  if(!props.auth.isAuthenticated) {
-    return <Redirect to="/login" />;
-  }
+  // if(!props.auth.isAuthenticated) {
+  //   return <Redirect to="/login" />;
+  // }
 
-  props.fetchUser();
-  props.fetchAllUsers();
-  props.fetchAllEvents();
-  props.fetchAllProjects();
-  props.fetchAllResources();
+  // props.fetchUser();
+  // props.fetchAllUsers();
+  // props.fetchAllEvents();
+  // props.fetchAllProjects();
+  // props.fetchAllResources();
   
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);

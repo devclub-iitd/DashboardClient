@@ -1,11 +1,12 @@
 /* eslint-disable no-undef */
 import * as ActionTypes from '../actions/ActionTypes';
+import dumUsers from '../components/dumUser';
 
 const Users = (state = {
   isLoading: true,
   errMess: null,
-  user: null,
-  allUsers: [],
+  user: dumUsers[0],
+  allUsers: dumUsers,
 }, action) => {
   switch (action.type) {
     case ActionTypes.ADD_USER:

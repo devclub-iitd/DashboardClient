@@ -1,11 +1,12 @@
 /* eslint-disable no-undef */
 import * as ActionTypes from '../actions/ActionTypes';
+import dumProjects from '../components/dumProjects';
 
 const Projects = (
   state = {
     isLoading: true,
     errMess: null,
-    allProjects: [],
+    allProjects: dumProjects,
   },
   action,
 ) => {

@@ -98,84 +98,84 @@ function SignInSide(props) {
     );
   }
 
-    return (
-      <Grid container component="main" className={classes.root}>
-        <Snackbar
-          anchorOrigin={{
-            vertical: 'top',
-            horizontal: 'center',
-          }}
-          open={auth.errMess !== null}
-          autoHideDuration={2000}
-          message="Login Error !!! Try again"
-        />
-        <CssBaseline />
-        <Grid item xs={false} sm={4} md={7} className={classes.image} />
-        <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
-          <div className={classes.paper}>
-            <Typography className="h1" variant="h3">
+  return (
+    <Grid container component="main" className={classes.root}>
+      <Snackbar
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
+        }}
+        open={auth.errMess !== null}
+        autoHideDuration={2000}
+        message="Login Error !!! Try again"
+      />
+      <CssBaseline />
+      <Grid item xs={false} sm={4} md={7} className={classes.image} />
+      <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
+        <div className={classes.paper}>
+          <Typography className="h1" variant="h3">
             Club DashBoard
-            </Typography>
-            <Avatar className={classes.avatar}>
-              <LockOutlinedIcon />
-            </Avatar>
-            <Typography component="h2" variant="h5">
+          </Typography>
+          <Avatar className={classes.avatar}>
+            <LockOutlinedIcon />
+          </Avatar>
+          <Typography component="h2" variant="h5">
             Sign in
-            </Typography>
-            <form className={classes.form} onSubmit={handleSubmit}>
-              <TextField
-                variant="outlined"
-                margin="normal"
-                required
-                fullWidth
-                id="username"
-                label="Username"
-                value={uname}
-                onChange={changeUsername}
-                name="username"
-                autoFocus
-              />
-              <TextField
-                variant="outlined"
-                margin="normal"
-                required
-                fullWidth
-                name="password"
-                label="Password"
-                value={pass}
-                onChange={changePassword}
-                type="password"
-                id="password"
-              />
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                color="primary"
-                className={classes.submit}
-              >
+          </Typography>
+          <form className={classes.form} onSubmit={handleSubmit}>
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              id="username"
+              label="Username"
+              value={uname}
+              onChange={changeUsername}
+              name="username"
+              autoFocus
+            />
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              name="password"
+              label="Password"
+              value={pass}
+              onChange={changePassword}
+              type="password"
+              id="password"
+            />
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              className={classes.submit}
+            >
               Sign In
-              </Button>
-              <Grid container>
-                <Grid item>
-                  <Link href="/register" variant="body2">
-                 {"Don't have an account? Sign Up"}
-               </Link>
-                </Grid>
+            </Button>
+            <Grid container>
+              <Grid item>
+                <Link href="/register" variant="body2">
+                  {"Don't have an account? Sign Up"}
+                </Link>
               </Grid>
-              <FormLabel error>
-                {/* {errorMsg} */}
-              </FormLabel>
-              <Box mt={5}>
-                {/* <MadeWithLove /> */}
-              </Box>
-            </form>
-          </div>
-        </Grid>
+            </Grid>
+            <FormLabel error>
+              {/* {errorMsg} */}
+            </FormLabel>
+            <Box mt={5}>
+              {/* <MadeWithLove /> */}
+            </Box>
+          </form>
+        </div>
       </Grid>
-    );
-  }
+    </Grid>
+  );
 }
+// };
 
 
 SignInSide.propTypes = {
