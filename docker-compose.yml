@@ -25,8 +25,4 @@ networks:
   reverseproxy:
     external:
       name: "reverseproxy"
-<<<<<<< HEAD
   internal:
-=======
-  internal:
->>>>>>> 59022dc59f5e34d91611fe93dd6cf6955497ae22
