@@ -1434,11 +1434,11 @@ class EditResourceForm extends Component {
 export default function Home(props) {
   const classes = useStyles();
   // const curUser = dumUsers[0];
-  const curUser = props.user;
-  const dumUsers = props.users;
-  const dumEvents = props.events;
-  const dumProjects = props.projects;
-  const dumResources = props.resources;
+  const curUser = props.users.user;
+  const dumUsers = props.users.allUsers;
+  const dumEvents = props.events.allEvents;
+  const dumProjects = props.projects.allProjects;
+  const dumResources = props.resources.allResources;
 
   const [eventPopOpen, setEventPopOpen] = React.useState(false);
   const toggleEventPop = () => setEventPopOpen(!eventPopOpen);
@@ -1457,11 +1457,6 @@ export default function Home(props) {
 
   const [isManageUserModal, setManageUserModal] = React.useState(false);
 
-  // const [manageUser, setManageUser] = React.useState(dumUsers[0]);
-  // const [orgManageUser, setOrgManageUser] = React.useState({});
-
-  // let manageUser = null;
-
   const [displayUserState, setDisplayUserState] = React.useState(false);
   const initializeDisplayState = (index) => {
     setDisplayUserState(dumUsers[index].display_on_website);
@@ -1476,20 +1471,8 @@ export default function Home(props) {
     setUserPriv(dumUsers[index].privelege_level);
   }
 
-
-  // const initialiseManagedUser = (tUser) => {
-  //   // manageUser = new Object(tUser);
-  //   setManageUser(null);
-  //   setManageUser(tUser);
-  //   console.log('user selected: ', tUser);
-  //   // console.log('user selected: ', manageUser);
-  //   // console.log('urls: ', manageUser.url);
-  // }
-
   const handleUserOpen = () => {
     setManageUserModal(true);
-    // console.log('selected user: ', manageUser);
-    // console.log('urls: ', manageUser.url);
   };
 
   const handleUserClose = () => {
@@ -1501,15 +1484,7 @@ export default function Home(props) {
     console.log('privelege set to: ', userPriv);
   }
 
-  // const [displayUserState, setDisplayUserState] = React.useState(false);
-  // const changeDisplayState = (event) => {
-  //   setDisplayUserState(event.target.checked);
-  // };
-
   const submitManageduser = (index) => {
-    // const mUser = dumUsers[index];
-    // mUser.display_on_website = displayUserState;
-    // mUser.privelege_level = userPriv;
     const editedUser = {
       ...dumUsers[index],
       dislay_on_website: displayUserState,
@@ -1524,68 +1499,7 @@ export default function Home(props) {
 
   const cancelUserEdit = () => {
     handleUserClose();
-    // manageUser = null;
-    // setManageUser(dumUsers[0]);
-    // setOrgManageUser({
-    //   initial: '',
-    // });
   };
-
-  // const [eventModalOpen, setEventModalOpen] = React.useState(false);
-  // const handleEventModalOpen = () => {
-  //   setEventModalOpen(true);
-  // };
-  // const handleEventModalClose = () => {
-  //   setEventModalOpen(false);
-  // };
-
-  // const [projectModalOpen, setProjectModalOpen] = React.useState(false);
-  // const handleProjectModalOpen = () => {
-  //   setProjectModalOpen(true);
-  // };
-  // const handleProjectModalClose = () => {
-  //   setProjectModalOpen(false);
-  // };
-  
-  // const [resourceModalOpen, setResourceModalOpen] = React.useState(false);
-  // const handleResourceModalOpen = () => {
-  //   setResourceModalOpen(true);
-  // };
-  // const handleResourceModalClose = () => {
-  //   setResourceModalOpen(false);
-  // };
- 
-  // const [displayEventState, setDisplayEventState] = React.useState(false);
-  // const initializeDisplayEventState = (index) => {
-  //   setDisplayEventState(dumEvents[index].display_on_website);
-  // }
-  // const changeEventDisplayState = (event) => {
-  //   setDisplayEventState(event.target.checked);
-  // }
-
-  // const submitEventChanges = (index) => {
-  //   let e = dumEvents[index];
-  //   e.display_on_website = displayEventState;
-  //   e.assignee = eventMember;
-
-  //   console.log('submitted event changes');
-  // }
-
-  // const [projectDisplayState, setProjectDisplayState] = React.useState(false);
-  // const initializeProjectDisplayState = (index) => {
-  //   setProjectDisplayState(dumEvents[index].display_on_website);
-  // }
-  // const changeProjectDisplayState = (event) => {
-  //   setProjectDisplayState(event.target.checked);
-  // }
-
-  // const [resourceDisplayState, setResourceDisplayState] = React.useState(false);
-  // const initializeResourceDisplayState = (index) => {
-  //   setResourceDisplayState(dumResources[index].display_on_website);
-  // }
-  // const changeResourceDisplayState = (event) => {
-  //   setResourceDisplayState(event.target.checked);
-  // }
 
   const [eventDailogOpen, setEventDailogOpen] =  React.useState(false);
   const [projectDailogOpen, setProjectDailogOpen] =  React.useState(false);
@@ -1728,6 +1642,15 @@ export default function Home(props) {
                 <TabContent activeTab={activeTab}>
                   <TabPane tabId='Ongoing'>
                     {
+                      props.events.errMess !== null
+                      ?
+                      <div>
+                        <h4>Failed to fetch Events</h4>
+                        <h4>{props.events.errMess}</h4>
+                      </div>
+                      : null
+                    }
+                    {
                       <ListGroup>
                         {
                           dumEvents.filter((event) => isOngoing(event.start_date, event.end_date)).map((event, index) => {
@@ -1767,6 +1690,15 @@ export default function Home(props) {
                   </TabPane>
                   <TabPane tabId='Upcoming'>
                     {
+                      props.events.errMess !== null
+                      ?
+                      <div>
+                        <h4>Failed to fetch Events</h4>
+                        <h4>{props.events.errMess}</h4>
+                      </div>
+                      : null
+                    }
+                    {
                       <ListGroup>
                         {
                           dumEvents.filter((event) => isUpcoming(event.start_date)).map((event, index) => {
@@ -1805,6 +1737,15 @@ export default function Home(props) {
                     }
                   </TabPane>
                   <TabPane tabId='Completed'>
+                    {
+                      props.events.errMess !== null
+                      ?
+                      <div>
+                        <h4>Failed to fetch Events</h4>
+                        <h4>{props.events.errMess}</h4>
+                      </div>
+                      : null
+                    }
                     {
                       <ListGroup>
                         {
@@ -1882,7 +1823,7 @@ export default function Home(props) {
                                 {
                                   curUser.privelege_level === 'Admin'
                                     ?
-                                    <EditEventForm dumEvents={props.events} dumUsers={props.users} editEvent={props.editEvent} index={index} />
+                                    <EditEventForm dumEvents={dumEvents} dumUsers={dumUsers} editEvent={props.editEvent} index={index} />
                                     : null
                                 }
                               </CardFooter>
@@ -1939,6 +1880,15 @@ export default function Home(props) {
                 <TabContent activeTab={activeTab}>
                   <TabPane tabId='Ongoing'>
                     {
+                      props.projects.errMess !== null
+                      ?
+                      <div>
+                        <h4>Failed to fetch Projects</h4>
+                        <h4>{props.projects.errMess}</h4>
+                      </div>
+                      : null
+                    }
+                    {
                       <ListGroup>
                         {
                           dumProjects.filter((project) => project.status === 'ONGOING').map((project, index) => {
@@ -1981,6 +1931,15 @@ export default function Home(props) {
                   </TabPane>
                   <TabPane tabId='Upcoming'>
                     {
+                      props.projects.errMess !== null
+                      ?
+                      <div>
+                        <h4>Failed to fetch Projects</h4>
+                        <h4>{props.projects.errMess}</h4>
+                      </div>
+                      : null
+                    }
+                    {
                       <ListGroup>
                         {
                           dumProjects.filter((project) => project.status === 'IDEA').map((project, index) => {
@@ -2022,6 +1981,15 @@ export default function Home(props) {
                     }
                   </TabPane>
                   <TabPane tabId='Completed'>
+                    {
+                      props.projects.errMess !== null
+                      ?
+                      <div>
+                        <h4>Failed to fetch Projects</h4>
+                        <h4>{props.projects.errMess}</h4>
+                      </div>
+                      : null
+                    }
                     {
                       <ListGroup>
                         {
@@ -2097,7 +2065,7 @@ export default function Home(props) {
                                 {
                                   curUser.privelege_level === 'Admin'
                                   ?
-                                  <EditProjectForm dumProjects={props.projects} dumUsers={props.users} editProject={props.editProject} index={index} />
+                                  <EditProjectForm dumProjects={dumProjects} dumUsers={dumUsers} editProject={props.editProject} index={index} />
                                   : null
                                 }
                               </CardFooter>
@@ -2146,6 +2114,15 @@ export default function Home(props) {
                 <TabContent activeTab={activeTab}>
                   <TabPane tabId='Completed'>
                     {
+                      props.resources.errMess !== null
+                      ?
+                      <div>
+                        <h4>Failed to fetch Resources</h4>
+                        <h4>{props.resources.errMess}</h4>
+                      </div>
+                      : null
+                    }
+                    {
                       <ListGroup>
                         {
                           dumResources.filter((res) => res.archive).map((res, index) => {
@@ -2183,6 +2160,15 @@ export default function Home(props) {
                     }
                   </TabPane>
                   <TabPane tabId='Ongoing'>
+                    {
+                      props.resources.errMess !== null
+                      ?
+                      <div>
+                        <h4>Failed to fetch Resources</h4>
+                        <h4>{props.resources.errMess}</h4>
+                      </div>
+                      : null
+                    }
                     {
                       <ListGroup>
                         {
@@ -2255,7 +2241,7 @@ export default function Home(props) {
                                 {
                                   curUser.privelege_level === 'Admin'
                                   ?
-                                  <EditResourceForm dumResources={props.resources} dumUsers={props.users} editResource={props.editResource} index={index} />
+                                  <EditResourceForm dumResources={dumResources} dumUsers={dumUsers} editResource={props.editResource} index={index} />
                                   : null
                                 }
                               </CardFooter>
@@ -2312,6 +2298,15 @@ export default function Home(props) {
                 <TabContent activeTab={activeTab}>
                   <TabPane tabId='Ongoing'>
                     {
+                      props.users.errMess !== null
+                      ?
+                      <div>
+                        <h4>Failed to fetch Resources</h4>
+                        <h4>{props.users.errMess}</h4>
+                      </div>
+                      : null
+                    }
+                    {
                       <ListGroup>
                         {
                           dumUsers.filter((user) => user.privelege_level === 'Admin').map((user, index) => {
@@ -2356,6 +2351,15 @@ export default function Home(props) {
                   </TabPane>
                   <TabPane tabId='Upcoming'>
                     {
+                      props.users.errMess !== null
+                      ?
+                      <div>
+                        <h4>Failed to fetch Resources</h4>
+                        <h4>{props.users.errMess}</h4>
+                      </div>
+                      : null
+                    }
+                    {
                       <ListGroup>
                         {
                           dumUsers.filter((user) => user.privelege_level === 'Approved_User').map((user, index) => {
@@ -2399,6 +2403,15 @@ export default function Home(props) {
                     }
                   </TabPane>
                   <TabPane tabId='Completed'>
+                    {
+                      props.users.errMess !== null
+                      ?
+                      <div>
+                        <h4>Failed to fetch Resources</h4>
+                        <h4>{props.users.errMess}</h4>
+                      </div>
+                      : null
+                    }
                     {
                       <ListGroup>
                         {
