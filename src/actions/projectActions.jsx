@@ -16,7 +16,7 @@ export const projectsLoading = () => ({
 });
 
 export const fetchAllProjects = () => (dispatch) => {
-  dispatch(projectsLoading(true));
+  // dispatch(projectsLoading(true));
 
   const bearer = `Bearer ${localStorage.getItem('token')}`;
 
@@ -26,7 +26,7 @@ export const fetchAllProjects = () => (dispatch) => {
     headers: {
       'Content-Type': 'application/json',
       // Origin: 'localhost:3001/',
-      Authorization: bearer,
+      // Authorization: bearer,
     },
     credentials: 'same-origin',
   })
@@ -44,7 +44,15 @@ export const fetchAllProjects = () => (dispatch) => {
       throw errmess;
     })
     .then(response => response.json())
-    .then(projects => dispatch(addProjects(projects)))
+    .then((projects) => {
+      const gotProjects = projects.data;
+      const allProjects = gotProjects.map(pro => ({
+        ...pro,
+        start_date: pro.start_date === null ? new Date() : new Date(pro.start_date),
+        end_date: pro.end_date === null ? new Date() : new Date(pro.end_date),
+      }));
+      dispatch(addProjects(allProjects));
+    })
     .catch(error => dispatch(projectsFailed(error.message)));
 };
 

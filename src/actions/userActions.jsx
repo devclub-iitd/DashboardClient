@@ -108,22 +108,30 @@ export const fetchUser = () => (dispatch) => {
       throw errmess;
     })
     .then(response => response.json())
-    .then(user => dispatch(addUser(user)))
+    .then((user) => {
+      const acUser = {
+        ...user,
+        join_year: new Date(user.join_year),
+        grad_year: new Date(user.grad_year),
+        birth_date: new Date(user.birth_date),
+      };
+      dispatch(addUser(acUser));
+    })
     .catch(error => dispatch(userFailed(error.message)));
 };
 
 export const fetchAllUsers = () => (dispatch) => {
   dispatch(usersLoading(true));
 
-  const bearer = `Bearer ${localStorage.getItem('token')}`;
+  // const bearer = `Bearer ${localStorage.getItem('token')}`;
 
-  return fetch(`${API.userAPI}all`, {
+  return fetch(`${API.userAPI}`, {
     method: 'GET',
     // body: JSON.stringify(newComment),
     headers: {
       'Content-Type': 'application/json',
       // Origin: 'localhost:3001/',
-      Authorization: bearer,
+      // Authorization: bearer,
     },
     credentials: 'same-origin',
   })
@@ -141,7 +149,16 @@ export const fetchAllUsers = () => (dispatch) => {
       throw errmess;
     })
     .then(response => response.json())
-    .then(users => dispatch(addAllUsers(users)))
+    .then((users) => {
+      const gotUsers = users.data;
+      const allUsers = gotUsers.map(cUser => ({
+        ...cUser,
+        join_year: cUser.join_year === null ? new Date() : new Date(cUser.join_year),
+        grad_year: cUser.grad_year === null ? new Date() : new Date(cUser.grad_year),
+        birth_date: cUser.birth_date === null ? new Date() : new Date(cUser.birth_date),
+      }));
+      dispatch(addAllUsers(allUsers));
+    })
     .catch(error => dispatch(usersFailed(error.message)));
 };
 

@@ -16,7 +16,7 @@ export const eventsLoading = () => ({
 });
 
 export const fetchAllEvents = () => (dispatch) => {
-  dispatch(eventsLoading(true));
+  // dispatch(eventsLoading(true));
 
   const bearer = `Bearer ${localStorage.getItem('token')}`;
 
@@ -26,7 +26,7 @@ export const fetchAllEvents = () => (dispatch) => {
     headers: {
       'Content-Type': 'application/json',
       // Origin: 'localhost:3001/',
-      Authorization: bearer,
+      // Authorization: bearer,
     },
     credentials: 'same-origin',
   })
@@ -44,7 +44,15 @@ export const fetchAllEvents = () => (dispatch) => {
       throw errmess;
     })
     .then(response => response.json())
-    .then(events => dispatch(addEvents(events)))
+    .then((events) => {
+      const gotEvents = events.data;
+      const allEvents = gotEvents.map(event => ({
+        ...event,
+        start_date: event.start_date === null ? new Date() : new Date(event.start_date),
+        end_date: event.end_date === null ? new Date() : new Date(event.end_date),
+      }));
+      dispatch(addEvents(allEvents));
+    })
     .catch(error => dispatch(eventsFailed(error.message)));
 };
 

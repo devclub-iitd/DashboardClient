@@ -16,7 +16,7 @@ export const resourcesLoading = () => ({
 });
 
 export const fetchAllResources = () => (dispatch) => {
-  dispatch(resourcesLoading(true));
+  // dispatch(resourcesLoading(true));
 
   const bearer = `Bearer ${localStorage.getItem('token')}`;
 
@@ -26,7 +26,7 @@ export const fetchAllResources = () => (dispatch) => {
     headers: {
       'Content-Type': 'application/json',
       // Origin: 'localhost:3001/',
-      Authorization: bearer,
+      // Authorization: bearer,
     },
     credentials: 'same-origin',
   })
@@ -44,7 +44,7 @@ export const fetchAllResources = () => (dispatch) => {
       throw errmess;
     })
     .then(response => response.json())
-    .then(resources => dispatch(addResources(resources)))
+    .then(resources => dispatch(addResources(resources.data)))
     .catch(error => dispatch(resourcesFailed(error.message)));
 };
 

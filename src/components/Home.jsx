@@ -188,7 +188,7 @@ class EditEventForm extends Component {
   };
 
   handleAddUrlFields = () => {
-    const urlVals = this.state.url;
+    const urlVals = new Map(this.state.url);
     urlVals.set('type', 'url');
     this.setState({
       ...this.state,
@@ -1431,6 +1431,171 @@ class EditResourceForm extends Component {
 
 }
 
+class EditOtherUserForm extends Component {
+  constructor (props) {
+    super(props);
+
+    this.state = {
+      user: this.props.dumUsers[this.props.index],
+      isDailogOpen: false,
+      // privelege_level: this.state.dumUsers[this.props.index].privelege_level,
+      // display_on_website: this.state.dumUsers[this.props.index].display_on_website,
+    };
+
+    this.changeDisplayState = this.changeDisplayState.bind(this);
+    this.changePrivLevel = this.changePrivLevel.bind(this);
+    this.handleFormOpen = this.handleFormOpen.bind(this);
+    this.handleFormClose = this.handleFormClose.bind(this);
+    this.cancelUserEdit = this.cancelUserEdit.bind(this);
+  }
+
+  changeDisplayState = (event) => {
+    this.setState({
+      ...this.state,
+      user: {
+        ...this.state.user,
+        display_on_website: event.target.value,
+      },
+    });
+  };
+
+  changePrivLevel = (event) => {
+    this.setState({
+      ...this.state,
+      user: {
+        ...this.state.user,
+        privelege_level: event.target.value,
+      },
+    });
+  };
+
+  handleFormOpen = () => {
+    this.setState({
+      ...this.state,
+      isDailogOpen: true,
+    });
+  };
+
+  handleFormClose = () => {
+    this.setState({
+      ...this.state,
+      isDailogOpen: false,
+    });
+  };
+
+  cancelUserEdit = () => {
+    this.handleFormClose();
+  };
+
+  handleSubmit = () => {
+
+  }
+
+  render() {
+    return(
+      <div>
+        <Button onClick={() => { 
+          this.handleFormOpen(); 
+        }} 
+          color="primary"
+        >
+          Edit User
+        </Button>
+          <Dialog open={this.state.isDailogOpen} maxWidth="sm" fullWidth onClose={this.handleFormClose} scroll="paper">
+            <DialogTitle>
+              <Typography variant="h4">
+                Manage User
+              </Typography>
+            </DialogTitle>
+            <DialogContent>
+              <Card>
+                <CardHeader>
+                  <Typography variant='h2'>{this.state.user.name}</Typography>
+                </CardHeader>
+                <CardBody>
+                  <CardTitle>
+                    <Typography variant='h5'>{this.state.user.entry_no}</Typography>
+                  </CardTitle>
+                  <CardSubtitle>
+                    <Typography variant='h6'>{this.state.user.category}</Typography>
+                  </CardSubtitle>
+                  <CardText>
+                    <Typography variant='body1'>{this.state.user.intro}</Typography>
+                    <Typography variant='body1'>{`Interests: ${this.state.user.interests}`}</Typography>
+                    <Typography variant='body1'>{`Specializations: ${this.state.user.specializations}`}</Typography>
+                    <Typography variant='body1'>{`Hostel: ${this.state.user.hostel}`}</Typography>
+                    <Typography variant='caption'>{`Email: ${this.state.user.email}`}</Typography>
+                    <Typography variant='body1'>{`Mobile: ${this.state.user.mobile_number}`}</Typography>
+                    {
+                      Array.from(this.state.user.url).map(([key, value]) => {
+                        return(
+                          <Typography variant='body1'>{`${key}: `}<CardLink href={value}>{value}</CardLink></Typography>
+                        );
+                      })
+                    }
+                  </CardText>
+                </CardBody>
+                <CardFooter>
+                  <LocalForm>
+                    <Row className="form-group">
+                      <Label htmlFor="privelege_level" md={12}><h6>Set privelege level:</h6></Label>
+                      <Col sm={12}>
+                        <RadioGroup row aria-label="privelege_level" name="privelege_level" defaultValue={this.state.user.privelege_level} onChange={this.handlePrivChange}>
+                          <FormControlLabel
+                            value="Unapproved_User"
+                            control={<Radio color="primary" />}
+                            label="Unapprove User"
+                            labelPlacement="start"
+                          />
+                          <FormControlLabel
+                            value="Approved_User"
+                            control={<Radio color="primary" />}
+                            label="A[pprove User"
+                            labelPlacement="start"
+                          />
+                          <FormControlLabel
+                            value="Admin"
+                            control={<Radio color="secondary" />}
+                            label="Make Admin"
+                            labelPlacement="start"
+                          />
+                          {/* <FormControlLabel value="end" control={<Radio color="primary" />} label="End" /> */}
+                        </RadioGroup>
+                      </Col>
+                    </Row>
+                    <Row className="form-group">
+                      <Col>
+                        <Label htmlFor="display_on_website" sm={5}><h6>Display on website:  </h6></Label>
+                        <FormControlLabel
+                          sm={2}
+                          // label="Display on Website"
+                          control={<Switch checked={this.state.user.display_on_website} onChange={this.changeDisplayState} />}
+                        />
+                      </Col>
+                    </Row>
+                  </LocalForm>
+                </CardFooter>
+              </Card>
+                <Row className="form-group">
+                  <Col sm={{ size: 4, offset: 3 }}>
+                    <Button color="primary" onClick={this.handleSubmit}>
+                      Save Changes
+                    </Button>
+                  </Col>
+                  <Col sm={{ size: 2 }}>
+                    <Button color="primary" onClick={this.cancelUserEdit}>
+                      Cancel
+                    </Button>
+                  </Col>
+                </Row>
+            </DialogContent>
+            {/* </ModalBody> */}
+          </Dialog>
+      </div>
+    );
+  }
+}
+
 export default function Home(props) {
   const classes = useStyles();
   // const curUser = dumUsers[0];
@@ -1452,53 +1617,6 @@ export default function Home(props) {
   const [memPopOpen, setMemPopOpen] = React.useState(false);
   const toggleMemPop = () => {
     setMemPopOpen(!memPopOpen);
-    handleUserClose();
-  };
-
-  const [isManageUserModal, setManageUserModal] = React.useState(false);
-
-  const [displayUserState, setDisplayUserState] = React.useState(false);
-  const initializeDisplayState = (index) => {
-    setDisplayUserState(dumUsers[index].display_on_website);
-  }
-  const changeUserDisplayState = event => {
-    setDisplayUserState(event.target.checked);
-    console.log('display state set to: ', displayUserState);
-  }
-
-  const [userPriv, setUserPriv] = React.useState('Unapproved_User');
-  const initializeUserPriv = (index) => {
-    setUserPriv(dumUsers[index].privelege_level);
-  }
-
-  const handleUserOpen = () => {
-    setManageUserModal(true);
-  };
-
-  const handleUserClose = () => {
-    setManageUserModal(false);
-  };
-
-  const handleUserprivelegeChange = event => {
-    setUserPriv(event.target.value);
-    console.log('privelege set to: ', userPriv);
-  }
-
-  const submitManageduser = (index) => {
-    const editedUser = {
-      ...dumUsers[index],
-      dislay_on_website: displayUserState,
-      privelege_level: userPriv,
-    };
-
-    props.editOtherUser(editedUser);
-    handleUserClose();
-
-    console.log('final user values: ', editedUser);
-  };
-
-  const cancelUserEdit = () => {
-    handleUserClose();
   };
 
   const [eventDailogOpen, setEventDailogOpen] =  React.useState(false);
@@ -2061,7 +2179,7 @@ export default function Home(props) {
                                 </CardText>
                               </CardBody>
                               <CardFooter>
-                                <Typography className={classes.popCardFooter} color="textSecondary">{`${project.start_date.toDateString()} - ${project.end_date.toDateString()}\n${project.members[0].name}...`}</Typography>
+                                <Typography className={classes.popCardFooter} color="textSecondary">{`${project.start_date.toDateString()} - ${project.end_date.toDateString()}\n${project.members[0] !== undefined ? project.members[0].name : null}...`}</Typography>
                                 {
                                   curUser.privelege_level === 'Admin'
                                   ?
@@ -2489,110 +2607,11 @@ export default function Home(props) {
                                 <Typography className={classes.popCardFooter} color="textSecondary">{`${user.category}\n${(user.privelege_level === 'Unapproved_User' ? 'Unapproved':'')}`}</Typography>
                                 {/* <CardLink onClick={null}>Manage User</CardLink> */}
                                   {
-                                    curUser.privelege_level === 'Admin' && user.privelege_level !== 'Admin'
-                                      ?
-                                      <Button onClick={() => { 
-                                        // initialiseManagedUser(user); 
-                                        initializeUserPriv(index);
-                                        initializeDisplayState(index); 
-                                        handleUserOpen(); 
-                                      }} 
-                                        color="primary"
-                                      >
-                                        Manage User
-                                      </Button>
-                                      : null
+                                    curUser.privelege_level === 'Admin'
+                                    ?
+                                    <EditOtherUserForm dumUsers={dumUsers} editUser={props.editOtherUser} index={index} />
+                                    : null
                                   }
-                                  <Dialog open={isManageUserModal} maxWidth="sm" fullWidth onClose={() => { handleUserClose(); }} scroll="paper">
-                                    <DialogTitle>
-                                      <Typography variant="h4">
-                                        Manage User
-                                      </Typography>
-                                    </DialogTitle>
-                                    <DialogContent>
-                                      <Card>
-                                        <CardHeader>
-                                          <Typography variant='h2'>{user.name}</Typography>
-                                        </CardHeader>
-                                        <CardBody>
-                                          <CardTitle>
-                                            <Typography variant='h5'>{user.entry_no}</Typography>
-                                          </CardTitle>
-                                          <CardSubtitle>
-                                            <Typography variant='h6'>{user.category}</Typography>
-                                          </CardSubtitle>
-                                          <CardText>
-                                            <Typography variant='body1'>{user.intro}</Typography>
-                                            <Typography variant='body1'>{`Interests: ${user.interests}`}</Typography>
-                                            <Typography variant='body1'>{`Specializations: ${user.specializations}`}</Typography>
-                                            <Typography variant='body1'>{`Hostel: ${user.hostel}`}</Typography>
-                                            <Typography variant='caption'>{`Email: ${user.email}`}</Typography>
-                                            <Typography variant='body1'>{`Mobile: ${user.mobile_number}`}</Typography>
-                                            {
-                                              Array.from(user.url).map(([key, value]) => {
-                                                return(
-                                                  <Typography variant='body1'>{`${key}: `}<CardLink href={value}>{value}</CardLink></Typography>
-                                                );
-                                              })
-                                            }
-                                          </CardText>
-                                        </CardBody>
-                                        <CardFooter>
-                                          <LocalForm>
-                                            <Row className="form-group">
-                                              <Label htmlFor="privelege_level" md={12}><h6>Set privelege level:</h6></Label>
-                                              <Col sm={12}>
-                                                <RadioGroup row aria-label="privelege_level" name="privelege_level" defaultValue={userPriv} onChange={handleUserprivelegeChange}>
-                                                  <FormControlLabel
-                                                    value="Unapproved_User"
-                                                    control={<Radio color="primary" />}
-                                                    label="Unapprove User"
-                                                    labelPlacement="start"
-                                                  />
-                                                  <FormControlLabel
-                                                    value="Approved_User"
-                                                    control={<Radio color="primary" />}
-                                                    label="A[pprove User"
-                                                    labelPlacement="start"
-                                                  />
-                                                  <FormControlLabel
-                                                    value="Admin"
-                                                    control={<Radio color="secondary" />}
-                                                    label="Make Admin"
-                                                    labelPlacement="start"
-                                                  />
-                                                  {/* <FormControlLabel value="end" control={<Radio color="primary" />} label="End" /> */}
-                                                </RadioGroup>
-                                              </Col>
-                                            </Row>
-                                            <Row className="form-group">
-                                              <Col>
-                                                <Label htmlFor="display_on_website" sm={5}><h6>Display on website:  </h6></Label>
-                                                <FormControlLabel
-                                                  sm={2}
-                                                  // label="Display on Website"
-                                                  control={<Switch checked={displayUserState} onChange={changeUserDisplayState} />}
-                                                />
-                                              </Col>
-                                            </Row>
-                                          </LocalForm>
-                                        </CardFooter>
-                                      </Card>
-                                        <Row className="form-group">
-                                          <Col sm={{ size: 4, offset: 3 }}>
-                                            <Button color="primary">
-                                              Save Changes
-                                            </Button>
-                                          </Col>
-                                          <Col sm={{ size: 2 }}>
-                                            <Button color="primary" onClick={cancelUserEdit}>
-                                              Cancel
-                                            </Button>
-                                          </Col>
-                                        </Row>
-                                    </DialogContent>
-                                    {/* </ModalBody> */}
-                                  </Dialog>
                               </CardFooter>
                             </Card>
                           </ListGroupItem>

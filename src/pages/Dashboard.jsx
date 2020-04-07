@@ -43,6 +43,7 @@ import {
   fetchAllResources, createResource,
   editResource
 } from '../actions/resourceActions';
+import { render } from 'react-dom';
 
 function MadeWithLove() {
   return (
@@ -181,6 +182,10 @@ function renderPage(subPage, classProp, classPaper, props) {
             projects={props.projects}
             resources={props.resources}
             fetchUser={props.fetchUser}
+            fetchAllUsers={props.fetchAllUsers}
+            fetchAllEvents={props.fetchAllEvents}
+            fetchAllProjects={props.fetchAllProjects}
+            fetchAllResources={props.fetchAllResources}
             user={props.users.user}
             users={props.users}
             editEvent={props.editEvent}
@@ -193,15 +198,148 @@ function renderPage(subPage, classProp, classPaper, props) {
   }
 }
 
+// class Dashboard extends Component {
+  
+//   constructor (props) {
+//     super(props);
+
+//     this.state = {
+//       open: false,
+//     };
+
+//     this.handleDrawerOpen = this.handleDrawerOpen.bind(this);
+//     this.handleDrawerClose = this.handleDrawerClose.bind(this);
+//   }
+
+//   componentWillMount() {
+//     this.props.fetchAllEvents();
+//     this.props.fetchAllUsers();
+//     this.props.fetchAllProjects();
+//     this.props.fetchAllResources();
+//   }
+//   // const classes = useStyles();
+//   // const [open, setOpen] = React.useState(false);
+//   handleDrawerOpen = () => {
+//     // setOpen(true);
+//     this.setState({
+//       ...this.state,
+//       open: true,
+//     });
+//   };
+//   handleDrawerClose = () => {
+//     // setOpen(false);
+//     this.setState({
+//       ...this.state,
+//       open: false,
+//     });
+//   };
+
+  
+
+//   render() {
+//     const {classes} = this.props;
+//     const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+//   // console.log(props);
+//     const { match } = this.props;
+//     const { params } = match;
+//     const { subPage } = params;
+
+//     return (
+//       <div className={classes.root}>
+//         <CssBaseline />
+//         <AppBar position="absolute" className={clsx(classes.appBar, this.state.open && classes.appBarShift)}>
+//           <Toolbar className={classes.toolbar}>
+//             <IconButton
+//               edge="start"
+//               color="inherit"
+//               aria-label="open drawer"
+//               onClick={this.handleDrawerOpen}
+//               className={clsx(classes.menuButton, this.state.open && classes.menuButtonHidden)}
+//             >
+//               <MenuIcon />
+//             </IconButton>
+//             <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
+//               {subPage}
+//             </Typography>
+//             <IconButton color="inherit">
+//               Welcome {this.props.users.user.name}!
+//               <Badge badgeContent={4} color="secondary">
+//                 <NotificationsIcon />
+//               </Badge>
+//             </IconButton>
+//           </Toolbar>
+//         </AppBar>
+//         <Drawer
+//           // variant="permanent"
+//           classes={{
+//             paper: clsx(classes.drawerPaper, !this.state.open && classes.drawerPaperClose),
+//           }}
+//           open={this.state.open}
+//         >
+//           <div className={classes.toolbarIcon}>
+//             <IconButton onClick={this.handleDrawerClose}>
+//               <ChevronLeftIcon />
+//             </IconButton>
+//           </div>
+//           <Divider />
+//           <List>
+//             <MainListItems logout={this.props.logoutUser} />
+//           </List>
+//         </Drawer>
+//         <main className={classes.content}>
+//           <div className={classes.appBarSpacer} />
+//           <Container maxWidth="lg" className={classes.container}>
+//             {renderPage(subPage, fixedHeightPaper, classes.paper, this.props)}
+//           </Container>
+//           {/* <MadeWithLove /> */}
+//         </main>
+//       </div>
+//     );
+//   }
+// }
+
+const mapStateToProps = (state) => {
+  return {
+    auth: state.Auth,
+    users: state.Users,
+    events: state.Events,
+    projects: state.Projects,
+    resources: state.Resources,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => ({
+  resetEventForm: () => { dispatch(actions.reset('eventForm')) },
+  resetProjectForm: () => { dispatch(actions.reset('projectForm')) },
+  resetResourceForm: () => { dispatch(actions.reset('resourceForm')) },
+  fetchUser: () => { dispatch(fetchUser()) },
+  fetchAllUsers: () => { dispatch(fetchAllUsers()) },
+  logoutUser: () => { dispatch(logoutUser()) },
+  updateUser: (user) => { dispatch(updateUser(user)) },
+  editOtherUser: () => { dispatch(editOtherUser()) },
+  fetchAllEvents: () => { dispatch(fetchAllEvents()) },
+  createEvent: (newEvent) => { dispatch(createEvent(newEvent)) },
+  editEvent: (updatedEvent) => { dispatch(editEvent(updatedEvent)) },
+  fetchAllProjects: () => { dispatch(fetchAllProjects()) },
+  createProject: (newProject) => { dispatch(createProject(newProject)) },
+  editProject: (updatedProject) => { dispatch(editProject(updatedProject)) },
+  fetchAllResources: () => { dispatch(fetchAllResources()) },
+  createResource: (newResource) => { dispatch(createResource(newResource)) },
+  editResource: (updatedResource) => { dispatch(editResource(updatedResource)) },
+});
+
 function Dashboard(props) {
 
   // if(!props.auth.isAuthenticated) {
   //   return <Redirect to="/login" />;
   // }
 
+  ////////////only this call here
+
   // props.fetchUser();
-  // props.fetchAllUsers();
+  
   // props.fetchAllEvents();
+  // props.fetchAllUsers();
   // props.fetchAllProjects();
   // props.fetchAllResources();
   
@@ -215,10 +353,28 @@ function Dashboard(props) {
   };
 
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
-  console.log(props);
+  // console.log(props);
   const { match } = props;
   const { params } = match;
   const { subPage } = params;
+  const {
+    fetchAllEvents,
+    fetchAllProjects,
+    fetchAllResources,
+    fetchAllUsers,
+  } = props;
+
+  React.useEffect(() => {
+    fetchAllEvents();
+    fetchAllUsers();
+    fetchAllProjects();
+    fetchAllResources();
+  }, []);
+
+  console.log('Users: ', props.users.allUsers);
+  console.log('Projects: ', props.projects.allProjects);
+  console.log('Events: ', props.events.allEvents);
+  console.log('Resources: ', props.resources.allResources);
 
   return (
     <div className={classes.root}>
@@ -273,36 +429,6 @@ function Dashboard(props) {
   );
 }
 
-const mapStateToProps = (state) => {
-  return {
-    auth: state.Auth,
-    users: state.Users,
-    events: state.Events,
-    projects: state.Projects,
-    resources: state.Resources,
-  };
-};
-
-const mapDispatchToProps = (dispatch) => ({
-  resetEventForm: () => { dispatch(actions.reset('eventForm')) },
-  resetProjectForm: () => { dispatch(actions.reset('projectForm')) },
-  resetResourceForm: () => { dispatch(actions.reset('resourceForm')) },
-  fetchUser: () => { dispatch(fetchUser()) },
-  fetchAllUsers: () => { dispatch(fetchAllUsers()) },
-  logoutUser: () => { dispatch(logoutUser()) },
-  updateUser: (user) => { dispatch(updateUser(user)) },
-  editOtherUser: () => { dispatch(editOtherUser()) },
-  fetchAllEvents: () => { dispatch(fetchAllEvents()) },
-  createEvent: (newEvent) => { dispatch(createEvent(newEvent)) },
-  editEvent: (updatedEvent) => { dispatch(editEvent(updatedEvent)) },
-  fetchAllProjects: () => { dispatch(fetchAllProjects()) },
-  createProject: (newProject) => { dispatch(createProject(newProject)) },
-  editProject: (updatedProject) => { dispatch(editProject(updatedProject)) },
-  fetchAllResources: () => { dispatch(fetchAllResources()) },
-  createResource: (newResource) => { dispatch(createResource(newResource)) },
-  editResource: (updatedResource) => { dispatch(editResource(updatedResource)) },
-});
-
 Dashboard.propTypes = {
   auth: PropTypes.func.isRequired,
   users: PropTypes.func.isRequired,
@@ -326,6 +452,7 @@ Dashboard.propTypes = {
   fetchAllResources: PropTypes.func.isRequired,
   createResource: PropTypes.func.isRequired,
   editResource: PropTypes.func.isRequired,
+  // classes: PropTypes.objectOf(PropTypes.string).isRequired,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);
