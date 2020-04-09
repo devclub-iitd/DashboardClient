@@ -128,6 +128,7 @@ class EditEventForm extends Component {
       url: this.props.dumEvents[this.props.index].url,
       assignee: this.props.dumEvents[this.props.index].assignee,
       isDailogOpen: false,
+      isDeleteDailogOpen: false,
     };
 
     this.endDateChange = this.endDateChange.bind(this);
@@ -143,6 +144,9 @@ class EditEventForm extends Component {
     this.changeDescription = this.changeDescription.bind(this);
     this.changeEmbedCode = this.changeEmbedCode.bind(this);
     this.changeAssignee = this.changeAssignee.bind(this);
+    this.confirmDeleteClose = this.confirmDeleteClose.bind(this);
+    this.confirmDeleteOpen = this.confirmDeleteOpen.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
   }
 
   changeName = (event) => {
@@ -235,12 +239,33 @@ class EditEventForm extends Component {
     });
   };
 
+  confirmDeleteOpen = () => {
+    this.setState({
+      ...this.state,
+      isDeleteDailogOpen: true,
+    });
+  };
+
+  confirmDeleteClose = () => {
+    this.setState({
+      ...this.state,
+      isDeleteDailogOpen: false,
+    });
+  };
+
+  handleDelete = () => {
+    // Call delete thunk here,
+    console.log('Deleting: ', this.state.name);
+    this.confirmDeleteClose();
+  }
+
   handleSubmit = () => {
     const updatedEvent = {
       ...this.props.dumEvents[this.props.index],
       ...this.state,
     };
     delete updatedEvent.isDailogOpen;
+    delete updatedEvent.isDeleteDailogOpen;
 
     this.props.editEvent(updatedEvent);
     console.log('got values: ', this.state);
@@ -463,6 +488,33 @@ class EditEventForm extends Component {
                 </Col>
               </Row>
               <Row className="form-group">
+                {/* md={{ size: 2 }} */}
+                <Col sm={{ size: 5, offset: 4 }}>
+                  <Button color="primary" onClick={this.confirmDeleteOpen}>
+                    Delete Event
+                  </Button>
+                </Col>
+                <Dialog open={this.state.isDeleteDailogOpen} onClose={this.confirmDeleteClose}>
+                  <DialogContent>
+                    <Typography variant='h5'>
+                      Are you sure you want to delete the event {this.state.name}
+                    </Typography>
+                    <Row className="form-group">
+                      <Col xs={{ size: 7, offset: 1 }} md={{ size: 4, offset: 3 }}>
+                        <Button onClick={this.handleDelete} color="primary">
+                          Confirm Delete
+                        </Button>
+                      </Col>
+                      <Col xs={3} md={{ size: 2 }}>
+                        <Button color="primary" onClick={this.confirmDeleteClose}>
+                          Cancel
+                        </Button>
+                      </Col>
+                    </Row>
+                  </DialogContent>
+                </Dialog>
+              </Row>
+              <Row className="form-group">
               {/* md={{ size: 4, offset: 3 }} */}
               <Col xs={{ size: 7, offset: 1 }} md={{ size: 4, offset: 3 }}>
                 <Button onClick={this.handleSubmit} color="primary">
@@ -508,6 +560,7 @@ class EditProjectForm extends Component {
       memberNames: this.props.dumUsers.map(user => user.name),
       selectedMembers: this.props.dumProjects[this.props.index].members.map((user) => user.name),
       isDailogOpen: false,
+      isDeleteDailogOpen: false,
     };
 
     this.changeName = this.changeName.bind(this);
@@ -532,6 +585,9 @@ class EditProjectForm extends Component {
     this.handleFormOpen = this.handleFormOpen.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleMemberChange = this.handleMemberChange.bind(this);
+    this.confirmDeleteClose = this.confirmDeleteClose.bind(this);
+    this.confirmDeleteOpen = this.confirmDeleteOpen.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
   }
 
   changeName = (event) => {
@@ -705,6 +761,26 @@ class EditProjectForm extends Component {
     });
   };
 
+  confirmDeleteOpen = () => {
+    this.setState({
+      ...this.state,
+      isDeleteDailogOpen: true,
+    });
+  };
+
+  confirmDeleteClose = () => {
+    this.setState({
+      ...this.state,
+      isDeleteDailogOpen: false,
+    });
+  };
+
+  handleDelete = () => {
+    // Call delete thunk here,
+    console.log('Deleting: ', this.state.name);
+    this.confirmDeleteClose();
+  }
+
   handleSubmit = () => {
     this.setState({
       ...this.state,
@@ -719,6 +795,7 @@ class EditProjectForm extends Component {
     delete updatedProject.memberNames;
     delete updatedProject.selectedMembers;
     delete updatedProject.isDailogOpen;
+    delete updatedProject.isDeleteDailogOpen;
 
     this.props.editProject(updatedProject);
     console.log('got values: ', this.state);
@@ -1063,6 +1140,33 @@ class EditProjectForm extends Component {
                 </Col>
               </Row>
               <Row className="form-group">
+                {/* md={{ size: 2 }} */}
+                <Col sm={{ size: 5, offset: 4 }}>
+                  <Button color="primary" onClick={this.confirmDeleteOpen}>
+                    Delete Project
+                  </Button>
+                </Col>
+                <Dialog open={this.state.isDeleteDailogOpen} onClose={this.confirmDeleteClose}>
+                  <DialogContent>
+                    <Typography variant='h5'>
+                      Are you sure you want to delete the project {this.state.name}
+                    </Typography>
+                    <Row className="form-group">
+                      <Col xs={{ size: 7, offset: 1 }} md={{ size: 4, offset: 3 }}>
+                        <Button onClick={this.handleDelete} color="primary">
+                          Confirm Delete
+                        </Button>
+                      </Col>
+                      <Col xs={3} md={{ size: 2 }}>
+                        <Button color="primary" onClick={this.confirmDeleteClose}>
+                          Cancel
+                        </Button>
+                      </Col>
+                    </Row>
+                  </DialogContent>
+                </Dialog>
+              </Row>
+              <Row className="form-group">
                 <Col sm={{ size: 4, offset: 3 }}>
                   <Button color="primary" onClick={this.handleSubmit}>
                     Save Changes
@@ -1098,6 +1202,7 @@ class EditResourceForm extends Component {
       new: this.props.dumResources[this.props.index].new,
       display_on_website: this.props.dumResources[this.props.index].display_on_website,
       isDailogOpen: false,
+      isDeleteDailogOpen: false,
     };
 
     this.changeInternalName = this.changeInternalName.bind(this);
@@ -1109,7 +1214,9 @@ class EditResourceForm extends Component {
     this.changeUrl = this.changeUrl.bind(this);
     this.changeNewState = this.changeNewState.bind(this);
     this.changeDisplayState = this.changeDisplayState.bind(this);
-
+    this.confirmDeleteOpen = this.confirmDeleteOpen.bind(this);
+    this.confirmDeleteClose = this.confirmDeleteClose.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
   }
 
   changeInternalName = (event) => {
@@ -1189,6 +1296,26 @@ class EditResourceForm extends Component {
     });
   };
 
+  confirmDeleteOpen = () => {
+    this.setState({
+      ...this.state,
+      isDeleteDailogOpen: true,
+    });
+  };
+
+  confirmDeleteClose = () => {
+    this.setState({
+      ...this.state,
+      isDeleteDailogOpen: false,
+    });
+  };
+
+  handleDelete = () => {
+    // Call delete thunk here,
+    console.log('Deleting: ', this.state.name);
+    this.confirmDeleteClose();
+  };
+
   handleSubmit = () => {
     const updatedResource = {
       ...this.props.dumResources[this.props.index],
@@ -1196,6 +1323,7 @@ class EditResourceForm extends Component {
     };
 
     delete updatedResource.isDailogOpen;
+    delete updatedResource.isDeleteDailogOpen;
 
     this.props.editResource(updatedResource);
 
@@ -1411,6 +1539,33 @@ class EditResourceForm extends Component {
                 </Col>
               </Row>
               <Row className="form-group">
+                {/* md={{ size: 2 }} */}
+                <Col sm={{ size: 5, offset: 4 }}>
+                  <Button color="primary" onClick={this.confirmDeleteOpen}>
+                    Delete Resource
+                  </Button>
+                </Col>
+                <Dialog open={this.state.isDeleteDailogOpen} onClose={this.confirmDeleteClose}>
+                  <DialogContent>
+                    <Typography variant='h5'>
+                      Are you sure you want to delete the resource {this.state.name}
+                    </Typography>
+                    <Row className="form-group">
+                      <Col xs={{ size: 7, offset: 1 }} md={{ size: 4, offset: 3 }}>
+                        <Button onClick={this.handleDelete} color="primary">
+                          Confirm Delete
+                        </Button>
+                      </Col>
+                      <Col xs={3} md={{ size: 2 }}>
+                        <Button color="primary" onClick={this.confirmDeleteClose}>
+                          Cancel
+                        </Button>
+                      </Col>
+                    </Row>
+                  </DialogContent>
+                </Dialog>
+              </Row>
+              <Row className="form-group">
                 <Col sm={{ size: 5, offset: 2 }}>
                   <Button type="submit" color="primary">
                     Save Changes
@@ -1438,6 +1593,7 @@ class EditOtherUserForm extends Component {
     this.state = {
       user: this.props.dumUsers[this.props.index],
       isDailogOpen: false,
+      isDeleteDailogOpen: false,
       // privelege_level: this.state.dumUsers[this.props.index].privelege_level,
       // display_on_website: this.state.dumUsers[this.props.index].display_on_website,
     };
@@ -1447,6 +1603,9 @@ class EditOtherUserForm extends Component {
     this.handleFormOpen = this.handleFormOpen.bind(this);
     this.handleFormClose = this.handleFormClose.bind(this);
     this.cancelUserEdit = this.cancelUserEdit.bind(this);
+    this.confirmDeleteClose = this.confirmDeleteClose.bind(this);
+    this.confirmDeleteOpen = this.confirmDeleteOpen.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
   }
 
   changeDisplayState = (event) => {
@@ -1486,6 +1645,26 @@ class EditOtherUserForm extends Component {
   cancelUserEdit = () => {
     this.handleFormClose();
   };
+
+  confirmDeleteOpen = () => {
+    this.setState({
+      ...this.state,
+      isDeleteDailogOpen: true,
+    });
+  };
+
+  confirmDeleteClose = () => {
+    this.setState({
+      ...this.state,
+      isDeleteDailogOpen: false,
+    });
+  };
+
+  handleDelete = () => {
+    // Call delete thunk here,
+    console.log('Deleting: ', this.state.user.name);
+    this.confirmDeleteClose();
+  }
 
   handleSubmit = () => {
 
@@ -1576,18 +1755,45 @@ class EditOtherUserForm extends Component {
                   </LocalForm>
                 </CardFooter>
               </Card>
-                <Row className="form-group">
-                  <Col sm={{ size: 4, offset: 3 }}>
-                    <Button color="primary" onClick={this.handleSubmit}>
-                      Save Changes
-                    </Button>
-                  </Col>
-                  <Col sm={{ size: 2 }}>
-                    <Button color="primary" onClick={this.cancelUserEdit}>
-                      Cancel
-                    </Button>
-                  </Col>
-                </Row>
+              <Row className="form-group">
+                {/* md={{ size: 2 }} */}
+                <Col sm={{ size: 5, offset: 4 }}>
+                  <Button color="primary" onClick={this.confirmDeleteOpen}>
+                    Remove User
+                  </Button>
+                </Col>
+                <Dialog open={this.state.isDeleteDailogOpen} onClose={this.confirmDeleteClose}>
+                  <DialogContent>
+                    <Typography variant='h5'>
+                      Are you sure you want to remove the user {this.state.user.name}
+                    </Typography>
+                    <Row className="form-group">
+                      <Col xs={{ size: 7, offset: 1 }} md={{ size: 4, offset: 3 }}>
+                        <Button onClick={this.handleDelete} color="primary">
+                          Confirm Delete
+                        </Button>
+                      </Col>
+                      <Col xs={3} md={{ size: 2 }}>
+                        <Button color="primary" onClick={this.confirmDeleteClose}>
+                          Cancel
+                        </Button>
+                      </Col>
+                    </Row>
+                  </DialogContent>
+                </Dialog>
+              </Row> 
+              <Row className="form-group">
+                <Col sm={{ size: 4, offset: 3 }}>
+                  <Button color="primary" onClick={this.handleSubmit}>
+                    Save Changes
+                  </Button>
+                </Col>
+                <Col sm={{ size: 2 }}>
+                  <Button color="primary" onClick={this.cancelUserEdit}>
+                    Cancel
+                  </Button>
+                </Col>
+              </Row>
             </DialogContent>
             {/* </ModalBody> */}
           </Dialog>
