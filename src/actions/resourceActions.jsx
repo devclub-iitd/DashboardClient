@@ -109,3 +109,34 @@ export const editResource = resource => (dispatch) => {
     })
     .catch(error => console.log(error));
 };
+
+export const deleteResource = resourceId => (dispatch) => {
+  const bearer = `Bearer ${localStorage.getItem('token')}`;
+
+  return fetch(`${API.resourceAPI}delete/${resourceId}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: bearer,
+    },
+    credentials: 'same-origin',
+  })
+    .then((response) => {
+      if (response.ok) {
+        return response;
+      }
+      const error = new Error(`Error ${response.status}: ${response.statusText}`);
+      error.response = response;
+      throw error;
+    },
+    (error) => {
+      throw error;
+    })
+    .then(response => response.json())
+    .then((res) => {
+      // console.log('User data updated', user);
+      console.log(res);
+      dispatch(fetchAllResources());
+    })
+    .catch(error => console.log('Error: ', error.message));
+};

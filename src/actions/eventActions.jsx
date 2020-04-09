@@ -26,7 +26,7 @@ export const fetchAllEvents = () => (dispatch) => {
     headers: {
       'Content-Type': 'application/json',
       // Origin: 'localhost:3001/',
-      // Authorization: bearer,
+      Authorization: bearer,
     },
     credentials: 'same-origin',
   })
@@ -116,4 +116,35 @@ export const editEvent = event => (dispatch) => {
       dispatch(fetchAllEvents());
     })
     .catch(error => console.log(error));
+};
+
+export const deleteEvent = eventId => (dispatch) => {
+  const bearer = `Bearer ${localStorage.getItem('token')}`;
+
+  return fetch(`${API.eventAPI}delete/${eventId}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: bearer,
+    },
+    credentials: 'same-origin',
+  })
+    .then((response) => {
+      if (response.ok) {
+        return response;
+      }
+      const error = new Error(`Error ${response.status}: ${response.statusText}`);
+      error.response = response;
+      throw error;
+    },
+    (error) => {
+      throw error;
+    })
+    .then(response => response.json())
+    .then((res) => {
+      // console.log('User data updated', user);
+      console.log(res);
+      dispatch(fetchAllEvents());
+    })
+    .catch(error => console.log('Error: ', error.message));
 };

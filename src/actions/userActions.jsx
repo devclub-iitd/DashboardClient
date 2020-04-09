@@ -275,11 +275,42 @@ export const updateUser = updatedUser => (dispatch) => {
       throw error;
     })
     .then(response => response.json())
-    .then((creds) => {
-      // console.log('User data updated', user);
-      dispatch(loginUser(creds));
+    .then((userData) => {
+      console.log('User data updated: ', userData);
+      dispatch(fetchUser());
     })
-    .catch(error => dispatch(changePasswordFailed(error.message)));
+    .catch(error => console.log('Error: ', error.message));
+};
+
+export const removeOtherUser = uId => (dispatch) => {
+  const bearer = `Bearer ${localStorage.getItem('token')}`;
+
+  return fetch(`${API.userAPI}delete/${uId}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: bearer,
+    },
+    credentials: 'same-origin',
+  })
+    .then((response) => {
+      if (response.ok) {
+        return response;
+      }
+      const error = new Error(`Error ${response.status}: ${response.statusText}`);
+      error.response = response;
+      throw error;
+    },
+    (error) => {
+      throw error;
+    })
+    .then(response => response.json())
+    .then((res) => {
+      // console.log('User data updated', user);
+      console.log(res);
+      dispatch(fetchAllUsers());
+    })
+    .catch(error => console.log('Error: ', error.message));
 };
 
 // change password

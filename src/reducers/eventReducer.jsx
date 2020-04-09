@@ -24,7 +24,6 @@ const Events = (
         ...state,
         isLoading: true,
         errMess: null,
-        allEvents: null,
       };
 
     case ActionTypes.EVENTS_FAILED:
@@ -32,7 +31,6 @@ const Events = (
         ...state,
         isLoading: false,
         errMess: action.payload,
-        allEvents: null,
       };
 
     default:

@@ -24,7 +24,6 @@ const Projects = (
         ...state,
         isLoading: true,
         errMess: null,
-        allProjects: null,
       };
 
     case ActionTypes.PROJECTS_FAILED:
@@ -32,7 +31,6 @@ const Projects = (
         ...state,
         isLoading: false,
         errMess: action.payload,
-        allProjects: null,
       };
 
     default:

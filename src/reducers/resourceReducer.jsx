@@ -24,7 +24,6 @@ const Resources = (
         ...state,
         isLoading: true,
         errMess: null,
-        allResources: null,
       };
 
     case ActionTypes.RESOURCES_FAILED:
@@ -32,7 +31,6 @@ const Resources = (
         ...state,
         isLoading: false,
         errMess: action.payload,
-        allResources: null,
       };
 
     default:
