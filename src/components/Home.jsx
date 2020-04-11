@@ -1,7 +1,6 @@
 import React, { Fragment, Component } from 'react';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import {Table, TableBody, TableCell, TableHead,
-  TableRow, Paper, Divider, Grid, Typography,
+import { Grid, Typography,
   TableContainer, Dialog, DialogTitle, DialogContent,
   FormControlLabel, Radio, RadioGroup, Switch, InputLabel,
   Select, Input, Chip, MenuItem, FormLabel, FormControl, 
@@ -1584,7 +1583,7 @@ class EditResourceForm extends Component {
     );
   }
 
-}
+};
 
 class EditOtherUserForm extends Component {
   constructor (props) {
@@ -1800,7 +1799,7 @@ class EditOtherUserForm extends Component {
       </div>
     );
   }
-}
+};
 
 export default function Home(props) {
   const classes = useStyles();

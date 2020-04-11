@@ -13,6 +13,9 @@ import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt';
 import AddBoxIcon from '@material-ui/icons/AddBox';
 import ExitToAppOutlinedIcon from '@material-ui/icons/ExitToAppOutlined';
 import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
+import EventIcon from '@material-ui/icons/Event';
+import AllInboxIcon from '@material-ui/icons/AllInbox';
+import DeveloperModeIcon from '@material-ui/icons/DeveloperMode';
 import { withRouter } from 'react-router-dom';
 import { logoutUser } from '../actions/userActions';
 
@@ -44,6 +47,24 @@ function MainListItems(props) {
           <VpnKeyIcon />
         </ListItemIcon>
         <ListItemText primary="Change Password" />
+      </ListItem>
+      <ListItem button onClick={redirectFunc('events')}>
+        <ListItemIcon>
+          <EventIcon />
+        </ListItemIcon>
+        <ListItemText primary="Events" />
+      </ListItem>
+      <ListItem button onClick={redirectFunc('projects')}>
+        <ListItemIcon>
+          <DeveloperModeIcon />
+        </ListItemIcon>
+        <ListItemText primary="Projects" />
+      </ListItem>
+      <ListItem button onClick={redirectFunc('resources')}>
+        <ListItemIcon>
+          <AllInboxIcon />
+        </ListItemIcon>
+        <ListItemText primary="Resources" />
       </ListItem>
       {/* <ListItem button onClick={redirectFunc('approveUsers')}>
         <ListItemIcon>

@@ -19,6 +19,9 @@ import MainListItems from '../components/MainListItems';
 import Home from '../components/Home';
 import Profile from '../components/Profile';
 import ChangePassword from '../components/ChangePassword';
+import EventsPage from '../components/Events';
+import ProjectsPage from '../components/Projects';
+import ResourcesPage from '../components/Resources';
 import ApproveUsers from '../components/ApproveUsers';
 import CreateTasks from '../components/CreateTasks';
 import AssignTasks from '../components/AssignTasks';
@@ -172,6 +175,42 @@ function renderPage(subPage, classProp, classPaper, props) {
           />
         </div>
       );
+    
+    case 'events':
+      return (
+        <div>
+          <EventsPage
+            events={props.events}
+            fetchAllEvents={props.fetchAllEvents}
+            editEvent={props.editEvent}
+            users={props.users}
+          />
+        </div>
+      );
+    
+    case 'projects':
+      return (
+        <div>
+          <ProjectsPage
+            projects={props.projects}
+            fetchAllProjects={props.fetchAllProjects}
+            editProject={props.editProject}
+            users={props.users}
+          />
+        </div>
+      );
+    
+    case 'resources':
+      return (
+        <div>
+          <ResourcesPage
+            resources={props.resources}
+            fetchAllResources={props.fetchAllResources}
+            editResource={props.editResource}
+            users={props.users}
+          />
+        </div>
+      );
     // case 'assignTasks': return (<div><AssignTasks /></div>);
     // default: return (<div><Home fixedHeightPaper={classProp} paperClass={classPaper} /></div>);
     default:
@@ -197,106 +236,6 @@ function renderPage(subPage, classProp, classPaper, props) {
       );
   }
 }
-
-// class Dashboard extends Component {
-  
-//   constructor (props) {
-//     super(props);
-
-//     this.state = {
-//       open: false,
-//     };
-
-//     this.handleDrawerOpen = this.handleDrawerOpen.bind(this);
-//     this.handleDrawerClose = this.handleDrawerClose.bind(this);
-//   }
-
-//   componentWillMount() {
-//     this.props.fetchAllEvents();
-//     this.props.fetchAllUsers();
-//     this.props.fetchAllProjects();
-//     this.props.fetchAllResources();
-//   }
-//   // const classes = useStyles();
-//   // const [open, setOpen] = React.useState(false);
-//   handleDrawerOpen = () => {
-//     // setOpen(true);
-//     this.setState({
-//       ...this.state,
-//       open: true,
-//     });
-//   };
-//   handleDrawerClose = () => {
-//     // setOpen(false);
-//     this.setState({
-//       ...this.state,
-//       open: false,
-//     });
-//   };
-
-  
-
-//   render() {
-//     const {classes} = this.props;
-//     const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
-//   // console.log(props);
-//     const { match } = this.props;
-//     const { params } = match;
-//     const { subPage } = params;
-
-//     return (
-//       <div className={classes.root}>
-//         <CssBaseline />
-//         <AppBar position="absolute" className={clsx(classes.appBar, this.state.open && classes.appBarShift)}>
-//           <Toolbar className={classes.toolbar}>
-//             <IconButton
-//               edge="start"
-//               color="inherit"
-//               aria-label="open drawer"
-//               onClick={this.handleDrawerOpen}
-//               className={clsx(classes.menuButton, this.state.open && classes.menuButtonHidden)}
-//             >
-//               <MenuIcon />
-//             </IconButton>
-//             <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-//               {subPage}
-//             </Typography>
-//             <IconButton color="inherit">
-//               Welcome {this.props.users.user.name}!
-//               <Badge badgeContent={4} color="secondary">
-//                 <NotificationsIcon />
-//               </Badge>
-//             </IconButton>
-//           </Toolbar>
-//         </AppBar>
-//         <Drawer
-//           // variant="permanent"
-//           classes={{
-//             paper: clsx(classes.drawerPaper, !this.state.open && classes.drawerPaperClose),
-//           }}
-//           open={this.state.open}
-//         >
-//           <div className={classes.toolbarIcon}>
-//             <IconButton onClick={this.handleDrawerClose}>
-//               <ChevronLeftIcon />
-//             </IconButton>
-//           </div>
-//           <Divider />
-//           <List>
-//             <MainListItems logout={this.props.logoutUser} />
-//           </List>
-//         </Drawer>
-//         <main className={classes.content}>
-//           <div className={classes.appBarSpacer} />
-//           <Container maxWidth="lg" className={classes.container}>
-//             {renderPage(subPage, fixedHeightPaper, classes.paper, this.props)}
-//           </Container>
-//           {/* <MadeWithLove /> */}
-//         </main>
-//       </div>
-//     );
-//   }
-// }
 
 const mapStateToProps = (state) => {
   return {
@@ -365,7 +304,7 @@ function Dashboard(props) {
   } = props;
 
   React.useEffect(() => {
-    fetchAllEvents();
+    // fetchAllEvents();
     fetchAllUsers();
     fetchAllProjects();
     fetchAllResources();
@@ -430,11 +369,11 @@ function Dashboard(props) {
 }
 
 Dashboard.propTypes = {
-  auth: PropTypes.func.isRequired,
-  users: PropTypes.func.isRequired,
-  events: PropTypes.func.isRequired,
-  projects: PropTypes.func.isRequired,
-  resources: PropTypes.func.isRequired,
+  auth: PropTypes.object.isRequired,
+  users: PropTypes.object.isRequired,
+  events: PropTypes.object.isRequired,
+  projects: PropTypes.object.isRequired,
+  resources: PropTypes.object.isRequired,
   resetEventForm: PropTypes.func.isRequired,
   resetProjectForm: PropTypes.func.isRequired,
   resetResourceForm: PropTypes.func.isRequired,
