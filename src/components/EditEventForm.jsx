@@ -436,7 +436,7 @@ class EditEventForm extends Component {
                         Cancel
                     </Button>
                     </Col>
-                </Row>
+                    </Row>
                 </LocalForm>
                 </DialogContent>
             </Dialog>

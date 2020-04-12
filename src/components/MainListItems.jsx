@@ -16,6 +16,7 @@ import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
 import EventIcon from '@material-ui/icons/Event';
 import AllInboxIcon from '@material-ui/icons/AllInbox';
 import DeveloperModeIcon from '@material-ui/icons/DeveloperMode';
+import PublishIcon from '@material-ui/icons/Publish';
 import { withRouter } from 'react-router-dom';
 import { logoutUser } from '../actions/userActions';
 
@@ -65,6 +66,12 @@ function MainListItems(props) {
           <AllInboxIcon />
         </ListItemIcon>
         <ListItemText primary="Resources" />
+      </ListItem>
+      <ListItem button onClick={redirectFunc('deploy')}>
+        <ListItemIcon>
+          <PublishIcon />
+        </ListItemIcon>
+        <ListItemText primary="Deploy" />
       </ListItem>
       {/* <ListItem button onClick={redirectFunc('approveUsers')}>
         <ListItemIcon>

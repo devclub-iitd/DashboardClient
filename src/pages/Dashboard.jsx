@@ -22,6 +22,7 @@ import ChangePassword from '../components/ChangePassword';
 import EventsPage from '../components/Events';
 import ProjectsPage from '../components/Projects';
 import ResourcesPage from '../components/Resources';
+import DeployManager from '../components/Deploy';
 import ApproveUsers from '../components/ApproveUsers';
 import CreateTasks from '../components/CreateTasks';
 import AssignTasks from '../components/AssignTasks';
@@ -209,6 +210,13 @@ function renderPage(subPage, classProp, classPaper, props) {
             editResource={props.editResource}
             users={props.users}
           />
+        </div>
+      );
+
+    case 'deploy':
+      return (
+        <div>
+          <DeployManager />
         </div>
       );
     // case 'assignTasks': return (<div><AssignTasks /></div>);
