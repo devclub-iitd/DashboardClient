@@ -1,0 +1,9 @@
+FROM node:12.2.0-alpine
+
+WORKDIR /code
+COPY package*.json ./
+RUN npm install --production=false
+
+COPY entry-point.sh.dev ./
+RUN ["chmod", "+x", "/code/entry-point.sh.dev"]
+ENTRYPOINT ["/code/entry-point.sh.dev"] 
