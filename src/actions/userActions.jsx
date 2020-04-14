@@ -179,6 +179,7 @@ export const loginUser = creds => (dispatch) => {
       }
       const error = new Error(`Error ${response.status}: ${response.statusText}`);
       error.response = response;
+      console.log('Error: ', error);
       throw error;
     },
     (error) => {
@@ -186,13 +187,14 @@ export const loginUser = creds => (dispatch) => {
     })
     .then(response => response.json())
     .then((response) => {
-      if (response.success) {
+      if (response.status === 200) {
         // If login was successful, set the token in local storage
+        console.log('status returned 200');
         localStorage.setItem('token', response.token);
-        localStorage.setItem('creds', JSON.stringify(creds));
+        localStorage.setItem('creds', creds);
         // Dispatch the success action
         dispatch(receiveLogin(response));
-        dispatch(fetchUser());
+        dispatch(addUser(response.result));
       } else {
         const error = new Error(`Error ${response.status}`);
         error.response = response;

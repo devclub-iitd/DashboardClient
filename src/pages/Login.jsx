@@ -17,7 +17,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { FormLabel } from '@material-ui/core';
 import { Redirect } from 'react-router-dom';
-import login from '../actions/loginActions';
+// import login from '../actions/loginActions';
 import { loginUser } from '../actions/userActions';
 
 function MadeWithLove() {
@@ -78,17 +78,24 @@ function SignInSide(props) {
     setPassword(event.target.value);
   };
 
+  const [errMess, setErrMess] = React.useState(auth.errMess);
+  const handleClose = () => {
+    setErrMess(null);
+  };
+
   const handleSubmit = () => {
     const creds = {
-      username: uname,
+      entry_no: uname,
       password: pass,
     };
+    console.log(creds);
+    console.log(JSON.stringify(creds));
     login(creds);
   };
 
-  if (auth.isAuthenticated) {
-    return <Redirect to="/dashboard/home" />;
-  }
+  // if (auth.isAuthenticated) {
+  //   return <Redirect to="/dashboard/home" />;
+  // }
 
   if (auth.isLoading) {
     return (
@@ -105,8 +112,9 @@ function SignInSide(props) {
           vertical: 'top',
           horizontal: 'center',
         }}
-        open={auth.errMess !== null}
+        open={errMess !== null}
         autoHideDuration={2000}
+        onClose={handleClose}
         message="Login Error !!! Try again"
       />
       <CssBaseline />
@@ -129,7 +137,7 @@ function SignInSide(props) {
               required
               fullWidth
               id="username"
-              label="Username"
+              label="Entry Number"
               value={uname}
               onChange={changeUsername}
               name="username"
@@ -182,7 +190,7 @@ SignInSide.propTypes = {
   classes: PropTypes.objectOf(PropTypes.string).isRequired,
   // errorMsg: PropTypes.string.isRequired,
   login: PropTypes.func.isRequired,
-  auth: PropTypes.func.isRequired,
+  auth: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = state => ({

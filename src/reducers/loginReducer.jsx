@@ -22,7 +22,7 @@ export default function Auth(state = {
   // isAuthenticated: (localStorage.getItem('token') != null),
   isAuthenticated: true,
   token: localStorage.getItem('token'),
-  user: localStorage.getItem('creds') ? JSON.parse(localStorage.getItem('creds')) : null,
+  // user: localStorage.getItem('creds') ? JSON.parse(localStorage.getItem('creds')) : null,
   errMess: null,
 }, action) {
   switch (action.type) {
@@ -31,7 +31,7 @@ export default function Auth(state = {
         ...state,
         isLoading: true,
         isAuthenticated: false,
-        user: action.creds,
+        // user: action.creds,
       };
     case ActionTypes.LOGIN_SUCCESS:
       return {
@@ -60,7 +60,7 @@ export default function Auth(state = {
         isLoading: false,
         isAuthenticated: false,
         token: '',
-        user: null,
+        // user: null,
       };
     default:
       return state;
