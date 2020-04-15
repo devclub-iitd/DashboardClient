@@ -114,7 +114,7 @@ function SignInSide(props) {
         }}
         open={errMess !== null}
         autoHideDuration={2000}
-        onClose={handleClose}
+        // onClose={handleClose}
         message="Login Error !!! Try again"
       />
       <CssBaseline />

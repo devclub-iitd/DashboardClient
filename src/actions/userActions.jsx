@@ -213,32 +213,34 @@ export const registerUser = registerCreds => (dispatch) => {
     },
     body: JSON.stringify(registerCreds),
   })
-    .then((response) => {
-      if (response.ok) {
-        return response;
-      }
-      const error = new Error(`Error ${response.status}: ${response.statusText}`);
-      error.response = response;
-      throw error;
-    },
-    (error) => {
-      throw error;
-    })
+    // .then((response) => {
+    //   if (response.ok) {
+    //     return response;
+    //   }
+    //   const error = new Error(`Error ${response.status}: ${response.statusText}`);
+    //   error.response = response;
+    //   throw error;
+    // },
+    // (error) => {
+    //   throw error;
+    // })
     .then(response => response.json())
     .then((response) => {
-      if (response.success) {
-        dispatch(receiveRegister);
-        const loginCred = {
-          username: registerCreds.username,
-          password: registerCreds.password,
-        };
-        // login after successful registration
-        dispatch(loginUser(loginCred));
-      } else {
-        const error = new Error(`Error ${response.status}`);
-        error.response = response;
-        throw error;
-      }
+      // if (response.success) {
+      //   dispatch(receiveRegister);
+      //   // const loginCred = {
+      //   //   username: registerCreds.username,
+      //   //   password: registerCreds.password,
+      //   // };
+      //   // // login after successful registration
+      //   // dispatch(loginUser(loginCred));
+      // } else {
+      //   const error = new Error(`Error ${response.status}`);
+      //   error.response = response;
+      //   throw error;
+      // }
+      console.log('Response: ', response);
+      dispatch(receiveRegister());
     })
     .catch(error => dispatch(registerError(error.message)));
 };

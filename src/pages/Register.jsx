@@ -12,8 +12,10 @@ import { withStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { FormLabel } from '@material-ui/core';
-import postRegister from '../actions/registerActions';
+import {
+  FormLabel, Backdrop, CircularProgress, Snackbar,
+  FormControl, MenuItem, InputLabel, Select,
+} from '@material-ui/core';
 import { registerUser } from '../actions/userActions';
 
 function MadeWithLove() {
@@ -51,19 +53,40 @@ const styles = theme => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    color: '#fff',
+  },
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 120,
+  },
 });
 
 
 class SignUp extends React.Component {
-  state = {
-    confirmPassError: false,
-  }
+  // state = {
+  //   confirmPassError: false,
+  // }
 
   constructor(props) {
     super(props);
 
+    this.state = {
+      confirmPassError: false,
+      isRegistered: this.props.register.isRegistered,
+    };
+
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleRegisterChange = this.handleRegisterChange.bind(this);
   }
+
+  handleRegisterChange = () => {
+    this.setState({
+      ...this.state,
+      isRegistered: false,
+    });
+  };
 
   handleSubmit(e) {
     e.preventDefault();
@@ -77,16 +100,19 @@ class SignUp extends React.Component {
     const { target } = e;
 
     const body = {
-      username: target.uname.value,
+      // username: target.uname.value,
       name: target.name.value,
-      entryNumber: target.entrynumber.value,
+      entry_no: target.entrynumber.value,
+      category: target.category.value,
       email: target.email.value,
       password: target.password.value,
     };
 
-    const { register, registerUser } = this.props;
+    console.log('Register body:', body);
 
-    registerUser(body);
+    // const { register } = this.props;
+
+    this.props.registerUser(body);
     // postReg(body);
   }
 
@@ -100,11 +126,25 @@ class SignUp extends React.Component {
   }
 
   render() {
-    const { classes, errorMsg } = this.props;
+    const { classes, register } = this.props;
 
     const { confirmPassError } = this.state;
+
     return (
       <Container component="main" maxWidth="xs">
+        <Snackbar
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'center',
+          }}
+          open={this.state.isRegistered}
+          autoHideDuration={2000}
+          onClose={this.handleRegisterChange}
+          message="Registration Successful! Request for approval sent to Administrator. Wait before login."
+        />
+        <Backdrop className={classes.backdrop} open={register.isLoading}>
+          <CircularProgress color="inherit" />
+        </Backdrop>
         <CssBaseline />
         <div className={classes.paper}>
           <Avatar className={classes.avatar}>
@@ -126,17 +166,7 @@ class SignUp extends React.Component {
                   autoFocus
                 />
               </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  name="uname"
-                  variant="outlined"
-                  required
-                  fullWidth
-                  id="uaname"
-                  label="Username"
-                  autoFocus
-                />
-              </Grid>
+
               <Grid item xs={12}>
                 <TextField
                   name="entryNumber"
@@ -147,6 +177,26 @@ class SignUp extends React.Component {
                   label="Entry Number"
                   autoFocus
                 />
+              </Grid>
+              <Grid item xs={12}>
+                <FormControl variant="outlined" className={classes.formControl}>
+                  <InputLabel id="category">
+                    Category
+                  </InputLabel>
+                  <Select
+                    labelId="category"
+                    id="category"
+                    name="category"
+                  >
+                    <MenuItem value="">
+                      <em>None</em>
+                    </MenuItem>
+                    <MenuItem value="Fresher">Fresher</MenuItem>
+                    <MenuItem value="Sophomore">Sophomore</MenuItem>
+                    <MenuItem value="Junior Undergraduate">Junior Undergraduate</MenuItem>
+                    <MenuItem value="Senior Undergraduate">Senior Undergraduate</MenuItem>
+                  </Select>
+                </FormControl>
               </Grid>
               <Grid item xs={12}>
                 <TextField
@@ -200,8 +250,8 @@ class SignUp extends React.Component {
                 </Link>
               </Grid>
             </Grid>
-            <FormLabel error>
-              {errorMsg}
+            <FormLabel>
+              {register.errMess}
             </FormLabel>
           </form>
         </div>
@@ -214,19 +264,15 @@ class SignUp extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  // errorMsg: state.registerReducer.errorMsg,
   register: state.Register,
 });
 
 const mapDispatchToProps = dispatch => ({
-  // postRegister: postRegister(dispatch),
   registerUser: registerCreds => dispatch(registerUser(registerCreds)),
 });
 
 SignUp.propTypes = {
-  // classes: PropTypes.objectOf(PropTypes.string).isRequired,
-  // postRegister: PropTypes.func.isRequired,
-  // errorMsg: PropTypes.string.isRequired,
+  classes: PropTypes.objectOf(PropTypes.string).isRequired,
   register: PropTypes.func.isRequired,
   registerUser: PropTypes.func.isRequired,
 };
