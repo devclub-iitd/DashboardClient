@@ -160,6 +160,7 @@ class EditEventForm extends Component {
   
     handleDelete = () => {
       // Call delete thunk here,
+      this.props.deleteEvent(this.props.dumEvents[this.props.index]._id);
       console.log('Deleting: ', this.state.name);
       this.confirmDeleteClose();
     }

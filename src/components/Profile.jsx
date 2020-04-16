@@ -327,7 +327,7 @@ const Profile = (props) => {
               </Typography>
             </DialogTitle>
             <DialogContent>
-              <LocalForm model="userDetailUpdateForm" onSubmit={values => handleSubmit(values)}>
+              <LocalForm onSubmit={values => handleSubmit(values)}>
                 <Row className="form-group">
                   <Label htmlFor="name" md={4}><h6>Name:</h6></Label>
                   <Col md={8}>
@@ -823,7 +823,7 @@ const Profile = (props) => {
         </div>
         <Grid className={classes.gcontainer} item sm={9} lg={5}>
           <Card className={classes.card}>
-            <img className={classes.image} src="/logo.png" alt="Profile Pic" />
+            <img className={classes.image} src={user.url.get('picture_url')} alt="Profile Pic" />
             <CardContent>
               <Typography gutterBottom variant="h5" component="h2" align="right">
                 {user.name}

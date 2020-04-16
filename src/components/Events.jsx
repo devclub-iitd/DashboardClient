@@ -114,7 +114,7 @@ const EventsPage = ({ events, fetchAllEvents, editEvent, users }) => {
                                     {
                                         curUser.privelege_level === 'Admin'
                                         ?
-                                        <EditEventForm dumEvents={allEvents} dumUsers={users.allUsers} editEvent={editEvent} index={index} />
+                                        <EditEventForm deleteEvent={props.deleteEvent} dumEvents={allEvents} dumUsers={users.allUsers} editEvent={editEvent} index={index} />
                                         : null
                                     }
                                 </CardFooter>
@@ -159,7 +159,7 @@ const EventsPage = ({ events, fetchAllEvents, editEvent, users }) => {
                                     {
                                         curUser.privelege_level === 'Admin'
                                         ?
-                                        <EditEventForm dumEvents={allEvents} dumUsers={users.allUsers} editEvent={editEvent} index={index} />
+                                        <EditEventForm deleteEvent={props.deleteEvent} dumEvents={allEvents} dumUsers={users.allUsers} editEvent={editEvent} index={index} />
                                         : null
                                     }
                                 </CardFooter>
@@ -204,7 +204,7 @@ const EventsPage = ({ events, fetchAllEvents, editEvent, users }) => {
                                     {
                                         curUser.privelege_level === 'Admin'
                                         ?
-                                        <EditEventForm dumEvents={allEvents} dumUsers={users.allUsers} editEvent={editEvent} index={index} />
+                                        <EditEventForm deleteEvent={props.deleteEvent} dumEvents={allEvents} dumUsers={users.allUsers} editEvent={editEvent} index={index} />
                                         : null
                                     }
                                 </CardFooter>

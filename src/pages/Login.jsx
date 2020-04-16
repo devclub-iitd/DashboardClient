@@ -105,6 +105,12 @@ function SignInSide(props) {
     );
   }
 
+  if (auth.isAuthenticated) {
+    return (
+      <Redirect to="/dashboard/home" />
+    );
+  }
+
   return (
     <Grid container component="main" className={classes.root}>
       <Snackbar

@@ -148,6 +148,7 @@ class EditResourceForm extends Component {
 
     handleDelete = () => {
       // Call delete thunk here,
+      this.props.deleteResource(this.props.dumResources[this.props.index]._id);
       console.log('Deleting: ', this.state.name);
       this.confirmDeleteClose();
     };

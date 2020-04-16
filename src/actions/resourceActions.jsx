@@ -20,13 +20,12 @@ export const fetchAllResources = () => (dispatch) => {
 
   const bearer = `Bearer ${localStorage.getItem('token')}`;
 
-  return fetch(`${API.resourceAPI}`, {
+  return fetch(API.resourceGetAllDBAPI, {
     method: 'GET',
-    // body: JSON.stringify(newComment),
     headers: {
       'Content-Type': 'application/json',
       // Origin: 'localhost:3001/',
-      // Authorization: bearer,
+      Authorization: bearer,
     },
     credentials: 'same-origin',
   })
@@ -51,7 +50,7 @@ export const fetchAllResources = () => (dispatch) => {
 export const createResource = resource => (dispatch) => {
   const bearer = `Bearer ${localStorage.getItem('token')}`;
 
-  return fetch(`${API.resourceAPI}`, {
+  return fetch(API.resourceAPI, {
     method: 'POST',
     body: JSON.stringify(resource),
     headers: {
@@ -82,7 +81,7 @@ export const createResource = resource => (dispatch) => {
 export const editResource = resource => (dispatch) => {
   const bearer = `Bearer ${localStorage.getItem('token')}`;
 
-  return fetch(`${API.resourceAPI}`, {
+  return fetch(`${API.resourceAPI}${resource._id}`, {
     method: 'PUT',
     body: JSON.stringify(resource),
     headers: {
@@ -113,8 +112,9 @@ export const editResource = resource => (dispatch) => {
 export const deleteResource = resourceId => (dispatch) => {
   const bearer = `Bearer ${localStorage.getItem('token')}`;
 
-  return fetch(`${API.resourceAPI}delete/${resourceId}`, {
-    method: 'DELETE',
+  return fetch(API.resourceDeleteAPI, {
+    method: 'POST',
+    body: JSON.stringify({ id: resourceId }),
     headers: {
       'Content-Type': 'application/json',
       Authorization: bearer,

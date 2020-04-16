@@ -5,7 +5,7 @@ import dumUsers from '../components/dumUser';
 const Users = (state = {
   isLoading: true,
   errMess: null,
-  user: dumUsers[0],
+  user: null,
   allUsers: dumUsers,
 }, action) => {
   switch (action.type) {
@@ -23,7 +23,6 @@ const Users = (state = {
         ...state,
         isLoading: false,
         errMess: null,
-        user: state.user,
         allUsers: action.payload,
       };
 

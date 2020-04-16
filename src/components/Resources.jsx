@@ -89,7 +89,7 @@ const ResourcesPage = ({resources, fetchAllResources, editResource, users}) => {
                         <CardLink href={res.url}>Access resource</CardLink>
                         {
                             curUser.privelege_level === 'Admin'
-                            ? <EditResourceForm dumResources={allResources} dumUsers={users.allUsers} editResource={editResource} index={index} />
+                            ? <EditResourceForm deleteResource={props.deleteResource} dumResources={allResources} dumUsers={users.allUsers} editResource={editResource} index={index} />
                             : null
                         }
                     </CardFooter>
@@ -134,7 +134,7 @@ const ResourcesPage = ({resources, fetchAllResources, editResource, users}) => {
                         <CardLink href={res.url}>Access resource</CardLink>
                         {
                             curUser.privelege_level === 'Admin'
-                            ? <EditResourceForm dumResources={allResources} dumUsers={users.allUsers} editResource={editResource} index={index} />
+                            ? <EditResourceForm deleteResource={props.deleteResource} dumResources={allResources} dumUsers={users.allUsers} editResource={editResource} index={index} />
                             : null
                         }
                     </CardFooter>

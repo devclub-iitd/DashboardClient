@@ -191,6 +191,7 @@ class EditOtherUserForm extends Component {
 
   handleDelete = () => {
     // Call delete thunk here,
+    this.props.removeUser(this.state.user._id);
     console.log('Deleting: ', this.state.user.name);
     this.confirmDeleteClose();
   }
@@ -676,7 +677,7 @@ export default function Home(props) {
                                 {
                                   curUser.privelege_level === 'Admin'
                                     ?
-                                    <EditEventForm dumEvents={dumEvents} dumUsers={dumUsers} editEvent={props.editEvent} index={index} />
+                                    <EditEventForm deleteEvent={props.deleteEvent} dumEvents={dumEvents} dumUsers={dumUsers} editEvent={props.editEvent} index={index} />
                                     : null
                                 }
                               </CardFooter>
@@ -918,7 +919,7 @@ export default function Home(props) {
                                 {
                                   curUser.privelege_level === 'Admin'
                                   ?
-                                  <EditProjectForm dumProjects={dumProjects} dumUsers={dumUsers} editProject={props.editProject} index={index} />
+                                  <EditProjectForm deleteProject={props.deleteProject} dumProjects={dumProjects} dumUsers={dumUsers} editProject={props.editProject} index={index} />
                                   : null
                                 }
                               </CardFooter>
@@ -1094,7 +1095,7 @@ export default function Home(props) {
                                 {
                                   curUser.privelege_level === 'Admin'
                                   ?
-                                  <EditResourceForm dumResources={dumResources} dumUsers={dumUsers} editResource={props.editResource} index={index} />
+                                  <EditResourceForm deleteResource={props.deleteResource} dumResources={dumResources} dumUsers={dumUsers} editResource={props.editResource} index={index} />
                                   : null
                                 }
                               </CardFooter>
@@ -1344,7 +1345,7 @@ export default function Home(props) {
                                   {
                                     curUser.privelege_level === 'Admin'
                                     ?
-                                    <EditOtherUserForm dumUsers={dumUsers} editUser={props.editOtherUser} index={index} />
+                                    <EditOtherUserForm removeUser={props.removeUser} dumUsers={dumUsers} editUser={props.editOtherUser} index={index} />
                                     : null
                                   }
                               </CardFooter>

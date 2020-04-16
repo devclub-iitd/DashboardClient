@@ -84,7 +84,7 @@ const ProjectsPage = ({ projects, fetchAllProjects, editProject, users }) => {
                                     {
                                         curUser.privelege_level === 'Admin'
                                         ?
-                                        <EditProjectForm dumProjects={allProjects} dumUsers={users.allUsers} editProject={editProject} index={index} />
+                                        <EditProjectForm deleteProject={props.deleteProject} dumProjects={allProjects} dumUsers={users.allUsers} editProject={editProject} index={index} />
                                         : null
                                     }
                                 </CardFooter>
@@ -129,7 +129,7 @@ const ProjectsPage = ({ projects, fetchAllProjects, editProject, users }) => {
                                     {
                                         curUser.privelege_level === 'Admin'
                                         ?
-                                        <EditProjectForm dumProjects={allProjects} dumUsers={users.allUsers} editProject={editProject} index={index} />
+                                        <EditProjectForm deleteProject={props.deleteProject} dumProjects={allProjects} dumUsers={users.allUsers} editProject={editProject} index={index} />
                                         : null
                                     }
                                 </CardFooter>
@@ -174,7 +174,7 @@ const ProjectsPage = ({ projects, fetchAllProjects, editProject, users }) => {
                                     {
                                         curUser.privelege_level === 'Admin'
                                         ?
-                                        <EditProjectForm dumProjects={allProjects} dumUsers={users.allUsers} editProject={editProject} index={index} />
+                                        <EditProjectForm deleteProject={props.deleteProject} dumProjects={allProjects} dumUsers={users.allUsers} editProject={editProject} index={index} />
                                         : null
                                     }
                                 </CardFooter>

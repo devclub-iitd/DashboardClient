@@ -263,6 +263,7 @@ class EditProjectForm extends Component {
   
     handleDelete = () => {
       // Call delete thunk here,
+      this.props.deleteProject(this.props.dumProjects[this.props.index]._id);
       console.log('Deleting: ', this.state.name);
       this.confirmDeleteClose();
     }

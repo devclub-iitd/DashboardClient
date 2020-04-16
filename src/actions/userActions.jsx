@@ -24,19 +24,24 @@ export const usersFailed = errmess => ({
   payload: errmess,
 });
 
-export const addUser = user => ({
-  type: ActionTypes.ADD_USER,
-  payload: user,
-});
+export const addUser = (user) => {
+  const upUser = {
+    ...user,
+    url: objToStrMap(user.url),
+    join_year: user.join_year === null ? new Date() : new Date(user.join_year),
+    grad_year: user.grad_year === null ? new Date() : new Date(user.grad_year),
+    birth_date: user.birth_date === null ? new Date() : new Date(user.birth_date),
+  };
+  return ({
+    type: ActionTypes.ADD_USER,
+    payload: upUser,
+  });
+};
 
 export const addAllUsers = users => ({
   type: ActionTypes.ADD_ALL_USERS,
   payload: users,
 });
-
-// export const changePassword = () => ({
-//   type: ActionTypes.USER_PASSWORD_CHANGE,
-// });
 
 export const changePasswordFailed = errMess => ({
   type: ActionTypes.USER_PASSWORD_CHANGE_FAILED,
@@ -79,12 +84,70 @@ export const registerError = message => ({
   payload: message,
 });
 
-export const fetchUser = () => (dispatch) => {
+function objToStrMap(obj) {
+  const strMap = new Map();
+  // for (const k of Object.keys(obj)) {
+  //   strMap.set(k, obj[k]);
+  // }
+  Object.keys(obj).map(k => strMap.set(k, obj[k]));
+  return strMap;
+}
+
+export const fetchUser = id => (dispatch) => {
   dispatch(userLoading(true));
 
   const bearer = `Bearer ${localStorage.getItem('token')}`;
 
-  return fetch(API.userAPI, {
+  const query = {
+    query: {
+      _id: id,
+    },
+  };
+  return fetch(API.userQueryAPI, {
+    method: 'POST',
+    body: JSON.stringify(query),
+
+    headers: {
+      'Content-Type': 'application/json',
+      // Origin: 'localhost:3001/',
+      Authorization: bearer,
+    },
+    credentials: 'same-origin',
+  })
+    .then((response) => {
+      if (response.ok) {
+        return response;
+      }
+      const error = new Error(`Error ${response.status}: ${response.statusText}`);
+      error.response = response;
+      console.log(error);
+      throw error;
+    },
+    (error) => {
+      const errmess = new Error(error.message);
+      throw errmess;
+    })
+    .then(response => response.json())
+    .then(({ data }) => {
+      console.log(data);
+      // const acUser = {
+      //   ...data[0],
+      //   url: objToStrMap(data[0].url),
+      //   join_year: new Date(data[0].join_year),
+      //   grad_year: new Date(data[0].grad_year),
+      //   birth_date: new Date(data[0].birth_date),
+      // };
+      dispatch(addUser(data[0]));
+    })
+    .catch(error => dispatch(userFailed(error.message)));
+};
+
+export const fetchAllUsers = () => (dispatch) => {
+  dispatch(usersLoading(true));
+
+  const bearer = `Bearer ${localStorage.getItem('token')}`;
+
+  return fetch(`${API.userAPI}`, {
     method: 'GET',
     // body: JSON.stringify(newComment),
     headers: {
@@ -108,51 +171,11 @@ export const fetchUser = () => (dispatch) => {
       throw errmess;
     })
     .then(response => response.json())
-    .then((user) => {
-      const acUser = {
-        ...user,
-        join_year: new Date(user.join_year),
-        grad_year: new Date(user.grad_year),
-        birth_date: new Date(user.birth_date),
-      };
-      dispatch(addUser(acUser));
-    })
-    .catch(error => dispatch(userFailed(error.message)));
-};
-
-export const fetchAllUsers = () => (dispatch) => {
-  dispatch(usersLoading(true));
-
-  // const bearer = `Bearer ${localStorage.getItem('token')}`;
-
-  return fetch(`${API.userAPI}`, {
-    method: 'GET',
-    // body: JSON.stringify(newComment),
-    headers: {
-      'Content-Type': 'application/json',
-      // Origin: 'localhost:3001/',
-      // Authorization: bearer,
-    },
-    credentials: 'same-origin',
-  })
-    .then((response) => {
-      if (response.ok) {
-        return response;
-      }
-      const error = new Error(`Error ${response.status}: ${response.statusText}`);
-      error.response = response;
-      console.log(error);
-      throw error;
-    },
-    (error) => {
-      const errmess = new Error(error.message);
-      throw errmess;
-    })
-    .then(response => response.json())
     .then((users) => {
       const gotUsers = users.data;
       const allUsers = gotUsers.map(cUser => ({
         ...cUser,
+        url: objToStrMap(cUser.url),
         join_year: cUser.join_year === null ? new Date() : new Date(cUser.join_year),
         grad_year: cUser.grad_year === null ? new Date() : new Date(cUser.grad_year),
         birth_date: cUser.birth_date === null ? new Date() : new Date(cUser.birth_date),
@@ -164,6 +187,9 @@ export const fetchAllUsers = () => (dispatch) => {
 
 export const loginUser = creds => (dispatch) => {
   // We dispatch requestLogin to kickoff the call to the API
+  // temporary logout
+  // dispatch(logout());
+
   dispatch(requestLogin(creds));
 
   return fetch(API.loginAPI, {
@@ -188,13 +214,15 @@ export const loginUser = creds => (dispatch) => {
     .then(response => response.json())
     .then((response) => {
       if (response.status === 200) {
+        console.log('Response: ', response.result);
+        console.log('Id: ', response.result._id);
         // If login was successful, set the token in local storage
-        console.log('status returned 200');
         localStorage.setItem('token', response.token);
         localStorage.setItem('creds', creds);
         // Dispatch the success action
-        dispatch(receiveLogin(response));
         dispatch(addUser(response.result));
+        dispatch(receiveLogin(response));
+        // dispatch(fetchUser(response.result._id));
       } else {
         const error = new Error(`Error ${response.status}`);
         error.response = response;
@@ -213,32 +241,19 @@ export const registerUser = registerCreds => (dispatch) => {
     },
     body: JSON.stringify(registerCreds),
   })
-    // .then((response) => {
-    //   if (response.ok) {
-    //     return response;
-    //   }
-    //   const error = new Error(`Error ${response.status}: ${response.statusText}`);
-    //   error.response = response;
-    //   throw error;
-    // },
-    // (error) => {
-    //   throw error;
-    // })
+    .then((response) => {
+      if (response.ok) {
+        return response;
+      }
+      const error = new Error(`Error ${response.status}: ${response.statusText}`);
+      error.response = response;
+      throw error;
+    },
+    (error) => {
+      throw error;
+    })
     .then(response => response.json())
     .then((response) => {
-      // if (response.success) {
-      //   dispatch(receiveRegister);
-      //   // const loginCred = {
-      //   //   username: registerCreds.username,
-      //   //   password: registerCreds.password,
-      //   // };
-      //   // // login after successful registration
-      //   // dispatch(loginUser(loginCred));
-      // } else {
-      //   const error = new Error(`Error ${response.status}`);
-      //   error.response = response;
-      //   throw error;
-      // }
       console.log('Response: ', response);
       dispatch(receiveRegister());
     })
@@ -250,7 +265,7 @@ export const logoutUser = () => (dispatch) => {
   dispatch(requestLogout());
   localStorage.removeItem('token');
   localStorage.removeItem('creds');
-  dispatch(userFailed('Error 401: Unauthorized'));
+  // dispatch(userFailed('Error 401: Unauthorized'));
   dispatch(receiveLogout());
 };
 
@@ -258,7 +273,7 @@ export const logoutUser = () => (dispatch) => {
 export const updateUser = updatedUser => (dispatch) => {
   const bearer = `Bearer ${localStorage.getItem('token')}`;
 
-  return fetch(`${API.userAPI}`, {
+  return fetch(`${API.userAPI}${updatedUser._id}`, {
     method: 'PUT',
     body: JSON.stringify(updatedUser),
     headers: {
@@ -281,7 +296,7 @@ export const updateUser = updatedUser => (dispatch) => {
     .then(response => response.json())
     .then((userData) => {
       console.log('User data updated: ', userData);
-      dispatch(fetchUser());
+      dispatch(fetchUser(updatedUser._id));
     })
     .catch(error => console.log('Error: ', error.message));
 };
@@ -318,47 +333,42 @@ export const removeOtherUser = uId => (dispatch) => {
 };
 
 // change password
-/*
-  {
-    "password": "pass",
-  }
-*/
-// export const changePassword = updatedPass => (dispatch) => {
-//   const bearer = `Bearer ${localStorage.getItem('token')}`;
-//   const creds = localStorage.getItem('creds');
-//   creds.password = updatedPass;
-//   return fetch(`${API.userAPI}changePassword`, {
-//     method: 'PUT',
-//     body: JSON.stringify(creds),
-//     headers: {
-//       'Content-Type': 'application/json',
-//       Authorization: bearer,
-//     },
-//     credentials: 'same-origin',
-//   })
-//     .then((response) => {
-//       if (response.ok) {
-//         return response;
-//       }
-//       const error = new Error(`Error ${response.status}: ${response.statusText}`);
-//       error.response = response;
-//       throw error;
-//     },
-//     (error) => {
-//       throw error;
-//     })
-//     .then(response => response.json())
-//     .then((user) => {
-//       console.log('User password changed', user);
-//       dispatch(addUser(user));
-//     })
-//     .catch(error => dispatch(userFailed(error.message)));
-// };
+export const changePassword = newPass => (dispatch) => {
+  const bearer = `Bearer ${localStorage.getItem('token')}`;
+  // const creds = localStorage.getItem('creds');
+  // creds.password = updatedPass;
+  return fetch(API.userChangePassAPI, {
+    method: 'PUT',
+    body: JSON.stringify({ newPassword: newPass }),
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: bearer,
+    },
+    credentials: 'same-origin',
+  })
+    .then((response) => {
+      if (response.ok) {
+        return response;
+      }
+      const error = new Error(`Error ${response.status}: ${response.statusText}`);
+      error.response = response;
+      throw error;
+    },
+    (error) => {
+      throw error;
+    })
+    .then(response => response.json())
+    .then((user) => {
+      console.log('User password changed', user);
+      dispatch(addUser(user));
+    })
+    .catch(error => console.log('Error: ', error));
+};
 
 export const editOtherUser = otherUser => (dispatch) => {
   const bearer = `Bearer ${localStorage.getItem('token')}`;
 
-  return fetch(`${API.postManageUserAPI}`, {
+  return fetch(`${API.userAPI}${otherUser._id}`, {
     method: 'PUT',
     body: JSON.stringify(otherUser),
     headers: {

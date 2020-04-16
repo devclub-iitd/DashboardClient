@@ -15,12 +15,21 @@ export const eventsLoading = () => ({
   type: ActionTypes.EVENTS_LOADING,
 });
 
+function objToStrMap(obj) {
+  const strMap = new Map();
+  // for (const k of Object.keys(obj)) {
+  //   strMap.set(k, obj[k]);
+  // }
+  Object.keys(obj).map(k => strMap.set(k, obj[k]));
+  return strMap;
+}
+
 export const fetchAllEvents = () => (dispatch) => {
   // dispatch(eventsLoading(true));
 
   const bearer = `Bearer ${localStorage.getItem('token')}`;
 
-  return fetch(`${API.eventAPI}`, {
+  return fetch(API.eventGetAllDBAPI, {
     method: 'GET',
     // body: JSON.stringify(newComment),
     headers: {
@@ -46,8 +55,10 @@ export const fetchAllEvents = () => (dispatch) => {
     .then(response => response.json())
     .then((events) => {
       const gotEvents = events.data;
+      // fetch gets url as an object, converting to map strings required
       const allEvents = gotEvents.map(event => ({
         ...event,
+        url: objToStrMap(event.url),
         start_date: event.start_date === null ? new Date() : new Date(event.start_date),
         end_date: event.end_date === null ? new Date() : new Date(event.end_date),
       }));
@@ -59,7 +70,7 @@ export const fetchAllEvents = () => (dispatch) => {
 export const createEvent = event => (dispatch) => {
   const bearer = `Bearer ${localStorage.getItem('token')}`;
 
-  return fetch(`${API.eventAPI}`, {
+  return fetch(API.eventAPI, {
     method: 'POST',
     body: JSON.stringify(event),
     headers: {
@@ -90,7 +101,7 @@ export const createEvent = event => (dispatch) => {
 export const editEvent = event => (dispatch) => {
   const bearer = `Bearer ${localStorage.getItem('token')}`;
 
-  return fetch(`${API.eventAPI}`, {
+  return fetch(`${API.eventAPI}${event._id}`, {
     method: 'PUT',
     body: JSON.stringify(event),
     headers: {
@@ -121,8 +132,9 @@ export const editEvent = event => (dispatch) => {
 export const deleteEvent = eventId => (dispatch) => {
   const bearer = `Bearer ${localStorage.getItem('token')}`;
 
-  return fetch(`${API.eventAPI}delete/${eventId}`, {
-    method: 'DELETE',
+  return fetch(API.eventDeleteAPI, {
+    method: 'POST',
+    body: JSON.stringify({ id: eventId }),
     headers: {
       'Content-Type': 'application/json',
       Authorization: bearer,

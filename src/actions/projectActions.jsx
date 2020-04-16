@@ -15,17 +15,24 @@ export const projectsLoading = () => ({
   type: ActionTypes.PROJECTS_LOADING,
 });
 
+function objToStrMap(obj) {
+  const strMap = new Map();
+  // for (const k of Object.keys(obj)) {
+  //   strMap.set(k, obj[k]);
+  // }
+  Object.keys(obj).map(k => strMap.set(k, obj[k]));
+  return strMap;
+}
+
 export const fetchAllProjects = () => (dispatch) => {
   // dispatch(projectsLoading(true));
 
   const bearer = `Bearer ${localStorage.getItem('token')}`;
 
-  return fetch(`${API.projectAPI}`, {
+  return fetch(`${API.projectGetAllDBAPI}`, {
     method: 'GET',
-    // body: JSON.stringify(newComment),
     headers: {
       'Content-Type': 'application/json',
-      // Origin: 'localhost:3001/',
       Authorization: bearer,
     },
     credentials: 'same-origin',
@@ -46,8 +53,10 @@ export const fetchAllProjects = () => (dispatch) => {
     .then(response => response.json())
     .then((projects) => {
       const gotProjects = projects.data;
+      // fetch gets url as an object, converting to map strings required
       const allProjects = gotProjects.map(pro => ({
         ...pro,
+        url: objToStrMap(pro.url),
         start_date: pro.start_date === null ? new Date() : new Date(pro.start_date),
         end_date: pro.end_date === null ? new Date() : new Date(pro.end_date),
       }));
@@ -59,7 +68,7 @@ export const fetchAllProjects = () => (dispatch) => {
 export const createProject = project => (dispatch) => {
   const bearer = `Bearer ${localStorage.getItem('token')}`;
 
-  return fetch(`${API.projectAPI}`, {
+  return fetch(API.projectAPI, {
     method: 'POST',
     body: JSON.stringify(project),
     headers: {
@@ -90,7 +99,7 @@ export const createProject = project => (dispatch) => {
 export const editProject = project => (dispatch) => {
   const bearer = `Bearer ${localStorage.getItem('token')}`;
 
-  return fetch(`${API.projectAPI}`, {
+  return fetch(`${API.projectAPI}${project._id}`, {
     method: 'PUT',
     body: JSON.stringify(project),
     headers: {
@@ -121,8 +130,9 @@ export const editProject = project => (dispatch) => {
 export const deleteProject = projectId => (dispatch) => {
   const bearer = `Bearer ${localStorage.getItem('token')}`;
 
-  return fetch(`${API.projectAPI}delete/${projectId}`, {
-    method: 'DELETE',
+  return fetch(API.projectDeleteAPI, {
+    method: 'POST',
+    body: JSON.stringify({ id: projectId }),
     headers: {
       'Content-Type': 'application/json',
       Authorization: bearer,

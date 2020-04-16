@@ -1,8 +1,35 @@
 import React from 'react';
 import { TextField, Button, Grid } from '@material-ui/core';
 
-export default function ChangePassword() {
-  const handleSubmit = () => (true);
+export default function ChangePassword(props) {
+  const [confirmPassError, setConfirmPassError] = React.useState(false);
+
+  handleChange(e, type) {
+    const { value } = e.target;
+    this.setState({ [type]: value });
+    if (type === 'confirmPassword') {
+      const { password } = this.state;
+      this.setState({ confirmPassError: (value !== password) });
+    }
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const { confirmPassError } = this.state;
+
+    if (confirmPassError) {
+      return;
+    }
+
+    const { target } = e;
+
+    props.changePass(target.password.value);
+
+    window.location.reload(false);
+
+  };
+
   return (
     <div>
       {/* <TextField
@@ -27,21 +54,11 @@ export default function ChangePassword() {
               margin="normal"
               required
               fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoFocus
-            /> */}
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
               name="c_password"
               label="Current Password"
               type="password"
               id="password"
-            />
+            /> */}
             <TextField
               variant="outlined"
               margin="normal"
@@ -49,7 +66,8 @@ export default function ChangePassword() {
               fullWidth
               name="password"
               label="New Password"
-              type="n_password"
+              type="password"
+              onChange={event => handleChange(event, 'password')}
               id="password"
             />
             <TextField
@@ -57,10 +75,12 @@ export default function ChangePassword() {
               margin="normal"
               required
               fullWidth
-              name="password"
+              name="confirmPassword"
               label=" Confirm Password"
-              type="co_password"
-              id="password"
+              type="password"
+              error={confirmPassError}
+              onChange={event => handleChange(event, 'confirmPassword')}
+              id="confirmPassword"
             />
             <Button
               type="submit"

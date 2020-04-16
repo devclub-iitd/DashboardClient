@@ -33,19 +33,20 @@ import PropTypes from 'prop-types';
 import { actions } from 'react-redux-form';
 import { 
   fetchUser, fetchAllUsers, logoutUser,
-  updateUser, editOtherUser
+  updateUser, editOtherUser, changePassword,
+  removeOtherUser
 } from '../actions/userActions';
 import { 
   fetchAllEvents, createEvent,
-  editEvent
+  editEvent, deleteEvent
 } from '../actions/eventActions';
 import {
   fetchAllProjects, createProject,
-  editProject
+  editProject, deleteProject
 } from '../actions/projectActions';
 import {
   fetchAllResources, createResource,
-  editResource
+  editResource, deleteResource
 } from '../actions/resourceActions';
 import { render } from 'react-dom';
 
@@ -159,7 +160,7 @@ function renderPage(subPage, classProp, classPaper, props) {
     case 'changePassword':
       return (
         <div>
-          <ChangePassword />
+          <ChangePassword changePass={props.changePass} />
         </div>
       );
     // case 'approveUsers': return (<div><ApproveUsers /></div>);
@@ -184,6 +185,7 @@ function renderPage(subPage, classProp, classPaper, props) {
             events={props.events}
             fetchAllEvents={props.fetchAllEvents}
             editEvent={props.editEvent}
+            deleteEvent={props.deleteEvent}
             users={props.users}
           />
         </div>
@@ -196,6 +198,7 @@ function renderPage(subPage, classProp, classPaper, props) {
             projects={props.projects}
             fetchAllProjects={props.fetchAllProjects}
             editProject={props.editProject}
+            deleteProject={props.deleteProject}
             users={props.users}
           />
         </div>
@@ -208,6 +211,7 @@ function renderPage(subPage, classProp, classPaper, props) {
             resources={props.resources}
             fetchAllResources={props.fetchAllResources}
             editResource={props.editResource}
+            deleteResource={props.deleteResource}
             users={props.users}
           />
         </div>
@@ -239,6 +243,10 @@ function renderPage(subPage, classProp, classPaper, props) {
             editProject={props.editProject}
             editResource={props.editResource}
             editOtherUser={props.editOtherUser}
+            removeUser={props.removeUser}
+            deleteEvent={props.deleteEvent}
+            deleteProject={props.deleteProject}
+            deleteResource={props.deleteResource}
           />
         </div>
       );
@@ -263,16 +271,21 @@ const mapDispatchToProps = (dispatch) => ({
   fetchAllUsers: () => { dispatch(fetchAllUsers()) },
   logoutUser: () => { dispatch(logoutUser()) },
   updateUser: (user) => { dispatch(updateUser(user)) },
-  editOtherUser: () => { dispatch(editOtherUser()) },
+  changePass: (newPass) => { dispatch(changePassword(newPass)) },
+  editOtherUser: (user) => { dispatch(editOtherUser(user)) },
+  removeUser: (uId) => { dispatch(removeOtherUser(uId)) },
   fetchAllEvents: () => { dispatch(fetchAllEvents()) },
   createEvent: (newEvent) => { dispatch(createEvent(newEvent)) },
   editEvent: (updatedEvent) => { dispatch(editEvent(updatedEvent)) },
+  deleteEvent: (eventId) => { dispatch(deleteEvent(eventId)) },
   fetchAllProjects: () => { dispatch(fetchAllProjects()) },
   createProject: (newProject) => { dispatch(createProject(newProject)) },
   editProject: (updatedProject) => { dispatch(editProject(updatedProject)) },
+  deleteProject: (projectId) => { dispatch(deleteProject(projectId)) },
   fetchAllResources: () => { dispatch(fetchAllResources()) },
   createResource: (newResource) => { dispatch(createResource(newResource)) },
   editResource: (updatedResource) => { dispatch(editResource(updatedResource)) },
+  deleteResource: (resourceId) => { dispatch(deleteResource(resourceId)) },
 });
 
 function Dashboard(props) {
@@ -312,11 +325,18 @@ function Dashboard(props) {
   } = props;
 
   React.useEffect(() => {
-    // fetchAllEvents();
+    fetchAllEvents();
     fetchAllUsers();
     fetchAllProjects();
     fetchAllResources();
   }, []);
+
+  if(!props.auth.isAuthenticated) {
+    console.log('NOT AUTHENTICATED!!!!!!!!!!!');
+    return (
+      <Redirect to="/login" />
+    );
+  }
 
   console.log('Users: ', props.users.allUsers);
   console.log('Projects: ', props.projects.allProjects);
@@ -389,16 +409,21 @@ Dashboard.propTypes = {
   fetchAllUsers: PropTypes.func.isRequired,
   logoutUser: PropTypes.func.isRequired,
   updateUser: PropTypes.func.isRequired,
+  changePass: PropTypes.func.isRequired,
+  removeUser: PropTypes.func.isRequired,
   editOtherUser: PropTypes.func.isRequired,
   fetchAllEvents: PropTypes.func.isRequired,
   createEvent: PropTypes.func.isRequired,
   editEvent: PropTypes.func.isRequired,
+  deleteEvent: PropTypes.func.isRequired,
   fetchAllProjects: PropTypes.func.isRequired,
   createProject: PropTypes.func.isRequired,
   editProject: PropTypes.func.isRequired,
+  deleteProject: PropTypes.func.isRequired,
   fetchAllResources: PropTypes.func.isRequired,
   createResource: PropTypes.func.isRequired,
   editResource: PropTypes.func.isRequired,
+  deleteResource: PropTypes.func.isRequired,
   // classes: PropTypes.objectOf(PropTypes.string).isRequired,
 };
 
