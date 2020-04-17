@@ -315,9 +315,9 @@ const Profile = (props) => {
         />
         <br /> */}
       {/* className={classes.iconright} */}
-      <Fab onClick={handleOpen} color="primary" aria-label="edit">
+      {/* <Fab onClick={handleOpen} color="primary" aria-label="edit">
         <EditIcon />
-      </Fab>
+      </Fab> */}
       <Grid container direction="row" justify="space-evenly" alignItems="flex-start">
         <div>
           <Dialog open={isModalOpen} maxWidth="md" fullWidth onClose={() => { cancelEdit(); handleClose(); }} scroll="paper">
@@ -821,6 +821,11 @@ const Profile = (props) => {
             {/* </ModalBody> */}
           </Dialog>
         </div>
+        <Grid item xs={12}>
+          <Fab onClick={handleOpen} color="primary" aria-label="edit">
+            <EditIcon />
+          </Fab>
+        </Grid>
         <Grid className={classes.gcontainer} item sm={9} lg={5}>
           <Card className={classes.card}>
             <img className={classes.image} src={user.url.get('picture_url')} alt="Profile Pic" />

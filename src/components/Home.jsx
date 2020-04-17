@@ -101,16 +101,6 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function TaskData() {
-  const classes = useStyles();
-
-  return (
-    // <Paper className={classes.root}>
-    // <h1>Pending Tasks</h1>
-    null
-  );
-}
-
 const required = val => val && val.length;
 const maxLength = len => val => !(val) || (val.length <= len);
 const minLength = len => val => (val) && (val.length >= len);
@@ -335,7 +325,7 @@ class EditOtherUserForm extends Component {
 export default function Home(props) {
   const classes = useStyles();
   // const curUser = dumUsers[0];
-  const curUser = props.user;
+  const curUser = props.users.user;
   const dumUsers = props.users.allUsers;
   const dumEvents = props.events.allEvents;
   const dumProjects = props.projects.allProjects;
@@ -1427,7 +1417,7 @@ export default function Home(props) {
                 {
                   <ListGroup>
                     {
-                      dumProjects.filter((project) => project.members.map((mem) => mem.name).indexOf(curUser.name) !== -1).map((project, index) => {
+                      dumProjects.filter((project) => project.members.indexOf(curUser._id) !== -1).map((project, index) => {
                         return(
                           <Fragment key={`${project}~${index}`}>
                             <ListGroupItem>

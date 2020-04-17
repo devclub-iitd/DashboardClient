@@ -22,6 +22,8 @@ import ChangePassword from '../components/ChangePassword';
 import EventsPage from '../components/Events';
 import ProjectsPage from '../components/Projects';
 import ResourcesPage from '../components/Resources';
+import ManageUsers from '../components/ManageUsers';
+import MyTasks from '../components/MyTasks';
 import DeployManager from '../components/Deploy';
 import ApproveUsers from '../components/ApproveUsers';
 import CreateTasks from '../components/CreateTasks';
@@ -216,6 +218,28 @@ function renderPage(subPage, classProp, classPaper, props) {
           />
         </div>
       );
+    
+    case 'users':
+      return (
+        <div>
+          <ManageUsers
+            users={props.users}
+            removeUser={props.removeUser}
+            editOtherUser={editOtherUser}
+          />
+        </div>
+      );
+
+    case 'myTasks':
+      return (
+        <div>
+          <MyTasks
+            users={props.users}
+            events={props.events}
+            projects={props.projects}
+          />
+        </div>
+      );
 
     case 'deploy':
       return (
@@ -237,7 +261,7 @@ function renderPage(subPage, classProp, classPaper, props) {
             fetchAllEvents={props.fetchAllEvents}
             fetchAllProjects={props.fetchAllProjects}
             fetchAllResources={props.fetchAllResources}
-            user={props.users.user}
+            // user={props.users.user}
             users={props.users}
             editEvent={props.editEvent}
             editProject={props.editProject}
@@ -249,6 +273,60 @@ function renderPage(subPage, classProp, classPaper, props) {
             deleteResource={props.deleteResource}
           />
         </div>
+      );
+  }
+}
+
+function getPageName(subPage) {
+  switch (subPage) {
+    case 'profile':
+      return (
+        'Profile'
+      );
+    case 'changePassword':
+      return (
+        'Change Password'
+      );
+    // case 'approveUsers': return (<div><ApproveUsers /></div>);
+    case 'createTasks':
+      return (
+        'Create New Items'
+      );
+    
+    case 'events':
+      return (
+        'Club Events'
+      );
+    
+    case 'projects':
+      return (
+        'Club Projects'
+      );
+    
+    case 'resources':
+      return (
+        'Club Resources'
+      );
+    
+    case 'users':
+      return (
+        'Manage Club Members'
+      );
+    
+    case 'myTasks':
+      return (
+        'My Tasks'
+      );
+
+    case 'deploy':
+      return (
+        'Deployment Manager'
+      );
+    // case 'assignTasks': return (<div><AssignTasks /></div>);
+    // default: return (<div><Home fixedHeightPaper={classProp} paperClass={classPaper} /></div>);
+    default:
+      return (
+        'Home'
       );
   }
 }
@@ -358,11 +436,13 @@ function Dashboard(props) {
             <MenuIcon />
           </IconButton>
           <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-            {subPage}
+            {
+              getPageName(subPage)
+            }
           </Typography>
           <IconButton color="inherit">
-            Welcome {props.users.user.name}!
-            <Badge badgeContent={4} color="secondary">
+            {`Welcome ${props.users.user.name}! ${props.users.user.privelege_level === 'Admin' ? '(You\`re Admin)': ''}`}
+            <Badge color="secondary">
               <NotificationsIcon />
             </Badge>
           </IconButton>
@@ -382,7 +462,7 @@ function Dashboard(props) {
         </div>
         <Divider />
         <List>
-          <MainListItems logout={props.logoutUser} />
+          <MainListItems isAdmin={props.users.user.privelege_level === 'Admin'} logout={props.logoutUser} />
         </List>
       </Drawer>
       <main className={classes.content}>

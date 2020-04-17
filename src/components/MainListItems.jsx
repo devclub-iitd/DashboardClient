@@ -17,12 +17,9 @@ import EventIcon from '@material-ui/icons/Event';
 import AllInboxIcon from '@material-ui/icons/AllInbox';
 import DeveloperModeIcon from '@material-ui/icons/DeveloperMode';
 import PublishIcon from '@material-ui/icons/Publish';
+import GroupIcon from '@material-ui/icons/Group';
+import AssignmentIcon from '@material-ui/icons/Assignment';
 import { withRouter } from 'react-router-dom';
-import { logoutUser } from '../actions/userActions';
-
-// const mapDispatchToProps = dispatch => {
-//   logout: () => { dispatch(logoutUser()) },
-// };
 
 function MainListItems(props) {
   const redirectFunc = subPath => () => {
@@ -67,7 +64,19 @@ function MainListItems(props) {
         </ListItemIcon>
         <ListItemText primary="Resources" />
       </ListItem>
-      <ListItem button onClick={redirectFunc('deploy')}>
+      <ListItem button disabled={props.isAdmin} onClick={redirectFunc('users')}>
+        <ListItemIcon>
+          <GroupIcon />
+        </ListItemIcon>
+        <ListItemText primary="Manage Users" />
+      </ListItem>
+      <ListItem button onClick={redirectFunc('myTasks')}>
+        <ListItemIcon>
+          <AssignmentIcon />
+        </ListItemIcon>
+        <ListItemText primary="My Tasks" />
+      </ListItem>
+      <ListItem button disabled={props.isAdmin} onClick={redirectFunc('deploy')}>
         <ListItemIcon>
           <PublishIcon />
         </ListItemIcon>
@@ -79,7 +88,7 @@ function MainListItems(props) {
         </ListItemIcon>
         <ListItemText primary="Approve Users" />
       </ListItem> */}
-      <ListItem button onClick={redirectFunc('createTasks')}>
+      <ListItem button disabled={props.isAdmin} onClick={redirectFunc('createTasks')}>
         <ListItemIcon>
           <AddBoxIcon />
         </ListItemIcon>
