@@ -3,7 +3,7 @@ import React, { Fragment, Component } from 'react';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import {
   Paper, GridList, GridListTileBar, GridListTile,
-  Typography, Grid,
+  Typography, Grid, Backdrop, CircularProgress,
 } from '@material-ui/core';
 import {
  Card, CardBody, CardText, CardTitle, CardFooter,
@@ -48,18 +48,35 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-const ResourcesPage = ({resources, fetchAllResources, editResource, users}) => {
+const ResourcesPage = ({resources, fetchAllResources, editResource, deleteResource, users}) => {
     const classes = useStyles();
     const allResources = resources.allResources;
     const curUser = users.user;
 
+    const current = allResources.filter(resource => !resource.archive);
+    const archives = allResources.filter(resource => resource.archive);
+
     return (
         <>
+          {
+            resources.errMess !== null
+            ?
+            <Typography variant='h4' color='textSecondary'>Failed to fetch Resources</Typography>
+            : null
+          }
+          <Backdrop className={classes.backdrop} open={resources.isLoading}>
+            <CircularProgress color="inherit" />
+          </Backdrop>
             <Paper elevation={3} variant="outlined" className={classes.paper}>
             {/* <GridList spacing={1} className={classes.gridList}> */}
             <Typography variant="h4" color="primary" className={classes.head}>Current</Typography>
             <Grid container spacing={2} className={classes.grid}>
-                {allResources.filter(resource => !resource.archive).map((res, index) => (
+                {
+                  current.length === 0
+                  ?
+                  <Typography variant='h4' color='textSecondary'>No current resources</Typography>
+                  :
+                  current.map((res, index) => (
                             // <GridListTile key={`${resource}~${index}`} cols={2} rows={2}>
                 <Grid key={`${res}~${index}`} item xs={12} md={6} lg={4}>
                     <Card color="primary" outline>
@@ -89,7 +106,15 @@ const ResourcesPage = ({resources, fetchAllResources, editResource, users}) => {
                         <CardLink href={res.url}>Access resource</CardLink>
                         {
                             curUser.privelege_level === 'Admin'
-                            ? <EditResourceForm deleteResource={props.deleteResource} dumResources={allResources} dumUsers={users.allUsers} editResource={editResource} index={index} />
+                            ? 
+                            <EditResourceForm
+                              deleteResource={deleteResource}
+                              dumResources={current}
+                              editFailed={resources.editFailed}
+                              removeFailed={resources.removeFailed}
+                              dumUsers={users.allUsers}
+                              editResource={editResource}
+                              index={index} />
                             : null
                         }
                     </CardFooter>
@@ -104,7 +129,12 @@ const ResourcesPage = ({resources, fetchAllResources, editResource, users}) => {
             {/* <GridList spacing={1} className={classes.gridList}> */}
             <Typography variant="h4" color="primary" className={classes.head}>Archived</Typography>
             <Grid container spacing={2} className={classes.grid}>
-                {allResources.filter(resource => resource.archive).map((res, index) => (
+                {
+                  archives.length === 0
+                  ?
+                  <Typography variant='h4' color='textSecondary'>No archived resources</Typography>
+                  :
+                  archives.map((res, index) => (
                             // <GridListTile key={`${resource}~${index}`} cols={2} rows={2}>
                 <Grid key={`${res}~${index}`} item xs={12} md={6} lg={4}>
                     <Card color="primary" outline>
@@ -134,7 +164,15 @@ const ResourcesPage = ({resources, fetchAllResources, editResource, users}) => {
                         <CardLink href={res.url}>Access resource</CardLink>
                         {
                             curUser.privelege_level === 'Admin'
-                            ? <EditResourceForm deleteResource={props.deleteResource} dumResources={allResources} dumUsers={users.allUsers} editResource={editResource} index={index} />
+                            ? 
+                            <EditResourceForm
+                              deleteResource={deleteResource}
+                              dumResources={archives}
+                              editFailed={resources.editFailed}
+                              removeFailed={resources.removeFailed}
+                              dumUsers={users.allUsers}
+                              editResource={editResource}
+                              index={index} />
                             : null
                         }
                     </CardFooter>

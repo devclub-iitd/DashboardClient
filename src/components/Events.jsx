@@ -2,7 +2,7 @@ import React, { Fragment, Component } from 'react';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import {
   Paper, GridList, GridListTileBar, GridListTile,
-  Typography, Grid
+  Typography, Grid, Backdrop, CircularProgress
 } from '@material-ui/core';
 import { Card, CardBody, CardText, CardTitle, CardFooter,
     CardHeader, CardLink
@@ -46,7 +46,7 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-const EventsPage = ({ events, fetchAllEvents, editEvent, users }) => {
+const EventsPage = ({ events, fetchAllEvents, editEvent, deleteEvent, users }) => {
     const classes = useStyles();
     const allEvents = events.allEvents;
     const curUser = users.user;
@@ -81,13 +81,31 @@ const EventsPage = ({ events, fetchAllEvents, editEvent, users }) => {
         }
     }
 
+    const ongoing = allEvents.filter((event) => isOngoing(event.start_date, event.end_date));
+    const upcoming = allEvents.filter((event) => isUpcoming(event.start_date));
+    const completed = allEvents.filter((event) => isCompleted(event.end_date));
+
     return (
         <>
+        {
+          events.errMess !== null
+          ?
+          <Typography variant='h4' color='textSecondary'>Failed to fetch Events</Typography>
+          : null
+        }
+        <Backdrop className={classes.backdrop} open={events.isLoading}>
+          <CircularProgress color="inherit" />
+        </Backdrop>
         <Paper elevation={3} variant="outlined" className={classes.paper}>
             {/* <GridList spacing={1} className={classes.gridList}> */}
             <Typography variant='h4' color="primary" className={classes.head}>Ongoing</Typography>
                 <Grid container spacing={2} className={classes.grid}>
-                    {allEvents.filter((event) => isOngoing(event.start_date, event.end_date)).map((event, index) => (
+                    {
+                      ongoing.length === 0
+                      ?
+                      <Typography variant='h4' color='textSecondary'>No ongoing events</Typography>
+                      :
+                        ongoing.map((event, index) => (
                         // <GridListTile key={`${event}~${index}`} cols={2} rows={2}>
                         <Grid key={`${event}~${index}`} item xs={12} md={6} lg={4}>
                             <Card color="primary" outline>
@@ -114,7 +132,14 @@ const EventsPage = ({ events, fetchAllEvents, editEvent, users }) => {
                                     {
                                         curUser.privelege_level === 'Admin'
                                         ?
-                                        <EditEventForm deleteEvent={props.deleteEvent} dumEvents={allEvents} dumUsers={users.allUsers} editEvent={editEvent} index={index} />
+                                        <EditEventForm 
+                                          deleteEvent={deleteEvent} 
+                                          dumEvents={ongoing}
+                                          editFailed={events.editFailed}
+                                          removeFailed={events.removeFailed}
+                                          dumUsers={users.allUsers} 
+                                          editEvent={editEvent} 
+                                          index={index} />
                                         : null
                                     }
                                 </CardFooter>
@@ -132,7 +157,12 @@ const EventsPage = ({ events, fetchAllEvents, editEvent, users }) => {
             {/* <GridList spacing={1} className={classes.gridList}> */}
             <Typography variant='h4' color="primary" className={classes.head}>Upcoming</Typography>
                 <Grid container spacing={2} className={classes.grid}>
-                    {allEvents.filter((event) => isUpcoming(event.start_date)).map((event, index) => (
+                    {
+                      upcoming.length === 0
+                      ?
+                      <Typography variant='h4' color='textSecondary'>No upcoming events</Typography>
+                      :
+                      upcoming.map((event, index) => (
                         // <GridListTile key={`${event}~${index}`} cols={2} rows={2}>
                         <Grid key={`${event}~${index}`} item xs={12} md={6} lg={4}>
                             <Card color="primary" outline>
@@ -159,7 +189,14 @@ const EventsPage = ({ events, fetchAllEvents, editEvent, users }) => {
                                     {
                                         curUser.privelege_level === 'Admin'
                                         ?
-                                        <EditEventForm deleteEvent={props.deleteEvent} dumEvents={allEvents} dumUsers={users.allUsers} editEvent={editEvent} index={index} />
+                                        <EditEventForm 
+                                          deleteEvent={deleteEvent} 
+                                          dumEvents={upcoming}
+                                          editFailed={events.editFailed}
+                                          removeFailed={events.removeFailed}
+                                          dumUsers={users.allUsers} 
+                                          editEvent={editEvent} 
+                                          index={index} />
                                         : null
                                     }
                                 </CardFooter>
@@ -177,7 +214,12 @@ const EventsPage = ({ events, fetchAllEvents, editEvent, users }) => {
             {/* <GridList spacing={1} className={classes.gridList}> */}
             <Typography variant='h4' color="primary" className={classes.head}>Completed</Typography>
                 <Grid container spacing={2} className={classes.grid}>
-                    {allEvents.filter((event) => isCompleted(event.end_date)).map((event, index) => (
+                    {
+                      completed.length === 0
+                      ?
+                      <Typography variant='h4' color='textSecondary'>No completed events</Typography>
+                      :
+                      completed.map((event, index) => (
                         // <GridListTile key={`${event}~${index}`} cols={2} rows={2}>
                         <Grid key={`${event}~${index}`} item xs={12} md={6} lg={4}>
                             <Card color="primary" outline>
@@ -204,7 +246,14 @@ const EventsPage = ({ events, fetchAllEvents, editEvent, users }) => {
                                     {
                                         curUser.privelege_level === 'Admin'
                                         ?
-                                        <EditEventForm deleteEvent={props.deleteEvent} dumEvents={allEvents} dumUsers={users.allUsers} editEvent={editEvent} index={index} />
+                                        <EditEventForm 
+                                          deleteEvent={deleteEvent} 
+                                          dumEvents={completed}
+                                          editFailed={events.editFailed}
+                                          removeFailed={events.removeFailed}
+                                          dumUsers={users.allUsers} 
+                                          editEvent={editEvent} 
+                                          index={index} />
                                         : null
                                     }
                                 </CardFooter>

@@ -15,8 +15,20 @@ export const resourcesLoading = () => ({
   type: ActionTypes.RESOURCES_LOADING,
 });
 
+export const editFailed = () => ({
+  type: ActionTypes.EDIT_RESOURCE_FAILED,
+});
+
+export const createFailed = () => ({
+  type: ActionTypes.CREATE_RESOURCE_FAILED,
+});
+
+export const removeFailed = () => ({
+  type: ActionTypes.REMOVE_RESOURCE_FAILED,
+});
+
 export const fetchAllResources = () => (dispatch) => {
-  // dispatch(resourcesLoading(true));
+  dispatch(resourcesLoading(true));
 
   const bearer = `Bearer ${localStorage.getItem('token')}`;
 
@@ -75,7 +87,7 @@ export const createResource = resource => (dispatch) => {
       console.log('New Resource: ', cResource);
       dispatch(fetchAllResources());
     })
-    .catch(error => console.log(error));
+    .catch(error => dispatch(createFailed(error.message)));
 };
 
 export const editResource = resource => (dispatch) => {
@@ -106,7 +118,7 @@ export const editResource = resource => (dispatch) => {
       console.log('Updated Resource: ', cResource);
       dispatch(fetchAllResources());
     })
-    .catch(error => console.log(error));
+    .catch(error => dispatch(editFailed(error.message)));
 };
 
 export const deleteResource = resourceId => (dispatch) => {
@@ -138,5 +150,5 @@ export const deleteResource = resourceId => (dispatch) => {
       console.log(res);
       dispatch(fetchAllResources());
     })
-    .catch(error => console.log('Error: ', error.message));
+    .catch(error => dispatch(removeFailed(error.message)));
 };

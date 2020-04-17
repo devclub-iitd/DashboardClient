@@ -15,6 +15,18 @@ export const projectsLoading = () => ({
   type: ActionTypes.PROJECTS_LOADING,
 });
 
+export const editFailed = () => ({
+  type: ActionTypes.EDIT_PROJECT_FAILED,
+});
+
+export const createFailed = () => ({
+  type: ActionTypes.CREATE_PROJECT_FAILED,
+});
+
+export const removeFailed = () => ({
+  type: ActionTypes.REMOVE_PROJECT_FAILED,
+});
+
 function objToStrMap(obj) {
   const strMap = new Map();
   // for (const k of Object.keys(obj)) {
@@ -25,7 +37,7 @@ function objToStrMap(obj) {
 }
 
 export const fetchAllProjects = () => (dispatch) => {
-  // dispatch(projectsLoading(true));
+  dispatch(projectsLoading(true));
 
   const bearer = `Bearer ${localStorage.getItem('token')}`;
 
@@ -93,7 +105,7 @@ export const createProject = project => (dispatch) => {
       console.log('New Project: ', cProject);
       dispatch(fetchAllProjects());
     })
-    .catch(error => console.log(error));
+    .catch(error => dispatch(createFailed(error.message)));
 };
 
 export const editProject = project => (dispatch) => {
@@ -124,7 +136,7 @@ export const editProject = project => (dispatch) => {
       console.log('Updated Project: ', cEvent);
       dispatch(fetchAllProjects());
     })
-    .catch(error => console.log(error));
+    .catch(error => dispatch(editFailed(error.message)));
 };
 
 export const deleteProject = projectId => (dispatch) => {
@@ -156,5 +168,5 @@ export const deleteProject = projectId => (dispatch) => {
       console.log(res);
       dispatch(fetchAllProjects());
     })
-    .catch(error => console.log('Error: ', error.message));
+    .catch(error => dispatch(removeFailed(error.message)));
 };

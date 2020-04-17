@@ -416,6 +416,8 @@ function Dashboard(props) {
     );
   }
 
+  const isAdmin = props.users.user.privelege_level === 'Admin';
+
   console.log('Users: ', props.users.allUsers);
   console.log('Projects: ', props.projects.allProjects);
   console.log('Events: ', props.events.allEvents);
@@ -462,7 +464,7 @@ function Dashboard(props) {
         </div>
         <Divider />
         <List>
-          <MainListItems isAdmin={props.users.user.privelege_level === 'Admin'} logout={props.logoutUser} />
+          <MainListItems isAdmin={isAdmin} logout={props.logoutUser} />
         </List>
       </Drawer>
       <main className={classes.content}>

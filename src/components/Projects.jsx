@@ -2,7 +2,7 @@ import React, { Fragment, Component } from 'react';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import {
   Paper, GridList, GridListTileBar, GridListTile,
-  Typography, Grid
+  Typography, Grid, Backdrop, CircularProgress,
 } from '@material-ui/core';
 import { Card, CardBody, CardText, CardTitle, CardFooter,
     CardHeader, CardLink
@@ -46,18 +46,36 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-const ProjectsPage = ({ projects, fetchAllProjects, editProject, users }) => {
+const ProjectsPage = ({ projects, fetchAllProjects, editProject, deleteProject, users }) => {
     const classes = useStyles();
     const allProjects = projects.allProjects;
     const curUser = users.user;
 
+    const ideas = allProjects.filter((project) => project.status === 'IDEA');
+    const ongoing = allProjects.filter((project) => project.status === 'ONGOING');
+    const completed = allProjects.filter((project) => project.status === 'COMPLETED');
+
     return (
         <>
+        {
+          projects.errMess !== null
+          ?
+          <Typography variant='h4' color='textSecondary'>Failed to fetch Projects</Typography>
+          : null
+        }
+        <Backdrop className={classes.backdrop} open={projects.isLoading}>
+          <CircularProgress color="inherit" />
+        </Backdrop>
         <Paper elevation={3} variant="outlined" className={classes.paper}>
             {/* <GridList spacing={1} className={classes.gridList}> */}
             <Typography variant='h4' color="primary" className={classes.head}>Ideated</Typography>
                 <Grid container spacing={2} className={classes.grid}>
-                    {allProjects.filter((project) => project.status === 'IDEA').map((project, index) => (
+                    {
+                      ideas.length === 0
+                      ?
+                      <Typography variant='h4' color='textSecondary'>No ideated projects</Typography>
+                      :
+                      ideas.map((project, index) => (
                         // <GridListTile key={`${project}~${index}`} cols={2} rows={2}>
                         <Grid key={`${project}~${index}`} item xs={12} md={6} lg={4}>
                             <Card color="primary" outline>
@@ -84,7 +102,14 @@ const ProjectsPage = ({ projects, fetchAllProjects, editProject, users }) => {
                                     {
                                         curUser.privelege_level === 'Admin'
                                         ?
-                                        <EditProjectForm deleteProject={props.deleteProject} dumProjects={allProjects} dumUsers={users.allUsers} editProject={editProject} index={index} />
+                                        <EditProjectForm
+                                          deleteProject={deleteProject}
+                                          dumProjects={ideas}
+                                          editFailed={projects.editFailed}
+                                          removeFailed={projects.removeFailed}
+                                          dumUsers={users.allUsers} 
+                                          editProject={editProject}
+                                          index={index} />
                                         : null
                                     }
                                 </CardFooter>
@@ -102,7 +127,12 @@ const ProjectsPage = ({ projects, fetchAllProjects, editProject, users }) => {
             {/* <GridList spacing={1} className={classes.gridList}> */}
             <Typography variant='h4' color="primary" className={classes.head}>Ongoing</Typography>
                 <Grid container spacing={2} className={classes.grid}>
-                    {allProjects.filter((project) => project.status === 'ONGOING').map((project, index) => (
+                    {
+                      ongoing.length === 0
+                      ?
+                      <Typography variant='h4' color='textSecondary'>No ongoing projects</Typography>
+                      :
+                      ongoing.map((project, index) => (
                         // <GridListTile key={`${project}~${index}`} cols={2} rows={2}>
                         <Grid key={`${project}~${index}`} item xs={12} md={6} lg={4}>
                             <Card color="primary" outline>
@@ -129,7 +159,14 @@ const ProjectsPage = ({ projects, fetchAllProjects, editProject, users }) => {
                                     {
                                         curUser.privelege_level === 'Admin'
                                         ?
-                                        <EditProjectForm deleteProject={props.deleteProject} dumProjects={allProjects} dumUsers={users.allUsers} editProject={editProject} index={index} />
+                                        <EditProjectForm
+                                          deleteProject={deleteProject}
+                                          dumProjects={ongoing}
+                                          editFailed={projects.editFailed}
+                                          removeFailed={projects.removeFailed}
+                                          dumUsers={users.allUsers} 
+                                          editProject={editProject}
+                                          index={index} />
                                         : null
                                     }
                                 </CardFooter>
@@ -147,7 +184,12 @@ const ProjectsPage = ({ projects, fetchAllProjects, editProject, users }) => {
             {/* <GridList spacing={1} className={classes.gridList}> */}
             <Typography variant='h4' color="primary" className={classes.head}>Completed</Typography>
                 <Grid container spacing={2} className={classes.grid}>
-                    {allProjects.filter((project) => project.status === 'COMPLETED').map((project, index) => (
+                    {
+                      completed.length === 0
+                      ?
+                      <Typography variant='h4' color='textSecondary'>No completed projects</Typography>
+                      :
+                      completed.map((project, index) => (
                         // <GridListTile key={`${project}~${index}`} cols={2} rows={2}>
                         <Grid key={`${project}~${index}`} item xs={12} md={6} lg={4}>
                             <Card color="primary" outline>
@@ -174,7 +216,14 @@ const ProjectsPage = ({ projects, fetchAllProjects, editProject, users }) => {
                                     {
                                         curUser.privelege_level === 'Admin'
                                         ?
-                                        <EditProjectForm deleteProject={props.deleteProject} dumProjects={allProjects} dumUsers={users.allUsers} editProject={editProject} index={index} />
+                                        <EditProjectForm
+                                          deleteProject={deleteProject}
+                                          dumProjects={completed}
+                                          editFailed={projects.editFailed}
+                                          removeFailed={projects.removeFailed}
+                                          dumUsers={users.allUsers} 
+                                          editProject={editProject}
+                                          index={index} />
                                         : null
                                     }
                                 </CardFooter>

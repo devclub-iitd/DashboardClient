@@ -4,14 +4,14 @@ import { TextField, Button, Grid } from '@material-ui/core';
 export default function ChangePassword(props) {
   const [confirmPassError, setConfirmPassError] = React.useState(false);
 
-  handleChange(e, type) {
+  const handleChange = (e, type) => {
     const { value } = e.target;
     this.setState({ [type]: value });
     if (type === 'confirmPassword') {
       const { password } = this.state;
       this.setState({ confirmPassError: (value !== password) });
     }
-  }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -27,7 +27,6 @@ export default function ChangePassword(props) {
     props.changePass(target.password.value);
 
     window.location.reload(false);
-
   };
 
   return (

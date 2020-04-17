@@ -5,7 +5,8 @@ import {
   TableContainer, Dialog, DialogTitle, DialogContent,
   FormControlLabel, Radio, RadioGroup, Switch, InputLabel,
   Select, Input, Chip, MenuItem, FormLabel, FormControl,
-  TextField, Fab, Checkbox, ListItemText, Paper,
+  TextField, Fab, Checkbox, ListItemText, Paper, Snackbar,
+  Backdrop, CircularProgress,
 } from '@material-ui/core';
 // import PendingTasks from './PendingTasks';
 import {
@@ -128,8 +129,27 @@ class EditOtherUserForm extends Component {
   }
 
   render() {
+
+    const { editFailed, removeFailed } = this.props;
+        
+    const [serverError, setServerError] = React.useState(editFailed || removeFailed);
+
+    const handleClose = () => {
+      setServerError(false);
+    };
+
     return(
       <div>
+        <Snackbar
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'center',
+          }}
+          open={serverError}
+          autoHideDuration={2000}
+          onClose={handleClose}
+          message="Server Error !!! Try again"
+        />
         <Button onClick={() => { 
           this.handleFormOpen(); 
         }} 
@@ -265,14 +285,32 @@ export default function ManageUsers(props) {
   const curUser = props.users.user;
   const dumUsers = props.users.allUsers;
 
+  const admins = dumUsers.filter((user) => user.privelege_level === 'Admin');
+  const approved = dumUsers.filter((user) => user.privelege_level === 'Approved_User');
+  const unapproved = dumUsers.filter((user) => user.privelege_level === 'Unapproved_User');
+
   return (
+
     <Grid container spacing={5} justify="space-evenly">
+      {
+        props.users.errMess !== null
+        ?
+        <Typography variant='h4' color='textSecondary'>Failed to fetch Users</Typography>
+        : null
+      }
+      <Backdrop className={classes.backdrop} open={props.users.isLoading}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <Grid item xs={12} md={4}>
         <Paper elevation={3} variant="outlined" className={classes.paper}>
           <Typography variant='h4' align='center' className={{ width: '100%' }}>Admins</Typography>
           <ListGroup>
             {
-              dumUsers.filter((user) => user.privelege_level === 'Admin').map((user, index) => {
+              admins.length === 0
+              ?
+              <Typography variant='h4' color='textSecondary'>No admins of the club!! SHIT!!</Typography>
+              :
+              admins.map((user, index) => {
                 return(
                   <Fragment key={`${user}~${index}`}>
                     <ListGroupItem>
@@ -317,7 +355,11 @@ export default function ManageUsers(props) {
           <Typography variant='h4' align='center' className={{ width: '100%' }}>Approved Users</Typography>
           <ListGroup>
             {
-              dumUsers.filter((user) => user.privelege_level === 'Approved_User').map((user, index) => {
+              approved.length === 0
+              ?
+              <Typography variant='h4' color='textSecondary'>No approved Users</Typography>
+              :
+              approved.map((user, index) => {
                 return(
                   <Fragment key={`${user}~${index}`}>
                     <ListGroupItem>
@@ -352,7 +394,13 @@ export default function ManageUsers(props) {
                           {
                             curUser.privelege_level === 'Admin'
                             ?
-                            <EditOtherUserForm removeUser={props.removeUser} dumUsers={dumUsers} editUser={props.editOtherUser} index={index} />
+                            <EditOtherUserForm
+                              removeUser={props.removeUser}
+                              dumUsers={approved}
+                              editError={props.users.editFailed}
+                              removeError={props.users.removeFailed}
+                              editUser={props.editOtherUser} 
+                              index={index} />
                             : null
                           }
                         </CardFooter>
@@ -370,7 +418,11 @@ export default function ManageUsers(props) {
           <Typography variant='h4' align='center' className={{ width: '100%' }}>Unapproved Users</Typography>
           <ListGroup>
             {
-              dumUsers.filter((user) => user.privelege_level === 'Unapproved_User').map((user, index) => {
+              unapproved.length === 0
+              ?
+              <Typography variant='h4' color='textSecondary'>No unappproved Users</Typography>
+              :
+              unapproved.map((user, index) => {
                 return(
                   <Fragment key={`${user}~${index}`}>
                     <ListGroupItem>
@@ -405,7 +457,13 @@ export default function ManageUsers(props) {
                           {
                             curUser.privelege_level === 'Admin'
                             ?
-                            <EditOtherUserForm removeUser={props.removeUser} dumUsers={dumUsers} editUser={props.editOtherUser} index={index} />
+                            <EditOtherUserForm
+                              removeUser={props.removeUser}
+                              dumUsers={unapproved}
+                              editError={props.users.editFailed}
+                              removeError={props.users.removeFailed}
+                              editUser={props.editOtherUser} 
+                              index={index} />
                             : null
                           }
                         </CardFooter>

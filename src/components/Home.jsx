@@ -4,7 +4,8 @@ import { Grid, Typography,
   TableContainer, Dialog, DialogTitle, DialogContent,
   FormControlLabel, Radio, RadioGroup, Switch, InputLabel,
   Select, Input, Chip, MenuItem, FormLabel, FormControl, 
-  TextField, Fab, Checkbox, ListItemText } from '@material-ui/core';
+  TextField, Fab, Checkbox, ListItemText, Backdrop, CircularProgress,
+ } from '@material-ui/core';
 // import PendingTasks from './PendingTasks';
 import { Card, CardImg, CardImgOverlay, CardText, 
   CardBody, CardTitle, CardFooter, CardLink, Button, Popover,
@@ -99,6 +100,10 @@ const useStyles = makeStyles(theme => ({
   chip: {
     margin: 2,
   },
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    color: '#fff',
+  },
 }));
 
 const required = val => val && val.length;
@@ -191,8 +196,27 @@ class EditOtherUserForm extends Component {
   }
 
   render() {
+    
+    const { editFailed, removeFailed } = this.props;
+        
+    const [serverError, setServerError] = React.useState(editFailed || removeFailed);
+
+    const handleClose = () => {
+      setServerError(false);
+    };
+
     return(
       <div>
+        <Snackbar
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'center',
+          }}
+          open={serverError}
+          autoHideDuration={2000}
+          onClose={handleClose}
+          message="Server Error !!! Try again"
+        />
         <Button onClick={() => { 
           this.handleFormOpen(); 
         }} 
@@ -332,17 +356,31 @@ export default function Home(props) {
   const dumResources = props.resources.allResources;
 
   const [eventPopOpen, setEventPopOpen] = React.useState(false);
-  const toggleEventPop = () => setEventPopOpen(!eventPopOpen);
+  const toggleEventPop = () => {
+    if (!props.events.isLoading && props.events.errMess === null) {
+      setEventPopOpen(!eventPopOpen);
+    }
+  };
 
   const [projectPopOpen, setProjectPopOpen] = React.useState(false);
-  const toggleProjectPop = () => setProjectPopOpen(!projectPopOpen);
+  const toggleProjectPop = () => {
+    if (!props.projects.isLoading && props.projects.errMess === null) {
+      setProjectPopOpen(!projectPopOpen);
+    }
+  };
 
   const [resourcePopOpen, setResourcePopOpen] = React.useState(false);
-  const toggleResourcePop = () => setResourcePopOpen(!resourcePopOpen);
+  const toggleResourcePop = () => {
+    if (!props.resources.isLoading && props.resources.errMess === null) {
+      setResourcePopOpen(!resourcePopOpen);    
+    }
+  };
 
   const [memPopOpen, setMemPopOpen] = React.useState(false);
   const toggleMemPop = () => {
-    setMemPopOpen(!memPopOpen);
+    if (!props.users.isLoading && props.users.usersErrMess === null) {
+      setMemPopOpen(!memPopOpen);
+    }
   };
 
   const [eventDailogOpen, setEventDailogOpen] =  React.useState(false);
@@ -352,7 +390,9 @@ export default function Home(props) {
 
   const handleEventCardOpen = () => {
     console.log('Event card clicked');
-    setEventDailogOpen(true);
+    if (!props.events.isLoading && props.events.errMess === null) {
+      setEventDailogOpen(true);
+    }
   }
   const handleEventCardClose = () => {
     console.log('Event card clicked');
@@ -375,8 +415,11 @@ export default function Home(props) {
 
   const handleProjectCardOpen = () => {
     console.log('Project card clicked');
-    setProjectDailogOpen(true);
-  }
+    if (!props.projects.isLoading && props.projects.errMess === null) {
+      setProjectDailogOpen(true);
+    }
+  };
+
   const handleProjectCardClose = () => {
     console.log('Project card clicked');
     setProjectDailogOpen(false);
@@ -384,7 +427,9 @@ export default function Home(props) {
 
   const handleResourceCardOpen = () => {
     console.log('card clicked');
-    setResourceDailogOpen(true);
+    if (!props.resources.isLoading && props.resources.errMess === null) {
+      setResourceDailogOpen(true);
+    }
   }
   const handleResourceCardClose = () => {
     console.log('card clicked');
@@ -393,7 +438,9 @@ export default function Home(props) {
 
   const handleUserCardOpen = () => {
     console.log('card clicked');
-    setUserDailogOpen(true);
+    if (!props.users.isLoading && props.users.usersErrMess === null) {
+      setUserDailogOpen(true);
+    }
   }
   const handleUserCardClose = () => {
     console.log('card clicked');
@@ -445,10 +492,19 @@ export default function Home(props) {
           </Grid>
           <Grid item xs={12} sm={6}>
             <Card className="btn" id="eventCard" onClick={handleEventCardOpen}>
-              <CardBody>
-                <CardTitle>Events</CardTitle>
-                <CardText>{dumEvents.length}</CardText>
-              </CardBody>
+              {
+                props.events.errMess !== null
+                ? 
+                <h4>Error fetching events</h4>
+                :
+                <CardBody>
+                  <Backdrop className={classes.backdrop} open={props.events.isLoading}>
+                    <CircularProgress color="inherit" />
+                  </Backdrop>
+                  <CardTitle>Events</CardTitle>
+                  <CardText>{dumEvents.length}</CardText>
+                </CardBody>
+              }
             </Card>
             <Dialog open={eventDailogOpen} maxWidth="sm" fullWidth onClose={handleEventCardClose} scroll="paper">
               <DialogTitle>
@@ -667,7 +723,14 @@ export default function Home(props) {
                                 {
                                   curUser.privelege_level === 'Admin'
                                     ?
-                                    <EditEventForm deleteEvent={props.deleteEvent} dumEvents={dumEvents} dumUsers={dumUsers} editEvent={props.editEvent} index={index} />
+                                    <EditEventForm
+                                      deleteEvent={props.deleteEvent}
+                                      dumEvents={dumEvents}
+                                      editError={props.projects.editFailed}
+                                      removeError={props.projects.removeFailed}
+                                      dumUsers={dumUsers}
+                                      editEvent={props.editEvent}
+                                      index={index} />
                                     : null
                                 }
                               </CardFooter>
@@ -683,10 +746,19 @@ export default function Home(props) {
           </Grid>
           <Grid item xs={12} sm={6}>
             <Card className="btn" id="projectCard" onClick={handleProjectCardOpen}>
-              <CardBody>
-                <CardTitle>Projects</CardTitle>
-                <CardText>{dumProjects.length}</CardText>
-              </CardBody>
+              {
+                props.projects.errMess !== null
+                ? 
+                <h4>Error fetching projects</h4>
+                :
+                <CardBody>
+                  <Backdrop className={classes.backdrop} open={props.projects.isLoading}>
+                    <CircularProgress color="inherit" />
+                  </Backdrop>
+                  <CardTitle>Projects</CardTitle>
+                  <CardText>{dumProjects.length}</CardText>
+                </CardBody>
+              }
             </Card>
             <Dialog open={projectDailogOpen} maxWidth="sm" fullWidth onClose={handleProjectCardClose} scroll="paper">
               <DialogTitle>
@@ -909,7 +981,14 @@ export default function Home(props) {
                                 {
                                   curUser.privelege_level === 'Admin'
                                   ?
-                                  <EditProjectForm deleteProject={props.deleteProject} dumProjects={dumProjects} dumUsers={dumUsers} editProject={props.editProject} index={index} />
+                                  <EditProjectForm
+                                    deleteProject={props.deleteProject}
+                                    editError={props.projects.editFailed}
+                                    removeError={props.projects.removeFailed}
+                                    dumProjects={dumProjects}
+                                    dumUsers={dumUsers}
+                                    editProject={props.editProject}
+                                    index={index} />
                                   : null
                                 }
                               </CardFooter>
@@ -925,10 +1004,19 @@ export default function Home(props) {
           </Grid>
           <Grid item xs={12} sm={6}>
             <Card id="resourceCard" className="btn" onClick={handleResourceCardOpen}>
-              <CardBody>
-                <CardTitle>Resources</CardTitle>
-                <CardText>{dumResources.length}</CardText>
-              </CardBody>
+              {
+                props.resources.errMess !== null
+                ? 
+                <h4>Error fetching resources</h4>
+                :
+                <CardBody>
+                  <Backdrop className={classes.backdrop} open={props.resources.isLoading}>
+                    <CircularProgress color="inherit" />
+                  </Backdrop>
+                  <CardTitle>Resources</CardTitle>
+                  <CardText>{dumResources.length}</CardText>
+                </CardBody>
+              }
             </Card>
             <Dialog open={resourceDailogOpen} maxWidth="sm" fullWidth onClose={handleResourceCardClose} scroll="paper">
               <DialogTitle>
@@ -1085,7 +1173,14 @@ export default function Home(props) {
                                 {
                                   curUser.privelege_level === 'Admin'
                                   ?
-                                  <EditResourceForm deleteResource={props.deleteResource} dumResources={dumResources} dumUsers={dumUsers} editResource={props.editResource} index={index} />
+                                  <EditResourceForm
+                                    deleteResource={props.deleteResource}
+                                    dumResources={dumResources}
+                                    editError={props.resources.editFailed}
+                                    removeError={props.resources.removeFailed}
+                                    dumUsers={dumUsers}
+                                    editResource={props.editResource}
+                                    index={index} />
                                   : null
                                 }
                               </CardFooter>
@@ -1101,10 +1196,19 @@ export default function Home(props) {
           </Grid>
           <Grid item xs={12} sm={6}>
             <Card id="memCard" className="btn" onClick={handleUserCardOpen}>
-              <CardBody>
-                <CardTitle>Members</CardTitle>
-                <CardText>{dumUsers.length}</CardText>
-              </CardBody>
+              {
+                props.users.usersErrMess !== null
+                ? 
+                <h4>Error fetching members</h4>
+                :
+                <CardBody>
+                  <Backdrop className={classes.backdrop} open={props.users.isLoading}>
+                    <CircularProgress color="inherit" />
+                  </Backdrop>
+                  <CardTitle>Members</CardTitle>
+                  <CardText>{dumUsers.length}</CardText>
+                </CardBody>
+              }
             </Card>
             <Dialog open={userDailogOpen} maxWidth="sm" fullWidth onClose={handleUserCardClose} scroll="paper">
               <DialogTitle>
@@ -1335,7 +1439,13 @@ export default function Home(props) {
                                   {
                                     curUser.privelege_level === 'Admin'
                                     ?
-                                    <EditOtherUserForm removeUser={props.removeUser} dumUsers={dumUsers} editUser={props.editOtherUser} index={index} />
+                                    <EditOtherUserForm
+                                      removeUser={props.removeUser}
+                                      dumUsers={dumUsers}
+                                      editError={props.users.editFailed}
+                                      removeError={props.users.removeFailed}
+                                      editUser={props.editOtherUser} 
+                                      index={index} />
                                     : null
                                   }
                               </CardFooter>
@@ -1376,6 +1486,10 @@ export default function Home(props) {
             <TabContent activeTab={activeTaskTab}>
               <TabPane tabId='Events'>
                 {
+                  dumEvents.filter((event) => event.assignee === curUser.name).length === 0
+                  ?
+                  <Typography variant='h4' color='textSecondary'>No events for you</Typography>
+                  :
                   <ListGroup>
                     {
                       dumEvents.filter((event) => event.assignee === curUser.name).map((event, index) => {
@@ -1415,6 +1529,10 @@ export default function Home(props) {
               </TabPane>
               <TabPane tabId='Projects'>
                 {
+                  dumProjects.filter((project) => project.members.indexOf(curUser._id) !== -1).length === 0
+                  ?
+                  <Typography variant='h4' color='textSecondary'>No projects for you</Typography>
+                  :
                   <ListGroup>
                     {
                       dumProjects.filter((project) => project.members.indexOf(curUser._id) !== -1).map((project, index) => {

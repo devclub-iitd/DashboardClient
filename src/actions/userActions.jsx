@@ -43,9 +43,16 @@ export const addAllUsers = users => ({
   payload: users,
 });
 
-export const changePasswordFailed = errMess => ({
+export const changePasswordFailed = () => ({
   type: ActionTypes.USER_PASSWORD_CHANGE_FAILED,
-  payload: errMess,
+});
+
+export const editUserFailed = () => ({
+  type: ActionTypes.EDIT_USER_FAILED,
+});
+
+export const removeUserFailed = () => ({
+  type: ActionTypes.REMOVE_USER_FAILED,
 });
 
 export const requestLogin = creds => ({
@@ -147,7 +154,7 @@ export const fetchAllUsers = () => (dispatch) => {
 
   const bearer = `Bearer ${localStorage.getItem('token')}`;
 
-  return fetch(`${API.userAPI}`, {
+  return fetch(`${API.userGetAllDBAPI}`, {
     method: 'GET',
     // body: JSON.stringify(newComment),
     headers: {
@@ -298,7 +305,7 @@ export const updateUser = updatedUser => (dispatch) => {
       console.log('User data updated: ', userData);
       dispatch(fetchUser(updatedUser._id));
     })
-    .catch(error => console.log('Error: ', error.message));
+    .catch(error => dispatch(editUserFailed(error.message)));
 };
 
 export const removeOtherUser = uId => (dispatch) => {
@@ -329,7 +336,7 @@ export const removeOtherUser = uId => (dispatch) => {
       console.log(res);
       dispatch(fetchAllUsers());
     })
-    .catch(error => console.log('Error: ', error.message));
+    .catch(error => dispatch(removeUserFailed(error)));
 };
 
 // change password
@@ -360,9 +367,9 @@ export const changePassword = newPass => (dispatch) => {
     .then(response => response.json())
     .then((user) => {
       console.log('User password changed', user);
-      dispatch(addUser(user));
+      // dispatch(addUser(user));
     })
-    .catch(error => console.log('Error: ', error));
+    .catch(error => dispatch(changePasswordFailed(error.message)));
 };
 
 export const editOtherUser = otherUser => (dispatch) => {
@@ -394,5 +401,5 @@ export const editOtherUser = otherUser => (dispatch) => {
       // dispatch(addAllUsers(allUsers));
       dispatch(fetchAllUsers());
     })
-    .catch(error => dispatch(usersFailed(error.message)));
+    .catch(error => dispatch(editUserFailed(error.message)));
 };

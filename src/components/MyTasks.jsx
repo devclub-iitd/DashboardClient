@@ -5,7 +5,8 @@ import {
   TableContainer, Dialog, DialogTitle, DialogContent,
   FormControlLabel, Radio, RadioGroup, Switch, InputLabel,
   Select, Input, Chip, MenuItem, FormLabel, FormControl,
-  TextField, Fab, Checkbox, ListItemText, Paper,
+  TextField, Fab, Checkbox, ListItemText, Paper, Backdrop,
+  CircularProgress,
 } from '@material-ui/core';
 // import PendingTasks from './PendingTasks';
 import {
@@ -41,17 +42,24 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export function MyTasks(props) {
+export default function MyTasks(props) {
   
   const curUser = props.users.user;
   const dumEvents = props.events.allEvents;
   const dumProjects = props.projects.allProjects;
   const classes = useStyles();
 
-  const [activeTab, setActiveTab] = React.useState('Ongoing');
-  const toggle = tab => {
-    if (activeTab !== tab) {
-      setActiveTab(tab);
+  const [activeEventTab, setActiveEventTab] = React.useState('Ongoing');
+  const toggleEventTab = tab => {
+    if (activeEventTab !== tab) {
+      setActiveEventTab(tab);
+    }
+  };
+
+  const [activeProjectTab, setActiveProjectTab] = React.useState('Idea');
+  const toggleProjectTab = tab => {
+    if (activeProjectTab !== tab) {
+      setActiveProjectTab(tab);
     }
   };
 
@@ -90,33 +98,36 @@ export function MyTasks(props) {
       <Grid item xs={12} md={6}>
         <Paper elevation={3} variant="outlined" className={classes.paper}>
           <Typography variant='h4' align='center' className={{ width: '100%' }}>My Events</Typography>
+          <Backdrop className={classes.backdrop} open={events.isLoading}>
+            <CircularProgress color="inherit" />
+          </Backdrop>
           <Nav tabs>
             <NavItem className="btn">
               <NavLink
-                className={classnames({ active: activeTab === 'Ongoing' })}
-                onClick={() => toggle('Ongoing')}
+                className={classnames({ active: activeEventTab === 'Ongoing' })}
+                onClick={() => toggleEventTab('Ongoing')}
               >
                 Ongoing
               </NavLink>
             </NavItem>
             <NavItem className="btn">
               <NavLink
-                className={classnames({ active: activeTab === 'Upcoming' })}
-                onClick={() => toggle('Upcoming')}
+                className={classnames({ active: activeEventTab === 'Upcoming' })}
+                onClick={() => toggleEventTab('Upcoming')}
               >
                 Upcoming
               </NavLink>
             </NavItem>
             <NavItem className="btn">
               <NavLink
-                className={classnames({ active: activeTab === 'Completed' })}
-                onClick={() => toggle('Completed')}
+                className={classnames({ active: activeEventTab === 'Completed' })}
+                onClick={() => toggleEventTab('Completed')}
               >
                 Completed
               </NavLink>
             </NavItem>
           </Nav>
-          <TabContent activeTab={activeTab}>
+          <TabContent activeEventTab={activeEventTab}>
             <TabPane tabId='Ongoing'>
               {
                 props.events.errMess !== null
@@ -267,10 +278,21 @@ export function MyTasks(props) {
       <Grid item xs={12} md={6}>
         <Paper elevation={3} variant="outlined" className={classes.paper}>
           <Typography variant='h4' align='center' className={{ width: '100%' }}>My Projects</Typography>
+          <Backdrop className={classes.backdrop} open={projects.isLoading}>
+            <CircularProgress color="inherit" />
+          </Backdrop>
           <Nav tabs>
             <NavItem className="btn">
               <NavLink
-                className={classnames({ active: activeTab === 'Ongoing' })}
+                className={classnames({ active: activeProjectTab === 'Idea' })}
+                onClick={() => toggle('Idea')}
+              >
+                Idea
+              </NavLink>
+            </NavItem>
+            <NavItem className="btn">
+              <NavLink
+                className={classnames({ active: activeEventTab === 'Ongoing' })}
                 onClick={() => toggle('Ongoing')}
               >
                 Ongoing
@@ -278,23 +300,15 @@ export function MyTasks(props) {
             </NavItem>
             <NavItem className="btn">
               <NavLink
-                className={classnames({ active: activeTab === 'Upcoming' })}
-                onClick={() => toggle('Upcoming')}
-              >
-                Upcoming
-              </NavLink>
-            </NavItem>
-            <NavItem className="btn">
-              <NavLink
-                className={classnames({ active: activeTab === 'Completed' })}
+                className={classnames({ active: activeEventTab === 'Completed' })}
                 onClick={() => toggle('Completed')}
               >
                 Completed
               </NavLink>
             </NavItem>
           </Nav>
-          <TabContent activeTab={activeTab}>
-            <TabPane tabId='Ongoing'>
+          <TabContent activeEventTab={activeEventTab}>
+            <TabPane tabId='Idea'>
               {
                 props.projects.errMess !== null
                 ?
@@ -307,7 +321,7 @@ export function MyTasks(props) {
               {
                 <ListGroup>
                   {
-                    dumProjects.filter((project) => project.members.indexOf(curUser._id) !== -1).filter((project) => project.status === 'ONGOING').map((project, index) => {
+                    dumProjects.filter((project) => project.members.indexOf(curUser._id) !== -1).filter((project) => project.status === 'IDEA').map((project, index) => {
                       return(
                         <Fragment key={`${project}~${index}`}>
                           <ListGroupItem>
@@ -358,7 +372,7 @@ export function MyTasks(props) {
               {
                 <ListGroup>
                   {
-                    dumProjects.filter((project) => project.members.indexOf(curUser._id) !== -1).filter((project) => project.status === 'IDEA').map((project, index) => {
+                    dumProjects.filter((project) => project.members.indexOf(curUser._id) !== -1).filter((project) => project.status === 'ONGOING').map((project, index) => {
                       return(
                         <Fragment key={`${project}~${index}`}>
                           <ListGroupItem>

@@ -4,7 +4,7 @@ import { Grid, Typography,
   TableContainer, Dialog, DialogTitle, DialogContent,
   FormControlLabel, Radio, RadioGroup, Switch, InputLabel,
   Select, Input, Chip, MenuItem, FormLabel, FormControl, 
-  TextField, Fab, Checkbox, ListItemText } from '@material-ui/core';
+  TextField, Fab, Checkbox, ListItemText, Snackbar } from '@material-ui/core';
 // import PendingTasks from './PendingTasks';
 import { Card, CardImg, CardImgOverlay, CardText, 
   CardBody, CardTitle, CardFooter, CardLink, Button, Popover,
@@ -182,9 +182,26 @@ class EditEventForm extends Component {
         const required = val => val && val.length;
         const maxLength = len => val => !(val) || (val.length <= len);
         const minLength = len => val => (val) && (val.length >= len);
+        const { editFailed, removeFailed } = this.props;
         
+        const [serverError, setServerError] = React.useState(editFailed || removeFailed);
+
+        const handleClose = () => {
+          setServerError(false);
+        };
+
         return (
             <div>
+            <Snackbar
+              anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'center',
+              }}
+              open={serverError}
+              autoHideDuration={2000}
+              onClose={handleClose}
+              message="Server Error !!! Try again"
+            />
             <Button onClick={() => { 
                 this.handleFormOpen(); 
             }} 

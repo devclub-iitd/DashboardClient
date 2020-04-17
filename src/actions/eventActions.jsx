@@ -15,6 +15,18 @@ export const eventsLoading = () => ({
   type: ActionTypes.EVENTS_LOADING,
 });
 
+export const editFailed = () => ({
+  type: ActionTypes.EDIT_EVENT_FAILED,
+});
+
+export const createFailed = () => ({
+  type: ActionTypes.CREATE_EVENT_FAILED,
+});
+
+export const removeFailed = () => ({
+  type: ActionTypes.REMOVE_EVENT_FAILED,
+});
+
 function objToStrMap(obj) {
   const strMap = new Map();
   // for (const k of Object.keys(obj)) {
@@ -25,7 +37,7 @@ function objToStrMap(obj) {
 }
 
 export const fetchAllEvents = () => (dispatch) => {
-  // dispatch(eventsLoading(true));
+  dispatch(eventsLoading(true));
 
   const bearer = `Bearer ${localStorage.getItem('token')}`;
 
@@ -95,7 +107,7 @@ export const createEvent = event => (dispatch) => {
       console.log('New Event: ', cEvent);
       dispatch(fetchAllEvents());
     })
-    .catch(error => console.log(error));
+    .catch(error => dispatch(createFailed(error.message)));
 };
 
 export const editEvent = event => (dispatch) => {
@@ -126,7 +138,7 @@ export const editEvent = event => (dispatch) => {
       console.log('Updated Event: ', cEvent);
       dispatch(fetchAllEvents());
     })
-    .catch(error => console.log(error));
+    .catch(error => dispatch(editFailed(error.message)));
 };
 
 export const deleteEvent = eventId => (dispatch) => {
@@ -158,5 +170,5 @@ export const deleteEvent = eventId => (dispatch) => {
       console.log(res);
       dispatch(fetchAllEvents());
     })
-    .catch(error => console.log('Error: ', error.message));
+    .catch(error => dispatch(removeFailed(error.message)));
 };
