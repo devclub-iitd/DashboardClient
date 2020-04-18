@@ -90,7 +90,8 @@ const ResourcesPage = ({resources, fetchAllResources, editResource, deleteResour
                                 curUser.privelege_level !== 'Unapproved_User'
                                 ?
                                 <Typography variant='body1'>({res.internal_name})</Typography>
-                                : null
+                                 <Typography variant='h4' align='center' className={{ width: '100%' }}>Unapproved Users</Typography>
+         : null
                             } */}
                             <Typography variant="body1">
                                 (

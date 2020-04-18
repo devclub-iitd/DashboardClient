@@ -98,7 +98,8 @@ const ProjectsPage = ({ projects, fetchAllProjects, editProject, deleteProject, 
                                     </CardText>
                                 </CardBody>
                                 <CardFooter>
-                                    Assigned to: {project.members.map((mem) => (` ${mem.name},`))}
+                                    {/* Assigned to: {project.members.map((memId) => users.allUsers.filter((user) => user._id === memId).name + ', ')} */}
+                                    Assigned to: {users.allUsers.filter(user => project.members.includes(user._id)).map(user => (user.name + ', '))}
                                     {
                                         curUser.privelege_level === 'Admin'
                                         ?
@@ -155,7 +156,7 @@ const ProjectsPage = ({ projects, fetchAllProjects, editProject, deleteProject, 
                                     </CardText>
                                 </CardBody>
                                 <CardFooter>
-                                    Assigned to: {project.members.map((mem) => (` ${mem.name},`))}
+                                    Assigned to: {users.allUsers.filter(user => project.members.includes(user._id)).map(user => (user.name + ', '))}
                                     {
                                         curUser.privelege_level === 'Admin'
                                         ?
@@ -212,7 +213,7 @@ const ProjectsPage = ({ projects, fetchAllProjects, editProject, deleteProject, 
                                     </CardText>
                                 </CardBody>
                                 <CardFooter>
-                                    Assigned to: {project.members.map((mem) => (` ${mem.name},`))}
+                                    Assigned to: {users.allUsers.filter(user => project.members.includes(user._id)).map(user => (user.name + ', '))}
                                     {
                                         curUser.privelege_level === 'Admin'
                                         ?

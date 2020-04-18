@@ -93,12 +93,24 @@ export default function MyTasks(props) {
     }
   }
 
+  const ongoingEvents = dumEvents.filter((event) => event.assignee === curUser.name).filter((event) => isOngoing(event.start_date, event.end_date));
+  const upcomingEvents = dumEvents.filter((event) => event.assignee === curUser.name).filter((event) => isUpcoming(event.start_date));
+  const completedEvents = dumEvents.filter((event) => event.assignee === curUser.name).filter((event) => isCompleted(event.end_date));
+
+  const ideaProjects = dumProjects.filter((project) => project.members.indexOf(curUser._id) !== -1).filter((project) => project.status === 'IDEA');
+  const ongoingProjects = dumProjects.filter((project) => project.members.indexOf(curUser._id) !== -1).filter((project) => project.status === 'ONGOING');
+  const completedProjects = dumProjects.filter((project) => project.members.indexOf(curUser._id) !== -1).filter((project) => project.status === 'COMPLETED');
+
+  console.log('Ongoing Events: ', ongoingEvents.length);
+  console.log('Upcoming Events: ', upcomingEvents.length);
+  console.log('Completed Events: ', completedEvents.length);
+
   return (
     <Grid container justify='space-evenly'>
       <Grid item xs={12} md={6}>
         <Paper elevation={3} variant="outlined" className={classes.paper}>
           <Typography variant='h4' align='center' className={{ width: '100%' }}>My Events</Typography>
-          <Backdrop className={classes.backdrop} open={events.isLoading}>
+          <Backdrop className={classes.backdrop} open={props.events.isLoading}>
             <CircularProgress color="inherit" />
           </Backdrop>
           <Nav tabs>
@@ -127,7 +139,7 @@ export default function MyTasks(props) {
               </NavLink>
             </NavItem>
           </Nav>
-          <TabContent activeEventTab={activeEventTab}>
+          <TabContent activeTab={activeEventTab}>
             <TabPane tabId='Ongoing'>
               {
                 props.events.errMess !== null
@@ -139,9 +151,13 @@ export default function MyTasks(props) {
                 : null
               }
               {
+                ongoingEvents.length === 0
+                ?
+                <Typography variant='h4' color='textSecondary'>No ongoing events for you</Typography>
+                :
                 <ListGroup>
                   {
-                    dumEvents.filter((event) => event.assignee === curUser.name).filter((event) => isOngoing(event.start_date, event.end_date)).map((event, index) => {
+                    ongoingEvents.map((event, index) => {
                       return(
                         <Fragment key={`${event}~${index}`}>
                           <ListGroupItem>
@@ -187,9 +203,13 @@ export default function MyTasks(props) {
                 : null
               }
               {
+                upcomingEvents.length === 0
+                ?
+                <Typography variant='h4' color='textSecondary'>No upcoming events for you</Typography>
+                :
                 <ListGroup>
                   {
-                    dumEvents.filter((event) => event.assignee === curUser.name).filter((event) => isUpcoming(event.start_date)).map((event, index) => {
+                    upcomingEvents.map((event, index) => {
                       return(
                         <Fragment key={`${event}~${index}`}>
                           <ListGroupItem>
@@ -235,9 +255,13 @@ export default function MyTasks(props) {
                 : null
               }
               {
+                completedEvents.length === 0
+                ?
+                <Typography variant='h4' color='textSecondary'>No completed events for you</Typography>
+                :
                 <ListGroup>
                   {
-                    dumEvents.filter((event) => event.assignee === curUser.name).filter((event) => isCompleted(event.end_date)).map((event, index) => {
+                    completedEvents.map((event, index) => {
                       return(
                         <Fragment key={`${event}~${index}`}>
                           <ListGroupItem>
@@ -278,36 +302,36 @@ export default function MyTasks(props) {
       <Grid item xs={12} md={6}>
         <Paper elevation={3} variant="outlined" className={classes.paper}>
           <Typography variant='h4' align='center' className={{ width: '100%' }}>My Projects</Typography>
-          <Backdrop className={classes.backdrop} open={projects.isLoading}>
+          <Backdrop className={classes.backdrop} open={props.projects.isLoading}>
             <CircularProgress color="inherit" />
           </Backdrop>
           <Nav tabs>
             <NavItem className="btn">
               <NavLink
                 className={classnames({ active: activeProjectTab === 'Idea' })}
-                onClick={() => toggle('Idea')}
+                onClick={() => toggleProjectTab('Idea')}
               >
                 Idea
               </NavLink>
             </NavItem>
             <NavItem className="btn">
               <NavLink
-                className={classnames({ active: activeEventTab === 'Ongoing' })}
-                onClick={() => toggle('Ongoing')}
+                className={classnames({ active: activeProjectTab === 'Ongoing' })}
+                onClick={() => toggleProjectTab('Ongoing')}
               >
                 Ongoing
               </NavLink>
             </NavItem>
             <NavItem className="btn">
               <NavLink
-                className={classnames({ active: activeEventTab === 'Completed' })}
-                onClick={() => toggle('Completed')}
+                className={classnames({ active: activeProjectTab === 'Completed' })}
+                onClick={() => toggleProjectTab('Completed')}
               >
                 Completed
               </NavLink>
             </NavItem>
           </Nav>
-          <TabContent activeEventTab={activeEventTab}>
+          <TabContent activeTab={activeProjectTab}>
             <TabPane tabId='Idea'>
               {
                 props.projects.errMess !== null
@@ -319,9 +343,13 @@ export default function MyTasks(props) {
                 : null
               }
               {
+                ideaProjects.length === 0
+                ?
+                <Typography variant='h4' color='textSecondary'>No ideated projects for you</Typography>
+                :
                 <ListGroup>
                   {
-                    dumProjects.filter((project) => project.members.indexOf(curUser._id) !== -1).filter((project) => project.status === 'IDEA').map((project, index) => {
+                    ideaProjects.map((project, index) => {
                       return(
                         <Fragment key={`${project}~${index}`}>
                           <ListGroupItem>
@@ -347,7 +375,7 @@ export default function MyTasks(props) {
                               <CardFooter>
                                 Assigned to: 
                                 {
-                                  project.members.map((mem) => ' ' +  mem.name + ',')
+                                  props.users.allUsers.filter(user => project.members.includes(user._id)).map(user => (' ' + user.name + ','))
                                 }
                               </CardFooter>
                             </Card>
@@ -359,7 +387,7 @@ export default function MyTasks(props) {
                 </ListGroup>
               }
             </TabPane>
-            <TabPane tabId='Upcoming'>
+            <TabPane tabId='Ongoing'>
               {
                 props.projects.errMess !== null
                 ?
@@ -370,9 +398,13 @@ export default function MyTasks(props) {
                 : null
               }
               {
+                ongoingProjects.length === 0
+                ?
+                <Typography variant='h4' color='textSecondary'>No ongoing Projects for you</Typography>
+                :
                 <ListGroup>
                   {
-                    dumProjects.filter((project) => project.members.indexOf(curUser._id) !== -1).filter((project) => project.status === 'ONGOING').map((project, index) => {
+                    ongoingProjects.map((project, index) => {
                       return(
                         <Fragment key={`${project}~${index}`}>
                           <ListGroupItem>
@@ -398,7 +430,7 @@ export default function MyTasks(props) {
                               <CardFooter>
                                 Assigned to: 
                                 {
-                                  project.members.map((mem) => ' ' +  mem.name + ',')
+                                  props.users.allUsers.filter(user => project.members.includes(user._id)).map(user => (' ' + user.name + ','))
                                 }
                               </CardFooter>
                             </Card>
@@ -421,9 +453,13 @@ export default function MyTasks(props) {
                 : null
               }
               {
+                completedProjects.length === 0
+                ?
+                <Typography variant='h4' color='textSecondary'>No completed projects for you</Typography>
+                :
                 <ListGroup>
                   {
-                    dumProjects.filter((project) => project.members.indexOf(curUser._id) !== -1).filter((project) => project.status === 'COMPLETED').map((project, index) => {
+                    completedProjects.map((project, index) => {
                       return(
                         <Fragment key={`${project}~${index}`}>
                           <ListGroupItem>
@@ -449,7 +485,7 @@ export default function MyTasks(props) {
                               <CardFooter>
                                 Assigned to: 
                                 {
-                                  project.members.map((mem) => ' ' +  mem.name + ',')
+                                  props.users.allUsers.filter(user => project.members.includes(user._id)).map(user => (' ' + user.name + ','))
                                 }
                               </CardFooter>
                             </Card>

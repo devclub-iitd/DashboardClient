@@ -39,6 +39,7 @@ class EditResourceForm extends Component {
       display_on_website: this.props.dumResources[this.props.index].display_on_website,
       isDailogOpen: false,
       isDeleteDailogOpen: false,
+      serverError: this.props.editFailed || this.props.removeFailed,
     };
 
     this.changeInternalName = this.changeInternalName.bind(this);
@@ -53,7 +54,15 @@ class EditResourceForm extends Component {
     this.confirmDeleteOpen = this.confirmDeleteOpen.bind(this);
     this.confirmDeleteClose = this.confirmDeleteClose.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
+    this.handleServerErrorClose = this.handleServerErrorClose.bind(this);
   }
+
+  handleServerErrorClose = () => {
+    this.setState({
+      ...this.state,
+      serverError: false,
+    });
+  };
 
     changeInternalName = (event) => {
       this.setState({
@@ -161,6 +170,7 @@ class EditResourceForm extends Component {
 
       delete updatedResource.isDailogOpen;
       delete updatedResource.isDeleteDailogOpen;
+      delete updatedResource.serverError;
 
       this.props.editResource(updatedResource);
 
@@ -172,13 +182,15 @@ class EditResourceForm extends Component {
       const required = val => val && val.length;
       const maxLength = len => val => !(val) || (val.length <= len);
       const minLength = len => val => (val) && (val.length >= len);
-      const { editFailed, removeFailed } = this.props;
+      // let { editFailed, removeFailed } = this.props;
 
-      const [serverError, setServerError] = React.useState(editFailed || removeFailed);
+      // const [serverError, setServerError] = React.useState(editFailed || removeFailed);
 
-      const handleClose = () => {
-        setServerError(false);
-      };
+      // const handleClose = () => {
+      //   // setServerError(false);
+      //   editFailed = false;
+      //   removeFailed = false;
+      // };
 
       return (
         <div>
@@ -187,9 +199,9 @@ class EditResourceForm extends Component {
               vertical: 'top',
               horizontal: 'center',
             }}
-            open={serverError}
+            open={this.setState.serverError}
             autoHideDuration={2000}
-            onClose={handleClose}
+            onClose={this.handleServerErrorClose}
             message="Server Error !!! Try again"
           />
           <Button

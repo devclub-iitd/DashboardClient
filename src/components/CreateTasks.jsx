@@ -169,10 +169,10 @@ export default function CreateTasks(props) {
     setUrlFields(values);
   };
 
-  const handleEventFormReset = () => {
-    console.log('Reset Event form');
-    props.resetEventForm();
-  };
+  // const handleEventFormReset = () => {
+  //   console.log('Reset Event form');
+  //   props.resetEventForm();
+  // };
 
   const [labelFields, setLabelFields] = React.useState([
     '',
@@ -195,26 +195,39 @@ export default function CreateTasks(props) {
     setLabelFields(values);
   };
 
-  const handleProjectFormReset = () => {
-    console.log('Reset Project form');
-    props.resetProjectForm();
-  };
+  // const handleProjectFormReset = () => {
+  //   console.log('Reset Project form');
+  //   props.resetProjectForm();
+  // };
 
-  const handleResourceFormReset = () => {
-    console.log('Reset Resource form');
+  // const handleResourceFormReset = () => {
+  //   console.log('Reset Resource form');
+  //   props.resetResourceForm();
+  // };
+
+  const resetEForm = () => {
+    props.resetEventForm();
+    setUrlFields([
+      { type: '', url: '' },
+    ]);
+  };
+  const resetPForm = () => {
+    props.resetProjectForm();
+    setUrlFields([
+      { type: '', url: '' },
+    ]);
+    setLabelFields([
+      '',
+    ]);
+  };
+  const resetRForm = () => {
     props.resetResourceForm();
   };
 
-  const handleSubmit = (values) => {
-    // const nvalues = {
-    //   ...values,
-    //   deadline: selectedDate,
-    //   type: itemType,
-    // };
-    // const nvalues = JSON.stringify(values);
-    // nvalues.deadline = selectedDate;
-    // values.add('deadline', selectedDate);
-    console.log('Values received: ', JSON.stringify(values));
+  const strMapToObj = (strMap) => {
+    const obj = Object.create(null);
+    Array.from(strMap).map(([k, v]) => { obj[k] = v; });
+    return obj;
   };
 
   const submitEventForm = (values) => {
@@ -225,12 +238,12 @@ export default function CreateTasks(props) {
       start_date: startDate,
       end_date: endDate,
       display_on_website: displayState,
-      url: urlMap,
+      url: strMapToObj(urlMap),
       assignee: '',
     };
     console.log('event: ', newEvent);
     props.createEvent(newEvent);
-    props.resetEventForm();
+    resetEForm();
   };
 
   const submitProjectForm = (values) => {
@@ -245,11 +258,11 @@ export default function CreateTasks(props) {
       display_on_website: displayState,
       is_internal: internalState,
       labels: labelFields,
-      url: urlMap,
+      url: strMapToObj(urlMap),
     };
     console.log('project: ', newProject);
     props.createProject(newProject);
-    props.resetProjectForm();
+    resetPForm();
   };
 
   const submitResourceForm = (values) => {
@@ -261,7 +274,7 @@ export default function CreateTasks(props) {
     };
     console.log('resource: ', newResource);
     props.createResource(newResource);
-    props.resetResourceForm();
+    resetRForm();
   };
 
   return (
@@ -473,7 +486,7 @@ export default function CreateTasks(props) {
                           </Col>
                           {/* md={{ size: 2 }} */}
                           <Col xs={3} md={{ size: 2 }}>
-                            <Button type="reset" color="primary" onClick={() => handleEventFormReset()}>
+                            <Button type="reset" color="primary" onClick={() => resetEForm()}>
                               Reset
                             </Button>
                           </Col>
@@ -759,11 +772,11 @@ export default function CreateTasks(props) {
                         <Row className="form-group">
                           <Col sm={{ size: 4, offset: 3 }}>
                             <Button type="submit" color="primary">
-                              Create Event
+                              Create Project
                             </Button>
                           </Col>
                           <Col sm={{ size: 2 }}>
-                            <Button type="reset" color="primary" onClick={() => handleProjectFormReset()}>
+                            <Button type="reset" color="primary" onClick={() => resetPForm()}>
                               Reset
                             </Button>
                           </Col>
@@ -960,7 +973,7 @@ export default function CreateTasks(props) {
                             </Button>
                           </Col>
                           <Col sm={{ size: 2 }}>
-                            <Button type="reset" color="primary" onClick={() => handleResourceFormReset()}>
+                            <Button type="reset" color="primary" onClick={() => resetRForm()}>
                               Reset
                             </Button>
                           </Col>

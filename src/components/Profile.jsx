@@ -178,15 +178,61 @@ const Profile = (props) => {
   //   );
   // }
 
-  const [user, setUser] = React.useState(props.user);
+  // const [user, setUser] = React.useState(props.user);
 
-  const [userOrg, setUserOrg] = React.useState(user);
+  // const [userOrg, setUserOrg] = React.useState(user);
 
-  const handleFormValuesChange = (event) => {
-    setUser({
-      ...user,
-      [event.target.name]: [event.target.value],
-    });
+  const [state, setState] = React.useState({
+    editUser: props.user,
+    orgUser: props.user,
+    urlFields: Array.from(props.user.url).map(([index, value]) => ({ type: index, url: value })),
+  });
+
+  const handleFormValuesChange = (event, name) => {
+    // setUser({
+    //   ...user,
+    //   [event.target.name]: [event.target.value],
+    // });
+    if (name === 'birth_date') {
+      setState({
+        ...state,
+        editUser: {
+          ...state.editUser,
+          birth_date: event,
+        },
+      });
+    } else if (name === 'join_year') {
+      setState({
+        ...state,
+        editUser: {
+          ...state.editUser,
+          join_year: event,
+        },
+      });
+    } else if (name === 'grad_year') {
+      setState({
+        ...state,
+        editUser: {
+          ...state.editUser,
+          grad_year: event,
+        },
+      });
+    } else {
+      setState({
+        ...state,
+        editUser: {
+          ...state.editUser,
+          [event.target.name]: event.target.value,
+        },
+      });
+    }
+    // setState({
+    //   ...state,
+    //   editUser: {
+    //     ...state.editUser,
+    //     [event.target.name]: [event.target.value],
+    //   },
+    // });
   };
 
   const [isModalOpen, setIsModalOpen] = React.useState(false);
@@ -206,99 +252,142 @@ const Profile = (props) => {
     console.log(isModalOpen);
   };
 
-  const [DOB, setDOB] = React.useState(user.birth_date);
-  const DOBChange = (date) => {
-    setDOB(date);
-  };
+  // const [DOB, setDOB] = React.useState(user.birth_date);
+  // const DOBChange = (date) => {
+  //   setDOB(date);
+  // };
 
-  const [joinDate, setJoinYear] = React.useState(user.join_year);
-  const joinChange = (date) => {
-    setJoinYear(date);
-  };
+  // const [joinDate, setJoinYear] = React.useState(user.join_year);
+  // const joinChange = (date) => {
+  //   setJoinYear(date);
+  // };
 
-  const [gradDate, setGradYear] = React.useState(user.grad_year);
-  const gradChange = (date) => {
-    setGradYear(date);
-  };
+  // const [gradDate, setGradYear] = React.useState(user.grad_year);
+  // const gradChange = (date) => {
+  //   setGradYear(date);
+  // };
 
-  const [urlFields, setUrlFields] = React.useState(user.url);
+  // const [urlFields, setUrlFields] = React.useState(state.editUser.url);
   const handleAddUrlFields = () => {
-    // const values = [...urlFields];
-    // values.push({ type: '', url: '' });
+    const values = [...state.urlFields];
+    values.push({ type: '', url: '' });
+    setState({
+      ...state,
+      urlFields: values,
+    });
     // setUrlFields(values);
     // setUser({
     //   ...user,
     //   url: urlFields,
     // });
-    const urlVals = user.url;
-    urlVals.set('type', 'url');
-    setUser({
-      ...user,
-      url: urlVals,
-    });
+    // const urlVals = user.url;
+    // urlVals.set('type', 'url');
+    // setUser({
+    //   ...user,
+    //   url: urlVals,
+    // });
   };
 
   const handleRemoveUrlFields = (index) => {
-    // const values = [...urlFields];
-    // values.splice(index, 1);
+    const values = [...state.urlFields];
+    values.splice(index, 1);
+    setState({
+      ...state,
+      urlFields: values,
+    });
     // setUrlFields(values);
     // setUser({
     //   ...user,
     //   url: urlFields,
     // });
-    const urlVals = user.url;
-    urlVals.delete(index);
-    setUser({
-      ...user,
-      url: urlVals,
-    });
+    // const urlVals = user.url;
+    // urlVals.delete(index);
+    // setUser({
+    //   ...user,
+    //   url: urlVals,
+    // });
   };
 
   const handleUrlFieldChange = (index, event) => {
-    // const values = [...urlFields];
-    // if (event.target.name === 'type') {
-    //   values[index].type = event.target.value;
-    // } else {
-    //   values[index].url = event.target.value;
-    // }
+    const values = [...state.urlFields];
+    if (event.target.name === 'type') {
+      values[index].type = event.target.value;
+    } else {
+      values[index].url = event.target.value;
+    }
+    setState({
+      ...state,
+      urlFields: values,
+    });
     // setUrlFields(values);
     // setUser({
     //   ...user,
     //   url: urlFields,
     // });
-    const urlVals = user.url;
-    urlVals.set(index, event.target.value);
-    setUser({
-      ...user,
-      url: urlVals,
-    });
+    // const urlVals = user.url;
+    // urlVals.set(index, event.target.value);
+    // setUser({
+    //   ...user,
+    //   url: urlVals,
+    // });
   };
 
-  const handleSubmit = (values) => {
+  function strMapToObj(strMap) {
+    const obj = Object.create(null);
+    Array.from(strMap).map(([k, v]) => { obj[k] = v; });
+    return obj;
+  }
+
+  const handleSubmit = () => {
     // setUser({
     //   ...user,
     //   values,
     // });
-    setUser({
-      ...user,
-      birth_date: DOB,
-      join_year: joinDate,
-      grad_year: gradDate,
-    });
+    // setUser({
+    //   ...user,
+    //   birth_date: DOB,
+    //   join_year: joinDate,
+    //   grad_year: gradDate,
+    // });
 
-    props.updateUser(user);
+    // const newUser = {
+    //   ...user,
+    //   birth_date: DOB,
+    //   join_year: joinDate,
+    //   grad_year: gradDate,
+    // };
+    const urlMap = new Map();
+    state.urlFields.map(urlField => urlMap.set(urlField.type, urlField.url));
+    const newUser = {
+      ...state.editUser,
+      url: strMapToObj(urlMap),
+    };
+
+    props.updateUser(newUser);
     // setUserOrg(user);
+    console.log('Submitting user details update info: ', state.editUser);
+    setState({
+      ...state,
+      orgUser: {
+        ...state.editUser,
+      },
+    });
     handleClose();
-    console.log('Submitting user details update info: ', user);
   };
 
   const cancelEdit = () => {
-    setUser({
-      ...user,
-      userOrg,
+    // setUser({
+    //   ...user,
+    //   userOrg,
+    // });
+    setState({
+      ...state,
+      editUser: {
+        ...state.orgUser,
+      },
     });
     handleClose();
-    console.log(user);
+    console.log(state.editUser);
   };
 
   // const required = () => user.name && user.name.length;
@@ -327,7 +416,7 @@ const Profile = (props) => {
               </Typography>
             </DialogTitle>
             <DialogContent>
-              <LocalForm onSubmit={values => handleSubmit(values)}>
+              <LocalForm>
                 <Row className="form-group">
                   <Label htmlFor="name" md={4}><h6>Name:</h6></Label>
                   <Col md={8}>
@@ -336,7 +425,8 @@ const Profile = (props) => {
                       id="name"
                       name="name"
                       placeholder="Name*"
-                      defaultValue={user.name}
+                      // defaultValue={user.name}
+                      defaultValue={state.editUser.name}
                       onChange={handleFormValuesChange}
                       className="form-control"
                       validators={{
@@ -362,7 +452,8 @@ const Profile = (props) => {
                       model=".entry_no"
                       id="entry_no"
                       name="entry_no"
-                      defaultValue={user.entry_no}
+                      // defaultValue={user.entry_no}
+                      defaultValue={state.editUser.entry_no}
                       onChange={handleFormValuesChange}
                       placeholder="Entry Number*"
                       className="form-control"
@@ -389,7 +480,8 @@ const Profile = (props) => {
                       model=".email"
                       id="email"
                       name="email"
-                      defaultValue={user.email}
+                      // defaultValue={user.email}
+                      defaultValue={state.editUser.email}
                       onChange={handleFormValuesChange}
                       placeholder="Email*"
                       className="form-control"
@@ -416,7 +508,8 @@ const Profile = (props) => {
                       model=".hostel"
                       id="hostel"
                       name="emhostelail"
-                      defaultValue={user.hostel}
+                      // defaultValue={user.hostel}
+                      defaultValue={state.editUser.hostel}
                       onChange={handleFormValuesChange}
                       placeholder="Hostel*"
                       className="form-control"
@@ -443,7 +536,8 @@ const Profile = (props) => {
                       model=".intro"
                       id="intro"
                       name="intro"
-                      defaultValue={user.intro}
+                      // defaultValue={user.intro}
+                      defaultValue={state.editUser.intro}
                       onChange={handleFormValuesChange}
                       placeholder="Introduction*"
                       rows="8"
@@ -470,10 +564,11 @@ const Profile = (props) => {
                         id="date-picker-dialog"
                         label="Date of Birth"
                         format="MM/dd/yyyy"
-                        value={DOB}
+                        // value={DOB}
+                        value={state.editUser.birth_date}
                         name="birth_date"
                         // onChange={DOBChange}
-                        onChange={DOBChange}
+                        onChange={date => handleFormValuesChange(date, 'birth_date')}
                         maxDate={Date.now()}
                         KeyboardButtonProps={{
                           'aria-label': 'change date',
@@ -485,7 +580,7 @@ const Profile = (props) => {
                 <Row className="form-group">
                   <Label htmlFor="intro" md={12}><h6>Gender:</h6></Label>
                   <Col sm={12}>
-                    <RadioGroup row aria-label="gender" name="gender" defaultValue={user.gender} onChange={handleFormValuesChange}>
+                    <RadioGroup row aria-label="gender" name="gender" defaultValue={state.editUser.gender} onChange={handleFormValuesChange}>
                       <FormControlLabel
                         value="female"
                         control={<Radio color="primary" />}
@@ -511,38 +606,16 @@ const Profile = (props) => {
                 <Row className="form-group">
                   <Label htmlFor="join_year" md={4}><h6>Date of Joining:</h6></Label>
                   <Col md={8}>
-                    {/* <Control.text
-                      model=".join_year"
-                      id="join_year"
-                      name="join_year"
-                      defaultValue={user.join_year}
-                      onChange={handleFormValuesChange}
-                      placeholder="Joining Year*"
-                      className="form-control"
-                      validators={{
-                        required, minLength: minLength(4), maxLength: maxLength(4),
-                      }}
-                    />
-                    <Errors
-                      className="text-danger"
-                      model=".join_year"
-                      show="touched"
-                      messages={{
-                        required: 'Required ',
-                        minLength: 'Enter 4 digit year',
-                        maxLength: 'Enter 4 digit year',
-                      }}
-                    /> */}
                     <MuiPickersUtilsProvider utils={DateFnsUtils}>
                       <KeyboardDatePicker
                         margin="normal"
                         id="date-picker-dialog"
                         label="Date of Joining"
                         format="MM/dd/yyyy"
-                        value={joinDate}
+                        value={state.editUser.join_year}
                         name="join_year"
                         // onChange={DOBChange}
-                        onChange={joinChange}
+                        onChange={date => handleFormValuesChange(date, 'join_year')}
                         maxDate={Date.now()}
                         KeyboardButtonProps={{
                           'aria-label': 'change date',
@@ -554,38 +627,16 @@ const Profile = (props) => {
                 <Row className="form-group">
                   <Label htmlFor="grad_year" md={4}><h6>Date of Graduation:</h6></Label>
                   <Col md={8}>
-                    {/* <Control.text
-                      model=".grad_year"
-                      id="grad_year"
-                      name="grad_year"
-                      defaultValue={user.grad_year}
-                      onChange={handleFormValuesChange}
-                      placeholder="Graduation Year*"
-                      className="form-control"
-                      validators={{
-                        required, minLength: minLength(4), maxLength: maxLength(4),
-                      }}
-                    />
-                    <Errors
-                      className="text-danger"
-                      model=".grad_year"
-                      show="touched"
-                      messages={{
-                        required: 'Required ',
-                        minLength: 'Enter 4 digit year',
-                        maxLength: 'Enter 4 digit year',
-                      }}
-                    /> */}
                     <MuiPickersUtilsProvider utils={DateFnsUtils}>
                       <KeyboardDatePicker
                         margin="normal"
                         id="date-picker-dialog"
                         label="Date of Graduation"
                         format="MM/dd/yyyy"
-                        value={gradDate}
+                        value={state.editUser.grad_year}
                         name="grad_year"
                         // onChange={DOBChange}
-                        onChange={gradChange}
+                        onChange={date => handleFormValuesChange(date, 'grad_year')}
                         // maxDate={Date.now()}
                         KeyboardButtonProps={{
                           'aria-label': 'change date',
@@ -601,7 +652,8 @@ const Profile = (props) => {
                       model=".mobile_number"
                       id="mobile_number"
                       name="mobile_number"
-                      defaultValue={user.mobile_number}
+                      // defaultValue={user.mobile_number}
+                      defaultValue={state.editUser.mobile_number}
                       onChange={handleFormValuesChange}
                       placeholder="Mobile Number*"
                       className="form-control"
@@ -628,7 +680,8 @@ const Profile = (props) => {
                       model=".hometown"
                       id="hometown"
                       name="hometown"
-                      defaultValue={user.hometown}
+                      // defaultValue={user.hometown}
+                      defaultValue={state.editUser.hometown}
                       onChange={handleFormValuesChange}
                       placeholder="Hometown*"
                       className="form-control"
@@ -653,7 +706,8 @@ const Profile = (props) => {
                       model=".interests"
                       id="interests"
                       name="interests"
-                      defaultValue={user.interests}
+                      // defaultValue={user.interests}
+                      defaultValue={state.editUser.interests}
                       onChange={handleFormValuesChange}
                       placeholder="Interests*"
                       rows="8"
@@ -679,7 +733,8 @@ const Profile = (props) => {
                       model=".specialization"
                       id="specialization"
                       name="specialization"
-                      defaultValue={user.specialization}
+                      // defaultValue={user.specialization}
+                      defaultValue={state.editUser.specialization}
                       onChange={handleFormValuesChange}
                       placeholder="Interests*"
                       rows="8"
@@ -705,7 +760,8 @@ const Profile = (props) => {
                       model=".category"
                       id="category"
                       name="category"
-                      defaultValue={user.category}
+                      // defaultValue={user.category}
+                      defaultValue={state.editUser.category}
                       onChange={handleFormValuesChange}
                       placeholder="Category*"
                       className="form-control"
@@ -726,7 +782,7 @@ const Profile = (props) => {
                 <Row className="form-group">
                   <Label htmlFor="urlFields" md={12}><h6>Url:</h6></Label>
                   <Col sm={12}>
-                    {/* {urlFields.map((urlField, index) => (
+                    {state.urlFields.map((urlField, index) => (
                       <Fragment key={`${urlField}~${index}`}>
                         <Row className="form-group">
                           <Col sm={{ size: 4, offset: 1 }}>
@@ -760,11 +816,11 @@ const Profile = (props) => {
                           </Col>
                         </Row>
                       </Fragment>
-                    ))} */}
-                    {Array.from(user.url).map(([index, value]) => (
+                    ))}
+                    {/* {Array.from(user.url).map(([index, value]) => (
                       <Fragment key={`${index}`}>
                         <Row className="form-group">
-                          {/* sm={12} md={{ size: 4, offset: 1 }} */}
+                          sm={12} md={{ size: 4, offset: 1 }}
                           <Col sm={12} md={{ size: 4, offset: 1 }}>
                             <TextField
                               label="type"
@@ -777,7 +833,7 @@ const Profile = (props) => {
                               onChange={event => handleUrlFieldChange(index, event)}
                             />
                           </Col>
-                          {/* sm={12} md={4} */}
+                          sm={12} md={4}
                           <Col sm={12} md={4}>
                             <TextField
                               label="url"
@@ -790,7 +846,7 @@ const Profile = (props) => {
                               onChange={event => handleUrlFieldChange(index, event)}
                             />
                           </Col>
-                          {/* sm={2} */}
+                          sm={2}
                           <Col md={2}>
                             <Fab size="small" aria-label="delete" onClick={() => handleRemoveUrlFields(index)}>
                               <DeleteOutlinedIcon />
@@ -798,7 +854,7 @@ const Profile = (props) => {
                           </Col>
                         </Row>
                       </Fragment>
-                    ))}
+                    ))} */}
                     <Fab size="small" color="primary" aria-label="add" onClick={() => handleAddUrlFields()}>
                       <AddIcon />
                     </Fab>
@@ -806,7 +862,7 @@ const Profile = (props) => {
                 </Row>
                 <Row className="form-group">
                   <Col sm={{ size: 4, offset: 3 }}>
-                    <Button type="submit" color="primary">
+                    <Button color="primary" onClick={handleSubmit}>
                       Save Changes
                     </Button>
                   </Col>
@@ -828,13 +884,13 @@ const Profile = (props) => {
         </Grid>
         <Grid className={classes.gcontainer} item sm={9} lg={5}>
           <Card className={classes.card}>
-            <img className={classes.image} src={user.url.get('picture_url')} alt="Profile Pic" />
+            <img className={classes.image} src={state.orgUser.url.get('picture_url')} alt="Profile Pic" />
             <CardContent>
               <Typography gutterBottom variant="h5" component="h2" align="right">
-                {user.name}
+                {state.orgUser.name}
               </Typography>
               <Typography width="75%" variant="body2" color="textSecondary" component="p" align="right">
-                {user.intro}
+                {state.orgUser.intro}
               </Typography>
             </CardContent>
             <CardContent>
@@ -844,7 +900,7 @@ const Profile = (props) => {
                 </Grid>
                 <Grid item>
                   <Typography gutterBottom variant="body2" color="textPrimary" align="left" display="inline">
-                    {user.email}
+                    {state.orgUser.email}
                   </Typography>
                 </Grid>
               </Grid>
@@ -854,7 +910,7 @@ const Profile = (props) => {
                 </Grid>
                 <Grid item>
                   <Typography variant="body2" color="textPrimary" align="left">
-                    {user.mobile_number}
+                    {state.orgUser.mobile_number}
                   </Typography>
                 </Grid>
               </Grid>
@@ -873,7 +929,7 @@ const Profile = (props) => {
                   </Grid>
                   <Grid item xs={5}>
                     <Typography className={classes.pad} gutterBottom variant="p" color="textPrimary" align="left">
-                      {user.entry_no}
+                      {state.orgUser.entry_no}
                     </Typography>
                   </Grid>
                   <Grid item xs={5}>
@@ -883,7 +939,7 @@ const Profile = (props) => {
                   </Grid>
                   <Grid item xs={5}>
                     <Typography className={classes.pad} gutterBottom variant="p" color="textPrimary" align="left">
-                      {user.hostel}
+                      {state.orgUser.hostel}
                     </Typography>
                   </Grid>
                   <Grid item xs={5}>
@@ -893,7 +949,7 @@ const Profile = (props) => {
                   </Grid>
                   <Grid item xs={5}>
                     <Typography className={classes.pad} gutterBottom variant="p" color="textPrimary" align="left">
-                      {user.gender}
+                      {state.orgUser.gender}
                     </Typography>
                   </Grid>
                   <Grid item xs={5}>
@@ -903,7 +959,7 @@ const Profile = (props) => {
                   </Grid>
                   <Grid item xs={5}>
                     <Typography className={classes.pad} gutterBottom variant="p" color="textPrimary" align="left">
-                      {user.join_year.toDateString()}
+                      {state.orgUser.join_year.toDateString()}
                     </Typography>
                   </Grid>
                   <Grid item xs={5}>
@@ -913,7 +969,7 @@ const Profile = (props) => {
                   </Grid>
                   <Grid item xs={5}>
                     <Typography className={classes.pad} gutterBottom variant="p" color="textPrimary" align="left">
-                      {user.grad_year.toDateString()}
+                      {state.orgUser.grad_year.toDateString()}
                     </Typography>
                   </Grid>
                   <Grid item xs={5}>
@@ -923,7 +979,7 @@ const Profile = (props) => {
                   </Grid>
                   <Grid item xs={5}>
                     <Typography className={classes.pad} gutterBottom variant="p" color="textPrimary" align="left">
-                      {user.hometown}
+                      {state.orgUser.hometown}
                     </Typography>
                   </Grid>
                   <Grid item xs={5}>
@@ -933,7 +989,7 @@ const Profile = (props) => {
                   </Grid>
                   <Grid item xs={5}>
                     <Typography className={classes.pad} gutterBottom variant="p" color="textPrimary" align="left">
-                      {user.category}
+                      {state.orgUser.category}
                     </Typography>
                   </Grid>
                 </Grid>
@@ -947,7 +1003,7 @@ const Profile = (props) => {
                   <b>Interests</b>
                 </Typography>
                 <Typography variant="p" gutterBottom color="textPrimary" align="left">
-                  {user.interests}
+                  {state.orgUser.interests}
                 </Typography>
               </CardContent>
             </Card>
@@ -959,7 +1015,7 @@ const Profile = (props) => {
                   <b>Specializations</b>
                 </Typography>
                 <Typography variant="p" gutterBottom color="textPrimary" align="left">
-                  {user.specialization}
+                  {state.orgUser.specialization}
                 </Typography>
               </CardContent>
             </Card>

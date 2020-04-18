@@ -32,8 +32,11 @@ class EditEventForm extends Component {
         display_on_website: this.props.dumEvents[this.props.index].display_on_website,
         url: this.props.dumEvents[this.props.index].url,
         assignee: this.props.dumEvents[this.props.index].assignee,
+        event: this.props.dumEvents[this.props.index],
+        urlFields: Array.from(this.props.dumEvents[this.props.index].url).map(([key, value]) => ({type: key, url: value})),
         isDailogOpen: false,
         isDeleteDailogOpen: false,
+        serverError: this.props.editFailed || this.props.removeFailed,
       };
   
       this.endDateChange = this.endDateChange.bind(this);
@@ -52,81 +55,140 @@ class EditEventForm extends Component {
       this.confirmDeleteClose = this.confirmDeleteClose.bind(this);
       this.confirmDeleteOpen = this.confirmDeleteOpen.bind(this);
       this.handleDelete = this.handleDelete.bind(this);
+      this.handleServerErrorClose = this.handleServerErrorClose.bind(this);
+      this.strMapToObj = this.strMapToObj.bind(this);
     }
+
+    handleServerErrorClose = () => {
+      this.setState({
+        ...this.state,
+        serverError: false,
+      });
+    };
   
     changeName = (event) => {
       this.setState({
         ...this.state,
-        name: event.target.value,
+        // name: event.target.value,
+        event: {
+          ...this.state.event,
+          name: event.target.value,
+        },
       });
     };
   
     changeDescription = (event) => {
       this.setState({
         ...this.state,
-        description: event.target.value,
+        // description: event.target.value,
+        event: {
+          ...this.state.event,
+          description: event.target.value,
+        },
       });
     };
   
     changeEmbedCode = (event) => {
       this.setState({
         ...this.state,
-        embed_code: event.target.value,
-      })
-    }
+        // embed_code: event.target.value,
+        event: {
+          ...this.state.event,
+          embed_code: event.target.value,
+        },
+      });
+    };
     
     endDateChange = (date) => {
       this.setState({
         ...this.state,
-        end_date: date,
+        // end_date: date,
+        event: {
+          ...this.state.event,
+          end_date: date,
+        },
       });
     };
   
     startDateChange = (date) => {
       this.setState({
         ...this.state,
-        start_date: date,
+        // start_date: date,
+        event: {
+          ...this.state.event,
+          start_date: date,
+        },
       });
     };
   
     changeDisplayState = (event) => {
       this.setState({
         ...this.state,
-        display_on_website: event.target.checked,
+        // display_on_website: event.target.checked,
+        event: {
+          ...this.state.event,
+          display_on_website: event.target.checked,
+        },
       });
     };
   
     handleAddUrlFields = () => {
-      const urlVals = new Map(this.state.url);
-      urlVals.set('type', 'url');
+      // const urlVals = new Map(this.state.url);
+      // urlVals.set('type', 'url');
+      // this.setState({
+      //   ...this.state,
+      //   url: urlVals,
+      // });
+      const values = [...this.state.urlFields];
+      values.push({ type: '', url: '' });
       this.setState({
         ...this.state,
-        url: urlVals,
+        urlFields: values,
       });
     };
   
     handleRemoveUrlFields = (index) => {
-      const urlVals = this.state.url;
-      urlVals.delete(index);
+      // const urlVals = this.state.url;
+      // urlVals.delete(index);
+      // this.setState({
+      //   ...this.state,
+      //   url: urlVals,
+      // });
+      const values = [...this.state.urlFields];
+      values.splice(index, 1);
       this.setState({
         ...this.state,
-        url: urlVals,
+        urlFields: values,
       });
     };
   
     handleUrlFieldChange = (index, event) => {
-      const urlVals = this.state.url;
-      urlVals.set(index, event.target.value);
+      // const urlVals = this.state.url;
+      // urlVals.set(index, event.target.value);
+      // this.setState({
+      //   ...this.state,
+      //   url: urlVals,
+      // });
+      const values = [...this.state.urlFields];
+      if (event.target.name === 'type') {
+        values[index].type = event.target.value;
+      } else {
+        values[index].url = event.target.value;
+      }
       this.setState({
         ...this.state,
-        url: urlVals,
+        urlFields: values,
       });
     };
   
     changeAssignee = (event) => {
       this.setState({
         ...this.state,
-        assignee: event.target.value,
+        // assignee: event.target.value,
+        event: {
+          ...this.state.event,
+          assignee: event.target.value,
+        },
       });
     };
   
@@ -160,21 +222,45 @@ class EditEventForm extends Component {
   
     handleDelete = () => {
       // Call delete thunk here,
-      this.props.deleteEvent(this.props.dumEvents[this.props.index]._id);
+      // this.props.deleteEvent(this.props.dumEvents[this.props.index]._id);
+      this.props.deleteEvent(this.state.event._id);
       console.log('Deleting: ', this.state.name);
       this.confirmDeleteClose();
     }
+
+    strMapToObj = (strMap) => {
+      const obj = Object.create(null);
+      Array.from(strMap).map(([k, v]) => { obj[k] = v; });
+      return obj;
+    }
   
     handleSubmit = () => {
+      // const updatedEvent = {
+      //   ...this.props.dumEvents[this.props.index],
+      //   ...this.state,
+      // };
+      // delete updatedEvent.isDailogOpen;
+      // delete updatedEvent.isDeleteDailogOpen;
+      // delete updatedEvent.serverError;
+
+      const urlMap = new Map();
+      this.state.urlFields.map(urlField => urlMap.set(urlField.type, urlField.url));
+      // this.setState({
+      //   ...this.state,
+      //   event: {
+      //     ...this.state.event,
+      //     url: urlMap,
+      //   },
+      // });
+
       const updatedEvent = {
-        ...this.props.dumEvents[this.props.index],
-        ...this.state,
+        ...this.state.event,
+        url: this.strMapToObj(urlMap),
       };
-      delete updatedEvent.isDailogOpen;
-      delete updatedEvent.isDeleteDailogOpen;
-  
+
       this.props.editEvent(updatedEvent);
-      console.log('got values: ', this.state);
+      // this.props.editEvent(this.state.event);
+      console.log('got values: ', updatedEvent);
       this.handleFormClose();
     };
   
@@ -182,13 +268,13 @@ class EditEventForm extends Component {
         const required = val => val && val.length;
         const maxLength = len => val => !(val) || (val.length <= len);
         const minLength = len => val => (val) && (val.length >= len);
-        const { editFailed, removeFailed } = this.props;
+        // const { editFailed, removeFailed } = this.props;
         
-        const [serverError, setServerError] = React.useState(editFailed || removeFailed);
+        // const [serverError, setServerError] = React.useState(editFailed || removeFailed);
 
-        const handleClose = () => {
-          setServerError(false);
-        };
+        // const handleClose = () => {
+        //   setServerError(false);
+        // };
 
         return (
             <div>
@@ -197,9 +283,9 @@ class EditEventForm extends Component {
                 vertical: 'top',
                 horizontal: 'center',
               }}
-              open={serverError}
+              open={this.state.serverError}
               autoHideDuration={2000}
-              onClose={handleClose}
+              onClose={this.handleServerErrorClose}
               message="Server Error !!! Try again"
             />
             <Button onClick={() => { 
@@ -224,7 +310,8 @@ class EditEventForm extends Component {
                         model=".name"
                         id="name"
                         name="name"
-                        defaultValue={this.state.name}
+                        // defaultValue={this.state.name}
+                        defaultValue={this.state.event.name}
                         placeholder="Event Name*"
                         className="form-control"
                         onChange={this.changeName}
@@ -252,7 +339,8 @@ class EditEventForm extends Component {
                         id="description"
                         name="description"
                         placeholder="Event Description*"
-                        defaultValue={this.state.description}
+                        // defaultValue={this.state.description}
+                        defaultValue={this.state.event.description}
                         rows="8"
                         className="form-control"
                         onChange={this.changeDescription}
@@ -278,7 +366,8 @@ class EditEventForm extends Component {
                             id="date-picker-dialog"
                             label="Select Start Date of Event"
                             format="MM/dd/yyyy"
-                            value={this.state.start_date}
+                            // value={this.state.start_date}
+                            value={this.state.event.start_date}
                             onChange={this.startDateChange}
                             // minDate={Date.now()}
                             KeyboardButtonProps={{
@@ -296,7 +385,8 @@ class EditEventForm extends Component {
                             id="date-picker-dialog"
                             label="Select End Date of Event"
                             format="MM/dd/yyyy"
-                            value={this.state.end_date}
+                            // value={this.state.end_date}
+                            value={this.state.event.end_date}
                             onChange={this.endDateChange}
                             minDate={this.state.start_date}
                             KeyboardButtonProps={{
@@ -313,7 +403,8 @@ class EditEventForm extends Component {
                         model=".embed_code"
                         id="embed_code"
                         name="embed_code"
-                        defaultValue={this.state.embed_code}
+                        // defaultValue={this.state.embed_code}
+                        defaultValue={this.state.event.embed_code}
                         placeholder="Type embedded code"
                         rows="4"
                         className="form-control"
@@ -338,15 +429,17 @@ class EditEventForm extends Component {
                         <FormControlLabel
                         sm={2}
                         // label="Display on Website"
-                        control={<Switch checked={this.state.display_on_website} onChange={this.changeDisplayState} />}
+                        // control={<Switch checked={this.state.display_on_website} onChange={this.changeDisplayState} />}
+                        control={<Switch checked={this.state.event.display_on_website} onChange={this.changeDisplayState} />}
                         />
                     </Col>
                     </Row>
                     <Row className="form-group">
                     <Label htmlFor="urlFields" md={12}><h6>Url:</h6></Label>
                     <Col sm={12}>
-                    {Array.from(this.state.url).map(([index, value]) => (
-                        <Fragment key={`${index}`}>
+                    {/* {Array.from(this.state.url).map(([index, value]) => ( */}
+                      {this.state.urlFields.map((urlField, index) => (
+                        <Fragment key={`${urlField}~${index}`}>
                             <Row className="form-group">
                             {/* sm={12} md={{ size: 4, offset: 1 }} */}
                             <Col sm={12} md={{ size: 4, offset: 1 }}>
@@ -357,7 +450,8 @@ class EditEventForm extends Component {
                                 id="type"
                                 name="type"
                                 variant="filled"
-                                value={index}
+                                // value={index}
+                                value={urlField.type}
                                 onChange={event => this.handleUrlFieldChange(index, event)}
                                 />
                             </Col>
@@ -370,7 +464,8 @@ class EditEventForm extends Component {
                                 id="url"
                                 name="url"
                                 variant="filled"
-                                value={value}
+                                // value={value}
+                                value={urlField.url}
                                 onChange={event => this.handleUrlFieldChange(index, event)}
                                 />
                             </Col>
@@ -397,7 +492,8 @@ class EditEventForm extends Component {
                         <Select
                             labelId="assignee"
                             id="assignee"
-                            value={this.state.assignee}
+                            // value={this.state.assignee}
+                            value={this.state.event.assignee}
                             onChange={this.changeAssignee}
                         >
                             <MenuItem value="">

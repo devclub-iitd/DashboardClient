@@ -1,22 +1,47 @@
 import React from 'react';
-import { TextField, Button, Grid } from '@material-ui/core';
+import {
+  TextField, Button, Grid, Snackbar,
+} from '@material-ui/core';
 
 export default function ChangePassword(props) {
-  const [confirmPassError, setConfirmPassError] = React.useState(false);
+  // const [confirmPassError, setConfirmPassError] = React.useState(false);
+
+  const [state, setState] = React.useState({
+    password: '',
+    ChangePassword: '',
+    confirmPassError: null,
+    changePassError: props.users.passwordFailed,
+  });
 
   const handleChange = (e, type) => {
     const { value } = e.target;
-    this.setState({ [type]: value });
+    setState({
+      ...state,
+      [type]: value,
+    });
     if (type === 'confirmPassword') {
-      const { password } = this.state;
-      this.setState({ confirmPassError: (value !== password) });
+      const { password } = state;
+      setState({
+        ...state,
+        confirmPassError: (value !== password),
+      });
     }
+  };
+
+  const handlePassErrorClose = () => {
+    setState({
+      ...state,
+      password: '',
+      ChangePassword: '',
+      confirmPassError: null,
+      changePassError: false,
+    });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const { confirmPassError } = this.state;
+    const { confirmPassError } = state;
 
     if (confirmPassError) {
       return;
@@ -24,9 +49,16 @@ export default function ChangePassword(props) {
 
     const { target } = e;
 
-    props.changePass(target.password.value);
+    props.changePass(state.password);
+    setState({
+      ...state,
+      password: '',
+      confirmPassword: '',
+      confirmPassError: null,
+      changePassError: false,
+    });
 
-    window.location.reload(false);
+    // window.location.reload(false);
   };
 
   return (
@@ -45,6 +77,16 @@ export default function ChangePassword(props) {
         id="confirm-new-password"
         label="Confirm New Password"
       /> */}
+      <Snackbar
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
+        }}
+        open={state.passwordError}
+        autoHideDuration={2000}
+        onClose={handlePassErrorClose}
+        message="Server Error !!! Try again"
+      />
       <Grid container justify="center">
         <Grid item xs={8} md={7} lg={5}>
           <form onSubmit={handleSubmit}>
@@ -64,6 +106,7 @@ export default function ChangePassword(props) {
               required
               fullWidth
               name="password"
+              value={state.password}
               label="New Password"
               type="password"
               onChange={event => handleChange(event, 'password')}
@@ -75,9 +118,10 @@ export default function ChangePassword(props) {
               required
               fullWidth
               name="confirmPassword"
+              value={state.confirmPassword}
               label=" Confirm Password"
               type="password"
-              error={confirmPassError}
+              error={state.confirmPassError}
               onChange={event => handleChange(event, 'confirmPassword')}
               id="confirmPassword"
             />

@@ -5,7 +5,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import List from '@material-ui/core/List';
+import { List, Snackbar } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
@@ -162,7 +162,7 @@ function renderPage(subPage, classProp, classPaper, props) {
     case 'changePassword':
       return (
         <div>
-          <ChangePassword changePass={props.changePass} />
+          <ChangePassword changePass={props.changePass} users={props.users} />
         </div>
       );
     // case 'approveUsers': return (<div><ApproveUsers /></div>);
@@ -225,7 +225,7 @@ function renderPage(subPage, classProp, classPaper, props) {
           <ManageUsers
             users={props.users}
             removeUser={props.removeUser}
-            editOtherUser={editOtherUser}
+            editOtherUser={props.editOtherUser}
           />
         </div>
       );
@@ -409,6 +409,10 @@ function Dashboard(props) {
     fetchAllResources();
   }, []);
 
+  const [serverError, setServerError] = React.useState(props.users.passwordFailed || props.users.editFailed || props.users.removeFailed);
+  const handleErrorClose = () => {
+    setServerError(false);
+  };
   if(!props.auth.isAuthenticated) {
     console.log('NOT AUTHENTICATED!!!!!!!!!!!');
     return (
@@ -423,9 +427,20 @@ function Dashboard(props) {
   console.log('Events: ', props.events.allEvents);
   console.log('Resources: ', props.resources.allResources);
 
+  
   return (
     <div className={classes.root}>
       <CssBaseline />
+      <Snackbar
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
+        }}
+        open={serverError}
+        autoHideDuration={2000}
+        onClose={handleErrorClose}
+        message="Server did not respond!!!"
+      />
       <AppBar position="absolute" className={clsx(classes.appBar, open && classes.appBarShift)}>
         <Toolbar className={classes.toolbar}>
           <IconButton

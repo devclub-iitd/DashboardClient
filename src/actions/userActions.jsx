@@ -279,7 +279,8 @@ export const logoutUser = () => (dispatch) => {
 // update user profile data, only the user can update profile, not even the admin
 export const updateUser = updatedUser => (dispatch) => {
   const bearer = `Bearer ${localStorage.getItem('token')}`;
-
+  // const api = new String(API.userAPI + updatedUser._id);
+  // `${API.userAPI}${updatedUser._id}`
   return fetch(`${API.userAPI}${updatedUser._id}`, {
     method: 'PUT',
     body: JSON.stringify(updatedUser),

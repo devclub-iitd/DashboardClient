@@ -43,10 +43,13 @@ class EditProjectForm extends Component {
         showcase: this.props.dumProjects[this.props.index].showcase,
         labels: this.props.dumProjects[this.props.index].labels,
         url: this.props.dumProjects[this.props.index].url,
-        memberNames: this.props.dumUsers.map(user => user.name),
-        selectedMembers: this.props.dumProjects[this.props.index].members.map((user) => user.name),
+        urlFields: Array.from(this.props.dumProjects[this.props.index].url).map(([key, value]) => ({type: key, url: value})),
+        memberNames: this.props.dumUsers.filter((user) => user.privelege_level !== 'Unapproved_User').map(user => user.name),
+        selectedMembers: this.props.dumProjects[this.props.index].members.map((userId) => (this.props.dumUsers.filter(user => user._id === userId)[0]).name),
+        project: this.props.dumProjects[this.props.index],
         isDailogOpen: false,
         isDeleteDailogOpen: false,
+        serverError: this.props.editFailed || this.props.removeFailed,
       };
   
       this.changeName = this.changeName.bind(this);
@@ -74,155 +77,234 @@ class EditProjectForm extends Component {
       this.confirmDeleteClose = this.confirmDeleteClose.bind(this);
       this.confirmDeleteOpen = this.confirmDeleteOpen.bind(this);
       this.handleDelete = this.handleDelete.bind(this);
+      this.handleServerErrorClose = this.handleServerErrorClose.bind(this);
+      this.strMapToObj = this.strMapToObj.bind(this);
     }
+
+    handleServerErrorClose = () => {
+      this.setState({
+        ...this.state,
+        serverError: false,
+      });
+    };
   
     changeName = (event) => {
       this.setState({
         ...this.state,
-        name: event.target.value,
+        // name: event.target.value,
+        project: {
+          ...this.state.project,
+          name: event.target.value,
+        },
       });
     };
   
     changeDescription = (event) => {
       this.setState({
         ...this.state,
-        description: event.target.value,
+        // description: event.target.value,
+        project: {
+          ...this.state.project,
+          description: event.target.value,
+        },
       });
     };
   
     changeStatus = (event) => {
       this.setState({
         ...this.state,
-        status: event.target.value,
+        // status: event.target.value,
+        project: {
+          ...this.state.project,
+          status: event.target.value,
+        },
       });
     };
     
     endDateChange = (date) => {
       this.setState({
         ...this.state,
-        // editEvent: {
-        //   ...this.state.editEvent,
-        //   end_date: date,
-        // },
-        end_date: date,
+        project: {
+          ...this.state.project,
+          end_date: date,
+        },
+        // end_date: date,
       });
     };
   
     startDateChange = (date) => {
       this.setState({
         ...this.state,
-        // editEvent: {
-        //   ...this.state.editEvent,
-        //   start_date: date,
-        // },
-        start_date: date,
+        project: {
+          ...this.state.project,
+          start_date: date,
+        },
+        // start_date: date,
       });
     };
   
     changeOrigin = (event) => {
       this.setState({
         ...this.state,
-        origin: event.target.value,
+        // origin: event.target.value,
+        project: {
+          ...this.state.project,
+          origin: event.target.value,
+        },
       });
     };
   
     changeContactOrigin = (event) => {
       this.setState({
         ...this.state,
-        origin_contact: event.target.value,
+        // origin_contact: event.target.value,
+        project: {
+          ...this.state.project,
+          origin_contact: event.target.value,
+        },
       });
     };
   
     changePerks = (event) => {
       this.setState({
         ...this.state,
-        perks: event.target.value,
+        // perks: event.target.value,
+        project: {
+          ...this.state.project,
+          perks: event.target.value,
+        },
       });
     };
   
     changeRequirements = (event) => {
       this.setState({
         ...this.state,
-        requirements: event.target.value,
+        // requirements: event.target.value,
+        project: {
+          ...this.state.project,
+          requirements: event.target.value,
+        },
       });
     };
   
     changeDisplayState = (event) => {
       this.setState({
         ...this.state,
-        // editEvent: {
-        //   ...this.state.editEvent,
-        //   display_on_website: event.target.checked,
-        // },
-        display_on_website: event.target.checked,
+        project: {
+          ...this.state.project,
+          display_on_website: event.target.checked,
+        },
+        // display_on_website: event.target.checked,
       });
     };
   
     changeInternalState = (event) => {
       this.setState({
         ...this.state,
-        is_internal: event.target.checked,
+        // is_internal: event.target.checked,
+        project: {
+          ...this.state.project,
+          is_internal: event.target.checked,
+        },
       });
     };
   
     changeShowcaseState = (event) => {
       this.setState({
         ...this.state,
-        showcase: event.target.checked,
+        // showcase: event.target.checked,
+        project: {
+          ...this.state.project,
+          showcase: event.target.checked,
+        },
       });
     };
   
     handleAddLabelFields = () => {
-      const values = this.state.labels;
+      const values = [...this.state.project.labels];
       values.push('');
       this.setState({
         ...this.state,
-        labels: values,
+        // labels: values,
+        project: {
+          ...this.state.project,
+          labels: values,
+        },
       });
     };
   
     handleRemoveLabelFields = (index) => {
-      const values = this.state.labels;
+      const values = [...this.state.project.labels];
       values.splice(index, 1);
       this.setState({
         ...this.state,
-        labels: values,
+        // labels: values,
+        project: {
+          ...this.state.project,
+          labels: values,
+        },
       });
     };
   
     handleLabelFieldChange = (index, event) => {
-      const values = this.state.labels;
+      const values = [...this.state.project.labels];
       values[index] = event.target.value;
       this.setState({
         ...this.state,
-        labels: values,
+        // labels: values,
+        project: {
+          ...this.state.project,
+          labels: values,
+        },
       });
     };
   
     handleAddUrlFields = () => {
-      const urlVals = this.state.url;
-      urlVals.set('type', 'url');
+      // const urlVals = this.state.url;
+      // urlVals.set('type', 'url');
+      // this.setState({
+      //   ...this.state,
+      //   url: urlVals,
+      // });
+      const values = [...this.state.urlFields];
+      values.push({ type: '', url: '' });
       this.setState({
         ...this.state,
-        url: urlVals,
+        urlFields: values,
       });
     };
   
     handleRemoveUrlFields = (index) => {
-      const urlVals = this.state.url;
-      urlVals.delete(index);
+      // const urlVals = this.state.url;
+      // urlVals.delete(index);
+      // this.setState({
+      //   ...this.state,
+      //   url: urlVals,
+      // });
+      const values = [...this.state.urlFields];
+      values.splice(index, 1);
       this.setState({
         ...this.state,
-        url: urlVals,
+        urlFields: values,
       });
     };
   
     handleUrlFieldChange = (index, event) => {
-      const urlVals = this.state.url;
-      urlVals.set(index, event.target.value);
+      // const urlVals = this.state.url;
+      // urlVals.set(index, event.target.value);
+      // this.setState({
+      //   ...this.state,
+      //   url: urlVals,
+      // });
+      const values = [...this.state.urlFields];
+      if (event.target.name === 'type') {
+        values[index].type = event.target.value;
+      } else {
+        values[index].url = event.target.value;
+      }
       this.setState({
         ...this.state,
-        url: urlVals,
+        urlFields: values,
       });
     };
   
@@ -267,26 +349,42 @@ class EditProjectForm extends Component {
       console.log('Deleting: ', this.state.name);
       this.confirmDeleteClose();
     }
+
+    strMapToObj = (strMap) => {
+      const obj = Object.create(null);
+      Array.from(strMap).map(([k, v]) => { obj[k] = v; });
+      return obj;
+    }
   
     handleSubmit = () => {
-      this.setState({
-        ...this.state,
-        members: this.state.selectedMembers.map((name) => this.props.dumUsers.filter((user) => user.name === name)[0]._id),
-      });
+      const urlMap = new Map();
+      this.state.urlFields.map(urlField => urlMap.set(urlField.type, urlField.url));
+      // this.setState({
+      //   ...this.state,
+      //   // members: this.state.selectedMembers.map((name) => this.props.dumUsers.filter((user) => user.name === name)[0]._id),
+      //   project: {
+      //     ...this.state.project,
+          // url: urlMap,
+          // members: this.state.selectedMembers.map((name) => (this.props.dumUsers.filter((user) => user.name === name)[0])._id),
+      //   },
+      // });
       
       const updatedProject = {
-        ...this.props.dumProjects[this.props.index],
-        ...this.state,
+        ...this.state.project,
+        url: this.strMapToObj(urlMap),
+        members: this.state.selectedMembers.map((name) => (this.props.dumUsers.filter((user) => user.name === name)[0])._id),
       };
   
-      delete updatedProject.memberNames;
-      delete updatedProject.selectedMembers;
-      delete updatedProject.isDailogOpen;
-      delete updatedProject.isDeleteDailogOpen;
+      // delete updatedProject.memberNames;
+      // delete updatedProject.selectedMembers;
+      // delete updatedProject.isDailogOpen;
+      // delete updatedProject.isDeleteDailogOpen;
+      // delete updatedProject.serverError;
   
       this.props.editProject(updatedProject);
-      console.log('got values: ', updatedProject);
       this.handleFormClose();
+      // this.props.editProject(this.state.project);
+      console.log('got values: ', updatedProject);
       // console.log('submitting edited event: ', this.state.editEvent);
     };
   
@@ -295,13 +393,13 @@ class EditProjectForm extends Component {
       const required = val => val && val.length;
       const maxLength = len => val => !(val) || (val.length <= len);
       const minLength = len => val => (val) && (val.length >= len);
-      const { editFailed, removeFailed } = this.props;
+      // const { editFailed, removeFailed } = this.props;
         
-      const [serverError, setServerError] = React.useState(editFailed || removeFailed);
+      // const [serverError, setServerError] = React.useState(editFailed || removeFailed);
 
-      const handleClose = () => {
-        setServerError(false);
-      };
+      // const handleClose = () => {
+      //   setServerError(false);
+      // };
 
       return (
           <div>
@@ -310,9 +408,9 @@ class EditProjectForm extends Component {
                 vertical: 'top',
                 horizontal: 'center',
               }}
-              open={serverError}
+              open={this.state.serverError}
               autoHideDuration={2000}
-              onClose={handleClose}
+              onClose={this.handleServerErrorClose}
               message="Server Error !!! Try again"
             />
           <Button onClick={() => { 
@@ -337,7 +435,8 @@ class EditProjectForm extends Component {
                       model=".name"
                       id="name"
                       name="name"
-                      defaultValue={this.state.name}
+                      // defaultValue={this.state.name}
+                      defaultValue={this.state.project.name}
                       onChange={this.changeName}
                       placeholder="Project Name*"
                       className="form-control"
@@ -365,7 +464,8 @@ class EditProjectForm extends Component {
                       id="description"
                       name="description"
                       placeholder="Project Description*"
-                      defaultValue={this.state.description}
+                      // defaultValue={this.state.description}
+                      defaultValue={this.state.project.description}
                       onChange={this.changeDescription}
                       rows="8"
                       className="form-control"
@@ -391,7 +491,8 @@ class EditProjectForm extends Component {
                           id="date-picker-dialog"
                           label="Select proposed Start Date of Project"
                           format="MM/dd/yyyy"
-                          value={this.state.start_date}
+                          // value={this.state.start_date}
+                          value={this.state.project.start_date}
                           onChange={this.startDateChange}
                           KeyboardButtonProps={{
                           'aria-label': 'change date',
@@ -408,7 +509,8 @@ class EditProjectForm extends Component {
                           id="date-picker-dialog"
                           label="Select proposed End Date of Project"
                           format="MM/dd/yyyy"
-                          value={this.state.end_date}
+                          // value={this.state.end_date}
+                          value={this.state.project.end_date}
                           onChange={this.endDateChange}
                           minDate={this.state.start_date}
                           KeyboardButtonProps={{
@@ -425,7 +527,8 @@ class EditProjectForm extends Component {
                       model=".origin"
                       id="origin"
                       name="origin"
-                      defaultValue={this.state.origin}
+                      // defaultValue={this.state.origin}
+                      defaultValue={this.state.project.origin}
                       onChange={this.changeOrigin}
                       placeholder="Origin*"
                       className="form-control"
@@ -451,7 +554,8 @@ class EditProjectForm extends Component {
                       id="origin_contact"
                       name="origin_contact"
                       placeholder="Origin Contact*"
-                      defaultValue={this.state.origin_contact}
+                      // defaultValue={this.state.origin_contact}
+                      defaultValue={this.state.project.origin_contact}
                       onChange={this.changeContactOrigin}
                       className="form-control"
                       validators={{
@@ -476,7 +580,8 @@ class EditProjectForm extends Component {
                       id="perks"
                       name="perks"
                       placeholder="Perks*"
-                      defaultValue={this.state.perks}
+                      // defaultValue={this.state.perks}
+                      defaultValue={this.state.project.perks}
                       onChange={this.changePerks}
                       className="form-control"
                       validators={{
@@ -501,7 +606,8 @@ class EditProjectForm extends Component {
                       id="requirements"
                       name="requirements"
                       placeholder="Requirements*"
-                      defaultValue={this.state.requirements}
+                      // defaultValue={this.state.requirements}
+                      defaultValue={this.state.project.requirements}
                       onChange={this.changeRequirements}
                       className="form-control"
                       validators={{
@@ -524,7 +630,8 @@ class EditProjectForm extends Component {
                       <FormControlLabel
                       sm={2}
                       // label="Display on Website"
-                      control={<Switch checked={this.state.display_on_website} onChange={this.changeDisplayState} />}
+                      // control={<Switch checked={this.state.display_on_website} onChange={this.changeDisplayState} />}
+                      control={<Switch checked={this.state.project.display_on_website} onChange={this.changeDisplayState} />}
                       />
                   </Col>
                   </Row>
@@ -534,7 +641,8 @@ class EditProjectForm extends Component {
                       <FormControlLabel
                       sm={2}
                       // label="Display on Website"
-                      control={<Switch checked={this.state.is_internal} onChange={this.changeInternalState} />}
+                      // control={<Switch checked={this.state.is_internal} onChange={this.changeInternalState} />}
+                      control={<Switch checked={this.state.project.is_internal} onChange={this.changeInternalState} />}
                       />
                   </Col>
                   </Row>
@@ -544,14 +652,15 @@ class EditProjectForm extends Component {
                       <FormControlLabel
                       sm={2}
                       // label="Display on Website"
-                      control={<Switch checked={this.state.showcase} onChange={this.changeShowcaseState} />}
+                      // control={<Switch checked={this.state.showcase} onChange={this.changeShowcaseState} />}
+                      control={<Switch checked={this.state.project.showcase} onChange={this.changeShowcaseState} />}
                       />
                   </Col>
                   </Row>
                   <Row className="form-group">
                   <Label htmlFor="labelFields" md={12}><h6>Add Label:</h6></Label>
                   <Col sm={12}>
-                      {this.state.labels.map((labelField, index) => (
+                      {this.state.project.labels.map((labelField, index) => (
                       <Fragment key={`${labelField}~${index}`}>
                           <Row className="form-group">
                           <Col sm={{ size: 4, offset: 4 }}>
@@ -581,8 +690,9 @@ class EditProjectForm extends Component {
                   <Row className="form-group">
                   <Label htmlFor="urlFields" md={12}><h6>Url:</h6></Label>
                   <Col sm={12}>
-                  {Array.from(this.state.url).map(([index, value]) => (
-                      <Fragment key={`${index}`}>
+                  {/* {Array.from(this.state.url).map(([index, value]) => ( */}
+                    {this.state.urlFields.map((urlField, index) => (
+                      <Fragment key={`${urlField}~${index}`}>
                           <Row className="form-group">
                           {/* sm={12} md={{ size: 4, offset: 1 }} */}
                           <Col sm={12} md={{ size: 4, offset: 1 }}>
@@ -593,7 +703,8 @@ class EditProjectForm extends Component {
                               id="type"
                               name="type"
                               variant="filled"
-                              value={index}
+                              // value={index}
+                              value={urlField.type}
                               onChange={event => this.handleUrlFieldChange(index, event)}
                               />
                           </Col>
@@ -606,7 +717,8 @@ class EditProjectForm extends Component {
                               id="url"
                               name="url"
                               variant="filled"
-                              value={value}
+                              // value={value}
+                              value={urlField.url}
                               onChange={event => this.handleUrlFieldChange(index, event)}
                               />
                           </Col>
@@ -640,7 +752,7 @@ class EditProjectForm extends Component {
                       >
                           {this.state.memberNames.map(name => (
                           <MenuItem key={name} value={name}>
-                              <Checkbox checked={this.state.selectedMembers.indexOf(name) > -1} />
+                              <Checkbox checked={this.state.selectedMembers.indexOf(name) !== -1} />
                               <ListItemText primary={name} />
                           </MenuItem>
                           ))}

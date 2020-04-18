@@ -64,7 +64,7 @@ function MainListItems(props) {
         </ListItemIcon>
         <ListItemText primary="Resources" />
       </ListItem>
-      <ListItem button disabled={props.isAdmin} onClick={redirectFunc('users')}>
+      <ListItem button disabled={!props.isAdmin} onClick={redirectFunc('users')}>
         <ListItemIcon>
           <GroupIcon />
         </ListItemIcon>
@@ -76,7 +76,7 @@ function MainListItems(props) {
         </ListItemIcon>
         <ListItemText primary="My Tasks" />
       </ListItem>
-      <ListItem button disabled={props.isAdmin} onClick={redirectFunc('deploy')}>
+      <ListItem button disabled={!props.isAdmin} onClick={redirectFunc('deploy')}>
         <ListItemIcon>
           <PublishIcon />
         </ListItemIcon>
@@ -88,7 +88,7 @@ function MainListItems(props) {
         </ListItemIcon>
         <ListItemText primary="Approve Users" />
       </ListItem> */}
-      <ListItem button disabled={props.isAdmin} onClick={redirectFunc('createTasks')}>
+      <ListItem button disabled={!props.isAdmin} onClick={redirectFunc('createTasks')}>
         <ListItemIcon>
           <AddBoxIcon />
         </ListItemIcon>
