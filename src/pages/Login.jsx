@@ -18,7 +18,7 @@ import PropTypes from 'prop-types';
 import { FormLabel } from '@material-ui/core';
 import { Redirect } from 'react-router-dom';
 // import login from '../actions/loginActions';
-import { loginUser } from '../actions/userActions';
+import { loginUser, loginErrorFin } from '../actions/userActions';
 
 function MadeWithLove() {
   return (
@@ -78,9 +78,10 @@ function SignInSide(props) {
     setPassword(event.target.value);
   };
 
-  const [errMess, setErrMess] = React.useState(auth.errMess);
+  const [errMess, setErrMess] = React.useState(auth.loginFailed);
   const handleClose = () => {
-    setErrMess(null);
+    // setErrMess(false);
+    props.finishError();
   };
 
   const handleSubmit = () => {
@@ -118,9 +119,9 @@ function SignInSide(props) {
           vertical: 'top',
           horizontal: 'center',
         }}
-        open={errMess !== null}
+        open={auth.errMess !== null}
         autoHideDuration={2000}
-        // onClose={handleClose}
+        onClose={handleClose}
         message="Login Error !!! Try again"
       />
       <CssBaseline />
@@ -196,6 +197,7 @@ SignInSide.propTypes = {
   classes: PropTypes.objectOf(PropTypes.string).isRequired,
   // errorMsg: PropTypes.string.isRequired,
   login: PropTypes.func.isRequired,
+  finishError: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
 };
 
@@ -206,6 +208,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   login: creds => dispatch(loginUser(creds)),
+  finishError: () => dispatch(loginErrorFin()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(SignInSide));

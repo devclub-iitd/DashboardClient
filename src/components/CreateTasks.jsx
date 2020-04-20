@@ -13,7 +13,7 @@ import Chip from '@material-ui/core/Chip';
 import MenuItem from '@material-ui/core/MenuItem';
 import CancelIcon from '@material-ui/icons/Cancel';
 import {
-  Grid, FormControl, FormControlLabel, InputLabel, FormLabel, RadioGroup, Radio, Select, Switch, Fab,
+  Grid, FormControl, FormControlLabel, InputLabel, FormLabel, RadioGroup, Radio, Select, Switch, Fab, Snackbar,
 } from '@material-ui/core';
 import {
   Card, CardText, CardBody, CardTitle, Row, Col, Label, Button, ButtonGroup,
@@ -205,6 +205,21 @@ export default function CreateTasks(props) {
   //   props.resetResourceForm();
   // };
 
+  const [successState, setSuccessState] = React.useState({
+    eventSuccess: false,
+    projectSuccess: false,
+    resourceSuccess: false,
+  });
+
+  const handleSuccessClose = () => {
+    setSuccessState({
+      ...successState,
+      eventSuccess: false,
+      projectSuccess: false,
+      resourceSuccess: false,
+    });
+  };
+
   const resetEForm = () => {
     props.resetEventForm();
     setUrlFields([
@@ -243,6 +258,12 @@ export default function CreateTasks(props) {
     };
     console.log('event: ', newEvent);
     props.createEvent(newEvent);
+    if (props.eventError !== null) {
+      setSuccessState({
+        ...successState,
+        eventSuccess: true,
+      });
+    }
     resetEForm();
   };
 
@@ -262,6 +283,12 @@ export default function CreateTasks(props) {
     };
     console.log('project: ', newProject);
     props.createProject(newProject);
+    if (props.projectError !== null) {
+      setSuccessState({
+        ...successState,
+        projectSuccess: true,
+      });
+    }
     resetPForm();
   };
 
@@ -274,6 +301,12 @@ export default function CreateTasks(props) {
     };
     console.log('resource: ', newResource);
     props.createResource(newResource);
+    if (props.resourceError !== null) {
+      setSuccessState({
+        ...successState,
+        resourceSuccess: true,
+      });
+    }
     resetRForm();
   };
 
@@ -283,6 +316,36 @@ export default function CreateTasks(props) {
       {/* {'Change type of field (date/checkbox/text) accordingly'}
       <br /> */}
       <Grid container direction="row" justify="center">
+        <Snackbar
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'center',
+          }}
+          open={successState.eventSuccess}
+          autoHideDuration={2000}
+          onClose={handleSuccessClose}
+          message="Event created successfully !"
+        />
+        <Snackbar
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'center',
+          }}
+          open={successState.projectSuccess}
+          autoHideDuration={2000}
+          onClose={handleSuccessClose}
+          message="Project created successfully !"
+        />
+        <Snackbar
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'center',
+          }}
+          open={successState.resourceSuccess}
+          autoHideDuration={2000}
+          onClose={handleSuccessClose}
+          message="Resource created successfully !"
+        />
         <Grid item sm={10} lg={6}>
           <Paper elevation={3}>
             <Card>

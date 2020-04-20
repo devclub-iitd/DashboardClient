@@ -15,16 +15,12 @@ export const projectsLoading = () => ({
   type: ActionTypes.PROJECTS_LOADING,
 });
 
-export const editFailed = () => ({
-  type: ActionTypes.EDIT_PROJECT_FAILED,
+export const projectServerError = () => ({
+  type: ActionTypes.PROJECT_SERVER_ERROR,
 });
 
-export const createFailed = () => ({
-  type: ActionTypes.CREATE_PROJECT_FAILED,
-});
-
-export const removeFailed = () => ({
-  type: ActionTypes.REMOVE_PROJECT_FAILED,
+export const projectErrorFin = () => ({
+  type: ActionTypes.PROJECT_MISC_ERROR_FIN,
 });
 
 function objToStrMap(obj) {
@@ -50,7 +46,7 @@ export const fetchAllProjects = () => (dispatch) => {
     credentials: 'same-origin',
   })
     .then((response) => {
-      if (response.ok) {
+      if (response.ok || response.status === 304) {
         return response;
       }
       const error = new Error(`Error ${response.status}: ${response.statusText}`);
@@ -90,7 +86,7 @@ export const createProject = project => (dispatch) => {
     credentials: 'same-origin',
   })
     .then((response) => {
-      if (response.ok) {
+      if (response.ok || response.status === 304) {
         return response;
       }
       const error = new Error(`Error ${response.status}: ${response.statusText}`);
@@ -105,7 +101,7 @@ export const createProject = project => (dispatch) => {
       console.log('New Project: ', cProject);
       dispatch(fetchAllProjects());
     })
-    .catch(error => dispatch(createFailed(error.message)));
+    .catch(error => dispatch(projectServerError(error.message)));
 };
 
 export const editProject = project => (dispatch) => {
@@ -121,7 +117,7 @@ export const editProject = project => (dispatch) => {
     credentials: 'same-origin',
   })
     .then((response) => {
-      if (response.ok) {
+      if (response.ok || response.status === 304) {
         return response;
       }
       const error = new Error(`Error ${response.status}: ${response.statusText}`);
@@ -136,7 +132,7 @@ export const editProject = project => (dispatch) => {
       console.log('Updated Project: ', cEvent);
       dispatch(fetchAllProjects());
     })
-    .catch(error => dispatch(editFailed(error.message)));
+    .catch(error => dispatch(projectServerError(error.message)));
 };
 
 export const deleteProject = projectId => (dispatch) => {
@@ -152,7 +148,7 @@ export const deleteProject = projectId => (dispatch) => {
     credentials: 'same-origin',
   })
     .then((response) => {
-      if (response.ok) {
+      if (response.ok || response.status === 304) {
         return response;
       }
       const error = new Error(`Error ${response.status}: ${response.statusText}`);
@@ -168,5 +164,5 @@ export const deleteProject = projectId => (dispatch) => {
       console.log(res);
       dispatch(fetchAllProjects());
     })
-    .catch(error => dispatch(removeFailed(error.message)));
+    .catch(error => dispatch(projectServerError(error.message)));
 };

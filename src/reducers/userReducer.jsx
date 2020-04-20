@@ -6,11 +6,9 @@ const Users = (state = {
   isLoading: false,
   userErrMess: null,
   usersErrMess: null,
-  user: null,
-  passwordFailed: false,
-  editFailed: false,
-  removeFailed: false,
-  allUsers: dumUsers,
+  user: {},
+  serverError: null,
+  allUsers: [],
 }, action) => {
   switch (action.type) {
     case ActionTypes.ADD_USER:
@@ -19,9 +17,7 @@ const Users = (state = {
         isLoading: false,
         userErrMess: null,
         usersErrMess: null,
-        passwordFailed: false,
-        editFailed: false,
-        removeFailed: false,
+        serverError: null,
         user: action.payload,
       };
 
@@ -31,9 +27,7 @@ const Users = (state = {
         isLoading: false,
         userErrMess: null,
         usersErrMess: null,
-        passwordFailed: false,
-        editFailed: false,
-        removeFailed: false,
+        serverError: null,
         allUsers: action.payload,
       };
 
@@ -42,9 +36,7 @@ const Users = (state = {
         ...state,
         userErrMess: null,
         usersErrMess: null,
-        passwordFailed: false,
-        editFailed: false,
-        removeFailed: false,
+        serverError: null,
         isLoading: true,
       };
 
@@ -52,10 +44,8 @@ const Users = (state = {
       return {
         ...state,
         isLoading: false,
-        passwordFailed: false,
-        editFailed: false,
+        serverError: null,
         userErrMess: action.payload,
-        removeFailed: false,
         usersErrMess: null,
       };
 
@@ -63,9 +53,7 @@ const Users = (state = {
       return {
         ...state,
         isLoading: true,
-        passwordFailed: false,
-        editFailed: false,
-        removeFailed: false,
+        serverError: null,
         userErrMess: null,
         usersErrMess: null,
       };
@@ -74,41 +62,18 @@ const Users = (state = {
       return {
         ...state,
         isLoading: false,
-        passwordFailed: false,
-        editFailed: false,
+        serverError: null,
         userErrMess: null,
-        removeFailed: false,
         usersErrMess: action.payload,
       };
 
-    case ActionTypes.USER_PASSWORD_CHANGE_FAILED:
+    case ActionTypes.USER_SERVER_ERROR:
       return {
         ...state,
+        isLoading: false,
+        serverError: 'ERROR',
         userErrMess: null,
-        usersErrMess: null,
-        removeFailed: false,
-        passwordFailed: true,
-        editFailed: false,
-      };
-
-    case ActionTypes.EDIT_USER_FAILED:
-      return {
-        ...state,
-        userErrMess: null,
-        usersErrMess: null,
-        passwordFailed: false,
-        removeFailed: false,
-        editFailed: true,
-      };
-
-    case ActionTypes.REMOVE_USER_FAILED:
-      return {
-        ...state,
-        userErrMess: null,
-        usersErrMess: null,
-        passwordFailed: false,
-        removeFailed: true,
-        editFailed: true,
+        usersErrMess: action.payload,
       };
 
     default:

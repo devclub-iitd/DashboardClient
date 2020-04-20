@@ -36,7 +36,7 @@ class EditEventForm extends Component {
         urlFields: Array.from(this.props.dumEvents[this.props.index].url).map(([key, value]) => ({type: key, url: value})),
         isDailogOpen: false,
         isDeleteDailogOpen: false,
-        serverError: this.props.editFailed || this.props.removeFailed,
+        success: false,
       };
   
       this.endDateChange = this.endDateChange.bind(this);
@@ -55,14 +55,14 @@ class EditEventForm extends Component {
       this.confirmDeleteClose = this.confirmDeleteClose.bind(this);
       this.confirmDeleteOpen = this.confirmDeleteOpen.bind(this);
       this.handleDelete = this.handleDelete.bind(this);
-      this.handleServerErrorClose = this.handleServerErrorClose.bind(this);
+      this.handleSuccessClose = this.handleSuccessClose.bind(this);
       this.strMapToObj = this.strMapToObj.bind(this);
     }
 
-    handleServerErrorClose = () => {
+    handleSuccessClose = () => {
       this.setState({
         ...this.state,
-        serverError: false,
+        success: false,
       });
     };
   
@@ -233,25 +233,12 @@ class EditEventForm extends Component {
       Array.from(strMap).map(([k, v]) => { obj[k] = v; });
       return obj;
     }
+
   
     handleSubmit = () => {
-      // const updatedEvent = {
-      //   ...this.props.dumEvents[this.props.index],
-      //   ...this.state,
-      // };
-      // delete updatedEvent.isDailogOpen;
-      // delete updatedEvent.isDeleteDailogOpen;
-      // delete updatedEvent.serverError;
 
       const urlMap = new Map();
       this.state.urlFields.map(urlField => urlMap.set(urlField.type, urlField.url));
-      // this.setState({
-      //   ...this.state,
-      //   event: {
-      //     ...this.state.event,
-      //     url: urlMap,
-      //   },
-      // });
 
       const updatedEvent = {
         ...this.state.event,
@@ -261,6 +248,12 @@ class EditEventForm extends Component {
       this.props.editEvent(updatedEvent);
       // this.props.editEvent(this.state.event);
       console.log('got values: ', updatedEvent);
+      if (this.props.serverError !== null) {
+        this.setState({
+          ...this.state,
+          success: true,
+        });
+      }
       this.handleFormClose();
     };
   
@@ -283,10 +276,10 @@ class EditEventForm extends Component {
                 vertical: 'top',
                 horizontal: 'center',
               }}
-              open={this.state.serverError}
+              open={this.state.success}
               autoHideDuration={2000}
-              onClose={this.handleServerErrorClose}
-              message="Server Error !!! Try again"
+              onClose={this.handleSuccessClose}
+              message="Event edited Successfully !"
             />
             <Button onClick={() => { 
                 this.handleFormOpen(); 

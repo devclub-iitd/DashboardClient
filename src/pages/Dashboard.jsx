@@ -36,19 +36,19 @@ import { actions } from 'react-redux-form';
 import { 
   fetchUser, fetchAllUsers, logoutUser,
   updateUser, editOtherUser, changePassword,
-  removeOtherUser
+  removeOtherUser, userErrorFin,
 } from '../actions/userActions';
 import { 
   fetchAllEvents, createEvent,
-  editEvent, deleteEvent
+  editEvent, deleteEvent, eventErrorFin,
 } from '../actions/eventActions';
 import {
   fetchAllProjects, createProject,
-  editProject, deleteProject
+  editProject, deleteProject, projectErrorFin,
 } from '../actions/projectActions';
 import {
   fetchAllResources, createResource,
-  editResource, deleteResource
+  editResource, deleteResource, resourceErrorFin,
 } from '../actions/resourceActions';
 import { render } from 'react-dom';
 
@@ -155,6 +155,7 @@ function renderPage(subPage, classProp, classPaper, props) {
           <Profile
             user={props.users.user}
             error={props.users.errMess}
+            serverError={props.users.serverError}
             updateUser={props.updateUser}  
           />
         </div>
@@ -176,6 +177,9 @@ function renderPage(subPage, classProp, classPaper, props) {
             createEvent={props.createEvent}
             createProject={props.createProject}
             createResource={props.createResource}
+            eventError={props.events.serverError}
+            projectError={props.projects.serverError}
+            resourceError={props.resources.serverError}
           />
         </div>
       );
@@ -352,18 +356,22 @@ const mapDispatchToProps = (dispatch) => ({
   changePass: (newPass) => { dispatch(changePassword(newPass)) },
   editOtherUser: (user) => { dispatch(editOtherUser(user)) },
   removeUser: (uId) => { dispatch(removeOtherUser(uId)) },
+  userErrorFin: () => { dispatch(userErrorFin()) },
   fetchAllEvents: () => { dispatch(fetchAllEvents()) },
   createEvent: (newEvent) => { dispatch(createEvent(newEvent)) },
   editEvent: (updatedEvent) => { dispatch(editEvent(updatedEvent)) },
   deleteEvent: (eventId) => { dispatch(deleteEvent(eventId)) },
+  eventErrorFin: () => { dispatch(eventErrorFin()) },
   fetchAllProjects: () => { dispatch(fetchAllProjects()) },
   createProject: (newProject) => { dispatch(createProject(newProject)) },
   editProject: (updatedProject) => { dispatch(editProject(updatedProject)) },
   deleteProject: (projectId) => { dispatch(deleteProject(projectId)) },
+  projectErrorFin: () => { dispatch(projectErrorFin()) },
   fetchAllResources: () => { dispatch(fetchAllResources()) },
   createResource: (newResource) => { dispatch(createResource(newResource)) },
   editResource: (updatedResource) => { dispatch(editResource(updatedResource)) },
   deleteResource: (resourceId) => { dispatch(deleteResource(resourceId)) },
+  resourceErrorFin: () => { dispatch(resourceErrorFin()) },
 });
 
 function Dashboard(props) {
@@ -409,9 +417,13 @@ function Dashboard(props) {
     fetchAllResources();
   }, []);
 
-  const [serverError, setServerError] = React.useState(props.users.passwordFailed || props.users.editFailed || props.users.removeFailed);
+  // const [serverError, setServerError] = React.useState(props.users.passwordFailed || props.users.editFailed || props.users.removeFailed);
   const handleErrorClose = () => {
-    setServerError(false);
+    // setServerError(false);
+    props.userErrorFin();
+    props.eventErrorFin();
+    props.projectErrorFin();
+    props.resourceErrorFin();
   };
   if(!props.auth.isAuthenticated) {
     console.log('NOT AUTHENTICATED!!!!!!!!!!!');
@@ -436,7 +448,10 @@ function Dashboard(props) {
           vertical: 'top',
           horizontal: 'center',
         }}
-        open={serverError}
+        open={
+          props.users.serverError !== null && props.events.serverError !== null
+          && props.projects.serverError !== null && props.resources.serverError !== null
+        }
         autoHideDuration={2000}
         onClose={handleErrorClose}
         message="Server did not respond!!!"
@@ -508,19 +523,23 @@ Dashboard.propTypes = {
   updateUser: PropTypes.func.isRequired,
   changePass: PropTypes.func.isRequired,
   removeUser: PropTypes.func.isRequired,
+  userErrorFin: PropTypes.func.isRequired,
   editOtherUser: PropTypes.func.isRequired,
   fetchAllEvents: PropTypes.func.isRequired,
   createEvent: PropTypes.func.isRequired,
   editEvent: PropTypes.func.isRequired,
   deleteEvent: PropTypes.func.isRequired,
+  eventErrorFin: PropTypes.func.isRequired,
   fetchAllProjects: PropTypes.func.isRequired,
   createProject: PropTypes.func.isRequired,
   editProject: PropTypes.func.isRequired,
   deleteProject: PropTypes.func.isRequired,
+  projectErrorFin: PropTypes.func.isRequired,
   fetchAllResources: PropTypes.func.isRequired,
   createResource: PropTypes.func.isRequired,
   editResource: PropTypes.func.isRequired,
   deleteResource: PropTypes.func.isRequired,
+  resourceErrorFin: PropTypes.func.isRequired,
   // classes: PropTypes.objectOf(PropTypes.string).isRequired,
 };
 

@@ -106,11 +106,10 @@ const ProjectsPage = ({ projects, fetchAllProjects, editProject, deleteProject, 
                                         <EditProjectForm
                                           deleteProject={deleteProject}
                                           dumProjects={ideas}
-                                          editFailed={projects.editFailed}
-                                          removeFailed={projects.removeFailed}
                                           dumUsers={users.allUsers} 
                                           editProject={editProject}
-                                          index={index} />
+                                          index={index}
+                                          serverError={projects.serverError} />
                                         : null
                                     }
                                 </CardFooter>
@@ -163,11 +162,10 @@ const ProjectsPage = ({ projects, fetchAllProjects, editProject, deleteProject, 
                                         <EditProjectForm
                                           deleteProject={deleteProject}
                                           dumProjects={ongoing}
-                                          editFailed={projects.editFailed}
-                                          removeFailed={projects.removeFailed}
                                           dumUsers={users.allUsers} 
                                           editProject={editProject}
-                                          index={index} />
+                                          index={index}
+                                          serverError={projects.serverError} />
                                         : null
                                     }
                                 </CardFooter>
@@ -220,11 +218,10 @@ const ProjectsPage = ({ projects, fetchAllProjects, editProject, deleteProject, 
                                         <EditProjectForm
                                           deleteProject={deleteProject}
                                           dumProjects={completed}
-                                          editFailed={projects.editFailed}
-                                          removeFailed={projects.removeFailed}
                                           dumUsers={users.allUsers} 
                                           editProject={editProject}
-                                          index={index} />
+                                          index={index}
+                                          serverError={projects.serverError} />
                                         : null
                                     }
                                 </CardFooter>

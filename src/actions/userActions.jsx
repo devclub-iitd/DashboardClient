@@ -43,16 +43,12 @@ export const addAllUsers = users => ({
   payload: users,
 });
 
-export const changePasswordFailed = () => ({
-  type: ActionTypes.USER_PASSWORD_CHANGE_FAILED,
+export const userServerError = () => ({
+  type: ActionTypes.USER_SERVER_ERROR,
 });
 
-export const editUserFailed = () => ({
-  type: ActionTypes.EDIT_USER_FAILED,
-});
-
-export const removeUserFailed = () => ({
-  type: ActionTypes.REMOVE_USER_FAILED,
+export const userErrorFin = () => ({
+  type: ActionTypes.USER_MISC_ERROR_FIN,
 });
 
 export const requestLogin = creds => ({
@@ -68,6 +64,10 @@ export const receiveLogin = response => ({
 export const loginError = message => ({
   type: ActionTypes.LOGIN_FAILURE,
   message,
+});
+
+export const loginErrorFin = () => ({
+  type: ActionTypes.LOGIN_FAILURE_FIN,
 });
 
 export const requestLogout = () => ({
@@ -122,7 +122,7 @@ export const fetchUser = id => (dispatch) => {
     credentials: 'same-origin',
   })
     .then((response) => {
-      if (response.ok) {
+      if (response.ok || response.status === 304) {
         return response;
       }
       const error = new Error(`Error ${response.status}: ${response.statusText}`);
@@ -165,7 +165,7 @@ export const fetchAllUsers = () => (dispatch) => {
     credentials: 'same-origin',
   })
     .then((response) => {
-      if (response.ok) {
+      if (response.ok || response.status === 304) {
         return response;
       }
       const error = new Error(`Error ${response.status}: ${response.statusText}`);
@@ -179,6 +179,7 @@ export const fetchAllUsers = () => (dispatch) => {
     })
     .then(response => response.json())
     .then((users) => {
+      console.log('got users: ', users);
       const gotUsers = users.data;
       const allUsers = gotUsers.map(cUser => ({
         ...cUser,
@@ -207,7 +208,7 @@ export const loginUser = creds => (dispatch) => {
     body: JSON.stringify(creds),
   })
     .then((response) => {
-      if (response.ok) {
+      if (response.ok || response.status === 304) {
         return response;
       }
       const error = new Error(`Error ${response.status}: ${response.statusText}`);
@@ -249,7 +250,7 @@ export const registerUser = registerCreds => (dispatch) => {
     body: JSON.stringify(registerCreds),
   })
     .then((response) => {
-      if (response.ok) {
+      if (response.ok || response.status === 304) {
         return response;
       }
       const error = new Error(`Error ${response.status}: ${response.statusText}`);
@@ -291,7 +292,7 @@ export const updateUser = updatedUser => (dispatch) => {
     credentials: 'same-origin',
   })
     .then((response) => {
-      if (response.ok) {
+      if (response.ok || response.status === 304) {
         return response;
       }
       const error = new Error(`Error ${response.status}: ${response.statusText}`);
@@ -306,7 +307,7 @@ export const updateUser = updatedUser => (dispatch) => {
       console.log('User data updated: ', userData);
       dispatch(fetchUser(updatedUser._id));
     })
-    .catch(error => dispatch(editUserFailed(error.message)));
+    .catch(error => dispatch(userServerError(error.message)));
 };
 
 export const removeOtherUser = uId => (dispatch) => {
@@ -321,7 +322,7 @@ export const removeOtherUser = uId => (dispatch) => {
     credentials: 'same-origin',
   })
     .then((response) => {
-      if (response.ok) {
+      if (response.ok || response.status === 304) {
         return response;
       }
       const error = new Error(`Error ${response.status}: ${response.statusText}`);
@@ -337,7 +338,7 @@ export const removeOtherUser = uId => (dispatch) => {
       console.log(res);
       dispatch(fetchAllUsers());
     })
-    .catch(error => dispatch(removeUserFailed(error)));
+    .catch(error => dispatch(userServerError(error)));
 };
 
 // change password
@@ -346,7 +347,7 @@ export const changePassword = newPass => (dispatch) => {
   // const creds = localStorage.getItem('creds');
   // creds.password = updatedPass;
   return fetch(API.userChangePassAPI, {
-    method: 'PUT',
+    method: 'POST',
     body: JSON.stringify({ newPassword: newPass }),
     headers: {
       'Content-Type': 'application/json',
@@ -355,7 +356,7 @@ export const changePassword = newPass => (dispatch) => {
     credentials: 'same-origin',
   })
     .then((response) => {
-      if (response.ok) {
+      if (response.ok || response.status === 304) {
         return response;
       }
       const error = new Error(`Error ${response.status}: ${response.statusText}`);
@@ -370,7 +371,7 @@ export const changePassword = newPass => (dispatch) => {
       console.log('User password changed', user);
       // dispatch(addUser(user));
     })
-    .catch(error => dispatch(changePasswordFailed(error.message)));
+    .catch(error => dispatch(userServerError(error.message)));
 };
 
 export const editOtherUser = otherUser => (dispatch) => {
@@ -386,7 +387,7 @@ export const editOtherUser = otherUser => (dispatch) => {
     credentials: 'same-origin',
   })
     .then((response) => {
-      if (response.ok) {
+      if (response.ok || response.status === 304) {
         return response;
       }
       const error = new Error(`Error ${response.status}: ${response.statusText}`);
@@ -402,5 +403,5 @@ export const editOtherUser = otherUser => (dispatch) => {
       // dispatch(addAllUsers(allUsers));
       dispatch(fetchAllUsers());
     })
-    .catch(error => dispatch(editUserFailed(error.message)));
+    .catch(error => dispatch(userServerError(error.message)));
 };

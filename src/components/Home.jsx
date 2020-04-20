@@ -736,11 +736,10 @@ export default function Home(props) {
                                     <EditEventForm
                                       deleteEvent={props.deleteEvent}
                                       dumEvents={dumEvents}
-                                      editError={props.projects.editFailed}
-                                      removeError={props.projects.removeFailed}
                                       dumUsers={dumUsers}
                                       editEvent={props.editEvent}
-                                      index={index} />
+                                      index={index}
+                                      serverError={props.events.serverError} />
                                     : null
                                 }
                               </CardFooter>
@@ -993,12 +992,11 @@ export default function Home(props) {
                                   ?
                                   <EditProjectForm
                                     deleteProject={props.deleteProject}
-                                    editError={props.projects.editFailed}
-                                    removeError={props.projects.removeFailed}
                                     dumProjects={dumProjects}
                                     dumUsers={dumUsers}
                                     editProject={props.editProject}
-                                    index={index} />
+                                    index={index}
+                                    serverError={props.projects.serverError} />
                                   : null
                                 }
                               </CardFooter>
@@ -1186,11 +1184,10 @@ export default function Home(props) {
                                   <EditResourceForm
                                     deleteResource={props.deleteResource}
                                     dumResources={dumResources}
-                                    editError={props.resources.editFailed}
-                                    removeError={props.resources.removeFailed}
                                     dumUsers={dumUsers}
                                     editResource={props.editResource}
-                                    index={index} />
+                                    index={index}
+                                    serverError={props.resources.serverError} />
                                   : null
                                 }
                               </CardFooter>
@@ -1452,10 +1449,9 @@ export default function Home(props) {
                                     <EditOtherUserForm
                                       removeUser={props.removeUser}
                                       dumUsers={dumUsers}
-                                      editError={props.users.editFailed}
-                                      removeError={props.users.removeFailed}
                                       editUser={props.editOtherUser} 
-                                      index={index} />
+                                      index={index}
+                                      serverError={props.users.serverError} />
                                     : null
                                   }
                               </CardFooter>

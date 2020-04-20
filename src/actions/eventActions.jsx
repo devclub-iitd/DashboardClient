@@ -15,16 +15,12 @@ export const eventsLoading = () => ({
   type: ActionTypes.EVENTS_LOADING,
 });
 
-export const editFailed = () => ({
-  type: ActionTypes.EDIT_EVENT_FAILED,
+export const eventServerError = () => ({
+  type: ActionTypes.EVENT_SERVER_ERROR,
 });
 
-export const createFailed = () => ({
-  type: ActionTypes.CREATE_EVENT_FAILED,
-});
-
-export const removeFailed = () => ({
-  type: ActionTypes.REMOVE_EVENT_FAILED,
+export const eventErrorFin = () => ({
+  type: ActionTypes.EVENT_MISC_ERROR_FIN,
 });
 
 function objToStrMap(obj) {
@@ -52,7 +48,7 @@ export const fetchAllEvents = () => (dispatch) => {
     credentials: 'same-origin',
   })
     .then((response) => {
-      if (response.ok) {
+      if (response.ok || response.status === 304) {
         return response;
       }
       const error = new Error(`Error ${response.status}: ${response.statusText}`);
@@ -92,7 +88,7 @@ export const createEvent = event => (dispatch) => {
     credentials: 'same-origin',
   })
     .then((response) => {
-      if (response.ok) {
+      if (response.ok || response.status === 304) {
         return response;
       }
       const error = new Error(`Error ${response.status}: ${response.statusText}`);
@@ -107,7 +103,7 @@ export const createEvent = event => (dispatch) => {
       console.log('New Event: ', cEvent);
       dispatch(fetchAllEvents());
     })
-    .catch(error => dispatch(createFailed(error.message)));
+    .catch(error => dispatch(eventServerError(error.message)));
 };
 
 export const editEvent = event => (dispatch) => {
@@ -123,7 +119,7 @@ export const editEvent = event => (dispatch) => {
     credentials: 'same-origin',
   })
     .then((response) => {
-      if (response.ok) {
+      if (response.ok || response.status === 304) {
         return response;
       }
       const error = new Error(`Error ${response.status}: ${response.statusText}`);
@@ -138,7 +134,7 @@ export const editEvent = event => (dispatch) => {
       console.log('Updated Event: ', cEvent);
       dispatch(fetchAllEvents());
     })
-    .catch(error => dispatch(editFailed(error.message)));
+    .catch(error => dispatch(eventServerError(error.message)));
 };
 
 export const deleteEvent = eventId => (dispatch) => {
@@ -154,7 +150,7 @@ export const deleteEvent = eventId => (dispatch) => {
     credentials: 'same-origin',
   })
     .then((response) => {
-      if (response.ok) {
+      if (response.ok || response.status === 304) {
         return response;
       }
       const error = new Error(`Error ${response.status}: ${response.statusText}`);
@@ -170,5 +166,5 @@ export const deleteEvent = eventId => (dispatch) => {
       console.log(res);
       dispatch(fetchAllEvents());
     })
-    .catch(error => dispatch(removeFailed(error.message)));
+    .catch(error => dispatch(eventServerError(error.message)));
 };

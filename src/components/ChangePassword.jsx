@@ -10,7 +10,8 @@ export default function ChangePassword(props) {
     password: '',
     ChangePassword: '',
     confirmPassError: null,
-    changePassError: props.users.passwordFailed,
+    changePassError: props.users.serverError,
+    changeSuccess: false,
   });
 
   const handleChange = (e, type) => {
@@ -31,10 +32,30 @@ export default function ChangePassword(props) {
   const handlePassErrorClose = () => {
     setState({
       ...state,
-      password: '',
-      ChangePassword: '',
-      confirmPassError: null,
+      // password: '',
+      // ChangePassword: '',
+      // confirmPassError: null,
       changePassError: false,
+    });
+  };
+
+  const handleChangeSuccess = () => {
+    setState({
+      ...state,
+      // password: '',
+      // ChangePassword: '',
+      // confirmPassError: null,
+      changeSuccess: true,
+    });
+  };
+
+  const handleSuccessClose = () => {
+    setState({
+      ...state,
+      // password: '',
+      // ChangePassword: '',
+      // confirmPassError: null,
+      changeSuccess: false,
     });
   };
 
@@ -55,9 +76,11 @@ export default function ChangePassword(props) {
       password: '',
       confirmPassword: '',
       confirmPassError: null,
-      changePassError: false,
     });
 
+    if (props.users.serverError !== null) {
+      handleChangeSuccess();
+    }
     // window.location.reload(false);
   };
 
@@ -82,10 +105,20 @@ export default function ChangePassword(props) {
           vertical: 'top',
           horizontal: 'center',
         }}
-        open={state.passwordError}
-        autoHideDuration={2000}
+        open={state.changePassError}
+        autoHideDuration={3000}
         onClose={handlePassErrorClose}
         message="Server Error !!! Try again"
+      />
+      <Snackbar
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
+        }}
+        open={state.changeSuccess}
+        autoHideDuration={3000}
+        onClose={handleSuccessClose}
+        message="Password changed succesfully !"
       />
       <Grid container justify="center">
         <Grid item xs={8} md={7} lg={5}>

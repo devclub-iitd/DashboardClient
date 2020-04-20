@@ -74,19 +74,35 @@ class SignUp extends React.Component {
 
     this.state = {
       confirmPassError: false,
-      isRegistered: this.props.register.isRegistered,
+      success: false,
+      failure: false,
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleRegisterChange = this.handleRegisterChange.bind(this);
+    this.handleFailureClose = this.handleFailureClose.bind(this);
+    this.handleSuccessClose = this.handleSuccessClose.bind(this);
+    this.objToStrMap = this.objToStrMap.bind(this);
   }
 
-  handleRegisterChange = () => {
+  handleSuccessClose = () => {
     this.setState({
       ...this.state,
-      isRegistered: false,
+      success: false,
     });
   };
+
+  handleFailureClose = () => {
+    this.setState({
+      ...this.state,
+      failure: false,
+    });
+  };
+
+  objToStrMap = (obj) => {
+    const strMap = new Map();
+    Object.keys(obj).map(k => strMap.set(k, obj[k]));
+    return strMap;
+  }
 
   handleSubmit(e) {
     e.preventDefault();
@@ -99,11 +115,16 @@ class SignUp extends React.Component {
 
     const { target } = e;
 
+    const urlMap = new Map([
+      ['', ''],
+    ]);
+
     const body = {
       // username: target.uname.value,
       name: target.name.value,
       entry_no: target.entrynumber.value,
       category: target.category.value,
+      url: this.objToStrMap(urlMap),
       email: target.email.value,
       password: target.password.value,
     };
@@ -113,6 +134,17 @@ class SignUp extends React.Component {
     // const { register } = this.props;
 
     this.props.registerUser(body);
+    if (this.props.register.errMess !== null) {
+      this.setState({
+        ...this.state,
+        success: true,
+      });
+    } else {
+      this.setState({
+        ...this.state,
+        failure: true,
+      });
+    }
     // postReg(body);
   }
 
@@ -137,10 +169,20 @@ class SignUp extends React.Component {
             vertical: 'top',
             horizontal: 'center',
           }}
-          open={this.state.isRegistered}
+          open={this.state.success}
           autoHideDuration={2000}
-          onClose={this.handleRegisterChange}
+          onClose={this.handleSuccessClose}
           message="Registration Successful! Request for approval sent to Administrator. Wait before login."
+        />
+        <Snackbar
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'center',
+          }}
+          open={this.state.failure}
+          autoHideDuration={2000}
+          onClose={this.handleFailureClose}
+          message="Registration Failed !! Please try again."
         />
         <Backdrop className={classes.backdrop} open={register.isLoading}>
           <CircularProgress color="inherit" />
@@ -175,7 +217,6 @@ class SignUp extends React.Component {
                   fullWidth
                   id="entrynumber"
                   label="Entry Number"
-                  autoFocus
                 />
               </Grid>
               <Grid item xs={12}>
@@ -250,9 +291,9 @@ class SignUp extends React.Component {
                 </Link>
               </Grid>
             </Grid>
-            <FormLabel>
+            {/* <FormLabel>
               {register.errMess}
-            </FormLabel>
+            </FormLabel> */}
           </form>
         </div>
         <Box mt={5}>

@@ -49,7 +49,7 @@ class EditProjectForm extends Component {
         project: this.props.dumProjects[this.props.index],
         isDailogOpen: false,
         isDeleteDailogOpen: false,
-        serverError: this.props.editFailed || this.props.removeFailed,
+        success: false,
       };
   
       this.changeName = this.changeName.bind(this);
@@ -77,14 +77,14 @@ class EditProjectForm extends Component {
       this.confirmDeleteClose = this.confirmDeleteClose.bind(this);
       this.confirmDeleteOpen = this.confirmDeleteOpen.bind(this);
       this.handleDelete = this.handleDelete.bind(this);
-      this.handleServerErrorClose = this.handleServerErrorClose.bind(this);
+      this.handleSuccessClose = this.handleSuccessClose.bind(this);
       this.strMapToObj = this.strMapToObj.bind(this);
     }
 
-    handleServerErrorClose = () => {
+    handleSuccessClose = () => {
       this.setState({
         ...this.state,
-        serverError: false,
+        success: false,
       });
     };
   
@@ -359,15 +359,6 @@ class EditProjectForm extends Component {
     handleSubmit = () => {
       const urlMap = new Map();
       this.state.urlFields.map(urlField => urlMap.set(urlField.type, urlField.url));
-      // this.setState({
-      //   ...this.state,
-      //   // members: this.state.selectedMembers.map((name) => this.props.dumUsers.filter((user) => user.name === name)[0]._id),
-      //   project: {
-      //     ...this.state.project,
-          // url: urlMap,
-          // members: this.state.selectedMembers.map((name) => (this.props.dumUsers.filter((user) => user.name === name)[0])._id),
-      //   },
-      // });
       
       const updatedProject = {
         ...this.state.project,
@@ -382,6 +373,12 @@ class EditProjectForm extends Component {
       // delete updatedProject.serverError;
   
       this.props.editProject(updatedProject);
+      if (this.props.serverError !== null) {
+        this.setState({
+          ...this.state,
+          success: true,
+        });
+      }
       this.handleFormClose();
       // this.props.editProject(this.state.project);
       console.log('got values: ', updatedProject);
@@ -656,6 +653,32 @@ class EditProjectForm extends Component {
                       control={<Switch checked={this.state.project.showcase} onChange={this.changeShowcaseState} />}
                       />
                   </Col>
+                  </Row>
+                  <Row className="form-group">
+                    <Label htmlFor="status" md={12}><h6>Set status of project:</h6></Label>
+                    <Col sm={12}>
+                      <RadioGroup row aria-label="status" name="status" defaultValue={this.state.project.status} onChange={this.changeStatus}>
+                        <FormControlLabel
+                          value="IDEA"
+                          control={<Radio color="primary" />}
+                          label="Idea"
+                          labelPlacement="start"
+                        />
+                        <FormControlLabel
+                          value="ONGOING"
+                          control={<Radio color="primary" />}
+                          label="Ongoing"
+                          labelPlacement="start"
+                        />
+                        <FormControlLabel
+                          value="COMPLETED"
+                          control={<Radio color="secondary" />}
+                          label="Completed"
+                          labelPlacement="start"
+                        />
+                        {/* <FormControlLabel value="end" control={<Radio color="primary" />} label="End" /> */}
+                      </RadioGroup>
+                    </Col>
                   </Row>
                   <Row className="form-group">
                   <Label htmlFor="labelFields" md={12}><h6>Add Label:</h6></Label>

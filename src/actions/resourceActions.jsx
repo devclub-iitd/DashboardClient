@@ -15,16 +15,12 @@ export const resourcesLoading = () => ({
   type: ActionTypes.RESOURCES_LOADING,
 });
 
-export const editFailed = () => ({
-  type: ActionTypes.EDIT_RESOURCE_FAILED,
+export const resourceServerError = () => ({
+  type: ActionTypes.RESOURCE_SERVER_ERROR,
 });
 
-export const createFailed = () => ({
-  type: ActionTypes.CREATE_RESOURCE_FAILED,
-});
-
-export const removeFailed = () => ({
-  type: ActionTypes.REMOVE_RESOURCE_FAILED,
+export const resourceErrorFin = () => ({
+  type: ActionTypes.RESOURCE_MISC_ERROR_FIN,
 });
 
 export const fetchAllResources = () => (dispatch) => {
@@ -42,7 +38,7 @@ export const fetchAllResources = () => (dispatch) => {
     credentials: 'same-origin',
   })
     .then((response) => {
-      if (response.ok) {
+      if (response.ok || response.status === 304) {
         return response;
       }
       const error = new Error(`Error ${response.status}: ${response.statusText}`);
@@ -72,7 +68,7 @@ export const createResource = resource => (dispatch) => {
     credentials: 'same-origin',
   })
     .then((response) => {
-      if (response.ok) {
+      if (response.ok || response.status === 304) {
         return response;
       }
       const error = new Error(`Error ${response.status}: ${response.statusText}`);
@@ -87,7 +83,7 @@ export const createResource = resource => (dispatch) => {
       console.log('New Resource: ', cResource);
       dispatch(fetchAllResources());
     })
-    .catch(error => dispatch(createFailed(error.message)));
+    .catch(error => dispatch(resourceServerError(error.message)));
 };
 
 export const editResource = resource => (dispatch) => {
@@ -103,7 +99,7 @@ export const editResource = resource => (dispatch) => {
     credentials: 'same-origin',
   })
     .then((response) => {
-      if (response.ok) {
+      if (response.ok || response.status === 304) {
         return response;
       }
       const error = new Error(`Error ${response.status}: ${response.statusText}`);
@@ -118,7 +114,7 @@ export const editResource = resource => (dispatch) => {
       console.log('Updated Resource: ', cResource);
       dispatch(fetchAllResources());
     })
-    .catch(error => dispatch(editFailed(error.message)));
+    .catch(error => dispatch(resourceServerError(error.message)));
 };
 
 export const deleteResource = resourceId => (dispatch) => {
@@ -134,7 +130,7 @@ export const deleteResource = resourceId => (dispatch) => {
     credentials: 'same-origin',
   })
     .then((response) => {
-      if (response.ok) {
+      if (response.ok || response.status === 304) {
         return response;
       }
       const error = new Error(`Error ${response.status}: ${response.statusText}`);
@@ -150,5 +146,5 @@ export const deleteResource = resourceId => (dispatch) => {
       console.log(res);
       dispatch(fetchAllResources());
     })
-    .catch(error => dispatch(removeFailed(error.message)));
+    .catch(error => dispatch(resourceServerError(error.message)));
 };

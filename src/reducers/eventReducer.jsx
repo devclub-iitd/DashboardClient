@@ -6,9 +6,7 @@ const Events = (
   state = {
     isLoading: true,
     errMess: null,
-    newFailed: false,
-    editFailed: false,
-    removeFailed: false,
+    serverError: null,
     allEvents: dumEvents,
   },
   action,
@@ -19,9 +17,7 @@ const Events = (
         ...state,
         isLoading: false,
         errMess: null,
-        newFailed: false,
-        editFailed: false,
-        removeFailed: false,
+        serverError: null,
         allEvents: action.payload,
       };
 
@@ -30,49 +26,31 @@ const Events = (
         ...state,
         isLoading: true,
         errMess: null,
-        newFailed: false,
-        editFailed: false,
-        removeFailed: false,
+        serverError: null,
       };
 
     case ActionTypes.EVENTS_FAILED:
       return {
         ...state,
         isLoading: false,
-        newFailed: false,
-        editFailed: false,
-        removeFailed: false,
+        serverError: null,
         errMess: action.payload,
       };
 
-    case ActionTypes.CREATE_EVENT_FAILED:
+    case ActionTypes.EVENT_SERVER_ERROR:
       return {
         ...state,
         isLoading: false,
-        newFailed: true,
-        editFailed: false,
-        removeFailed: false,
-        errMess: null,
+        serverError: 'ERROR',
+        errMess: action.payload,
       };
 
-    case ActionTypes.EDIT_EVENT_FAILED:
+    case ActionTypes.EVENT_MISC_ERROR_FIN:
       return {
         ...state,
         isLoading: false,
-        newFailed: false,
-        editFailed: true,
-        removeFailed: false,
-        errMess: null,
-      };
-
-    case ActionTypes.REMOVE_EVENT_FAILED:
-      return {
-        ...state,
-        isLoading: false,
-        newFailed: false,
-        editFailed: false,
-        removeFailed: true,
-        errMess: null,
+        serverError: null,
+        errMess: action.payload,
       };
 
     default:

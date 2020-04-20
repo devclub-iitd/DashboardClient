@@ -6,9 +6,7 @@ const Projects = (
   state = {
     isLoading: true,
     errMess: null,
-    newFailed: false,
-    editFailed: false,
-    removeFailed: false,
+    serverError: null,
     allProjects: dumProjects,
   },
   action,
@@ -19,9 +17,7 @@ const Projects = (
         ...state,
         isLoading: false,
         errMess: null,
-        newFailed: false,
-        editFailed: false,
-        removeFailed: false,
+        serverError: null,
         allProjects: action.payload,
       };
 
@@ -29,9 +25,7 @@ const Projects = (
       return {
         ...state,
         isLoading: true,
-        newFailed: false,
-        editFailed: false,
-        removeFailed: false,
+        serverError: null,
         errMess: null,
       };
 
@@ -39,39 +33,23 @@ const Projects = (
       return {
         ...state,
         isLoading: false,
-        newFailed: false,
-        editFailed: false,
-        removeFailed: false,
+        serverError: null,
         errMess: action.payload,
       };
 
-    case ActionTypes.CREATE_PROJECT_FAILED:
+    case ActionTypes.PROJECT_SERVER_ERROR:
       return {
         ...state,
         isLoading: false,
-        newFailed: true,
-        editFailed: false,
-        removeFailed: false,
+        serverError: 'ERROR',
         errMess: null,
       };
 
-    case ActionTypes.EDIT_PROJECT_FAILED:
+    case ActionTypes.PROJECT_MISC_ERROR_FIN:
       return {
         ...state,
         isLoading: false,
-        newFailed: false,
-        editFailed: true,
-        removeFailed: false,
-        errMess: null,
-      };
-
-    case ActionTypes.REMOVE_PROJECT_FAILED:
-      return {
-        ...state,
-        isLoading: false,
-        newFailed: false,
-        editFailed: false,
-        removeFailed: true,
+        serverError: null,
         errMess: null,
       };
 

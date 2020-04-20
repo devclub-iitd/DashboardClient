@@ -135,11 +135,10 @@ const EventsPage = ({ events, fetchAllEvents, editEvent, deleteEvent, users }) =
                                         <EditEventForm 
                                           deleteEvent={deleteEvent} 
                                           dumEvents={ongoing}
-                                          editFailed={events.editFailed}
-                                          removeFailed={events.removeFailed}
                                           dumUsers={users.allUsers} 
                                           editEvent={editEvent} 
-                                          index={index} />
+                                          index={index}
+                                          serverError={events.serverError} />
                                         : null
                                     }
                                 </CardFooter>
@@ -192,11 +191,10 @@ const EventsPage = ({ events, fetchAllEvents, editEvent, deleteEvent, users }) =
                                         <EditEventForm 
                                           deleteEvent={deleteEvent} 
                                           dumEvents={upcoming}
-                                          editFailed={events.editFailed}
-                                          removeFailed={events.removeFailed}
                                           dumUsers={users.allUsers} 
                                           editEvent={editEvent} 
-                                          index={index} />
+                                          index={index} 
+                                          serverError={events.serverError} />
                                         : null
                                     }
                                 </CardFooter>
@@ -249,11 +247,10 @@ const EventsPage = ({ events, fetchAllEvents, editEvent, deleteEvent, users }) =
                                         <EditEventForm 
                                           deleteEvent={deleteEvent} 
                                           dumEvents={completed}
-                                          editFailed={events.editFailed}
-                                          removeFailed={events.removeFailed}
                                           dumUsers={users.allUsers} 
                                           editEvent={editEvent} 
-                                          index={index} />
+                                          index={index}
+                                          serverError={events.serverError} />
                                         : null
                                     }
                                 </CardFooter>

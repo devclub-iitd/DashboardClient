@@ -111,11 +111,10 @@ const ResourcesPage = ({resources, fetchAllResources, editResource, deleteResour
                             <EditResourceForm
                               deleteResource={deleteResource}
                               dumResources={current}
-                              editFailed={resources.editFailed}
-                              removeFailed={resources.removeFailed}
                               dumUsers={users.allUsers}
                               editResource={editResource}
-                              index={index} />
+                              index={index}
+                              serverError={resources.serverError} />
                             : null
                         }
                     </CardFooter>
@@ -169,11 +168,10 @@ const ResourcesPage = ({resources, fetchAllResources, editResource, deleteResour
                             <EditResourceForm
                               deleteResource={deleteResource}
                               dumResources={archives}
-                              editFailed={resources.editFailed}
-                              removeFailed={resources.removeFailed}
                               dumUsers={users.allUsers}
                               editResource={editResource}
-                              index={index} />
+                              index={index}
+                              serverError={resources.serverError} />
                             : null
                         }
                     </CardFooter>

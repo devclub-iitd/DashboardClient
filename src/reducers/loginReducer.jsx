@@ -48,6 +48,15 @@ export default function Auth(state = {
         isAuthenticated: false,
         errMess: action.message,
       };
+
+    case ActionTypes.LOGIN_FAILURE_FIN:
+      return {
+        ...state,
+        isLoading: false,
+        isAuthenticated: false,
+        errMess: null,
+      };
+
     case ActionTypes.LOGOUT_REQUEST:
       return {
         ...state,

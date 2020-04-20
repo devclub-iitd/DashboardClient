@@ -411,10 +411,9 @@ export default function ManageUsers(props) {
                             <EditOtherUserForm
                               removeUser={props.removeUser}
                               dumUsers={approved}
-                              editError={props.users.editFailed}
-                              removeError={props.users.removeFailed}
                               editUser={props.editOtherUser} 
-                              index={index} />
+                              index={index}
+                              serverError={props.users.serverError} />
                             : null
                           }
                         </CardFooter>
@@ -474,10 +473,9 @@ export default function ManageUsers(props) {
                             <EditOtherUserForm
                               removeUser={props.removeUser}
                               dumUsers={unapproved}
-                              editError={props.users.editFailed}
-                              removeError={props.users.removeFailed}
                               editUser={props.editOtherUser} 
-                              index={index} />
+                              index={index}
+                              serverError={props.users.serverError} />
                             : null
                           }
                         </CardFooter>

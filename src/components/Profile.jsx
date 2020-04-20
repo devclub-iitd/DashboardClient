@@ -9,6 +9,7 @@ import {
   Dialog, DialogTitle,
   Modal, Backdrop, DialogContent,
   FormLabel, FormControlLabel, Radio, RadioGroup, FormControl,
+  Snackbar,
 } from '@material-ui/core';
 import EmailOutlinedIcon from '@material-ui/icons/EmailOutlined';
 import PhoneIcon from '@material-ui/icons/Phone';
@@ -186,7 +187,15 @@ const Profile = (props) => {
     editUser: props.user,
     orgUser: props.user,
     urlFields: Array.from(props.user.url).map(([index, value]) => ({ type: index, url: value })),
+    editSuccess: false,
   });
+
+  const handleSuccessClose = () => {
+    setState({
+      ...state,
+      editSuccess: false,
+    });
+  };
 
   const handleFormValuesChange = (event, name) => {
     // setUser({
@@ -365,13 +374,16 @@ const Profile = (props) => {
 
     props.updateUser(newUser);
     // setUserOrg(user);
+    if (props.serverError !== null) {
+      setState({
+        ...state,
+        editSuccess: true,
+        orgUser: {
+          ...state.editUser,
+        },
+      });
+    }
     console.log('Submitting user details update info: ', state.editUser);
-    setState({
-      ...state,
-      orgUser: {
-        ...state.editUser,
-      },
-    });
     handleClose();
   };
 
@@ -408,6 +420,16 @@ const Profile = (props) => {
         <EditIcon />
       </Fab> */}
       <Grid container direction="row" justify="space-evenly" alignItems="flex-start">
+        <Snackbar
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'center',
+          }}
+          open={state.editSuccess}
+          autoHideDuration={2000}
+          onClose={handleSuccessClose}
+          message="Profile updated Successfully !"
+        />
         <div>
           <Dialog open={isModalOpen} maxWidth="md" fullWidth onClose={() => { cancelEdit(); handleClose(); }} scroll="paper">
             <DialogTitle>

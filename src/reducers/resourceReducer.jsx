@@ -6,9 +6,7 @@ const Resources = (
   state = {
     isLoading: true,
     errMess: null,
-    newFailed: false,
-    editFailed: false,
-    removeFailed: false,
+    serverError: null,
     allResources: dumResources,
   },
   action,
@@ -19,9 +17,7 @@ const Resources = (
         ...state,
         isLoading: false,
         errMess: null,
-        newFailed: false,
-        editFailed: false,
-        removeFailed: false,
+        serverError: null,
         allResources: action.payload,
       };
 
@@ -30,48 +26,30 @@ const Resources = (
         ...state,
         isLoading: true,
         errMess: null,
-        newFailed: false,
-        editFailed: false,
-        removeFailed: false,
+        serverError: null,
       };
 
     case ActionTypes.RESOURCES_FAILED:
       return {
         ...state,
         isLoading: false,
-        newFailed: false,
-        editFailed: false,
-        removeFailed: false,
+        serverError: null,
         errMess: action.payload,
       };
 
-    case ActionTypes.CREATE_RESOURCE_FAILED:
+    case ActionTypes.RESOURCE_SERVER_ERROR:
       return {
         ...state,
         isLoading: false,
-        newFailed: true,
-        editFailed: false,
-        removeFailed: false,
+        serverError: 'ERROR',
         errMess: null,
       };
 
-    case ActionTypes.EDIT_RESOURCE_FAILED:
+    case ActionTypes.RESOURCE_MISC_ERROR_FIN:
       return {
         ...state,
         isLoading: false,
-        newFailed: false,
-        editFailed: true,
-        removeFailed: false,
-        errMess: null,
-      };
-
-    case ActionTypes.REMOVE_RESOURCE_FAILED:
-      return {
-        ...state,
-        isLoading: false,
-        newFailed: false,
-        editFailed: false,
-        removeFailed: true,
+        serverError: null,
         errMess: null,
       };
 

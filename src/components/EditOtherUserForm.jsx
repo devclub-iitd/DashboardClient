@@ -27,7 +27,7 @@ class EditOtherUserForm extends Component {
       user: this.props.dumUsers[this.props.index],
       isDailogOpen: false,
       isDeleteDailogOpen: false,
-      serverError: this.props.editFailed || this.props.removeFailed,
+      success: false,
       // privelege_level: this.state.dumUsers[this.props.index].privelege_level,
       // display_on_website: this.state.dumUsers[this.props.index].display_on_website,
     };
@@ -40,13 +40,13 @@ class EditOtherUserForm extends Component {
     this.confirmDeleteClose = this.confirmDeleteClose.bind(this);
     this.confirmDeleteOpen = this.confirmDeleteOpen.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
-    this.handleServerErrorClose = this.handleServerErrorClose.bind(this);
+    this.handleSuccessClose = this.handleSuccessClose.bind(this);
   }
 
-  handleServerErrorClose = () => {
+  handleSuccessClose = () => {
     this.setState({
       ...this.state,
-      serverError: false,
+      success: false,
     });
   };
 
@@ -112,6 +112,12 @@ class EditOtherUserForm extends Component {
   handleSubmit = () => {
     console.log('Editing user: ', this.state.user);
     this.props.editUser(this.state.user);
+    if (this.props.serverError !== null) {
+      this.setState({
+        ...this.state,
+        success: true,
+      });
+    }
     this.handleFormClose();
   };
 
@@ -132,10 +138,10 @@ class EditOtherUserForm extends Component {
             vertical: 'top',
             horizontal: 'center',
           }}
-          open={this.state.serverError}
+          open={this.state.success}
           autoHideDuration={2000}
-          onClose={this.handleServerErrorClose}
-          message="Server Error !!! Try again"
+          onClose={this.handleSuccessClose}
+          message="User edited successfully !"
         />
         <Button onClick={() => { 
           this.handleFormOpen(); 

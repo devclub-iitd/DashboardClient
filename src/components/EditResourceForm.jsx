@@ -39,7 +39,7 @@ class EditResourceForm extends Component {
       display_on_website: this.props.dumResources[this.props.index].display_on_website,
       isDailogOpen: false,
       isDeleteDailogOpen: false,
-      serverError: this.props.editFailed || this.props.removeFailed,
+      success: false,
     };
 
     this.changeInternalName = this.changeInternalName.bind(this);
@@ -54,13 +54,13 @@ class EditResourceForm extends Component {
     this.confirmDeleteOpen = this.confirmDeleteOpen.bind(this);
     this.confirmDeleteClose = this.confirmDeleteClose.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
-    this.handleServerErrorClose = this.handleServerErrorClose.bind(this);
+    this.handleSuccessClose = this.handleSuccessClose.bind(this);
   }
 
-  handleServerErrorClose = () => {
+  handleSuccessClose = () => {
     this.setState({
       ...this.state,
-      serverError: false,
+      success: false,
     });
   };
 
@@ -173,7 +173,12 @@ class EditResourceForm extends Component {
       delete updatedResource.serverError;
 
       this.props.editResource(updatedResource);
-
+      if (this.props.serverError !== null) {
+        this.setState({
+          ...this.state,
+          success: true,
+        });
+      }
       console.log('got values: ', this.state);
       this.handleFormClose();
     };
@@ -199,10 +204,10 @@ class EditResourceForm extends Component {
               vertical: 'top',
               horizontal: 'center',
             }}
-            open={this.setState.serverError}
+            open={this.state.success}
             autoHideDuration={2000}
-            onClose={this.handleServerErrorClose}
-            message="Server Error !!! Try again"
+            onClose={this.handleSuccessClose}
+            message="Resource Edited successfully !"
           />
           <Button
             onClick={() => {
