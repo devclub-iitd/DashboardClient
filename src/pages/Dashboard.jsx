@@ -153,8 +153,12 @@ function renderPage(subPage, classProp, classPaper, props) {
       return (
         <div>
           <Profile
+            // user={props.users.user}
+            // error={props.users.errMess}
+            fetchUser={props.fetchUser}
             user={props.users.user}
-            error={props.users.errMess}
+            // events={props.events}
+            // editEvent={props.editEvent}
             serverError={props.users.serverError}
             updateUser={props.updateUser}  
           />
@@ -228,6 +232,7 @@ function renderPage(subPage, classProp, classPaper, props) {
         <div>
           <ManageUsers
             users={props.users}
+            fetchAllUsers={props.fetchAllUsers}
             removeUser={props.removeUser}
             editOtherUser={props.editOtherUser}
           />
@@ -349,7 +354,7 @@ const mapDispatchToProps = (dispatch) => ({
   resetEventForm: () => { dispatch(actions.reset('eventForm')) },
   resetProjectForm: () => { dispatch(actions.reset('projectForm')) },
   resetResourceForm: () => { dispatch(actions.reset('resourceForm')) },
-  fetchUser: () => { dispatch(fetchUser()) },
+  fetchUser: (id) => { dispatch(fetchUser(id)) },
   fetchAllUsers: () => { dispatch(fetchAllUsers()) },
   logoutUser: () => { dispatch(logoutUser()) },
   updateUser: (user) => { dispatch(updateUser(user)) },
@@ -404,6 +409,7 @@ function Dashboard(props) {
   const { params } = match;
   const { subPage } = params;
   const {
+    fetchUser,
     fetchAllEvents,
     fetchAllProjects,
     fetchAllResources,
@@ -411,10 +417,15 @@ function Dashboard(props) {
   } = props;
 
   React.useEffect(() => {
-    fetchAllEvents();
+    // localStorage.setItem('dcIITDDashboard', { token: null, userId: null });
     fetchAllUsers();
     fetchAllProjects();
+    fetchUser(localStorage.getItem('userId'));
+    fetchAllEvents();
+    // fetchAllUsers();
+    // fetchAllProjects();
     fetchAllResources();
+
   }, []);
 
   // const [serverError, setServerError] = React.useState(props.users.passwordFailed || props.users.editFailed || props.users.removeFailed);
@@ -494,7 +505,7 @@ function Dashboard(props) {
         </div>
         <Divider />
         <List>
-          <MainListItems isAdmin={isAdmin} logout={props.logoutUser} />
+          <MainListItems closeDrawer={handleDrawerClose} isAdmin={isAdmin} logout={props.logoutUser} />
         </List>
       </Drawer>
       <main className={classes.content}>

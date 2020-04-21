@@ -1,5 +1,6 @@
 import * as ActionTypes from './ActionTypes';
 import * as API from '../data/api_links';
+import { logoutUser } from './userActions';
 
 export const addResources = resources => ({
   type: ActionTypes.ADD_RESOURCES,
@@ -26,7 +27,7 @@ export const resourceErrorFin = () => ({
 export const fetchAllResources = () => (dispatch) => {
   dispatch(resourcesLoading(true));
 
-  const bearer = `Bearer ${localStorage.getItem('token')}`;
+  const bearer = `Bearer ${localStorage.getItem('dcIITDDashboardToken')}`;
 
   return fetch(API.resourceGetAllDBAPI, {
     method: 'GET',
@@ -41,6 +42,13 @@ export const fetchAllResources = () => (dispatch) => {
       if (response.ok || response.status === 304) {
         return response;
       }
+      response.json()
+        .then((res) => {
+          console.log('Server response: ', res);
+          if (res.name === 'Unauthorized') {
+            dispatch(logoutUser('timeout'));
+          }
+        });
       const error = new Error(`Error ${response.status}: ${response.statusText}`);
       error.response = response;
       console.log(error);
@@ -56,7 +64,7 @@ export const fetchAllResources = () => (dispatch) => {
 };
 
 export const createResource = resource => (dispatch) => {
-  const bearer = `Bearer ${localStorage.getItem('token')}`;
+  const bearer = `Bearer ${localStorage.getItem('dcIITDDashboardToken')}`;
 
   return fetch(API.resourceAPI, {
     method: 'POST',
@@ -71,6 +79,13 @@ export const createResource = resource => (dispatch) => {
       if (response.ok || response.status === 304) {
         return response;
       }
+      response.json()
+        .then((res) => {
+          console.log('Server response: ', res);
+          if (res.name === 'Unauthorized') {
+            dispatch(logoutUser('timeout'));
+          }
+        });
       const error = new Error(`Error ${response.status}: ${response.statusText}`);
       error.response = response;
       throw error;
@@ -87,7 +102,7 @@ export const createResource = resource => (dispatch) => {
 };
 
 export const editResource = resource => (dispatch) => {
-  const bearer = `Bearer ${localStorage.getItem('token')}`;
+  const bearer = `Bearer ${localStorage.getItem('dcIITDDashboardToken')}`;
 
   return fetch(`${API.resourceAPI}${resource._id}`, {
     method: 'PUT',
@@ -102,6 +117,13 @@ export const editResource = resource => (dispatch) => {
       if (response.ok || response.status === 304) {
         return response;
       }
+      response.json()
+        .then((res) => {
+          console.log('Server response: ', res);
+          if (res.name === 'Unauthorized') {
+            dispatch(logoutUser('timeout'));
+          }
+        });
       const error = new Error(`Error ${response.status}: ${response.statusText}`);
       error.response = response;
       throw error;
@@ -118,7 +140,7 @@ export const editResource = resource => (dispatch) => {
 };
 
 export const deleteResource = resourceId => (dispatch) => {
-  const bearer = `Bearer ${localStorage.getItem('token')}`;
+  const bearer = `Bearer ${localStorage.getItem('dcIITDDashboardToken')}`;
 
   return fetch(API.resourceDeleteAPI, {
     method: 'POST',
@@ -133,6 +155,13 @@ export const deleteResource = resourceId => (dispatch) => {
       if (response.ok || response.status === 304) {
         return response;
       }
+      response.json()
+        .then((res) => {
+          console.log('Server response: ', res);
+          if (res.name === 'Unauthorized') {
+            dispatch(logoutUser('timeout'));
+          }
+        });
       const error = new Error(`Error ${response.status}: ${response.statusText}`);
       error.response = response;
       throw error;

@@ -1,5 +1,6 @@
 import * as ActionTypes from './ActionTypes';
 import * as API from '../data/api_links';
+import { logoutUser } from './userActions';
 
 export const addProjects = projects => ({
   type: ActionTypes.ADD_PROJECTS,
@@ -35,7 +36,7 @@ function objToStrMap(obj) {
 export const fetchAllProjects = () => (dispatch) => {
   dispatch(projectsLoading(true));
 
-  const bearer = `Bearer ${localStorage.getItem('token')}`;
+  const bearer = `Bearer ${localStorage.getItem('dcIITDDashboardToken')}`;
 
   return fetch(`${API.projectGetAllDBAPI}`, {
     method: 'GET',
@@ -49,6 +50,13 @@ export const fetchAllProjects = () => (dispatch) => {
       if (response.ok || response.status === 304) {
         return response;
       }
+      response.json()
+        .then((res) => {
+          console.log('Server response: ', res);
+          if (res.name === 'Unauthorized') {
+            dispatch(logoutUser('timeout'));
+          }
+        });
       const error = new Error(`Error ${response.status}: ${response.statusText}`);
       error.response = response;
       console.log(error);
@@ -74,7 +82,7 @@ export const fetchAllProjects = () => (dispatch) => {
 };
 
 export const createProject = project => (dispatch) => {
-  const bearer = `Bearer ${localStorage.getItem('token')}`;
+  const bearer = `Bearer ${localStorage.getItem('dcIITDDashboardToken')}`;
 
   return fetch(API.projectAPI, {
     method: 'POST',
@@ -89,6 +97,13 @@ export const createProject = project => (dispatch) => {
       if (response.ok || response.status === 304) {
         return response;
       }
+      response.json()
+        .then((res) => {
+          console.log('Server response: ', res);
+          if (res.name === 'Unauthorized') {
+            dispatch(logoutUser('timeout'));
+          }
+        });
       const error = new Error(`Error ${response.status}: ${response.statusText}`);
       error.response = response;
       throw error;
@@ -105,7 +120,7 @@ export const createProject = project => (dispatch) => {
 };
 
 export const editProject = project => (dispatch) => {
-  const bearer = `Bearer ${localStorage.getItem('token')}`;
+  const bearer = `Bearer ${localStorage.getItem('dcIITDDashboardToken')}`;
 
   return fetch(`${API.projectAPI}${project._id}`, {
     method: 'PUT',
@@ -120,6 +135,13 @@ export const editProject = project => (dispatch) => {
       if (response.ok || response.status === 304) {
         return response;
       }
+      response.json()
+        .then((res) => {
+          console.log('Server response: ', res);
+          if (res.name === 'Unauthorized') {
+            dispatch(logoutUser('timeout'));
+          }
+        });
       const error = new Error(`Error ${response.status}: ${response.statusText}`);
       error.response = response;
       throw error;
@@ -136,7 +158,7 @@ export const editProject = project => (dispatch) => {
 };
 
 export const deleteProject = projectId => (dispatch) => {
-  const bearer = `Bearer ${localStorage.getItem('token')}`;
+  const bearer = `Bearer ${localStorage.getItem('dcIITDDashboardToken')}`;
 
   return fetch(API.projectDeleteAPI, {
     method: 'POST',
@@ -151,6 +173,13 @@ export const deleteProject = projectId => (dispatch) => {
       if (response.ok || response.status === 304) {
         return response;
       }
+      response.json()
+        .then((res) => {
+          console.log('Server response: ', res);
+          if (res.name === 'Unauthorized') {
+            dispatch(logoutUser('timeout'));
+          }
+        });
       const error = new Error(`Error ${response.status}: ${response.statusText}`);
       error.response = response;
       throw error;

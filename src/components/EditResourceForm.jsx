@@ -57,6 +57,13 @@ class EditResourceForm extends Component {
     this.handleSuccessClose = this.handleSuccessClose.bind(this);
   }
 
+  componentWillReceiveProps(props) {
+    this.setState({
+      ...this.state,
+      project: props.dumResources[props.index],
+    });
+  }
+
   handleSuccessClose = () => {
     this.setState({
       ...this.state,
@@ -173,7 +180,7 @@ class EditResourceForm extends Component {
       delete updatedResource.serverError;
 
       this.props.editResource(updatedResource);
-      if (this.props.serverError !== null) {
+      if (this.props.serverError === null) {
         this.setState({
           ...this.state,
           success: true,

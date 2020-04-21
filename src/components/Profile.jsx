@@ -374,7 +374,7 @@ const Profile = (props) => {
 
     props.updateUser(newUser);
     // setUserOrg(user);
-    if (props.serverError !== null) {
+    if (props.serverError === null) {
       setState({
         ...state,
         editSuccess: true,
@@ -401,6 +401,17 @@ const Profile = (props) => {
     handleClose();
     console.log(state.editUser);
   };
+
+  React.useEffect(() => {
+    // props.fetchUser(localStorage.getItem('userId'));
+    setState({
+      ...state,
+      editUser: props.user,
+      orgUser: props.user,
+      urlFields: Array.from(props.user.url).map(([index, value]) => ({ type: index, url: value })),
+      editSuccess: false,
+    });
+  });
 
   // const required = () => user.name && user.name.length;
 

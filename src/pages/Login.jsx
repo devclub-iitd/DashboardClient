@@ -124,6 +124,16 @@ function SignInSide(props) {
         onClose={handleClose}
         message="Login Error !!! Try again"
       />
+      <Snackbar
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
+        }}
+        open={auth.sessionTimeout}
+        autoHideDuration={3000}
+        onClose={handleClose}
+        message="Your session has timed out!! Login again"
+      />
       <CssBaseline />
       <Grid item xs={false} sm={4} md={7} className={classes.image} />
       <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>

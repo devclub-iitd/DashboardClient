@@ -134,7 +134,7 @@ class SignUp extends React.Component {
     // const { register } = this.props;
 
     this.props.registerUser(body);
-    if (this.props.register.errMess !== null) {
+    if (this.props.register.errMess === null) {
       this.setState({
         ...this.state,
         success: true,

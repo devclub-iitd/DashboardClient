@@ -10,7 +10,7 @@ export default function ChangePassword(props) {
     password: '',
     ChangePassword: '',
     confirmPassError: null,
-    changePassError: props.users.serverError,
+    changePassError: false,
     changeSuccess: false,
   });
 
@@ -36,16 +36,6 @@ export default function ChangePassword(props) {
       // ChangePassword: '',
       // confirmPassError: null,
       changePassError: false,
-    });
-  };
-
-  const handleChangeSuccess = () => {
-    setState({
-      ...state,
-      // password: '',
-      // ChangePassword: '',
-      // confirmPassError: null,
-      changeSuccess: true,
     });
   };
 
@@ -78,8 +68,22 @@ export default function ChangePassword(props) {
       confirmPassError: null,
     });
 
-    if (props.users.serverError !== null) {
-      handleChangeSuccess();
+    if (props.users.serverError === null) {
+      setState({
+        ...state,
+        password: '',
+        ChangePassword: '',
+        confirmPassError: null,
+        changeSuccess: true,
+      });
+    } else {
+      setState({
+        ...state,
+        // password: '',
+        // ChangePassword: '',
+        // confirmPassError: null,
+        changePassError: true,
+      });
     }
     // window.location.reload(false);
   };
@@ -144,6 +148,7 @@ export default function ChangePassword(props) {
               type="password"
               onChange={event => handleChange(event, 'password')}
               id="password"
+              autoFocus
             />
             <TextField
               variant="outlined"

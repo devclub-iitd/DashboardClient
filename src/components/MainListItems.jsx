@@ -22,61 +22,62 @@ import AssignmentIcon from '@material-ui/icons/Assignment';
 import { withRouter } from 'react-router-dom';
 
 function MainListItems(props) {
-  const redirectFunc = subPath => () => {
+  const redirectFunc = (subPath, closeDrawer) => () => {
+    closeDrawer();
     props.history.push(`/dashboard/${subPath}`);
   };
 
   return (
     <div>
-      <ListItem button onClick={redirectFunc('home')}>
+      <ListItem button onClick={redirectFunc('home', props.closeDrawer)}>
         <ListItemIcon>
           <DashboardIcon />
         </ListItemIcon>
         <ListItemText primary="Home" />
       </ListItem>
-      <ListItem button onClick={redirectFunc('profile')}>
+      <ListItem button onClick={redirectFunc('profile', props.closeDrawer)}>
         <ListItemIcon>
           <PersonIcon />
         </ListItemIcon>
         <ListItemText primary="Profile" />
       </ListItem>
-      <ListItem button onClick={redirectFunc('changePassword')}>
+      <ListItem button onClick={redirectFunc('changePassword', props.closeDrawer)}>
         <ListItemIcon>
           <VpnKeyIcon />
         </ListItemIcon>
         <ListItemText primary="Change Password" />
       </ListItem>
-      <ListItem button onClick={redirectFunc('events')}>
+      <ListItem button onClick={redirectFunc('events', props.closeDrawer)}>
         <ListItemIcon>
           <EventIcon />
         </ListItemIcon>
         <ListItemText primary="Events" />
       </ListItem>
-      <ListItem button onClick={redirectFunc('projects')}>
+      <ListItem button onClick={redirectFunc('projects', props.closeDrawer)}>
         <ListItemIcon>
           <DeveloperModeIcon />
         </ListItemIcon>
         <ListItemText primary="Projects" />
       </ListItem>
-      <ListItem button onClick={redirectFunc('resources')}>
+      <ListItem button onClick={redirectFunc('resources', props.closeDrawer)}>
         <ListItemIcon>
           <AllInboxIcon />
         </ListItemIcon>
         <ListItemText primary="Resources" />
       </ListItem>
-      <ListItem button disabled={!props.isAdmin} onClick={redirectFunc('users')}>
+      <ListItem button disabled={!props.isAdmin} onClick={redirectFunc('users', props.closeDrawer)}>
         <ListItemIcon>
           <GroupIcon />
         </ListItemIcon>
         <ListItemText primary="Manage Users" />
       </ListItem>
-      <ListItem button onClick={redirectFunc('myTasks')}>
+      <ListItem button onClick={redirectFunc('myTasks', props.closeDrawer)}>
         <ListItemIcon>
           <AssignmentIcon />
         </ListItemIcon>
         <ListItemText primary="My Tasks" />
       </ListItem>
-      <ListItem button disabled={!props.isAdmin} onClick={redirectFunc('deploy')}>
+      <ListItem button disabled={!props.isAdmin} onClick={redirectFunc('deploy', props.closeDrawer)}>
         <ListItemIcon>
           <PublishIcon />
         </ListItemIcon>
@@ -88,7 +89,7 @@ function MainListItems(props) {
         </ListItemIcon>
         <ListItemText primary="Approve Users" />
       </ListItem> */}
-      <ListItem button disabled={!props.isAdmin} onClick={redirectFunc('createTasks')}>
+      <ListItem button disabled={!props.isAdmin} onClick={redirectFunc('createTasks', props.closeDrawer)}>
         <ListItemIcon>
           <AddBoxIcon />
         </ListItemIcon>

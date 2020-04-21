@@ -19,9 +19,10 @@ import * as ActionTypes from '../actions/ActionTypes';
 // we would also want a util to check if the token is expired.
 export default function Auth(state = {
   isLoading: false,
-  isAuthenticated: localStorage.getItem('token') !== null,
+  isAuthenticated: localStorage.getItem('dcIITDDashboardToken') !== null,
   // isAuthenticated: false,
-  token: localStorage.getItem('token'),
+  sessionTimeout: false,
+  token: localStorage.getItem('dcIITDDashboardToken'),
   // user: localStorage.getItem('creds') ? JSON.parse(localStorage.getItem('creds')) : null,
   errMess: null,
 }, action) {
@@ -30,14 +31,15 @@ export default function Auth(state = {
       return {
         ...state,
         isLoading: true,
+        sessionTimeout: false,
         isAuthenticated: false,
-        // user: action.creds,
       };
     case ActionTypes.LOGIN_SUCCESS:
       return {
         ...state,
         isLoading: false,
         isAuthenticated: true,
+        sessionTimeout: false,
         errMess: null,
         token: action.token,
       };
@@ -45,6 +47,7 @@ export default function Auth(state = {
       return {
         ...state,
         isLoading: false,
+        sessionTimeout: false,
         isAuthenticated: false,
         errMess: action.message,
       };
@@ -53,6 +56,7 @@ export default function Auth(state = {
       return {
         ...state,
         isLoading: false,
+        sessionTimeout: false,
         isAuthenticated: false,
         errMess: null,
       };
@@ -67,9 +71,9 @@ export default function Auth(state = {
       return {
         ...state,
         isLoading: false,
+        sessionTimeout: action.payload === 'timeout',
         isAuthenticated: false,
-        token: '',
-        // user: null,
+        token: null,
       };
     default:
       return state;

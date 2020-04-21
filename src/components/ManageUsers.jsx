@@ -292,6 +292,14 @@ const useStyles = makeStyles(theme => ({
 
 export default function ManageUsers(props) {
   
+  // const [state, setState] = React.useState({
+  //   curUser: {},
+  //   dumUsers: [],
+  // });
+  
+  // React.useEffect(() => {
+  //   props.fetchAllUsers();
+  // }, []);
   const classes = useStyles();
   const curUser = props.users.user;
   const dumUsers = props.users.allUsers;
@@ -299,6 +307,10 @@ export default function ManageUsers(props) {
   const admins = dumUsers.filter((user) => user.privelege_level === 'Admin');
   const approved = dumUsers.filter((user) => user.privelege_level === 'Approved_User');
   const unapproved = dumUsers.filter((user) => user.privelege_level === 'Unapproved_User');
+
+  console.log('Admins: ', admins);
+  console.log('Approved: ', approved);
+  console.log('Unapproved: ', unapproved);
 
   return (
       // props.users.errMess !== null

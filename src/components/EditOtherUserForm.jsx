@@ -43,6 +43,13 @@ class EditOtherUserForm extends Component {
     this.handleSuccessClose = this.handleSuccessClose.bind(this);
   }
 
+  componentWillReceiveProps (props) {
+    this.setState({
+      ...this.state,
+      user: props.dumUsers[props.index],
+    })
+  }
+
   handleSuccessClose = () => {
     this.setState({
       ...this.state,
@@ -112,7 +119,7 @@ class EditOtherUserForm extends Component {
   handleSubmit = () => {
     console.log('Editing user: ', this.state.user);
     this.props.editUser(this.state.user);
-    if (this.props.serverError !== null) {
+    if (this.props.serverError === null) {
       this.setState({
         ...this.state,
         success: true,
@@ -130,6 +137,8 @@ class EditOtherUserForm extends Component {
     // const handleClose = () => {
     //   setServerError(false);
     // };
+    // console.log('users: ', this.props.dumUsers);
+    // console.log('index: ', this.props.index);
 
     return(
       <div>

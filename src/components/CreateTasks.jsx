@@ -258,7 +258,7 @@ export default function CreateTasks(props) {
     };
     console.log('event: ', newEvent);
     props.createEvent(newEvent);
-    if (props.eventError !== null) {
+    if (props.eventError === null) {
       setSuccessState({
         ...successState,
         eventSuccess: true,
@@ -283,7 +283,7 @@ export default function CreateTasks(props) {
     };
     console.log('project: ', newProject);
     props.createProject(newProject);
-    if (props.projectError !== null) {
+    if (props.projectError == null) {
       setSuccessState({
         ...successState,
         projectSuccess: true,
@@ -301,7 +301,7 @@ export default function CreateTasks(props) {
     };
     console.log('resource: ', newResource);
     props.createResource(newResource);
-    if (props.resourceError !== null) {
+    if (props.resourceError === null) {
       setSuccessState({
         ...successState,
         resourceSuccess: true,

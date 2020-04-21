@@ -46,6 +46,7 @@ class EditProjectForm extends Component {
         urlFields: Array.from(this.props.dumProjects[this.props.index].url).map(([key, value]) => ({type: key, url: value})),
         memberNames: this.props.dumUsers.filter((user) => user.privelege_level !== 'Unapproved_User').map(user => user.name),
         selectedMembers: this.props.dumProjects[this.props.index].members.map((userId) => (this.props.dumUsers.filter(user => user._id === userId)[0]).name),
+        // selectedMembers: this.props.dumUsers.filter(user => this.props.dumProjects[this.props.index].members.includes(user._id)),
         project: this.props.dumProjects[this.props.index],
         isDailogOpen: false,
         isDeleteDailogOpen: false,
@@ -79,6 +80,13 @@ class EditProjectForm extends Component {
       this.handleDelete = this.handleDelete.bind(this);
       this.handleSuccessClose = this.handleSuccessClose.bind(this);
       this.strMapToObj = this.strMapToObj.bind(this);
+    }
+
+    componentWillReceiveProps (props) {
+      this.setState({
+        ...this.state,
+        project: props.dumProjects[props.index],
+      });
     }
 
     handleSuccessClose = () => {
@@ -373,7 +381,7 @@ class EditProjectForm extends Component {
       // delete updatedProject.serverError;
   
       this.props.editProject(updatedProject);
-      if (this.props.serverError !== null) {
+      if (this.props.serverError === null) {
         this.setState({
           ...this.state,
           success: true,

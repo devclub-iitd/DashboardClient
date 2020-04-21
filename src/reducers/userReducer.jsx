@@ -16,7 +16,6 @@ const Users = (state = {
         ...state,
         isLoading: false,
         userErrMess: null,
-        usersErrMess: null,
         serverError: null,
         user: action.payload,
       };
@@ -25,7 +24,6 @@ const Users = (state = {
       return {
         ...state,
         isLoading: false,
-        userErrMess: null,
         usersErrMess: null,
         serverError: null,
         allUsers: action.payload,
@@ -35,7 +33,6 @@ const Users = (state = {
       return {
         ...state,
         userErrMess: null,
-        usersErrMess: null,
         serverError: null,
         isLoading: true,
       };
@@ -46,7 +43,6 @@ const Users = (state = {
         isLoading: false,
         serverError: null,
         userErrMess: action.payload,
-        usersErrMess: null,
       };
 
     case ActionTypes.USERS_LOADING:
@@ -54,7 +50,6 @@ const Users = (state = {
         ...state,
         isLoading: true,
         serverError: null,
-        userErrMess: null,
         usersErrMess: null,
       };
 
@@ -72,8 +67,13 @@ const Users = (state = {
         ...state,
         isLoading: false,
         serverError: 'ERROR',
-        userErrMess: null,
-        usersErrMess: action.payload,
+      };
+
+    case ActionTypes.USER_MISC_ERROR_FIN:
+      return {
+        ...state,
+        isLoading: false,
+        serverError: null,
       };
 
     default:

@@ -59,6 +59,13 @@ class EditEventForm extends Component {
       this.strMapToObj = this.strMapToObj.bind(this);
     }
 
+    componentWillReceiveProps (props) {
+      this.setState({
+        ...this.state,
+        event: props.dumEvents[props.index],
+      });
+    }
+
     handleSuccessClose = () => {
       this.setState({
         ...this.state,
@@ -248,7 +255,7 @@ class EditEventForm extends Component {
       this.props.editEvent(updatedEvent);
       // this.props.editEvent(this.state.event);
       console.log('got values: ', updatedEvent);
-      if (this.props.serverError !== null) {
+      if (this.props.serverError === null) {
         this.setState({
           ...this.state,
           success: true,

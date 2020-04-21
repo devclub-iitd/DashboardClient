@@ -1,5 +1,6 @@
 import * as ActionTypes from './ActionTypes';
 import * as API from '../data/api_links';
+import { logoutUser } from './userActions';
 
 export const addEvents = events => ({
   type: ActionTypes.ADD_EVENTS,
@@ -35,7 +36,7 @@ function objToStrMap(obj) {
 export const fetchAllEvents = () => (dispatch) => {
   dispatch(eventsLoading(true));
 
-  const bearer = `Bearer ${localStorage.getItem('token')}`;
+  const bearer = `Bearer ${localStorage.getItem('dcIITDDashboardToken')}`;
 
   return fetch(API.eventGetAllDBAPI, {
     method: 'GET',
@@ -51,6 +52,13 @@ export const fetchAllEvents = () => (dispatch) => {
       if (response.ok || response.status === 304) {
         return response;
       }
+      response.json()
+        .then((res) => {
+          console.log('Server response: ', res);
+          if (res.name === 'Unauthorized') {
+            dispatch(logoutUser('timeout'));
+          }
+        });
       const error = new Error(`Error ${response.status}: ${response.statusText}`);
       error.response = response;
       console.log(error);
@@ -76,7 +84,7 @@ export const fetchAllEvents = () => (dispatch) => {
 };
 
 export const createEvent = event => (dispatch) => {
-  const bearer = `Bearer ${localStorage.getItem('token')}`;
+  const bearer = `Bearer ${localStorage.getItem('dcIITDDashboardToken')}`;
 
   return fetch(API.eventAPI, {
     method: 'POST',
@@ -91,6 +99,13 @@ export const createEvent = event => (dispatch) => {
       if (response.ok || response.status === 304) {
         return response;
       }
+      response.json()
+        .then((res) => {
+          console.log('Server response: ', res);
+          if (res.name === 'Unauthorized') {
+            dispatch(logoutUser('timeout'));
+          }
+        });
       const error = new Error(`Error ${response.status}: ${response.statusText}`);
       error.response = response;
       throw error;
@@ -107,7 +122,7 @@ export const createEvent = event => (dispatch) => {
 };
 
 export const editEvent = event => (dispatch) => {
-  const bearer = `Bearer ${localStorage.getItem('token')}`;
+  const bearer = `Bearer ${localStorage.getItem('dcIITDDashboardToken')}`;
 
   return fetch(`${API.eventAPI}${event._id}`, {
     method: 'PUT',
@@ -122,6 +137,13 @@ export const editEvent = event => (dispatch) => {
       if (response.ok || response.status === 304) {
         return response;
       }
+      response.json()
+        .then((res) => {
+          console.log('Server response: ', res);
+          if (res.name === 'Unauthorized') {
+            dispatch(logoutUser('timeout'));
+          }
+        });
       const error = new Error(`Error ${response.status}: ${response.statusText}`);
       error.response = response;
       throw error;
@@ -138,7 +160,7 @@ export const editEvent = event => (dispatch) => {
 };
 
 export const deleteEvent = eventId => (dispatch) => {
-  const bearer = `Bearer ${localStorage.getItem('token')}`;
+  const bearer = `Bearer ${localStorage.getItem('dcIITDDashboardToken')}`;
 
   return fetch(API.eventDeleteAPI, {
     method: 'POST',
@@ -153,6 +175,13 @@ export const deleteEvent = eventId => (dispatch) => {
       if (response.ok || response.status === 304) {
         return response;
       }
+      response.json()
+        .then((res) => {
+          console.log('Server response: ', res);
+          if (res.name === 'Unauthorized') {
+            dispatch(logoutUser('timeout'));
+          }
+        });
       const error = new Error(`Error ${response.status}: ${response.statusText}`);
       error.response = response;
       throw error;
