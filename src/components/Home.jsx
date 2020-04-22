@@ -587,7 +587,11 @@ export default function Home(props) {
                                       </CardText>
                                     </CardBody>
                                     <CardFooter>
-                                      Assigned to: {(event.assignee !== '' && event.assignee !== null && event.assignee !== undefined) ? event.assignee : 'None'}
+                                      {/* Assigned to: {(event.assignee !== '' && event.assignee !== null && event.assignee !== undefined) ? event.assignee : 'None'} */}
+                                      Assigned to:
+                                      {
+                                        dumUsers.filter(user => event.assignee.includes(user._id)).map(user => (user.name + ', '))
+                                      }
                                     </CardFooter>
                                   </Card>
                                 </ListGroupItem>
@@ -635,7 +639,11 @@ export default function Home(props) {
                                       </CardText>
                                     </CardBody>
                                     <CardFooter>
-                                      Assigned to: {(event.assignee !== '' && event.assignee !== null && event.assignee !== undefined) ? event.assignee : 'None'}
+                                      {/* Assigned to: {(event.assignee !== '' && event.assignee !== null && event.assignee !== undefined) ? event.assignee : 'None'} */}
+                                      Assigned to:
+                                      {
+                                        dumUsers.filter(user => event.assignee.includes(user._id)).map(user => (user.name + ', '))
+                                      }
                                     </CardFooter>
                                   </Card>
                                 </ListGroupItem>
@@ -683,7 +691,11 @@ export default function Home(props) {
                                       </CardText>
                                     </CardBody>
                                     <CardFooter>
-                                      Assigned to: {(event.assignee !== '' && event.assignee !== null && event.assignee !== undefined) ? event.assignee : 'None'}
+                                      {/* Assigned to: {(event.assignee !== '' && event.assignee !== null && event.assignee !== undefined) ? event.assignee : 'None'} */}
+                                      Assigned to:
+                                      {
+                                        dumUsers.filter(user => event.assignee.includes(user._id)).map(user => (user.name + ', '))
+                                      }
                                     </CardFooter>
                                   </Card>
                                 </ListGroupItem>
@@ -728,9 +740,12 @@ export default function Home(props) {
                               </CardBody>
                               <CardFooter>
                                 <Typography className={classes.popCardFooter} color="textSecondary">{`${event.start_date.toDateString()} - ${event.end_date.toDateString()}`}</Typography>
-                                Assigned to: {(event.assignee !== '' && event.assignee !== null && event.assignee !== undefined) ? event.assignee : 'None'}
+                                {/* Assigned to: {(event.assignee !== '' && event.assignee !== null && event.assignee !== undefined) ? event.assignee : 'None'} */}
                                 {/* <CardLink onClick={null}>Manage User</CardLink> */}
-                                {
+                                  Assigned to:
+                                  {
+                                    dumUsers.filter(user => event.assignee.includes(user._id)).map(user => (user.name + ', '))
+                                  }                                {
                                   curUser.privelege_level === 'Admin'
                                     ?
                                     <EditEventForm

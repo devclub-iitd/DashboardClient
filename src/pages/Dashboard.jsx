@@ -164,6 +164,7 @@ function renderPage(subPage, classProp, classPaper, props) {
           />
         </div>
       );
+
     case 'changePassword':
       return (
         <div>
@@ -418,8 +419,9 @@ function Dashboard(props) {
 
   React.useEffect(() => {
     // localStorage.setItem('dcIITDDashboard', { token: null, userId: null });
-    fetchAllUsers();
     fetchAllProjects();
+    fetchAllUsers();
+    // fetchAllProjects();
     fetchUser(localStorage.getItem('userId'));
     fetchAllEvents();
     // fetchAllUsers();

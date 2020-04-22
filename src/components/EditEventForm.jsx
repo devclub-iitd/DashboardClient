@@ -34,6 +34,8 @@ class EditEventForm extends Component {
         assignee: this.props.dumEvents[this.props.index].assignee,
         event: this.props.dumEvents[this.props.index],
         urlFields: Array.from(this.props.dumEvents[this.props.index].url).map(([key, value]) => ({type: key, url: value})),
+        memberNames: this.props.dumUsers.filter((user) => user.privelege_level !== 'Unapproved_User').map(user => user.name),
+        selectedMembers: this.props.dumEvents[this.props.index].members.map((userId) => (this.props.dumUsers.filter(user => user._id === userId)[0]).name),
         isDailogOpen: false,
         isDeleteDailogOpen: false,
         success: false,
@@ -250,6 +252,7 @@ class EditEventForm extends Component {
       const updatedEvent = {
         ...this.state.event,
         url: this.strMapToObj(urlMap),
+        assignee: this.state.selectedMembers.map((name) => (this.props.dumUsers.filter((user) => user.name === name)[0])._id),
       };
 
       this.props.editEvent(updatedEvent);
@@ -484,7 +487,7 @@ class EditEventForm extends Component {
                     </Col>
                     </Row>
                     <Row className="form-group">
-                    <Col>
+                    {/* <Col>
                         <FormControl variant="outlined">
                         <InputLabel id="assignee">
                             Assigned Member
@@ -508,7 +511,31 @@ class EditEventForm extends Component {
                             }
                         </Select>
                         </FormControl>
-                    </Col>
+                    </Col> */}
+                      <Col>
+                        <FormControl>
+                        <InputLabel id="demo-mutiple-checkbox-label">Assignees</InputLabel>
+                        <Select
+                          labelId="demo-mutiple-checkbox-label"
+                          id="demo-mutiple-checkbox"
+                          multiple
+                          value={this.state.selectedMembers}
+                          onChange={this.changeAssignee}
+                          input={<Input />}
+                          renderValue={selected => selected.join(', ')}
+                          // MenuProps={MenuProps}
+                        >
+                          {
+                            this.state.memberNames.map(name => (
+                            <MenuItem key={name} value={name}>
+                                <Checkbox checked={this.state.selectedMembers.indexOf(name) !== -1} />
+                                <ListItemText primary={name} />
+                            </MenuItem>
+                            ))
+                          }
+                        </Select>
+                        </FormControl>
+                      </Col>
                     </Row>
                     <Row className="form-group">
                     {/* md={{ size: 2 }} */}

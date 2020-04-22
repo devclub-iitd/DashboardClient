@@ -50,6 +50,7 @@ const EventsPage = ({ events, fetchAllEvents, editEvent, deleteEvent, users }) =
     const classes = useStyles();
     const allEvents = events.allEvents;
     const curUser = users.user;
+    const dumUsers = users.allUsers;
 
     function isOngoing (startDate: Date, endDate: Date) {
         let today = new Date();
@@ -128,7 +129,11 @@ const EventsPage = ({ events, fetchAllEvents, editEvent, deleteEvent, users }) =
                                     </CardText>
                                 </CardBody>
                                 <CardFooter>
-                                    Assigned to: {event.assignee}
+                                    {/* Assigned to: {event.assignee} */}
+                                    Assigned to:
+                                    {
+                                        dumUsers.filter(user => event.assignee.includes(user._id)).map(user => (user.name + ', '))
+                                    }                                    
                                     {
                                         curUser.privelege_level === 'Admin'
                                         ?
@@ -184,7 +189,11 @@ const EventsPage = ({ events, fetchAllEvents, editEvent, deleteEvent, users }) =
                                     </CardText>
                                 </CardBody>
                                 <CardFooter>
-                                    Assigned to: {event.assignee}
+                                    {/* Assigned to: {event.assignee} */}
+                                    Assigned to:
+                                    {
+                                        dumUsers.filter(user => event.assignee.includes(user._id)).map(user => (user.name + ', '))
+                                    }                                    
                                     {
                                         curUser.privelege_level === 'Admin'
                                         ?
@@ -240,7 +249,11 @@ const EventsPage = ({ events, fetchAllEvents, editEvent, deleteEvent, users }) =
                                     </CardText>
                                 </CardBody>
                                 <CardFooter>
-                                    Assigned to: {event.assignee}
+                                    {/* Assigned to: {event.assignee} */}
+                                    Assigned to:
+                                    {
+                                        dumUsers.filter(user => event.assignee.includes(user._id)).map(user => (user.name + ', '))
+                                    }                                    
                                     {
                                         curUser.privelege_level === 'Admin'
                                         ?
