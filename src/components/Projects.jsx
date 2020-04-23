@@ -1,9 +1,11 @@
 import React, { Fragment, Component } from 'react';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import {
-  Paper, GridList, GridListTileBar, GridListTile,
-  Typography, Grid, Backdrop, CircularProgress,
+  Paper, GridList, GridListTileBar, GridListTile, TextField,
+  Typography, Grid, Backdrop, CircularProgress, InputAdornment, IconButton
 } from '@material-ui/core';
+import SearchIcon from '@material-ui/icons/Search';
+import CloseIcon from '@material-ui/icons/Close';
 import { Card, CardBody, CardText, CardTitle, CardFooter,
     CardHeader, CardLink
 } from 'reactstrap';
@@ -41,6 +43,9 @@ const useStyles = makeStyles(theme => ({
     head: {
         padding: '0.5em',
     },
+    search: {
+        marginTop: '0.5em',
+    },
     paper: {
         margin: '2em',
     },
@@ -51,9 +56,24 @@ const ProjectsPage = ({ projects, fetchAllProjects, editProject, deleteProject, 
     const allProjects = projects.allProjects;
     const curUser = users.user;
 
-    const ideas = allProjects.filter((project) => project.status === 'IDEA');
-    const ongoing = allProjects.filter((project) => project.status === 'ONGOING');
-    const completed = allProjects.filter((project) => project.status === 'COMPLETED');
+    const [search, setSearch] = React.useState({
+        idea: '',
+        ongoing: '',
+        completed: '',
+    });
+
+    const searchChange = (event) => {
+        event.preventDefault();
+        
+        setSearch({
+            ...search,
+            [event.target.name]: event.target.value,
+        });
+    };
+
+    const ideas = allProjects.filter((project) => project.status === 'IDEA').filter(pro => pro.name.toLowerCase().startsWith(search.idea.toLowerCase()));
+    const ongoing = allProjects.filter((project) => project.status === 'ONGOING').filter(pro => pro.name.toLowerCase().startsWith(search.ongoing.toLowerCase()));
+    const completed = allProjects.filter((project) => project.status === 'COMPLETED').filter(pro => pro.name.toLowerCase().startsWith(search.completed.toLowerCase()));
 
     return (
         <>
@@ -68,7 +88,39 @@ const ProjectsPage = ({ projects, fetchAllProjects, editProject, deleteProject, 
         </Backdrop>
         <Paper elevation={3} variant="outlined" className={classes.paper}>
             {/* <GridList spacing={1} className={classes.gridList}> */}
-            <Typography variant='h4' color="primary" className={classes.head}>Ideated</Typography>
+            {/* <Typography variant='h4' color="primary" className={classes.head}>Ideated</Typography> */}
+                <Grid container justify='flex-start'>
+                    <Grid item xs={4}>
+                        <Typography variant='h4' color="primary" className={classes.head}>Ideated</Typography>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <TextField
+                            className={classes.search}
+                            label='Search'
+                            name='idea'
+                            fullWidth
+                            value={search.idea}
+                            onChange={searchChange}
+                            InputProps={{
+                                endAdornment: (
+                                <InputAdornment>
+                                    {
+                                        search.idea === ''
+                                        ?
+                                        <IconButton>
+                                            <SearchIcon />
+                                        </IconButton>
+                                        :
+                                        <IconButton onClick={() => {setSearch({...search, idea: ''})}}>
+                                            <CloseIcon />
+                                        </IconButton>
+                                    }
+                                </InputAdornment>
+                                )
+                            }}
+                        />
+                    </Grid>
+                </Grid>
                 <Grid container spacing={2} className={classes.grid}>
                     {
                       ideas.length === 0
@@ -91,7 +143,7 @@ const ProjectsPage = ({ projects, fetchAllProjects, editProject, deleteProject, 
                                     {
                                         Array.from(project.url).map(([key, value]) => {
                                             return(
-                                                <Typography variant='body1'>{`${key}: `}<CardLink href={value}>{value}</CardLink></Typography>
+                                                <Typography variant='body1'>{`${key}: `}<CardLink href={value}>{`${value.substr(0, 30)}...`}</CardLink></Typography>
                                             );
                                         })
                                     }
@@ -125,7 +177,39 @@ const ProjectsPage = ({ projects, fetchAllProjects, editProject, deleteProject, 
         </Paper>
         <Paper elevation={3} variant="outlined" className={classes.paper}>
             {/* <GridList spacing={1} className={classes.gridList}> */}
-            <Typography variant='h4' color="primary" className={classes.head}>Ongoing</Typography>
+            {/* <Typography variant='h4' color="primary" className={classes.head}>Ongoing</Typography> */}
+                <Grid container justify='flex-start'>
+                    <Grid item xs={4}>
+                        <Typography variant='h4' color="primary" className={classes.head}>Ongoing</Typography>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <TextField
+                            className={classes.search}
+                            label='Search'
+                            name='ongoing'
+                            fullWidth
+                            value={search.ongoing}
+                            onChange={searchChange}
+                            InputProps={{
+                                endAdornment: (
+                                <InputAdornment>
+                                    {
+                                        search.ongoing === ''
+                                        ?
+                                        <IconButton>
+                                            <SearchIcon />
+                                        </IconButton>
+                                        :
+                                        <IconButton onClick={() => {setSearch({...search, ongoing: ''})}}>
+                                            <CloseIcon />
+                                        </IconButton>
+                                    }
+                                </InputAdornment>
+                                )
+                            }}
+                        />
+                    </Grid>
+                </Grid>
                 <Grid container spacing={2} className={classes.grid}>
                     {
                       ongoing.length === 0
@@ -148,7 +232,7 @@ const ProjectsPage = ({ projects, fetchAllProjects, editProject, deleteProject, 
                                     {
                                         Array.from(project.url).map(([key, value]) => {
                                             return(
-                                                <Typography variant='body1'>{`${key}: `}<CardLink href={value}>{value}</CardLink></Typography>
+                                                <Typography variant='body1'>{`${key}: `}<CardLink href={value}>{`${value.substr(0, 30)}...`}</CardLink></Typography>
                                             );
                                         })
                                     }
@@ -181,7 +265,39 @@ const ProjectsPage = ({ projects, fetchAllProjects, editProject, deleteProject, 
         </Paper>
         <Paper elevation={3} variant="outlined" className={classes.paper}>
             {/* <GridList spacing={1} className={classes.gridList}> */}
-            <Typography variant='h4' color="primary" className={classes.head}>Completed</Typography>
+            {/* <Typography variant='h4' color="primary" className={classes.head}>Completed</Typography> */}
+                <Grid container justify='flex-start'>
+                    <Grid item xs={4}>
+                        <Typography variant='h4' color="primary" className={classes.head}>Completed</Typography>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <TextField
+                            className={classes.search}
+                            label='Search'
+                            name='completed'
+                            fullWidth
+                            value={search.completed}
+                            onChange={searchChange}
+                            InputProps={{
+                                endAdornment: (
+                                <InputAdornment>
+                                    {
+                                        search.completed === ''
+                                        ?
+                                        <IconButton>
+                                            <SearchIcon />
+                                        </IconButton>
+                                        :
+                                        <IconButton onClick={() => {setSearch({...search, completed: ''})}}>
+                                            <CloseIcon />
+                                        </IconButton>
+                                    }
+                                </InputAdornment>
+                                )
+                            }}
+                        />
+                    </Grid>
+                </Grid>
                 <Grid container spacing={2} className={classes.grid}>
                     {
                       completed.length === 0
@@ -204,7 +320,7 @@ const ProjectsPage = ({ projects, fetchAllProjects, editProject, deleteProject, 
                                     {
                                         Array.from(project.url).map(([key, value]) => {
                                             return(
-                                                <Typography variant='body1'>{`${key}: `}<CardLink href={value}>{value}</CardLink></Typography>
+                                                <Typography variant='body1'>{`${key}: `}<CardLink href={value}>{`${value.substr(0, 30)}...`}</CardLink></Typography>
                                             );
                                         })
                                     }

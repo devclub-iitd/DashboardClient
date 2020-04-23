@@ -2,9 +2,11 @@
 import React, { Fragment, Component } from 'react';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import {
-  Paper, GridList, GridListTileBar, GridListTile,
+  Paper, GridList, GridListTileBar, GridListTile, InputAdornment, IconButton, TextField,
   Typography, Grid, Backdrop, CircularProgress,
 } from '@material-ui/core';
+import SearchIcon from '@material-ui/icons/Search';
+import CloseIcon from '@material-ui/icons/Close';
 import {
  Card, CardBody, CardText, CardTitle, CardFooter,
     CardHeader, CardLink,
@@ -43,6 +45,9 @@ const useStyles = makeStyles(theme => ({
     head: {
         padding: '0.5em',
     },
+    search: {
+        marginTop: '0.5em',
+    },
     paper: {
         margin: '2em',
     },
@@ -53,8 +58,22 @@ const ResourcesPage = ({resources, fetchAllResources, editResource, deleteResour
     const allResources = resources.allResources;
     const curUser = users.user;
 
-    const current = allResources.filter(resource => !resource.archive);
-    const archives = allResources.filter(resource => resource.archive);
+    const [search, setSearch] = React.useState({
+        current: '',
+        archives: '',
+    });
+
+    const searchChange = (event) => {
+        event.preventDefault();
+        
+        setSearch({
+            ...search,
+            [event.target.name]: event.target.value,
+        });
+    };
+
+    const current = allResources.filter(resource => !resource.archive).filter(res => res.name.toLowerCase().startsWith(search.current.toLowerCase()));
+    const archives = allResources.filter(resource => resource.archive).filter(res => res.name.toLowerCase().startsWith(search.archives.toLowerCase()));
 
     return (
         <>
@@ -69,7 +88,39 @@ const ResourcesPage = ({resources, fetchAllResources, editResource, deleteResour
           </Backdrop>
             <Paper elevation={3} variant="outlined" className={classes.paper}>
             {/* <GridList spacing={1} className={classes.gridList}> */}
-            <Typography variant="h4" color="primary" className={classes.head}>Current</Typography>
+            {/* <Typography variant="h4" color="primary" className={classes.head}>Current</Typography> */}
+            <Grid container justify='flex-start'>
+                <Grid item xs={4}>
+                    <Typography variant='h4' color="primary" className={classes.head}>Current</Typography>
+                </Grid>
+                <Grid item xs={6}>
+                    <TextField
+                        className={classes.search}
+                        label='Search'
+                        name='current'
+                        fullWidth
+                        value={search.current}
+                        onChange={searchChange}
+                        InputProps={{
+                            endAdornment: (
+                            <InputAdornment>
+                                {
+                                    search.current === ''
+                                    ?
+                                    <IconButton>
+                                        <SearchIcon />
+                                    </IconButton>
+                                    :
+                                    <IconButton onClick={() => {setSearch({...search, current: ''})}}>
+                                        <CloseIcon />
+                                    </IconButton>
+                                }
+                            </InputAdornment>
+                            )
+                        }}
+                    />
+                </Grid>
+            </Grid>
             <Grid container spacing={2} className={classes.grid}>
                 {
                   current.length === 0
@@ -127,7 +178,39 @@ const ResourcesPage = ({resources, fetchAllResources, editResource, deleteResour
             </Paper>
             <Paper elevation={3} variant="outlined" className={classes.paper}>
             {/* <GridList spacing={1} className={classes.gridList}> */}
-            <Typography variant="h4" color="primary" className={classes.head}>Archived</Typography>
+            {/* <Typography variant="h4" color="primary" className={classes.head}>Archived</Typography> */}
+            <Grid container justify='flex-start'>
+                <Grid item xs={4}>
+                    <Typography variant='h4' color="primary" className={classes.head}>Archived</Typography>
+                </Grid>
+                <Grid item xs={6}>
+                    <TextField
+                        className={classes.search}
+                        label='Search'
+                        name='archives'
+                        fullWidth
+                        value={search.archives}
+                        onChange={searchChange}
+                        InputProps={{
+                            endAdornment: (
+                            <InputAdornment>
+                                {
+                                    search.archives === ''
+                                    ?
+                                    <IconButton>
+                                        <SearchIcon />
+                                    </IconButton>
+                                    :
+                                    <IconButton onClick={() => {setSearch({...search, archives: ''})}}>
+                                        <CloseIcon />
+                                    </IconButton>
+                                }
+                            </InputAdornment>
+                            )
+                        }}
+                    />
+                </Grid>
+            </Grid>
             <Grid container spacing={2} className={classes.grid}>
                 {
                   archives.length === 0

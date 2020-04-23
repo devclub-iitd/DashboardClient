@@ -73,8 +73,9 @@ export const fetchAllProjects = () => (dispatch) => {
       const allProjects = gotProjects.map(pro => ({
         ...pro,
         url: objToStrMap(pro.url),
-        start_date: pro.start_date === null ? new Date() : new Date(pro.start_date),
-        end_date: pro.end_date === null ? new Date() : new Date(pro.end_date),
+        members: pro.members === null || pro.members === undefined ? [] : pro.members,
+        start_date: pro.start_date === null || pro.start_date === undefined ? new Date() : new Date(pro.start_date),
+        end_date: pro.end_date === null || pro.end_date === undefined ? new Date() : new Date(pro.end_date),
       }));
       dispatch(addProjects(allProjects));
     })

@@ -132,6 +132,7 @@ class SignUp extends React.Component {
     console.log('Register body:', body);
 
     // const { register } = this.props;
+    // window.location.reload(false);
 
     this.props.registerUser(body);
     if (this.props.register.errMess === null) {
@@ -145,6 +146,8 @@ class SignUp extends React.Component {
         failure: true,
       });
     }
+
+    // window.location.reload(false);
     // postReg(body);
   }
 
@@ -236,6 +239,7 @@ class SignUp extends React.Component {
                     <MenuItem value="Sophomore">Sophomore</MenuItem>
                     <MenuItem value="Junior Undergraduate">Junior Undergraduate</MenuItem>
                     <MenuItem value="Senior Undergraduate">Senior Undergraduate</MenuItem>
+                    <MenuItem value="Alumni">Alumni</MenuItem>
                   </Select>
                 </FormControl>
               </Grid>

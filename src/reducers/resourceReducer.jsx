@@ -7,7 +7,7 @@ const Resources = (
     isLoading: true,
     errMess: null,
     serverError: null,
-    allResources: dumResources,
+    allResources: [],
   },
   action,
 ) => {

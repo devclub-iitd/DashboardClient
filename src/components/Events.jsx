@@ -1,9 +1,11 @@
 import React, { Fragment, Component } from 'react';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import {
-  Paper, GridList, GridListTileBar, GridListTile,
-  Typography, Grid, Backdrop, CircularProgress
+  Paper, GridList, GridListTileBar, GridListTile, TextField,
+  Typography, Grid, Backdrop, CircularProgress, InputAdornment, IconButton
 } from '@material-ui/core';
+import CloseIcon from '@material-ui/icons/Close';
+import SearchIcon from '@material-ui/icons/Search';
 import { Card, CardBody, CardText, CardTitle, CardFooter,
     CardHeader, CardLink
 } from 'reactstrap';
@@ -41,6 +43,9 @@ const useStyles = makeStyles(theme => ({
     head: {
         padding: '0.5em',
     },
+    search: {
+        marginTop: '0.5em',
+    },
     paper: {
         margin: '2em',
     },
@@ -52,9 +57,24 @@ const EventsPage = ({ events, fetchAllEvents, editEvent, deleteEvent, users }) =
     const curUser = users.user;
     const dumUsers = users.allUsers;
 
+    const [search, setSearch] = React.useState({
+        ongoing: '',
+        upcoming: '',
+        completed: '',
+    });
+
+    const searchChange = (event) => {
+        event.preventDefault();
+        
+        setSearch({
+            ...search,
+            [event.target.name]: event.target.value,
+        });
+    };
+
     function isOngoing (startDate: Date, endDate: Date) {
         let today = new Date();
-        if(today > startDate && today < endDate) {
+        if(today >= startDate && today <= endDate) {
           return true;
         }
         else {
@@ -82,9 +102,9 @@ const EventsPage = ({ events, fetchAllEvents, editEvent, deleteEvent, users }) =
         }
     }
 
-    const ongoing = allEvents.filter((event) => isOngoing(event.start_date, event.end_date));
-    const upcoming = allEvents.filter((event) => isUpcoming(event.start_date));
-    const completed = allEvents.filter((event) => isCompleted(event.end_date));
+    const ongoing = allEvents.filter((event) => isOngoing(event.start_date, event.end_date)).filter(event => event.name.startsWith(search.ongoing));
+    const upcoming = allEvents.filter((event) => isUpcoming(event.start_date)).filter(event => event.name.startsWith(search.upcoming));
+    const completed = allEvents.filter((event) => isCompleted(event.end_date)).filter(event => event.name.startsWith(search.completed));
 
     return (
         <>
@@ -99,7 +119,52 @@ const EventsPage = ({ events, fetchAllEvents, editEvent, deleteEvent, users }) =
         </Backdrop>
         <Paper elevation={3} variant="outlined" className={classes.paper}>
             {/* <GridList spacing={1} className={classes.gridList}> */}
-            <Typography variant='h4' color="primary" className={classes.head}>Ongoing</Typography>
+            <Grid container justify='flex-start'>
+                <Grid item xs={4}>
+                    <Typography variant='h4' color="primary" className={classes.head}>Ongoing</Typography>
+                </Grid>
+                <Grid item xs={6}>
+                    <TextField
+                        className={classes.search}
+                        label='Search'
+                        name='ongoing'
+                        fullWidth
+                        value={search.ongoing}
+                        onChange={searchChange}
+                        InputProps={{
+                            endAdornment: (
+                            <InputAdornment>
+                                {
+                                    search.ongoing === ''
+                                    ?
+                                    <IconButton>
+                                        <SearchIcon />
+                                    </IconButton>
+                                    :
+                                    <IconButton onClick={() => {setSearch({...search, ongoing: ''})}}>
+                                        <CloseIcon />
+                                    </IconButton>
+                                }
+                            </InputAdornment>
+                            )
+                        }}
+                    />
+                </Grid>
+            </Grid>
+            {/* <Typography variant='h4' color="primary" className={classes.head}>Ongoing</Typography> */}
+            {/* <TextField
+                label='Search'
+                name='search'
+                InputProps={{
+                    endAdornment: (
+                    <InputAdornment>
+                        <IconButton>
+                        <SearchIcon />
+                        </IconButton>
+                    </InputAdornment>
+                    )
+                }}
+            /> */}
                 <Grid container spacing={2} className={classes.grid}>
                     {
                       ongoing.length === 0
@@ -122,7 +187,7 @@ const EventsPage = ({ events, fetchAllEvents, editEvent, deleteEvent, users }) =
                                     {
                                         Array.from(event.url).map(([key, value]) => {
                                         return(
-                                            <Typography variant='body1'>{`${key}: `}<CardLink href={value}>{value}</CardLink></Typography>
+                                            <Typography variant='body1'>{`${key}: `}<CardLink href={value}>{`${value.substr(0, 30)}...`}</CardLink></Typography>
                                         );
                                         })
                                     }
@@ -159,7 +224,39 @@ const EventsPage = ({ events, fetchAllEvents, editEvent, deleteEvent, users }) =
         </Paper>
         <Paper elevation={3} variant="outlined" className={classes.paper}>
             {/* <GridList spacing={1} className={classes.gridList}> */}
-            <Typography variant='h4' color="primary" className={classes.head}>Upcoming</Typography>
+            {/* <Typography variant='h4' color="primary" className={classes.head}>Upcoming</Typography> */}
+                <Grid container justify='flex-start'>
+                    <Grid item xs={4}>
+                        <Typography variant='h4' color="primary" className={classes.head}>Upcoming</Typography>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <TextField
+                            className={classes.search}
+                            label='Search'
+                            name='upcoming'
+                            fullWidth
+                            value={search.upcoming}
+                            onChange={searchChange}
+                            InputProps={{
+                                endAdornment: (
+                                <InputAdornment>
+                                    {
+                                        search.upcoming === ''
+                                        ?
+                                        <IconButton>
+                                            <SearchIcon />
+                                        </IconButton>
+                                        :
+                                        <IconButton onClick={() => {setSearch({...search, upcoming: ''})}}>
+                                            <CloseIcon />
+                                        </IconButton>
+                                    }
+                                </InputAdornment>
+                                )
+                            }}
+                        />
+                    </Grid>
+                </Grid>
                 <Grid container spacing={2} className={classes.grid}>
                     {
                       upcoming.length === 0
@@ -182,7 +279,7 @@ const EventsPage = ({ events, fetchAllEvents, editEvent, deleteEvent, users }) =
                                     {
                                         Array.from(event.url).map(([key, value]) => {
                                             return(
-                                                <Typography variant='body1'>{`${key}: `}<CardLink href={value}>{value}</CardLink></Typography>
+                                                <Typography variant='body1'>{`${key}: `}<CardLink href={value}>{`${value.substr(0, 30)}...`}</CardLink></Typography>
                                             );
                                         })
                                     }
@@ -219,7 +316,39 @@ const EventsPage = ({ events, fetchAllEvents, editEvent, deleteEvent, users }) =
         </Paper>
         <Paper elevation={3} variant="outlined" className={classes.paper}>
             {/* <GridList spacing={1} className={classes.gridList}> */}
-            <Typography variant='h4' color="primary" className={classes.head}>Completed</Typography>
+            {/* <Typography variant='h4' color="primary" className={classes.head}>Completed</Typography> */}
+                <Grid container justify='flex-start'>
+                    <Grid item xs={4}>
+                        <Typography variant='h4' color="primary" className={classes.head}>Completed</Typography>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <TextField
+                            className={classes.search}
+                            label='Search'
+                            name='completed'
+                            value={search.completed}
+                            fullWidth
+                            onChange={searchChange}
+                            InputProps={{
+                                endAdornment: (
+                                <InputAdornment>
+                                    {
+                                        search.completed === ''
+                                        ?
+                                        <IconButton>
+                                            <SearchIcon />
+                                        </IconButton>
+                                        :
+                                        <IconButton onClick={() => {setSearch({...search, completed: ''})}}>
+                                            <CloseIcon />
+                                        </IconButton>
+                                    }
+                                </InputAdornment>
+                                )
+                            }}
+                        />
+                    </Grid>
+                </Grid>
                 <Grid container spacing={2} className={classes.grid}>
                     {
                       completed.length === 0
@@ -242,7 +371,7 @@ const EventsPage = ({ events, fetchAllEvents, editEvent, deleteEvent, users }) =
                                     {
                                         Array.from(event.url).map(([key, value]) => {
                                             return(
-                                                <Typography variant='body1'>{`${key}: `}<CardLink href={value}>{value}</CardLink></Typography>
+                                                <Typography variant='body1'>{`${key}: `}<CardLink href={value}>{`${value.substr(0, 30)}...`}</CardLink></Typography>
                                             );
                                         })
                                     }

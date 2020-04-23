@@ -35,7 +35,7 @@ class EditEventForm extends Component {
         event: this.props.dumEvents[this.props.index],
         urlFields: Array.from(this.props.dumEvents[this.props.index].url).map(([key, value]) => ({type: key, url: value})),
         memberNames: this.props.dumUsers.filter((user) => user.privelege_level !== 'Unapproved_User').map(user => user.name),
-        selectedMembers: this.props.dumEvents[this.props.index].members.map((userId) => (this.props.dumUsers.filter(user => user._id === userId)[0]).name),
+        selectedMembers: this.props.dumEvents[this.props.index].assignee.map((userId) => (this.props.dumUsers.filter(user => user._id === userId)[0]).name),
         isDailogOpen: false,
         isDeleteDailogOpen: false,
         success: false,
@@ -194,10 +194,11 @@ class EditEventForm extends Component {
       this.setState({
         ...this.state,
         // assignee: event.target.value,
-        event: {
-          ...this.state.event,
-          assignee: event.target.value,
-        },
+        // event: {
+        //   ...this.state.event,
+        //   assignee: event.target.value,
+        // },
+        selectedMembers: event.target.value,
       });
     };
   

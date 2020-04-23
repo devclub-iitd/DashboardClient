@@ -364,6 +364,36 @@ export default function Home(props) {
   const dumEvents = props.events.allEvents;
   const dumProjects = props.projects.allProjects;
   const dumResources = props.resources.allResources;
+  
+  // console.log('Initial events: ', allEvents);
+
+  // const dumEvents = allEvents.map(event => {
+  //   if (event.assignee === undefined || event.assignee === null) {
+  //     event.assignee = [];
+  //   }
+  //   if (event.start_date === undefined || event.start_date === null) {
+  //     event.start_date = new Date();
+  //   }
+  //   if (event.end_date === undefined || event.end_date === null) {
+  //     event.end_date = new Date();
+  //   }
+  //   return event;
+  // });
+
+  // console.log('Final Events: ', dumEvents);
+
+  // const dumProjects = allProjects.map(project => {
+  //   if (project.members === undefined || project.members === null) {
+  //     project.members = [];
+  //   }
+  //   if (project.start_date === undefined || project.start_date === null) {
+  //     project.start_date = new Date();
+  //   }
+  //   if (project.end_date === undefined || project.end_date === null) {
+  //     project.end_date = new Date();
+  //   }
+  //   return project;
+  // });
 
   const [eventPopOpen, setEventPopOpen] = React.useState(false);
   const toggleEventPop = () => {
@@ -459,7 +489,7 @@ export default function Home(props) {
 
   function isOngoing (startDate: Date, endDate: Date) {
     let today = new Date();
-    if(today > startDate && today < endDate) {
+    if(today >= startDate && today <= endDate) {
       return true;
     }
     else {
@@ -561,6 +591,10 @@ export default function Home(props) {
                       : null
                     }
                     {
+                      // dumEvents.filter((event) => isOngoing(event.start_date, event.end_date)).filter((event) => event.assignee === undefined ? false : event.assignee.includes(curUser._id)).length === 0
+                      // ?
+                      // <Typography variant='h4' color='textSecondary'>No events for you</Typography>
+                      // :
                       <ListGroup>
                         {
                           dumEvents.filter((event) => isOngoing(event.start_date, event.end_date)).map((event, index) => {
@@ -580,7 +614,7 @@ export default function Home(props) {
                                         {
                                           Array.from(event.url).map(([key, value]) => {
                                             return(
-                                              <Typography variant='body1'>{`${key}: `}<CardLink href={value}>{value}</CardLink></Typography>
+                                              <Typography variant='body1'>{`${key}: `}<CardLink href={value}>{`${value.substr(0, 30)}...`}</CardLink></Typography>
                                             );
                                           })
                                         }
@@ -632,7 +666,7 @@ export default function Home(props) {
                                         {
                                           Array.from(event.url).map(([key, value]) => {
                                             return(
-                                              <Typography variant='body1'>{`${key}: `}<CardLink href={value}>{value}</CardLink></Typography>
+                                              <Typography variant='body1'>{`${key}: `}<CardLink href={value}>{`${value.substr(0, 30)}...`}</CardLink></Typography>
                                             );
                                           })
                                         }
@@ -684,7 +718,7 @@ export default function Home(props) {
                                         {
                                           Array.from(event.url).map(([key, value]) => {
                                             return(
-                                              <Typography variant='body1'>{`${key}: `}<CardLink href={value}>{value}</CardLink></Typography>
+                                              <Typography variant='body1'>{`${key}: `}<CardLink href={value}>{`${value.substr(0, 30)}...`}</CardLink></Typography>
                                             );
                                           })
                                         }
@@ -848,7 +882,7 @@ export default function Home(props) {
                                         {
                                           Array.from(project.url).map(([key, value]) => {
                                             return(
-                                              <Typography variant='body1'>{`${key}: `}<CardLink href={value}>{value}</CardLink></Typography>
+                                              <Typography variant='body1'>{`${key}: `}<CardLink href={value}>{`${value.substr(0, 30)}...`}</CardLink></Typography>
                                             );
                                           })
                                         }
@@ -899,7 +933,7 @@ export default function Home(props) {
                                         {
                                           Array.from(project.url).map(([key, value]) => {
                                             return(
-                                              <Typography variant='body1'>{`${key}: `}<CardLink href={value}>{value}</CardLink></Typography>
+                                              <Typography variant='body1'>{`${key}: `}<CardLink href={value}>{`${value.substr(0, 30)}...`}</CardLink></Typography>
                                             );
                                           })
                                         }
@@ -950,7 +984,7 @@ export default function Home(props) {
                                         {
                                           Array.from(project.url).map(([key, value]) => {
                                             return(
-                                              <Typography variant='body1'>{`${key}: `}<CardLink href={value}>{value}</CardLink></Typography>
+                                              <Typography variant='body1'>{`${key}: `}<CardLink href={value}>{`${value.substr(0, 30)}...`}</CardLink></Typography>
                                             );
                                           })
                                         }
@@ -1304,7 +1338,7 @@ export default function Home(props) {
                                         {
                                           Array.from(user.url).map(([key, value]) => {
                                             return(
-                                              <Typography variant='body1'>{`${key}: `}<CardLink href={value}>{value}</CardLink></Typography>
+                                              <Typography variant='body1'>{`${key}: `}<CardLink href={value}>{`${value.substr(0, 30)}...`}</CardLink></Typography>
                                             );
                                           })
                                         }
@@ -1357,7 +1391,7 @@ export default function Home(props) {
                                         {
                                           Array.from(user.url).map(([key, value]) => {
                                             return(
-                                              <Typography variant='body1'>{`${key}: `}<CardLink href={value}>{value}</CardLink></Typography>
+                                              <Typography variant='body1'>{`${key}: `}<CardLink href={value}>{`${value.substr(0, 30)}...`}</CardLink></Typography>
                                             );
                                           })
                                         }
@@ -1410,7 +1444,7 @@ export default function Home(props) {
                                         {
                                           Array.from(user.url).map(([key, value]) => {
                                             return(
-                                              <Typography variant='body1'>{`${key}: `}<CardLink href={value}>{value}</CardLink></Typography>
+                                              <Typography variant='body1'>{`${key}: `}<CardLink href={value}>{`${value.substr(0, 30)}...`}</CardLink></Typography>
                                             );
                                           })
                                         }
@@ -1507,13 +1541,13 @@ export default function Home(props) {
             <TabContent activeTab={activeTaskTab}>
               <TabPane tabId='Events'>
                 {
-                  dumEvents.filter((event) => event.assignee === curUser.name).length === 0
+                  dumEvents.filter((event) => event.assignee.includes(curUser._id)).length === 0
                   ?
                   <Typography variant='h4' color='textSecondary'>No events for you</Typography>
                   :
                   <ListGroup>
                     {
-                      dumEvents.filter((event) => event.assignee === curUser.name).map((event, index) => {
+                      dumEvents.filter((event) => event.assignee.includes(curUser._id)).map((event, index) => {
                         return(
                           <Fragment key={`${event}~${index}`}>
                             <ListGroupItem>
@@ -1530,7 +1564,7 @@ export default function Home(props) {
                                     {
                                       Array.from(event.url).map(([key, value]) => {
                                         return(
-                                          <Typography variant='body1'>{`${key}: `}<CardLink href={value}>{value}</CardLink></Typography>
+                                          <Typography variant='body1'>{`${key}: `}<CardLink href={value}>{`${value.substr(0, 30)}...`}</CardLink></Typography>
                                         );
                                       })
                                     }
@@ -1574,7 +1608,7 @@ export default function Home(props) {
                                     {
                                       Array.from(project.url).map(([key, value]) => {
                                         return(
-                                          <Typography variant='body1'>{`${key}: `}<CardLink href={value}>{value}</CardLink></Typography>
+                                          <Typography variant='body1'>{`${key}: `}<CardLink href={value}>{`${value.substr(0, 30)}...`}</CardLink></Typography>
                                         );
                                       })
                                     }

@@ -41,6 +41,7 @@ class EditOtherUserForm extends Component {
     this.confirmDeleteOpen = this.confirmDeleteOpen.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
     this.handleSuccessClose = this.handleSuccessClose.bind(this);
+    this.handleApprove = this.handleApprove.bind(this);
   }
 
   componentWillReceiveProps (props) {
@@ -116,6 +117,20 @@ class EditOtherUserForm extends Component {
     this.confirmDeleteClose();
   };
 
+  handleApprove = () => {
+    const newUser = {
+      ...this.state.user,
+      privelege_level: 'Approved_User',
+    };
+    this.props.editUser(newUser);
+    if (this.props.serverError === null) {
+      this.setState({
+        ...this.state,
+        success: true,
+      });
+    }
+  };
+
   handleSubmit = () => {
     console.log('Editing user: ', this.state.user);
     this.props.editUser(this.state.user);
@@ -159,6 +174,18 @@ class EditOtherUserForm extends Component {
         >
           Edit User
         </Button>
+        {
+          this.state.user.privelege_level === 'Unapproved_User'
+          ?
+          <Button onClick={() => { 
+            this.handleApprove(); 
+          }} 
+            color="secondary"
+          >
+            Approve User
+          </Button>
+          : null
+        }
           <Dialog open={this.state.isDailogOpen} maxWidth="sm" fullWidth onClose={this.handleFormClose} scroll="paper">
             <DialogTitle>
               <Typography variant="h4">

@@ -7,7 +7,7 @@ const Projects = (
     isLoading: true,
     errMess: null,
     serverError: null,
-    allProjects: dumProjects,
+    allProjects: [],
   },
   action,
 ) => {

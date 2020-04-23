@@ -11,7 +11,7 @@ const dumEvents = [
       ['google', 'wwww.google.com'],
       ['facebook', 'wwww.facebook.com'],
     ]),
-    assignee: 'Anweshan Bor',
+    assignee: ['5ea107df15271932f4a1d300'],
   },
   {
     name: 'Tryst1',
@@ -25,7 +25,7 @@ const dumEvents = [
       ['google', 'wwww.google.com'],
       ['facebook', 'wwww.facebook.com'],
     ]),
-    assignee: 'Anweshan Bor',
+    assignee: ['5ea107df15271932f4a1d300'],
   },
   {
     name: 'Tryst2',
@@ -39,7 +39,7 @@ const dumEvents = [
       ['google', 'wwww.google.com'],
       ['facebook', 'wwww.facebook.com'],
     ]),
-    assignee: 'Anweshan Bor',
+    assignee: ['5ea107df15271932f4a1d300'],
   },
   {
     name: 'Tryst3',
@@ -53,7 +53,7 @@ const dumEvents = [
       ['google', 'wwww.google.com'],
       ['facebook', 'wwww.facebook.com'],
     ]),
-    assignee: 'Anweshan Bor',
+    assignee: ['5ea107df15271932f4a1d300'],
   },
   {
     name: 'Tryst4',
@@ -67,7 +67,7 @@ const dumEvents = [
       ['google', 'wwww.google.com'],
       ['facebook', 'wwww.facebook.com'],
     ]),
-    assignee: '',
+    assignee: ['5ea107df15271932f4a1d300'],
   },
 ];
 

@@ -59,8 +59,8 @@ const useStyles = makeStyles(theme => ({
     maxWidth: 300,
   },
   image: {
-    width: '100%',
-    height: 'auto',
+    width: 'auto',
+    maxHeight: '250px',
     // border: 'solid blue 3px',
   },
   imgcontainer: {
@@ -202,6 +202,9 @@ const Profile = (props) => {
     //   ...user,
     //   [event.target.name]: [event.target.value],
     // });
+    // console.log('Name: ', name);
+    // console.log('Event: ', event);
+
     if (name === 'birth_date') {
       setState({
         ...state,
@@ -402,16 +405,16 @@ const Profile = (props) => {
     console.log(state.editUser);
   };
 
-  React.useEffect(() => {
-    // props.fetchUser(localStorage.getItem('userId'));
-    setState({
-      ...state,
-      editUser: props.user,
-      orgUser: props.user,
-      urlFields: Array.from(props.user.url).map(([index, value]) => ({ type: index, url: value })),
-      editSuccess: false,
-    });
-  });
+  // React.useEffect(() => {
+  //   // props.fetchUser(localStorage.getItem('userId'));
+  //   setState({
+  //     ...state,
+  //     editUser: props.user,
+  //     orgUser: props.user,
+  //     urlFields: Array.from(props.user.url).map(([index, value]) => ({ type: index, url: value })),
+  //     editSuccess: false,
+  //   });
+  // });
 
   // const required = () => user.name && user.name.length;
 
@@ -442,7 +445,7 @@ const Profile = (props) => {
           message="Profile updated Successfully !"
         />
         <div>
-          <Dialog open={isModalOpen} maxWidth="md" fullWidth onClose={() => { cancelEdit(); handleClose(); }} scroll="paper">
+          <Dialog open={isModalOpen} maxWidth="md" fullWidth onClose={() => { cancelEdit(); }} scroll="paper">
             <DialogTitle>
               <Typography variant="h4" className={classes.head}>
                 Edit Your Profile
@@ -540,7 +543,7 @@ const Profile = (props) => {
                     <Control.text
                       model=".hostel"
                       id="hostel"
-                      name="emhostelail"
+                      name="hostel"
                       // defaultValue={user.hostel}
                       defaultValue={state.editUser.hostel}
                       onChange={handleFormValuesChange}
@@ -618,19 +621,19 @@ const Profile = (props) => {
                         value="female"
                         control={<Radio color="primary" />}
                         label="female"
-                        labelPlacement="start"
+                        labelPlacement="end"
                       />
                       <FormControlLabel
                         value="male"
                         control={<Radio color="primary" />}
                         label="male"
-                        labelPlacement="start"
+                        labelPlacement="end"
                       />
                       <FormControlLabel
                         value="other"
                         control={<Radio color="primary" />}
                         label="other"
-                        labelPlacement="start"
+                        labelPlacement="end"
                       />
                       {/* <FormControlLabel value="end" control={<Radio color="primary" />} label="End" /> */}
                     </RadioGroup>

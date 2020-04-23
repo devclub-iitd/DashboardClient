@@ -7,7 +7,7 @@ const Events = (
     isLoading: true,
     errMess: null,
     serverError: null,
-    allEvents: dumEvents,
+    allEvents: [],
   },
   action,
 ) => {

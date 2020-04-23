@@ -75,8 +75,9 @@ export const fetchAllEvents = () => (dispatch) => {
       const allEvents = gotEvents.map(event => ({
         ...event,
         url: objToStrMap(event.url),
-        start_date: event.start_date === null ? new Date() : new Date(event.start_date),
-        end_date: event.end_date === null ? new Date() : new Date(event.end_date),
+        assignee: event.assignee === null || event.assignee === undefined ? [] : event.assignee,
+        start_date: event.start_date === null || event.start_date === undefined ? new Date() : new Date(event.start_date),
+        end_date: event.end_date === null || event.end_date === undefined ? new Date() : new Date(event.end_date),
       }));
       dispatch(addEvents(allEvents));
     })

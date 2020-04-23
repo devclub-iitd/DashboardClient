@@ -349,7 +349,7 @@ export const removeOtherUser = uId => (dispatch) => {
   const bearer = `Bearer ${localStorage.getItem('dcIITDDashboardToken')}`;
 
   return fetch(`${API.userAPI}delete/${uId}`, {
-    method: 'DELETE',
+    method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       Authorization: bearer,

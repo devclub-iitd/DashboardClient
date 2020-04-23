@@ -6,8 +6,10 @@ import {
   FormControlLabel, Radio, RadioGroup, Switch, InputLabel,
   Select, Input, Chip, MenuItem, FormLabel, FormControl,
   TextField, Fab, Checkbox, ListItemText, Paper, Snackbar,
-  Backdrop, CircularProgress,
+  Backdrop, CircularProgress, InputAdornment, IconButton
 } from '@material-ui/core';
+import CloseIcon from '@material-ui/icons/Close';
+import SearchIcon from '@material-ui/icons/Search';
 // import PendingTasks from './PendingTasks';
 import {
   Card, CardImg, CardImgOverlay, CardText,
@@ -41,6 +43,12 @@ const useStyles = makeStyles(theme => ({
         margin: '2em',
         height: document.documentElement.clientHeight*0.9,
         overflowY: 'scroll',
+    },
+    search: {
+      marginTop: '0.5em',
+      marginLeft: '2em',
+      // marginRight: 'auto',
+      width: '60%',
     },
 }));
 
@@ -304,13 +312,28 @@ export default function ManageUsers(props) {
   const curUser = props.users.user;
   const dumUsers = props.users.allUsers;
 
-  const admins = dumUsers.filter((user) => user.privelege_level === 'Admin');
-  const approved = dumUsers.filter((user) => user.privelege_level === 'Approved_User');
-  const unapproved = dumUsers.filter((user) => user.privelege_level === 'Unapproved_User');
+  const [search, setSearch] = React.useState({
+    admins: '',
+    approved: '',
+    unapproved: '',
+  });
 
-  console.log('Admins: ', admins);
-  console.log('Approved: ', approved);
-  console.log('Unapproved: ', unapproved);
+  const searchChange = (event) => {
+      event.preventDefault();
+      
+      setSearch({
+          ...search,
+          [event.target.name]: event.target.value,
+      });
+  };
+
+  const admins = dumUsers.filter((user) => user.privelege_level === 'Admin').filter(user => user.name.toLowerCase().startsWith(search.admins.toLowerCase()));
+  const approved = dumUsers.filter((user) => user.privelege_level === 'Approved_User').filter(user => user.name.toLowerCase().startsWith(search.approved.toLowerCase()));
+  const unapproved = dumUsers.filter((user) => user.privelege_level === 'Unapproved_User').filter(user => user.name.toLowerCase().startsWith(search.unapproved.toLowerCase()));
+
+  // console.log('Admins: ', admins);
+  // console.log('Approved: ', approved);
+  // console.log('Unapproved: ', unapproved);
 
   return (
       // props.users.errMess !== null
@@ -329,6 +352,31 @@ export default function ManageUsers(props) {
       </Backdrop>
       <Grid item xs={12} md={6}>
         <Typography variant='h4' align='center' className={{ width: '100%' }}>Admins</Typography>
+        <TextField
+          className={classes.search}
+          label='Search'
+          name='admins'
+          fullWidth
+          value={search.admins}
+          onChange={searchChange}
+          InputProps={{
+              endAdornment: (
+              <InputAdornment>
+                  {
+                      search.admins === ''
+                      ?
+                      <IconButton>
+                          <SearchIcon />
+                      </IconButton>
+                      :
+                      <IconButton onClick={() => {setSearch({...search, admins: ''})}}>
+                          <CloseIcon />
+                      </IconButton>
+                  }
+              </InputAdornment>
+              )
+          }}
+        />
         <Paper elevation={3} variant="outlined" className={classes.paper}>
           <ListGroup>
             {
@@ -361,7 +409,7 @@ export default function ManageUsers(props) {
                             {
                               Array.from(user.url).map(([key, value]) => {
                                 return(
-                                  <Typography variant='body1'>{`${key}: `}<CardLink href={value}>{value}</CardLink></Typography>
+                                  <Typography variant='body1'>{`${key}: `}<CardLink href={value}>{`${value.substr(0, 30)}...`}</CardLink></Typography>
                                 );
                               })
                             }
@@ -378,6 +426,31 @@ export default function ManageUsers(props) {
       </Grid>
       <Grid item xs={12} md={6}>
         <Typography variant='h4' align='center' className={{ width: '100%' }}>Approved Users</Typography>
+        <TextField
+          className={classes.search}
+          label='Search'
+          name='approved'
+          fullWidth
+          value={search.approved}
+          onChange={searchChange}
+          InputProps={{
+              endAdornment: (
+              <InputAdornment>
+                  {
+                      search.approved === ''
+                      ?
+                      <IconButton>
+                          <SearchIcon />
+                      </IconButton>
+                      :
+                      <IconButton onClick={() => {setSearch({...search, approved: ''})}}>
+                          <CloseIcon />
+                      </IconButton>
+                  }
+              </InputAdornment>
+              )
+          }}
+        />
         <Paper elevation={3} variant="outlined" className={classes.paper}>
           <ListGroup>
             {
@@ -410,7 +483,7 @@ export default function ManageUsers(props) {
                             {
                               Array.from(user.url).map(([key, value]) => {
                                 return(
-                                  <Typography variant='body1'>{`${key}: `}<CardLink href={value}>{value}</CardLink></Typography>
+                                  <Typography variant='body1'>{`${key}: `}<CardLink href={value}>{`${value.substr(0, 30)}...`}</CardLink></Typography>
                                 );
                               })
                             }
@@ -440,6 +513,31 @@ export default function ManageUsers(props) {
       </Grid>
       <Grid item xs={12} md={6}>
         <Typography variant='h4' align='center' className={{ width: '100%' }}>Unapproved Users</Typography>
+        <TextField
+          className={classes.search}
+          label='Search'
+          name='unapproved'
+          fullWidth
+          value={search.unapproved}
+          onChange={searchChange}
+          InputProps={{
+              endAdornment: (
+              <InputAdornment>
+                  {
+                      search.unapproved === ''
+                      ?
+                      <IconButton>
+                          <SearchIcon />
+                      </IconButton>
+                      :
+                      <IconButton onClick={() => {setSearch({...search, unapproved: ''})}}>
+                          <CloseIcon />
+                      </IconButton>
+                  }
+              </InputAdornment>
+              )
+          }}
+        />
         <Paper elevation={3} variant="outlined" className={classes.paper}>
           <ListGroup>
             {

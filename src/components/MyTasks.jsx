@@ -45,6 +45,7 @@ const useStyles = makeStyles(theme => ({
 export default function MyTasks(props) {
   
   const curUser = props.users.user;
+  const dumUsers = props.users.allUsers;
   const dumEvents = props.events.allEvents;
   const dumProjects = props.projects.allProjects;
   const classes = useStyles();
@@ -93,13 +94,13 @@ export default function MyTasks(props) {
     }
   }
 
-  const ongoingEvents = dumEvents.filter((event) => event.assignee === curUser.name).filter((event) => isOngoing(event.start_date, event.end_date));
-  const upcomingEvents = dumEvents.filter((event) => event.assignee === curUser.name).filter((event) => isUpcoming(event.start_date));
-  const completedEvents = dumEvents.filter((event) => event.assignee === curUser.name).filter((event) => isCompleted(event.end_date));
+  const ongoingEvents = dumEvents.filter((event) => event.assignee.includes(curUser._id)).filter((event) => isOngoing(event.start_date, event.end_date));
+  const upcomingEvents = dumEvents.filter((event) => event.assignee.includes(curUser._id)).filter((event) => isUpcoming(event.start_date));
+  const completedEvents = dumEvents.filter((event) => event.assignee.includes(curUser._id)).filter((event) => isCompleted(event.end_date));
 
-  const ideaProjects = dumProjects.filter((project) => project.members.indexOf(curUser._id) !== -1).filter((project) => project.status === 'IDEA');
-  const ongoingProjects = dumProjects.filter((project) => project.members.indexOf(curUser._id) !== -1).filter((project) => project.status === 'ONGOING');
-  const completedProjects = dumProjects.filter((project) => project.members.indexOf(curUser._id) !== -1).filter((project) => project.status === 'COMPLETED');
+  const ideaProjects = dumProjects.filter((project) => project.members.includes(curUser._id)).filter((project) => project.status === 'IDEA');
+  const ongoingProjects = dumProjects.filter((project) => project.members.includes(curUser._id)).filter((project) => project.status === 'ONGOING');
+  const completedProjects = dumProjects.filter((project) => project.members.includes(curUser._id)).filter((project) => project.status === 'COMPLETED');
 
   console.log('Ongoing Events: ', ongoingEvents.length);
   console.log('Upcoming Events: ', upcomingEvents.length);
@@ -181,7 +182,10 @@ export default function MyTasks(props) {
                                 </CardText>
                               </CardBody>
                               <CardFooter>
-                                Assigned to: {event.assignee}
+                                Assigned to:
+                                {
+                                  dumUsers.filter(user => event.assignee.includes(user._id)).map(user => (user.name + ', '))
+                                } 
                               </CardFooter>
                             </Card>
                           </ListGroupItem>
@@ -233,7 +237,10 @@ export default function MyTasks(props) {
                                 </CardText>
                               </CardBody>
                               <CardFooter>
-                                Assigned to: {event.assignee !== '' ? event.assignee: 'None'}
+                                Assigned to:
+                                {
+                                  dumUsers.filter(user => event.assignee.includes(user._id)).map(user => (user.name + ', '))
+                                } 
                               </CardFooter>
                             </Card>
                           </ListGroupItem>
@@ -285,7 +292,10 @@ export default function MyTasks(props) {
                                 </CardText>
                               </CardBody>
                               <CardFooter>
-                                Assigned to: {event.assignee}
+                                Assigned to:
+                                {
+                                  dumUsers.filter(user => event.assignee.includes(user._id)).map(user => (user.name + ', '))
+                                } 
                               </CardFooter>
                             </Card>
                           </ListGroupItem>

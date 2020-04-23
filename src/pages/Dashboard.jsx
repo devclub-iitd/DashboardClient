@@ -71,6 +71,9 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
   },
   toolbar: {
+    backgroundImage: "url('./logo.png')",
+    backgroundRepeat: "no-repeat",
+    backgroundPosition: "center center",
     paddingRight: 24, // keep right padding when drawer closed
   },
   toolbarIcon: {
@@ -80,7 +83,15 @@ const useStyles = makeStyles(theme => ({
     padding: '0 8px',
     ...theme.mixins.toolbar,
   },
+  bgimage: {
+    backgroundImage: "url('./logo.png')",
+    backgroundRepeat: "no-repeat",
+    backgroundPosition: "center center",
+  },
   appBar: {
+    // backgroundImage: "url('./logo.png')",
+    // backgroundRepeat: "no-repeat",
+    // backgroundPosition: "center center",
     zIndex: theme.zIndex.drawer + 1,
     transition: theme.transitions.create(['width', 'margin'], {
       easing: theme.transitions.easing.sharp,
@@ -462,14 +473,14 @@ function Dashboard(props) {
           horizontal: 'center',
         }}
         open={
-          props.users.serverError !== null && props.events.serverError !== null
-          && props.projects.serverError !== null && props.resources.serverError !== null
+          props.users.serverError === 'ERROR' || props.events.serverError === 'ERROR'
+          || props.projects.serverError === 'ERROR' || props.resources.serverError === 'ERROR'
         }
         autoHideDuration={2000}
         onClose={handleErrorClose}
         message="Server did not respond!!!"
       />
-      <AppBar position="absolute" className={clsx(classes.appBar, open && classes.appBarShift)}>
+      <AppBar position="absolute" classes={{paper: clsx(classes.bgimage)}} className={clsx(classes.appBar, open && classes.appBarShift)}>
         <Toolbar className={classes.toolbar}>
           <IconButton
             edge="start"
@@ -486,7 +497,7 @@ function Dashboard(props) {
             }
           </Typography>
           <IconButton color="inherit">
-            {`Welcome ${props.users.user.name}! ${props.users.user.privelege_level === 'Admin' ? '(You\`re Admin)': ''}`}
+            {`Hi ${props.users.user.name}! ${props.users.user.privelege_level === 'Admin' ? '(You\`re Admin)': ''}`}
             <Badge color="secondary">
               <NotificationsIcon />
             </Badge>
