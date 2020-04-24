@@ -49,6 +49,10 @@ const useStyles = makeStyles(theme => ({
     paper: {
         margin: '2em',
     },
+    backdrop: {
+        zIndex: theme.zIndex.drawer + 1,
+        color: '#fff',
+    },
 }));
 
 const EventsPage = ({ events, fetchAllEvents, editEvent, deleteEvent, users }) => {
@@ -118,53 +122,38 @@ const EventsPage = ({ events, fetchAllEvents, editEvent, deleteEvent, users }) =
           <CircularProgress color="inherit" />
         </Backdrop>
         <Paper elevation={3} variant="outlined" className={classes.paper}>
-            {/* <GridList spacing={1} className={classes.gridList}> */}
-            <Grid container justify='flex-start'>
-                <Grid item xs={4}>
-                    <Typography variant='h4' color="primary" className={classes.head}>Ongoing</Typography>
+                <Grid container justify='flex-start'>
+                    <Grid item xs={4}>
+                        <Typography variant='h4' color="primary" className={classes.head}>Ongoing</Typography>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <TextField
+                            className={classes.search}
+                            label='Search'
+                            name='ongoing'
+                            fullWidth
+                            value={search.ongoing}
+                            onChange={searchChange}
+                            InputProps={{
+                                endAdornment: (
+                                <InputAdornment>
+                                    {
+                                        search.ongoing === ''
+                                        ?
+                                        <IconButton>
+                                            <SearchIcon />
+                                        </IconButton>
+                                        :
+                                        <IconButton onClick={() => {setSearch({...search, ongoing: ''})}}>
+                                            <CloseIcon />
+                                        </IconButton>
+                                    }
+                                </InputAdornment>
+                                )
+                            }}
+                        />
+                    </Grid>
                 </Grid>
-                <Grid item xs={6}>
-                    <TextField
-                        className={classes.search}
-                        label='Search'
-                        name='ongoing'
-                        fullWidth
-                        value={search.ongoing}
-                        onChange={searchChange}
-                        InputProps={{
-                            endAdornment: (
-                            <InputAdornment>
-                                {
-                                    search.ongoing === ''
-                                    ?
-                                    <IconButton>
-                                        <SearchIcon />
-                                    </IconButton>
-                                    :
-                                    <IconButton onClick={() => {setSearch({...search, ongoing: ''})}}>
-                                        <CloseIcon />
-                                    </IconButton>
-                                }
-                            </InputAdornment>
-                            )
-                        }}
-                    />
-                </Grid>
-            </Grid>
-            {/* <Typography variant='h4' color="primary" className={classes.head}>Ongoing</Typography> */}
-            {/* <TextField
-                label='Search'
-                name='search'
-                InputProps={{
-                    endAdornment: (
-                    <InputAdornment>
-                        <IconButton>
-                        <SearchIcon />
-                        </IconButton>
-                    </InputAdornment>
-                    )
-                }}
-            /> */}
                 <Grid container spacing={2} className={classes.grid}>
                     {
                       ongoing.length === 0
@@ -174,7 +163,7 @@ const EventsPage = ({ events, fetchAllEvents, editEvent, deleteEvent, users }) =
                         ongoing.map((event, index) => (
                         // <GridListTile key={`${event}~${index}`} cols={2} rows={2}>
                         <Grid key={`${event}~${index}`} item xs={12} md={6} lg={4}>
-                            <Card color="primary" outline>
+                            <Card body style={{ borderColor: '#00c853' }}>
                                 <CardHeader>
                                     <Typography variant='h4'>{event.name}</Typography>
                                 </CardHeader>
@@ -220,7 +209,6 @@ const EventsPage = ({ events, fetchAllEvents, editEvent, deleteEvent, users }) =
                         // </GridListTile>
                     ))}
                 </Grid>
-            {/* </GridList> */}
         </Paper>
         <Paper elevation={3} variant="outlined" className={classes.paper}>
             {/* <GridList spacing={1} className={classes.gridList}> */}
@@ -266,7 +254,7 @@ const EventsPage = ({ events, fetchAllEvents, editEvent, deleteEvent, users }) =
                       upcoming.map((event, index) => (
                         // <GridListTile key={`${event}~${index}`} cols={2} rows={2}>
                         <Grid key={`${event}~${index}`} item xs={12} md={6} lg={4}>
-                            <Card color="primary" outline>
+                            <Card body style={{ borderColor: '#00c853' }}>
                                 <CardHeader>
                                     <Typography variant='h4'>{event.name}</Typography>
                                 </CardHeader>
@@ -358,7 +346,7 @@ const EventsPage = ({ events, fetchAllEvents, editEvent, deleteEvent, users }) =
                       completed.map((event, index) => (
                         // <GridListTile key={`${event}~${index}`} cols={2} rows={2}>
                         <Grid key={`${event}~${index}`} item xs={12} md={6} lg={4}>
-                            <Card color="primary" outline>
+                            <Card body style={{ borderColor: '#00c853' }}>
                                 <CardHeader>
                                     <Typography variant='h4'>{event.name}</Typography>
                                 </CardHeader>

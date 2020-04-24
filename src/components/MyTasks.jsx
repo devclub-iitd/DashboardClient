@@ -38,7 +38,11 @@ const useStyles = makeStyles(theme => ({
   },
   paper: {
       margin: '2em',
-      height: document.documentElement.clientWidth*0.9,
+      height: document.documentElement.clientHeight * 0.7,
+  },
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    color: '#fff',
   },
 }));
 
@@ -109,8 +113,9 @@ export default function MyTasks(props) {
   return (
     <Grid container justify='space-evenly'>
       <Grid item xs={12} md={6}>
+        <Typography variant='h4' align='center' className={{ width: '100%' }}>My Events</Typography>
         <Paper elevation={3} variant="outlined" className={classes.paper}>
-          <Typography variant='h4' align='center' className={{ width: '100%' }}>My Events</Typography>
+          {/* <Typography variant='h4' align='center' className={{ width: '100%' }}>My Events</Typography> */}
           <Backdrop className={classes.backdrop} open={props.events.isLoading}>
             <CircularProgress color="inherit" />
           </Backdrop>
@@ -162,7 +167,7 @@ export default function MyTasks(props) {
                       return(
                         <Fragment key={`${event}~${index}`}>
                           <ListGroupItem>
-                            <Card color="primary" outline>
+                            <Card body style={{ borderColor: '#00c853' }}>
                               <CardHeader>
                                 <Typography variant='h4'>{event.name}</Typography>
                               </CardHeader>
@@ -217,7 +222,7 @@ export default function MyTasks(props) {
                       return(
                         <Fragment key={`${event}~${index}`}>
                           <ListGroupItem>
-                            <Card color="primary" outline>
+                            <Card body style={{ borderColor: '#00c853' }}>
                               <CardHeader>
                                 <Typography variant='h4'>{event.name}</Typography>
                               </CardHeader>
@@ -272,7 +277,7 @@ export default function MyTasks(props) {
                       return(
                         <Fragment key={`${event}~${index}`}>
                           <ListGroupItem>
-                            <Card color="primary" outline>
+                            <Card body style={{ borderColor: '#00c853' }}>
                               <CardHeader>
                                 <Typography variant='h4'>{event.name}</Typography>
                               </CardHeader>
@@ -310,8 +315,9 @@ export default function MyTasks(props) {
         </Paper>
       </Grid>
       <Grid item xs={12} md={6}>
+      <Typography variant='h4' align='center' className={{ width: '100%' }}>My Projects</Typography>
         <Paper elevation={3} variant="outlined" className={classes.paper}>
-          <Typography variant='h4' align='center' className={{ width: '100%' }}>My Projects</Typography>
+          {/* <Typography variant='h4' align='center' className={{ width: '100%' }}>My Projects</Typography> */}
           <Backdrop className={classes.backdrop} open={props.projects.isLoading}>
             <CircularProgress color="inherit" />
           </Backdrop>
@@ -363,7 +369,7 @@ export default function MyTasks(props) {
                       return(
                         <Fragment key={`${project}~${index}`}>
                           <ListGroupItem>
-                            <Card color="primary" outline>
+                            <Card body style={{ borderColor: '#00c853' }}>
                               <CardHeader>
                                 <Typography variant='h4'>{project.name}</Typography>
                               </CardHeader>
@@ -418,7 +424,7 @@ export default function MyTasks(props) {
                       return(
                         <Fragment key={`${project}~${index}`}>
                           <ListGroupItem>
-                            <Card color="primary" outline>
+                            <Card body style={{ borderColor: '#00c853' }}>
                               <CardHeader>
                                 <Typography variant='h4'>{project.name}</Typography>
                               </CardHeader>
@@ -473,7 +479,7 @@ export default function MyTasks(props) {
                       return(
                         <Fragment key={`${project}~${index}`}>
                           <ListGroupItem>
-                            <Card color="primary" outline>
+                            <Card body style={{ borderColor: '#00c853' }}>
                               <CardHeader>
                                 <Typography variant='h4'>{project.name}</Typography>
                               </CardHeader>

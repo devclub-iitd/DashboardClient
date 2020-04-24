@@ -3,7 +3,7 @@ import { makeStyles, useTheme } from '@material-ui/core/styles';
 import { Grid, Typography,
   TableContainer, Dialog, DialogTitle, DialogContent,
   FormControlLabel, Radio, RadioGroup, Switch, InputLabel,
-  Select, Input, Chip, MenuItem, FormLabel, FormControl, 
+  Select, Input, Chip, MenuItem, FormLabel, FormControl, Avatar,
   TextField, Fab, Checkbox, ListItemText, Backdrop, CircularProgress, Snackbar,
  } from '@material-ui/core';
 // import PendingTasks from './PendingTasks';
@@ -76,7 +76,7 @@ const useStyles = makeStyles(theme => ({
     overflowY: 'scroll',
   },
   popBody: {
-    height: 300,
+    height: document.documentElement.clientHeight * 0.3,
     // minwidth: '80%',
     // width: 500,
     padding: 0,
@@ -104,6 +104,16 @@ const useStyles = makeStyles(theme => ({
   backdrop: {
     zIndex: theme.zIndex.drawer + 1,
     color: '#fff',
+  },
+  card: {
+    '&:hover': {
+      borderColor: '#00c853',
+    },
+  },
+  large: {
+    width: theme.spacing(7),
+    height: theme.spacing(7),
+    marginLeft: '1em',
   },
 }));
 
@@ -364,36 +374,6 @@ export default function Home(props) {
   const dumEvents = props.events.allEvents;
   const dumProjects = props.projects.allProjects;
   const dumResources = props.resources.allResources;
-  
-  // console.log('Initial events: ', allEvents);
-
-  // const dumEvents = allEvents.map(event => {
-  //   if (event.assignee === undefined || event.assignee === null) {
-  //     event.assignee = [];
-  //   }
-  //   if (event.start_date === undefined || event.start_date === null) {
-  //     event.start_date = new Date();
-  //   }
-  //   if (event.end_date === undefined || event.end_date === null) {
-  //     event.end_date = new Date();
-  //   }
-  //   return event;
-  // });
-
-  // console.log('Final Events: ', dumEvents);
-
-  // const dumProjects = allProjects.map(project => {
-  //   if (project.members === undefined || project.members === null) {
-  //     project.members = [];
-  //   }
-  //   if (project.start_date === undefined || project.start_date === null) {
-  //     project.start_date = new Date();
-  //   }
-  //   if (project.end_date === undefined || project.end_date === null) {
-  //     project.end_date = new Date();
-  //   }
-  //   return project;
-  // });
 
   const [eventPopOpen, setEventPopOpen] = React.useState(false);
   const toggleEventPop = () => {
@@ -520,18 +500,12 @@ export default function Home(props) {
   return (
     <div>
       <Grid id="pageContainer" container spacing={3} justify="space-evenly">
-        {/* <Grid item xs={12} md={8} lg={9}>
-          <Paper className="">
-            <TaskData />
-            
-          </Paper>
-        </Grid> */}
         <Grid item id="popContainer" spacing={3} container xs={12} md={5} justify="space-evenly" className={classes.cardBorderL}>
           <Grid item xs={12}>
             <Typography align="center" variant="h4">Club Activities</Typography>
           </Grid>
           <Grid item xs={12} sm={6}>
-            <Card className="btn" id="eventCard" onClick={handleEventCardOpen}>
+            <Card body className="btn" style={{ borderColor: '#00c853' }} id="eventCard" onClick={handleEventCardOpen}>
               {
                 props.events.errMess !== null
                 ? 
@@ -591,17 +565,13 @@ export default function Home(props) {
                       : null
                     }
                     {
-                      // dumEvents.filter((event) => isOngoing(event.start_date, event.end_date)).filter((event) => event.assignee === undefined ? false : event.assignee.includes(curUser._id)).length === 0
-                      // ?
-                      // <Typography variant='h4' color='textSecondary'>No events for you</Typography>
-                      // :
                       <ListGroup>
                         {
                           dumEvents.filter((event) => isOngoing(event.start_date, event.end_date)).map((event, index) => {
                             return(
                               <Fragment key={`${event}~${index}`}>
                                 <ListGroupItem>
-                                  <Card color="primary" outline>
+                                  <Card body style={{ borderColor: '#00c853' }}>
                                     <CardHeader>
                                       <Typography variant='h4'>{event.name}</Typography>
                                     </CardHeader>
@@ -653,7 +623,7 @@ export default function Home(props) {
                             return(
                               <Fragment key={`${event}~${index}`}>
                                 <ListGroupItem>
-                                  <Card color="primary" outline>
+                                  <Card body style={{ borderColor: '#00c853' }}>
                                     <CardHeader>
                                       <Typography variant='h4'>{event.name}</Typography>
                                     </CardHeader>
@@ -705,7 +675,7 @@ export default function Home(props) {
                             return(
                               <Fragment key={`${event}~${index}`}>
                                 <ListGroupItem>
-                                  <Card color="primary" outline>
+                                  <Card body style={{ borderColor: '#00c853' }}>
                                     <CardHeader>
                                       <Typography variant='h4'>{event.name}</Typography>
                                     </CardHeader>
@@ -763,10 +733,10 @@ export default function Home(props) {
                       return(
                         <Fragment key={`${event}~${index}`}>
                           <ListGroupItem>
-                            <Card>
+                            <Card body>
                               <CardBody>
                                 <CardTitle>
-                                  <Typography color="primary">{event.name}</Typography>
+                                  <Typography color="secondary">{event.name}</Typography>
                                 </CardTitle>
                                 <CardText>
                                   <Typography className={classes.popCardBody} >{event.description}</Typography>
@@ -803,7 +773,7 @@ export default function Home(props) {
             </Popover>
           </Grid>
           <Grid item xs={12} sm={6}>
-            <Card className="btn" id="projectCard" onClick={handleProjectCardOpen}>
+            <Card body className="btn" style={{ borderColor: '#00c853' }} id="projectCard" onClick={handleProjectCardOpen}>
               {
                 props.projects.errMess !== null
                 ? 
@@ -869,7 +839,7 @@ export default function Home(props) {
                             return(
                               <Fragment key={`${project}~${index}`}>
                                 <ListGroupItem>
-                                  <Card color="primary" outline>
+                                  <Card body style={{ borderColor: '#00c853' }}>
                                     <CardHeader>
                                       <Typography variant='h4'>{project.name}</Typography>
                                     </CardHeader>
@@ -920,7 +890,7 @@ export default function Home(props) {
                             return(
                               <Fragment key={`${project}~${index}`}>
                                 <ListGroupItem>
-                                  <Card color="primary" outline>
+                                  <Card body style={{ borderColor: '#00c853' }}>
                                     <CardHeader>
                                       <Typography variant='h4'>{project.name}</Typography>
                                     </CardHeader>
@@ -971,7 +941,7 @@ export default function Home(props) {
                             return(
                               <Fragment key={`${project}~${index}`}>
                                 <ListGroupItem>
-                                  <Card color="primary" outline>
+                                  <Card body style={{ borderColor: '#00c853' }}>
                                     <CardHeader>
                                       <Typography variant='h4'>{project.name}</Typography>
                                     </CardHeader>
@@ -1025,10 +995,10 @@ export default function Home(props) {
                       return(
                         <Fragment key={`${project}~${index}`}>
                           <ListGroupItem>
-                            <Card>
+                            <Card body>
                               <CardBody>
                                 <CardTitle>
-                                  <Typography color="primary">{project.name}</Typography>
+                                  <Typography color="secondary">{project.name}</Typography>
                                 </CardTitle>
                                 <CardText>
                                   <Typography className={classes.popCardBody} >{project.description}</Typography>
@@ -1060,7 +1030,7 @@ export default function Home(props) {
             </Popover>
           </Grid>
           <Grid item xs={12} sm={6}>
-            <Card id="resourceCard" className="btn" onClick={handleResourceCardOpen}>
+            <Card id="resourceCard" body className="btn" style={{ borderColor: '#00c853' }} onClick={handleResourceCardOpen}>
               {
                 props.resources.errMess !== null
                 ? 
@@ -1118,7 +1088,7 @@ export default function Home(props) {
                             return(
                               <Fragment key={`${res}~${index}`}>
                                 <ListGroupItem>
-                                  <Card color="primary" outline>
+                                  <Card body style={{ borderColor: '#00c853' }}>
                                     <CardHeader>
                                       <Typography variant='h4'>{res.name}</Typography>
                                     </CardHeader>
@@ -1165,7 +1135,7 @@ export default function Home(props) {
                             return(
                               <Fragment key={`${res}~${index}`}>
                                 <ListGroupItem>
-                                  <Card color="primary" outline>
+                                  <Card body style={{ borderColor: '#00c853' }}>
                                     <CardHeader>
                                       <Typography variant='h4'>{res.name}</Typography>
                                     </CardHeader>
@@ -1215,10 +1185,10 @@ export default function Home(props) {
                       return(
                         <Fragment key={`${res}~${index}`}>
                           <ListGroupItem>
-                            <Card>
+                            <Card body>
                               <CardBody>
                                 <CardTitle>
-                                  <Typography color="primary">{res.name}</Typography>
+                                  <Typography color="secondary">{res.name}</Typography>
                                 </CardTitle>
                                 <CardText>
                                   <Typography className={classes.popCardBody} >{`${res.description.substr(0, 30)}...`}</Typography>
@@ -1251,7 +1221,7 @@ export default function Home(props) {
             </Popover>
           </Grid>
           <Grid item xs={12} sm={6}>
-            <Card id="memCard" className="btn" onClick={handleUserCardOpen}>
+            <Card id="memCard" body className="btn" style={{ borderColor: '#00c853' }} onClick={handleUserCardOpen}>
               {
                 props.users.usersErrMess !== null
                 ? 
@@ -1302,10 +1272,10 @@ export default function Home(props) {
                 <TabContent activeTab={activeTab}>
                   <TabPane tabId='Ongoing'>
                     {
-                      props.users.errMess !== null
+                      props.users.userErrMess !== null
                       ?
                       <div>
-                        <h4>Failed to fetch Resources</h4>
+                        <h4>Failed to fetch Members</h4>
                         <h4>{props.users.errMess}</h4>
                       </div>
                       : null
@@ -1317,9 +1287,16 @@ export default function Home(props) {
                             return(
                               <Fragment key={`${user}~${index}`}>
                                 <ListGroupItem>
-                                  <Card color="primary" outline>
+                                  <Card body style={{ borderColor: '#00c853' }}>
                                     <CardHeader>
-                                      <Typography variant='h2'>{user.name}</Typography>
+                                      <Grid container>
+                                        <Grid item xs={12} md={9}>
+                                          <Typography variant='h3'>{user.name}</Typography>
+                                        </Grid>
+                                        <Grid item xs={12} md={3}>
+                                          <Avatar alt="" src={user.url.get('picture_url')} className={classes.large} />
+                                        </Grid> 
+                                      </Grid>
                                     </CardHeader>
                                     <CardBody>
                                       <CardTitle>
@@ -1331,7 +1308,7 @@ export default function Home(props) {
                                       <CardText>
                                         <Typography variant='body1'>{user.intro}</Typography>
                                         <Typography variant='body1'>{`Interests: ${user.interests}`}</Typography>
-                                        <Typography variant='body1'>{`Specializations: ${user.specializations}`}</Typography>
+                                        <Typography variant='body1'>{`Specializations: ${user.specialization}`}</Typography>
                                         <Typography variant='body1'>{`Hostel: ${user.hostel}`}</Typography>
                                         <Typography variant='caption'>{`Email: ${user.email}`}</Typography>
                                         <Typography variant='body1'>{`Mobile: ${user.mobile_number}`}</Typography>
@@ -1355,10 +1332,10 @@ export default function Home(props) {
                   </TabPane>
                   <TabPane tabId='Upcoming'>
                     {
-                      props.users.errMess !== null
+                      props.users.userErrMess !== null
                       ?
                       <div>
-                        <h4>Failed to fetch Resources</h4>
+                        <h4>Failed to fetch Members</h4>
                         <h4>{props.users.errMess}</h4>
                       </div>
                       : null
@@ -1370,9 +1347,16 @@ export default function Home(props) {
                             return(
                               <Fragment key={`${user}~${index}`}>
                                 <ListGroupItem>
-                                  <Card color="primary" outline>
+                                  <Card body style={{ borderColor: '#00c853' }}>
                                     <CardHeader>
-                                      <Typography variant='h2'>{user.name}</Typography>
+                                      <Grid container>
+                                        <Grid item xs={12} md={9}>
+                                          <Typography variant='h3'>{user.name}</Typography>
+                                        </Grid>
+                                        <Grid item xs={12} md={3}>
+                                          <Avatar alt="" src={user.url.get('picture_url')} className={classes.large} />
+                                        </Grid> 
+                                      </Grid>
                                     </CardHeader>
                                     <CardBody>
                                       <CardTitle>
@@ -1384,7 +1368,7 @@ export default function Home(props) {
                                       <CardText>
                                         <Typography variant='body1'>{user.intro}</Typography>
                                         <Typography variant='body1'>{`Interests: ${user.interests}`}</Typography>
-                                        <Typography variant='body1'>{`Specializations: ${user.specializations}`}</Typography>
+                                        <Typography variant='body1'>{`Specializations: ${user.specialization}`}</Typography>
                                         <Typography variant='body1'>{`Hostel: ${user.hostel}`}</Typography>
                                         <Typography variant='caption'>{`Email: ${user.email}`}</Typography>
                                         <Typography variant='body1'>{`Mobile: ${user.mobile_number}`}</Typography>
@@ -1408,10 +1392,10 @@ export default function Home(props) {
                   </TabPane>
                   <TabPane tabId='Completed'>
                     {
-                      props.users.errMess !== null
+                      props.users.userErrMess !== null
                       ?
                       <div>
-                        <h4>Failed to fetch Resources</h4>
+                        <h4>Failed to fetch Members</h4>
                         <h4>{props.users.errMess}</h4>
                       </div>
                       : null
@@ -1423,9 +1407,16 @@ export default function Home(props) {
                             return(
                               <Fragment key={`${user}~${index}`}>
                                 <ListGroupItem>
-                                  <Card color="primary" outline>
+                                  <Card body style={{ borderColor: '#00c853' }}>
                                     <CardHeader>
-                                      <Typography variant='h2'>{user.name}</Typography>
+                                      <Grid container>
+                                        <Grid item xs={12} md={9}>
+                                          <Typography variant='h3'>{user.name}</Typography>
+                                        </Grid>
+                                        <Grid item xs={12} md={3}>
+                                          <Avatar alt="" src={user.url.get('picture_url')} className={classes.large} />
+                                        </Grid> 
+                                      </Grid>
                                     </CardHeader>
                                     <CardBody>
                                       <CardTitle>
@@ -1435,19 +1426,7 @@ export default function Home(props) {
                                         <Typography variant='h6'>{user.category}</Typography>
                                       </CardSubtitle>
                                       <CardText>
-                                        <Typography variant='body1'>{user.intro}</Typography>
-                                        <Typography variant='body1'>{`Interests: ${user.interests}`}</Typography>
-                                        <Typography variant='body1'>{`Specializations: ${user.specializations}`}</Typography>
-                                        <Typography variant='body1'>{`Hostel: ${user.hostel}`}</Typography>
                                         <Typography variant='caption'>{`Email: ${user.email}`}</Typography>
-                                        <Typography variant='body1'>{`Mobile: ${user.mobile_number}`}</Typography>
-                                        {
-                                          Array.from(user.url).map(([key, value]) => {
-                                            return(
-                                              <Typography variant='body1'>{`${key}: `}<CardLink href={value}>{`${value.substr(0, 30)}...`}</CardLink></Typography>
-                                            );
-                                          })
-                                        }
                                       </CardText>
                                     </CardBody>
                                   </Card>
@@ -1479,10 +1458,10 @@ export default function Home(props) {
                       return(
                         <Fragment key={`${user}~${index}`}>
                           <ListGroupItem>
-                            <Card>
+                            <Card body>
                               <CardBody>
                                 <CardTitle>
-                                  <Typography color="primary">{user.name}</Typography>
+                                  <Typography color="secondary">{user.name}</Typography>
                                   <Typography variant="body2">{user.entry_no}</Typography>
                                 </CardTitle>
                                 <CardText>
@@ -1551,7 +1530,7 @@ export default function Home(props) {
                         return(
                           <Fragment key={`${event}~${index}`}>
                             <ListGroupItem>
-                              <Card color="primary" outline>
+                              <Card body style={{ borderColor: '#00c853' }}>
                                 <CardHeader>
                                   <Typography variant='h4'>{event.name}</Typography>
                                 </CardHeader>
@@ -1594,7 +1573,7 @@ export default function Home(props) {
                         return(
                           <Fragment key={`${project}~${index}`}>
                             <ListGroupItem>
-                              <Card color="primary" outline>
+                              <Card body style={{ borderColor: '#00c853' }}>
                                 <CardHeader>
                                   <Typography variant='h4'>{project.name}</Typography>
                                 </CardHeader>
@@ -1617,7 +1596,7 @@ export default function Home(props) {
                                 <CardFooter>
                                   Assigned to: 
                                   {
-                                    project.members.map((memId) => dumUsers.filter((user) => user._id === memId).name + ', ')
+                                    dumUsers.filter(user => project.members.includes(user._id)).map(user => (user.name + ', '))
                                   }
                                 </CardFooter>
                               </Card>

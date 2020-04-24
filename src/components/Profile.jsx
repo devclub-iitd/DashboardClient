@@ -22,19 +22,11 @@ import DateFnsUtils from '@date-io/date-fns';
 import AddIcon from '@material-ui/icons/Add';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutline';
-
 import {
-  Label, ModalHeader, ModalBody, Button, Row, Col,
+  Label, ModalHeader, ModalBody, Button, Row, Col, CardLink,
 } from 'reactstrap';
-
-
 import { connect } from 'react-redux';
 import { fetchUserProfile } from '../redux/userActionCreator';
-// import { fetchUser } from '../actions/userActions';
-
-// const mapStateToProps = state => ({
-//   user: state.user,
-// });
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -56,18 +48,16 @@ const useStyles = makeStyles(theme => ({
     maxWidth: '100%',
   },
   media: {
-    maxWidth: 300,
+    height: 0,
+    paddingTop: '56.25%',
+    marginLeft: 'auto',
+    marginRight: 'auto',
   },
   image: {
     width: 'auto',
-    maxHeight: '250px',
-    // border: 'solid blue 3px',
+    maxHeight: document.documentElement.clientHeight * 0.4,
   },
   imgcontainer: {
-    // border: 'solid red 3px',
-  },
-  gcontainer: {
-    border: 'solid yellow 3px',
   },
   pad: {
     padding: '1em',
@@ -77,111 +67,18 @@ const useStyles = makeStyles(theme => ({
     position: 'fixed',
   },
   modal: {
-    // position: 'absolute',
-    // top: 0,
-    // bottom: 0,
-    // left: 0,
-    // right: 0,
-    // margin: 'auto',
-    // marginLeft: '20rem',
-    // marginRight: 'auto',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
   },
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    color: '#fff',
+  },
 }));
-
-// const user = {
-//   email: 'anweshanbor@gmail.com',
-//   name: 'Anweshan Bor',
-//   password: '12345678',
-//   entry_no: '2018EE30878',
-//   hostel: 'KUMAON',
-//   gender: 'male',
-//   join_year: '23/07/2018',
-//   grad_year: '20/05/2022',
-//   birth_date: '17/06/1999',
-//   mobile_number: '9582575393',
-//   hometown: 'Bishnupur, West Bengal',
-//   interests: 'Arduino, Machine Learning, RaspberryPi, Python, WebDev, Signal Processing',
-//   specialization: 'Python, C++, Java, Frontend Webdev',
-//   intro: 'My name is Anweshan Bor. My name is Anweshan Bor. My name is Anweshan Bor',
-//   category: 'frontend',
-//   display_on_website: true,
-//   url: 'www.linkedin.com/anweshanbor',
-//   created_by: null,
-//   updated_by: null,
-//   privelege_level: 'Approved_User',
-// };
-
-const userProfile = {
-  email: 'anweshanbor@gmail.com',
-  name: 'Anweshan Bor',
-  // password: '12345678',
-  entry_no: '2018EE30878',
-  hostel: 'KUMAON',
-  gender: 'male',
-  join_year: '23/07/2018',
-  grad_year: '20/05/2022',
-  birth_date: '17/06/1999',
-  mobile_number: '9582575393',
-  hometown: 'Bishnupur, West Bengal',
-  interests: 'Arduino, Machine Learning, RaspberryPi, Python, WebDev, Signal Processing',
-  specialization: 'Python, C++, Java, Frontend Webdev',
-  intro: 'My name is Anweshan Bor. My name is Anweshan Bor. My name is Anweshan Bor',
-  category: 'frontend',
-  // display_on_website: true,
-  url: 'www.linkedin.com/anweshanbor',
-  // created_by: null,
-  // updated_by: null,
-  // privelege_level: 'Approved_User',
-};
-
-// const mapDispatchToProps = dispatch => ({
-//   fetchUserProfile: uname => dispatch(fetchUserProfile(uname)),
-// });
-
-// const uname = 'Anweshan Bor';
 
 const Profile = (props) => {
   const classes = useStyles();
-  // const { user } = this.props;
-  // let isModalOpen = false;
-  // const [user, setUser] = React.useState({
-  //   email: 'anweshanbor@gmail.com',
-  //   name: 'Anweshan Bor',
-  //   // password: '12345678',
-  //   entry_no: '2018EE30878',
-  //   hostel: 'KUMAON',
-  //   gender: 'male',
-  //   join_year: new Date('03/25/2018'),
-  //   grad_year: new Date('03/25/2022'),
-  //   birth_date: new Date('06/17/1999'),
-  //   mobile_number: '9582575393',
-  //   hometown: 'Bishnupur, West Bengal',
-  //   interests: 'Arduino, Machine Learning, RaspberryPi, Python, WebDev, Signal Processing',
-  //   specialization: 'Python, C++, Java, Frontend Webdev',
-  //   intro: 'My name is Anweshan Bor. My name is Anweshan Bor. My name is Anweshan Bor',
-  //   category: 'frontend',
-  //   display_on_website: true,
-  //   url: new Map([
-  //     ['linkedIn', 'www.linkedin.com/anweshanbor'],
-  //     ['google', 'wwww.google.com'],
-  //     ['facebook', 'wwww.facebook.com'],
-  //   ]),
-  //   created_by: null,
-  //   updated_by: null,
-  //   privelege_level: 'Approved_User',
-  // });
-  // if (props.error) {
-  //   return (
-  //     <h3>Could not fetch user info!!</h3>
-  //   );
-  // }
-
-  // const [user, setUser] = React.useState(props.user);
-
-  // const [userOrg, setUserOrg] = React.useState(user);
 
   const [state, setState] = React.useState({
     editUser: props.user,
@@ -257,29 +154,6 @@ const Profile = (props) => {
     setIsModalOpen(false);
   };
 
-  const toggleModal = () => {
-    console.log('toggling modal to: ');
-    // isModalOpen = !isModalOpen;
-    setIsModalOpen(!isModalOpen);
-    console.log(isModalOpen);
-  };
-
-  // const [DOB, setDOB] = React.useState(user.birth_date);
-  // const DOBChange = (date) => {
-  //   setDOB(date);
-  // };
-
-  // const [joinDate, setJoinYear] = React.useState(user.join_year);
-  // const joinChange = (date) => {
-  //   setJoinYear(date);
-  // };
-
-  // const [gradDate, setGradYear] = React.useState(user.grad_year);
-  // const gradChange = (date) => {
-  //   setGradYear(date);
-  // };
-
-  // const [urlFields, setUrlFields] = React.useState(state.editUser.url);
   const handleAddUrlFields = () => {
     const values = [...state.urlFields];
     values.push({ type: '', url: '' });
@@ -405,34 +279,12 @@ const Profile = (props) => {
     console.log(state.editUser);
   };
 
-  // React.useEffect(() => {
-  //   // props.fetchUser(localStorage.getItem('userId'));
-  //   setState({
-  //     ...state,
-  //     editUser: props.user,
-  //     orgUser: props.user,
-  //     urlFields: Array.from(props.user.url).map(([index, value]) => ({ type: index, url: value })),
-  //     editSuccess: false,
-  //   });
-  // });
-
-  // const required = () => user.name && user.name.length;
-
   const required = val => val && val.length;
   const maxLength = len => val => !(val) || (val.length <= len);
   const minLength = len => val => (val) && (val.length >= len);
 
   return (
     <div>
-      {/* <img
-          src=""
-          alt="Profile"
-        />
-        <br /> */}
-      {/* className={classes.iconright} */}
-      {/* <Fab onClick={handleOpen} color="primary" aria-label="edit">
-        <EditIcon />
-      </Fab> */}
       <Grid container direction="row" justify="space-evenly" alignItems="flex-start">
         <Snackbar
           anchorOrigin={{
@@ -918,9 +770,14 @@ const Profile = (props) => {
             <EditIcon />
           </Fab>
         </Grid>
-        <Grid className={classes.gcontainer} item sm={9} lg={5}>
+        <Grid item sm={9} lg={5}>
           <Card className={classes.card}>
-            <img className={classes.image} src={state.orgUser.url.get('picture_url')} alt="Profile Pic" />
+            {/* <img className={classes.image} src={state.orgUser.url.get('picture_url')} alt="Profile Pic" /> */}
+            <CardMedia
+              className={classes.media}
+              image={state.orgUser.url.get('picture_url')}
+              // title="Paella dish"
+            />
             <CardContent>
               <Typography gutterBottom variant="h5" component="h2" align="right">
                 {state.orgUser.name}
@@ -953,108 +810,135 @@ const Profile = (props) => {
             </CardContent>
           </Card>
         </Grid>
-        <Grid container direction="column" item sm={9} lg={5} justify="space-evenly" spacing={2}>
-          <Grid item sm={12}>
-            <Card className={classes.card}>
-              <CardContent>
-                <Grid container direction="row" justify="center">
-                  <Grid item xs={5}>
-                    <Typography className={classes.pad} gutterBottom variant="p" color="textPrimary" align="right">
-                      <b>Entry Number:</b>
-                    </Typography>
+        <Grid item sm={9} lg={5}>
+          <Grid container direction="column" justify="center" alignItems="center" spacing={4}>
+            <Grid style={{ width: '100%' }} item xs={12}>
+              <Card className={classes.card}>
+                <CardContent>
+                  <Grid container direction="row" justify="center">
+                    <Grid item xs={5}>
+                      <Typography className={classes.pad} gutterBottom variant="p" color="textPrimary" align="right">
+                        <b>Entry Number:</b>
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={5}>
+                      <Typography className={classes.pad} gutterBottom variant="p" color="textPrimary" align="left">
+                        {state.orgUser.entry_no}
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={5}>
+                      <Typography className={classes.pad} gutterBottom variant="p" color="textPrimary" align="right">
+                        <b>Hostel:</b>
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={5}>
+                      <Typography className={classes.pad} gutterBottom variant="p" color="textPrimary" align="left">
+                        {state.orgUser.hostel}
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={5}>
+                      <Typography className={classes.pad} gutterBottom variant="p" color="textPrimary" align="right">
+                        <b>Gender:</b>
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={5}>
+                      <Typography className={classes.pad} gutterBottom variant="p" color="textPrimary" align="left">
+                        {state.orgUser.gender}
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={5}>
+                      <Typography className={classes.pad} gutterBottom variant="p" color="textPrimary" align="right">
+                        <b>DOB:</b>
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={5}>
+                      <Typography className={classes.pad} gutterBottom variant="p" color="textPrimary" align="left">
+                        {state.orgUser.birth_date.toDateString()}
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={5}>
+                      <Typography className={classes.pad} gutterBottom variant="p" color="textPrimary" align="right">
+                        <b>Join Year:</b>
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={5}>
+                      <Typography className={classes.pad} gutterBottom variant="p" color="textPrimary" align="left">
+                        {state.orgUser.join_year.toDateString()}
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={5}>
+                      <Typography className={classes.pad} gutterBottom variant="p" color="textPrimary" align="right">
+                        <b>Grad Year:</b>
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={5}>
+                      <Typography className={classes.pad} gutterBottom variant="p" color="textPrimary" align="left">
+                        {state.orgUser.grad_year.toDateString()}
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={5}>
+                      <Typography className={classes.pad} gutterBottom variant="p" color="textPrimary" align="right">
+                        <b>Hometown:</b>
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={5}>
+                      <Typography className={classes.pad} gutterBottom variant="p" color="textPrimary" align="left">
+                        {state.orgUser.hometown}
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={5}>
+                      <Typography className={classes.pad} gutterBottom variant="p" color="textPrimary" align="right">
+                        <b>Category:</b>
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={5}>
+                      <Typography className={classes.pad} gutterBottom variant="p" color="textPrimary" align="left">
+                        {state.orgUser.category}
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={5}>
+                      <Typography className={classes.pad} gutterBottom variant="p" color="textPrimary" align="right">
+                        <b>Urls:</b>
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={5}>
+                      {
+                        Array.from(state.orgUser.url).map(([key, value]) => (
+                          <Typography color="textPrimary" variant="body1">
+                            {`${key}: `}
+                            <CardLink href={value}>{`${value.substr(0, 30)}...`}</CardLink>
+                          </Typography>
+                        ))
+                      }
+                    </Grid>
                   </Grid>
-                  <Grid item xs={5}>
-                    <Typography className={classes.pad} gutterBottom variant="p" color="textPrimary" align="left">
-                      {state.orgUser.entry_no}
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={5}>
-                    <Typography className={classes.pad} gutterBottom variant="p" color="textPrimary" align="right">
-                      <b>Hostel:</b>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={5}>
-                    <Typography className={classes.pad} gutterBottom variant="p" color="textPrimary" align="left">
-                      {state.orgUser.hostel}
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={5}>
-                    <Typography className={classes.pad} gutterBottom variant="p" color="textPrimary" align="right">
-                      <b>Gender:</b>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={5}>
-                    <Typography className={classes.pad} gutterBottom variant="p" color="textPrimary" align="left">
-                      {state.orgUser.gender}
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={5}>
-                    <Typography className={classes.pad} gutterBottom variant="p" color="textPrimary" align="right">
-                      <b>Join Year:</b>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={5}>
-                    <Typography className={classes.pad} gutterBottom variant="p" color="textPrimary" align="left">
-                      {state.orgUser.join_year.toDateString()}
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={5}>
-                    <Typography className={classes.pad} gutterBottom variant="p" color="textPrimary" align="right">
-                      <b>Grad Year:</b>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={5}>
-                    <Typography className={classes.pad} gutterBottom variant="p" color="textPrimary" align="left">
-                      {state.orgUser.grad_year.toDateString()}
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={5}>
-                    <Typography className={classes.pad} gutterBottom variant="p" color="textPrimary" align="right">
-                      <b>Hometown:</b>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={5}>
-                    <Typography className={classes.pad} gutterBottom variant="p" color="textPrimary" align="left">
-                      {state.orgUser.hometown}
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={5}>
-                    <Typography className={classes.pad} gutterBottom variant="p" color="textPrimary" align="right">
-                      <b>Category:</b>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={5}>
-                    <Typography className={classes.pad} gutterBottom variant="p" color="textPrimary" align="left">
-                      {state.orgUser.category}
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid item sm={12}>
-            <Card className={classes.card}>
-              <CardContent>
-                <Typography variant="h5" gutterBottom color="textPrimary" align="left">
-                  <b>Interests</b>
-                </Typography>
-                <Typography variant="p" gutterBottom color="textPrimary" align="left">
-                  {state.orgUser.interests}
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid item sm={12}>
-            <Card className={classes.card}>
-              <CardContent>
-                <Typography variant="h5" gutterBottom color="textPrimary" align="left">
-                  <b>Specializations</b>
-                </Typography>
-                <Typography variant="p" gutterBottom color="textPrimary" align="left">
-                  {state.orgUser.specialization}
-                </Typography>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            </Grid>
+            <Grid style={{ width: '100%' }} item xs={12}>
+              <Card className={classes.card}>
+                <CardContent>
+                  <Typography variant="h5" gutterBottom color="textPrimary" align="left">
+                    <b>Interests</b>
+                  </Typography>
+                  <Typography variant="p" gutterBottom color="textPrimary" align="left">
+                    {state.orgUser.interests}
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+            <Grid style={{ width: '100%' }} item xs={12}>
+              <Card className={classes.card}>
+                <CardContent>
+                  <Typography variant="h5" gutterBottom color="textPrimary" align="left">
+                    <b>Specializations</b>
+                  </Typography>
+                  <Typography variant="p" gutterBottom color="textPrimary" align="left">
+                    {state.orgUser.specialization}
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
           </Grid>
         </Grid>
       </Grid>
@@ -1064,10 +948,4 @@ const Profile = (props) => {
   // }
 };
 
-// Profile.propTypes = {
-//   fetchUser: PropTypes.func.isRequired,
-//   user: PropTypes.object
-// }
-
-// export default connect(mapStateToProps, mapDispatchToProps)(Profile);
 export default Profile;

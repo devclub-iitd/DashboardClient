@@ -4,13 +4,13 @@ import {
   Grid, Typography,
   TableContainer, Dialog, DialogTitle, DialogContent,
   FormControlLabel, Radio, RadioGroup, Switch, InputLabel,
-  Select, Input, Chip, MenuItem, FormLabel, FormControl,
+  Select, Input, Chip, MenuItem, FormLabel, FormControl, Button,
   TextField, Fab, Checkbox, ListItemText, Snackbar,
 } from '@material-ui/core';
 // import PendingTasks from './PendingTasks';
 import {
   Card, CardImg, CardImgOverlay, CardText,
-  CardBody, CardTitle, CardFooter, CardLink, Button, Popover,
+  CardBody, CardTitle, CardFooter, CardLink, Popover,
   PopoverHeader, PopoverBody, ListGroup, ListGroupItem,
   Row, Col, CardHeader, CardSubtitle, Label,
   TabContent, TabPane, Nav, NavItem, NavLink,
@@ -55,6 +55,7 @@ class EditResourceForm extends Component {
     this.confirmDeleteClose = this.confirmDeleteClose.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
     this.handleSuccessClose = this.handleSuccessClose.bind(this);
+    this.cancelEdit = this.cancelEdit.bind(this);
   }
 
   componentWillReceiveProps(props) {
@@ -169,6 +170,10 @@ class EditResourceForm extends Component {
       this.confirmDeleteClose();
     };
 
+    cancelEdit = () => {
+      window.location.reload(false);
+    };
+
     handleSubmit = () => {
       const updatedResource = {
         ...this.props.dumResources[this.props.index],
@@ -220,7 +225,8 @@ class EditResourceForm extends Component {
             onClick={() => {
               this.handleFormOpen();
             }}
-            color="primary"
+            variant="contained"
+            color="secondary"
           >
                 Edit Resource
           </Button>
@@ -424,7 +430,7 @@ class EditResourceForm extends Component {
                 <Row className="form-group">
                   {/* md={{ size: 2 }} */}
                   <Col sm={{ size: 5, offset: 4 }}>
-                    <Button color="primary" onClick={this.confirmDeleteOpen}>
+                    <Button variant="outlined" color="primary" onClick={this.confirmDeleteOpen}>
                             Delete Resource
                     </Button>
                   </Col>
@@ -437,12 +443,12 @@ class EditResourceForm extends Component {
                       </Typography>
                       <Row className="form-group">
                         <Col xs={{ size: 7, offset: 1 }} md={{ size: 4, offset: 3 }}>
-                          <Button onClick={this.handleDelete} color="primary">
+                          <Button variant="contained" onClick={this.handleDelete} color="primary">
                                         Confirm Delete
                           </Button>
                         </Col>
                         <Col xs={3} md={{ size: 2 }}>
-                          <Button color="primary" onClick={this.confirmDeleteClose}>
+                          <Button variant="outlined" color="primary" onClick={this.confirmDeleteClose}>
                                         Cancel
                           </Button>
                         </Col>
@@ -452,12 +458,12 @@ class EditResourceForm extends Component {
                 </Row>
                 <Row className="form-group">
                   <Col sm={{ size: 5, offset: 2 }}>
-                    <Button type="submit" color="primary">
+                    <Button variant="contained" type="submit" color="primary">
                                 Save Changes
                     </Button>
                   </Col>
                   <Col sm={{ size: 2 }}>
-                    <Button type="reset" color="primary" onClick={this.handleFormClose}>
+                    <Button variant="contained" type="reset" color="primary" onClick={this.cancelEdit}>
                                 Cancel
                     </Button>
                   </Col>

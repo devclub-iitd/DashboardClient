@@ -49,6 +49,10 @@ const useStyles = makeStyles(theme => ({
     paper: {
         margin: '2em',
     },
+    backdrop: {
+        zIndex: theme.zIndex.drawer + 1,
+        color: '#fff',
+    },
 }));
 
 const ProjectsPage = ({ projects, fetchAllProjects, editProject, deleteProject, users }) => {
@@ -130,7 +134,7 @@ const ProjectsPage = ({ projects, fetchAllProjects, editProject, deleteProject, 
                       ideas.map((project, index) => (
                         // <GridListTile key={`${project}~${index}`} cols={2} rows={2}>
                         <Grid key={`${project}~${index}`} item xs={12} md={6} lg={4}>
-                            <Card color="primary" outline>
+                            <Card body style={{ borderColor: '#00c853' }}>
                                 <CardHeader>
                                     <Typography variant='h4'>{project.name}</Typography>
                                 </CardHeader>
@@ -219,7 +223,7 @@ const ProjectsPage = ({ projects, fetchAllProjects, editProject, deleteProject, 
                       ongoing.map((project, index) => (
                         // <GridListTile key={`${project}~${index}`} cols={2} rows={2}>
                         <Grid key={`${project}~${index}`} item xs={12} md={6} lg={4}>
-                            <Card color="primary" outline>
+                            <Card body style={{ borderColor: '#00c853' }}>
                                 <CardHeader>
                                     <Typography variant='h4'>{project.name}</Typography>
                                 </CardHeader>
@@ -307,7 +311,7 @@ const ProjectsPage = ({ projects, fetchAllProjects, editProject, deleteProject, 
                       completed.map((project, index) => (
                         // <GridListTile key={`${project}~${index}`} cols={2} rows={2}>
                         <Grid key={`${project}~${index}`} item xs={12} md={6} lg={4}>
-                            <Card color="primary" outline>
+                            <Card body style={{ borderColor: '#00c853' }}>
                                 <CardHeader>
                                     <Typography variant='h4'>{project.name}</Typography>
                                 </CardHeader>

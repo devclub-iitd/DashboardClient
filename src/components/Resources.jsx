@@ -51,6 +51,10 @@ const useStyles = makeStyles(theme => ({
     paper: {
         margin: '2em',
     },
+    backdrop: {
+      zIndex: theme.zIndex.drawer + 1,
+      color: '#fff',
+    },
 }));
 
 const ResourcesPage = ({resources, fetchAllResources, editResource, deleteResource, users}) => {
@@ -87,8 +91,6 @@ const ResourcesPage = ({resources, fetchAllResources, editResource, deleteResour
             <CircularProgress color="inherit" />
           </Backdrop>
             <Paper elevation={3} variant="outlined" className={classes.paper}>
-            {/* <GridList spacing={1} className={classes.gridList}> */}
-            {/* <Typography variant="h4" color="primary" className={classes.head}>Current</Typography> */}
             <Grid container justify='flex-start'>
                 <Grid item xs={4}>
                     <Typography variant='h4' color="primary" className={classes.head}>Current</Typography>
@@ -128,22 +130,14 @@ const ResourcesPage = ({resources, fetchAllResources, editResource, deleteResour
                   <Typography variant='h4' color='textSecondary'>No current resources</Typography>
                   :
                   current.map((res, index) => (
-                            // <GridListTile key={`${resource}~${index}`} cols={2} rows={2}>
                 <Grid key={`${res}~${index}`} item xs={12} md={6} lg={4}>
-                    <Card color="primary" outline>
+                    <Card body style={{ borderColor: '#00c853' }}>
                     <CardHeader>
                         <Typography variant="h4">{res.name}</Typography>
                     </CardHeader>
                     <CardBody>
                         <CardTitle>
                             <Typography variant="h6">{res.directory_year}</Typography>
-                        {/* {
-                                curUser.privelege_level !== 'Unapproved_User'
-                                ?
-                                <Typography variant='body1'>({res.internal_name})</Typography>
-                                 <Typography variant='h4' align='center' className={{ width: '100%' }}>Unapproved Users</Typography>
-         : null
-                            } */}
                             <Typography variant="body1">
                                 (
                                 {res.internal_name}
@@ -171,14 +165,10 @@ const ResourcesPage = ({resources, fetchAllResources, editResource, deleteResour
                     </CardFooter>
                     </Card>
                 </Grid>
-                            // </GridListTile>
                         ))}
             </Grid>
-            {/* </GridList> */}
             </Paper>
             <Paper elevation={3} variant="outlined" className={classes.paper}>
-            {/* <GridList spacing={1} className={classes.gridList}> */}
-            {/* <Typography variant="h4" color="primary" className={classes.head}>Archived</Typography> */}
             <Grid container justify='flex-start'>
                 <Grid item xs={4}>
                     <Typography variant='h4' color="primary" className={classes.head}>Archived</Typography>
@@ -220,7 +210,7 @@ const ResourcesPage = ({resources, fetchAllResources, editResource, deleteResour
                   archives.map((res, index) => (
                             // <GridListTile key={`${resource}~${index}`} cols={2} rows={2}>
                 <Grid key={`${res}~${index}`} item xs={12} md={6} lg={4}>
-                    <Card color="primary" outline>
+                    <Card body style={{ borderColor: '#00c853' }}>
                     <CardHeader>
                         <Typography variant="h4">{res.name}</Typography>
                     </CardHeader>
@@ -263,7 +253,6 @@ const ResourcesPage = ({resources, fetchAllResources, editResource, deleteResour
                             // </GridListTile>
                         ))}
             </Grid>
-            {/* </GridList> */}
             </Paper>
         </>
     );

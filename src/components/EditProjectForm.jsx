@@ -4,13 +4,13 @@ import {
   Grid, Typography,
   TableContainer, Dialog, DialogTitle, DialogContent,
   FormControlLabel, Radio, RadioGroup, Switch, InputLabel,
-  Select, Input, Chip, MenuItem, FormLabel, FormControl,
+  Select, Input, Chip, MenuItem, FormLabel, FormControl, Button,
   TextField, Fab, Checkbox, ListItemText, Snackbar
 } from '@material-ui/core';
 // import PendingTasks from './PendingTasks';
 import {
   Card, CardImg, CardImgOverlay, CardText,
-  CardBody, CardTitle, CardFooter, CardLink, Button, Popover,
+  CardBody, CardTitle, CardFooter, CardLink, Popover,
   PopoverHeader, PopoverBody, ListGroup, ListGroupItem,
   Row, Col, CardHeader, CardSubtitle, Label,
   TabContent, TabPane, Nav, NavItem, NavLink,
@@ -80,6 +80,7 @@ class EditProjectForm extends Component {
       this.handleDelete = this.handleDelete.bind(this);
       this.handleSuccessClose = this.handleSuccessClose.bind(this);
       this.strMapToObj = this.strMapToObj.bind(this);
+      this.cancelEdit = this.cancelEdit.bind(this);
     }
 
     componentWillReceiveProps (props) {
@@ -363,6 +364,10 @@ class EditProjectForm extends Component {
       Array.from(strMap).map(([k, v]) => { obj[k] = v; });
       return obj;
     }
+
+    cancelEdit = () => {
+      window.location.reload(false);
+    }
   
     handleSubmit = () => {
       const urlMap = new Map();
@@ -421,7 +426,8 @@ class EditProjectForm extends Component {
           <Button onClick={() => { 
               this.handleFormOpen(); 
           }} 
-              color="primary"
+              variant="contained"
+              color="secondary"
           >
               Edit Project
           </Button>
@@ -668,21 +674,21 @@ class EditProjectForm extends Component {
                       <RadioGroup row aria-label="status" name="status" defaultValue={this.state.project.status} onChange={this.changeStatus}>
                         <FormControlLabel
                           value="IDEA"
-                          control={<Radio color="primary" />}
+                          control={<Radio color="secondary" />}
                           label="Idea"
-                          labelPlacement="start"
+                          labelPlacement="end"
                         />
                         <FormControlLabel
                           value="ONGOING"
-                          control={<Radio color="primary" />}
+                          control={<Radio color="secondary" />}
                           label="Ongoing"
-                          labelPlacement="start"
+                          labelPlacement="end"
                         />
                         <FormControlLabel
                           value="COMPLETED"
-                          control={<Radio color="secondary" />}
+                          control={<Radio color="primary" />}
                           label="Completed"
-                          labelPlacement="start"
+                          labelPlacement="end"
                         />
                         {/* <FormControlLabel value="end" control={<Radio color="primary" />} label="End" /> */}
                       </RadioGroup>
@@ -713,7 +719,7 @@ class EditProjectForm extends Component {
                           </Row>
                       </Fragment>
                       ))}
-                      <Fab size="small" color="primary" aria-label="add" onClick={() => this.handleAddLabelFields()}>
+                      <Fab size="small" color="secondary" aria-label="add" onClick={() => this.handleAddLabelFields()}>
                       <AddIcon />
                       </Fab>
                   </Col>
@@ -762,7 +768,7 @@ class EditProjectForm extends Component {
                           </Row>
                       </Fragment>
                       ))}
-                      <Fab size="small" color="primary" aria-label="add" onClick={() => this.handleAddUrlFields()}>
+                      <Fab size="small" color="secondary" aria-label="add" onClick={() => this.handleAddUrlFields()}>
                       <AddIcon />
                       </Fab>
                   </Col>
@@ -794,7 +800,7 @@ class EditProjectForm extends Component {
                   <Row className="form-group">
                   {/* md={{ size: 2 }} */}
                   <Col sm={{ size: 5, offset: 4 }}>
-                      <Button color="primary" onClick={this.confirmDeleteOpen}>
+                      <Button variant="outlined" color="primary" onClick={this.confirmDeleteOpen}>
                       Delete Project
                       </Button>
                   </Col>
@@ -805,14 +811,14 @@ class EditProjectForm extends Component {
                       </Typography>
                       <Row className="form-group">
                           <Col xs={{ size: 7, offset: 1 }} md={{ size: 4, offset: 3 }}>
-                          <Button onClick={this.handleDelete} color="primary">
-                              Confirm Delete
-                          </Button>
+                            <Button variant="contained" onClick={this.handleDelete} color="primary">
+                                Confirm Delete
+                            </Button>
                           </Col>
                           <Col xs={3} md={{ size: 2 }}>
-                          <Button color="primary" onClick={this.confirmDeleteClose}>
-                              Cancel
-                          </Button>
+                            <Button variant="outlined" color="primary" onClick={this.confirmDeleteClose}>
+                                Cancel
+                            </Button>
                           </Col>
                       </Row>
                       </DialogContent>
@@ -820,12 +826,12 @@ class EditProjectForm extends Component {
                   </Row>
                   <Row className="form-group">
                   <Col sm={{ size: 4, offset: 3 }}>
-                      <Button color="primary" onClick={this.handleSubmit}>
+                      <Button variant="contained" color="primary" onClick={this.handleSubmit}>
                       Save Changes
                       </Button>
                   </Col>
                   <Col sm={{ size: 2 }}>
-                      <Button type="reset" color="primary" onClick={this.handleFormClose}>
+                      <Button variant="contained" type="reset" color="primary" onClick={this.cancelEdit}>
                       Cancel
                       </Button>
                   </Col>

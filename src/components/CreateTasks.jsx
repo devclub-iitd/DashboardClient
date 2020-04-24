@@ -13,10 +13,10 @@ import Chip from '@material-ui/core/Chip';
 import MenuItem from '@material-ui/core/MenuItem';
 import CancelIcon from '@material-ui/icons/Cancel';
 import {
-  Grid, FormControl, FormControlLabel, InputLabel, FormLabel, RadioGroup, Radio, Select, Switch, Fab, Snackbar,
+  Grid, FormControl, FormControlLabel, InputLabel, FormLabel, RadioGroup, Radio, Select, Button, Switch, Fab, Snackbar,
 } from '@material-ui/core';
 import {
-  Card, CardText, CardBody, CardTitle, Row, Col, Label, Button, ButtonGroup,
+  Card, CardText, CardBody, CardTitle, Row, Col, Label, ButtonGroup,
 } from 'reactstrap';
 import {
   Control, Form, LocalForm, Errors,
@@ -254,7 +254,7 @@ export default function CreateTasks(props) {
       end_date: endDate,
       display_on_website: displayState,
       url: strMapToObj(urlMap),
-      assignee: '',
+      assignee: [],
     };
     console.log('event: ', newEvent);
     props.createEvent(newEvent);
@@ -360,13 +360,13 @@ export default function CreateTasks(props) {
                   <Col sm={12}>
                     <Grid container direction="row" justify="space-evenly">
                       <Grid item sm={3}>
-                        <Button outline active={itemType === 'event'} color="primary" onClick={() => handleTypeChange('event')}>Event</Button>
+                        <Button active={itemType === 'event'} variant={itemType === 'event' ? 'contained' : 'outlined'} color="primary" onClick={() => handleTypeChange('event')}>Event</Button>
                       </Grid>
                       <Grid item sm={3}>
-                        <Button outline active={itemType === 'project'} color="primary" onClick={() => handleTypeChange('project')}>Project</Button>
+                        <Button active={itemType === 'project'} variant={itemType === 'project' ? 'contained' : 'outlined'} color="primary" onClick={() => handleTypeChange('project')}>Project</Button>
                       </Grid>
                       <Grid item sm={3}>
-                        <Button outline active={itemType === 'resource'} color="primary" onClick={() => handleTypeChange('resource')}>Resource</Button>
+                        <Button active={itemType === 'resource'} variant={itemType === 'resource' ? 'contained' : 'outlined'} color="primary" onClick={() => handleTypeChange('resource')}>Resource</Button>
                       </Grid>
                     </Grid>
                   </Col>
@@ -535,7 +535,7 @@ export default function CreateTasks(props) {
                                 </Row>
                               </Fragment>
                             ))}
-                            <Fab size="small" color="primary" aria-label="add" onClick={() => handleAddUrlFields()}>
+                            <Fab size="small" color="secondary" aria-label="add" onClick={() => handleAddUrlFields()}>
                               <AddIcon />
                             </Fab>
                           </Col>
@@ -543,13 +543,13 @@ export default function CreateTasks(props) {
                         <Row className="form-group">
                           {/* md={{ size: 4, offset: 3 }} */}
                           <Col xs={{ size: 7, offset: 1 }} md={{ size: 4, offset: 3 }}>
-                            <Button type="submit" color="primary">
+                            <Button type="submit" variant="contained" color="primary">
                               Create Event
                             </Button>
                           </Col>
                           {/* md={{ size: 2 }} */}
                           <Col xs={3} md={{ size: 2 }}>
-                            <Button type="reset" color="primary" onClick={() => resetEForm()}>
+                            <Button type="reset" variant="contained" color="primary" onClick={() => resetEForm()}>
                               Reset
                             </Button>
                           </Col>
@@ -784,7 +784,7 @@ export default function CreateTasks(props) {
                                 </Row>
                               </Fragment>
                             ))}
-                            <Fab size="small" color="primary" aria-label="add" onClick={() => handleAddLabelFields()}>
+                            <Fab size="small" color="secondary" aria-label="add" onClick={() => handleAddLabelFields()}>
                               <AddIcon />
                             </Fab>
                           </Col>
@@ -827,19 +827,19 @@ export default function CreateTasks(props) {
                                 </Row>
                               </Fragment>
                             ))}
-                            <Fab size="small" color="primary" aria-label="add" onClick={() => handleAddUrlFields()}>
+                            <Fab size="small" color="secondary" aria-label="add" onClick={() => handleAddUrlFields()}>
                               <AddIcon />
                             </Fab>
                           </Col>
                         </Row>
                         <Row className="form-group">
                           <Col sm={{ size: 4, offset: 3 }}>
-                            <Button type="submit" color="primary">
+                            <Button type="submit" variant="contained" color="primary">
                               Create Project
                             </Button>
                           </Col>
                           <Col sm={{ size: 2 }}>
-                            <Button type="reset" color="primary" onClick={() => resetPForm()}>
+                            <Button type="reset" variant="contained" color="primary" onClick={() => resetPForm()}>
                               Reset
                             </Button>
                           </Col>
@@ -1031,12 +1031,12 @@ export default function CreateTasks(props) {
                         </Row>
                         <Row className="form-group">
                           <Col sm={{ size: 5, offset: 2 }}>
-                            <Button type="submit" color="primary">
+                            <Button type="submit" variant="contained" color="primary">
                               Create Resource
                             </Button>
                           </Col>
                           <Col sm={{ size: 2 }}>
-                            <Button type="reset" color="primary" onClick={() => resetRForm()}>
+                            <Button type="reset" variant="contained" color="primary" onClick={() => resetRForm()}>
                               Reset
                             </Button>
                           </Col>

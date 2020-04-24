@@ -83,15 +83,7 @@ const useStyles = makeStyles(theme => ({
     padding: '0 8px',
     ...theme.mixins.toolbar,
   },
-  bgimage: {
-    backgroundImage: "url('./logo.png')",
-    backgroundRepeat: "no-repeat",
-    backgroundPosition: "center center",
-  },
   appBar: {
-    // backgroundImage: "url('./logo.png')",
-    // backgroundRepeat: "no-repeat",
-    // backgroundPosition: "center center",
     zIndex: theme.zIndex.drawer + 1,
     transition: theme.transitions.create(['width', 'margin'], {
       easing: theme.transitions.easing.sharp,
@@ -430,9 +422,9 @@ function Dashboard(props) {
 
   React.useEffect(() => {
     // localStorage.setItem('dcIITDDashboard', { token: null, userId: null });
-    fetchAllProjects();
-    fetchAllUsers();
     // fetchAllProjects();
+    fetchAllUsers();
+    fetchAllProjects();
     fetchUser(localStorage.getItem('userId'));
     fetchAllEvents();
     // fetchAllUsers();

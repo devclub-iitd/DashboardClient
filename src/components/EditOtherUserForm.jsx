@@ -3,11 +3,11 @@ import { makeStyles, useTheme } from '@material-ui/core/styles';
 import { Grid, Typography,
   TableContainer, Dialog, DialogTitle, DialogContent,
   FormControlLabel, Radio, RadioGroup, Switch, InputLabel,
-  Select, Input, Chip, MenuItem, FormLabel, FormControl, 
+  Select, Input, Chip, MenuItem, FormLabel, FormControl, Button,
   TextField, Fab, Checkbox, ListItemText, Snackbar } from '@material-ui/core';
 // import PendingTasks from './PendingTasks';
 import { Card, CardImg, CardImgOverlay, CardText, 
-  CardBody, CardTitle, CardFooter, CardLink, Button, Popover,
+  CardBody, CardTitle, CardFooter, CardLink, Popover,
   PopoverHeader, PopoverBody, ListGroup, ListGroupItem,
   Row, Col, CardHeader, CardSubtitle, Label,
   TabContent, TabPane, Nav, NavItem, NavLink } from 'reactstrap';
@@ -23,7 +23,8 @@ class EditOtherUserForm extends Component {
   constructor (props) {
     super(props);
 
-    this.state = {
+    this.state = { 
+      orgUser: this.props.dumUsers[this.props.index],
       user: this.props.dumUsers[this.props.index],
       isDailogOpen: false,
       isDeleteDailogOpen: false,
@@ -47,6 +48,7 @@ class EditOtherUserForm extends Component {
   componentWillReceiveProps (props) {
     this.setState({
       ...this.state,
+      orgUser: props.dumUsers[props.index],
       user: props.dumUsers[props.index],
     })
   }
@@ -93,6 +95,13 @@ class EditOtherUserForm extends Component {
   };
 
   cancelUserEdit = () => {
+    this.setState({
+      ...this.state,
+      user: {
+        ...this.state.user,
+        ...this.state.orgUser,
+      },
+    });
     this.handleFormClose();
   };
 
@@ -144,16 +153,6 @@ class EditOtherUserForm extends Component {
   };
 
   render() {
-    
-    // const { editFailed, removeFailed } = this.props;
-        
-    // const [serverError, setServerError] = React.useState(editFailed || removeFailed);
-
-    // const handleClose = () => {
-    //   setServerError(false);
-    // };
-    // console.log('users: ', this.props.dumUsers);
-    // console.log('index: ', this.props.index);
 
     return(
       <div>
@@ -167,25 +166,57 @@ class EditOtherUserForm extends Component {
           onClose={this.handleSuccessClose}
           message="User edited successfully !"
         />
-        <Button onClick={() => { 
-          this.handleFormOpen(); 
-        }} 
-          color="primary"
-        >
-          Edit User
-        </Button>
         {
-          this.state.user.privelege_level === 'Unapproved_User'
+          this.state.orgUser.privelege_level === 'Unapproved_User'
           ?
+          <div>
+            <Button onClick={() => { 
+              this.confirmDeleteOpen(); 
+            }} 
+              color="secondary"
+              variant="outlined"
+            >
+              Reject User
+            </Button>
+            <Button onClick={() => { 
+              this.handleApprove(); 
+            }} 
+              style={{ marginLeft: '1em' }}
+              variant="contained"
+              color="secondary"
+            >
+              Approve User
+            </Button>
+          </div>
+          :
           <Button onClick={() => { 
-            this.handleApprove(); 
+            this.handleFormOpen(); 
           }} 
             color="secondary"
+            variant={this.state.orgUser.privelege_level === 'Unapproved_User' ? 'outlined' : 'contained'}
           >
-            Approve User
+            Edit User
           </Button>
-          : null
         }
+          <Dialog open={this.state.isDeleteDailogOpen} maxWidth='md' onClose={this.confirmDeleteClose}>
+            <DialogContent>
+              <Typography variant='h5'>
+                Are you sure you want to remove the user {this.state.orgUser.name}
+              </Typography>
+              <Row className="form-group">
+                <Col xs={{ size: 7, offset: 1 }} md={{ size: 4, offset: 3 }}>
+                  <Button variant="contained" onClick={this.handleDelete} color="primary">
+                    Confirm Delete
+                  </Button>
+                </Col>
+                <Col xs={3} md={{ size: 2 }}>
+                  <Button variant="outlined" color="primary" onClick={this.confirmDeleteClose}>
+                    Cancel
+                  </Button>
+                </Col>
+              </Row>
+            </DialogContent>
+          </Dialog>
           <Dialog open={this.state.isDailogOpen} maxWidth="sm" fullWidth onClose={this.handleFormClose} scroll="paper">
             <DialogTitle>
               <Typography variant="h4">
@@ -195,24 +226,24 @@ class EditOtherUserForm extends Component {
             <DialogContent>
               <Card>
                 <CardHeader>
-                  <Typography variant='h2'>{this.state.user.name}</Typography>
+                  <Typography variant='h2'>{this.state.orgUser.name}</Typography>
                 </CardHeader>
                 <CardBody>
                   <CardTitle>
-                    <Typography variant='h5'>{this.state.user.entry_no}</Typography>
+                    <Typography variant='h5'>{this.state.orgUser.entry_no}</Typography>
                   </CardTitle>
                   <CardSubtitle>
-                    <Typography variant='h6'>{this.state.user.category}</Typography>
+                    <Typography variant='h6'>{this.state.orgUser.category}</Typography>
                   </CardSubtitle>
                   <CardText>
-                    <Typography variant='body1'>{this.state.user.intro}</Typography>
-                    <Typography variant='body1'>{`Interests: ${this.state.user.interests}`}</Typography>
-                    <Typography variant='body1'>{`Specializations: ${this.state.user.specializations}`}</Typography>
-                    <Typography variant='body1'>{`Hostel: ${this.state.user.hostel}`}</Typography>
-                    <Typography variant='caption'>{`Email: ${this.state.user.email}`}</Typography>
-                    <Typography variant='body1'>{`Mobile: ${this.state.user.mobile_number}`}</Typography>
+                    <Typography variant='body1'>{this.state.orgUser.intro}</Typography>
+                    <Typography variant='body1'>{`Interests: ${this.state.orgUser.interests}`}</Typography>
+                    <Typography variant='body1'>{`Specializations: ${this.state.orgUser.specializations}`}</Typography>
+                    <Typography variant='body1'>{`Hostel: ${this.state.orgUser.hostel}`}</Typography>
+                    <Typography variant='caption'>{`Email: ${this.state.orgUser.email}`}</Typography>
+                    <Typography variant='body1'>{`Mobile: ${this.state.orgUser.mobile_number}`}</Typography>
                     {
-                      Array.from(this.state.user.url).map(([key, value]) => {
+                      Array.from(this.state.orgUser.url).map(([key, value]) => {
                         return(
                           <Typography variant='body1'>{`${key}: `}<CardLink href={value}>{value}</CardLink></Typography>
                         );
@@ -225,24 +256,24 @@ class EditOtherUserForm extends Component {
                     <Row className="form-group">
                       <Label htmlFor="privelege_level" md={12}><h6>Set privelege level:</h6></Label>
                       <Col sm={12}>
-                        <RadioGroup row aria-label="privelege_level" name="privelege_level" defaultValue={this.state.user.privelege_level} onChange={this.changePrivLevel}>
+                        <RadioGroup row aria-label="privelege_level" name="privelege_level" defaultValue={this.state.orgUser.privelege_level} onChange={this.changePrivLevel}>
                           <FormControlLabel
                             value="Unapproved_User"
-                            control={<Radio color="primary" />}
+                            control={<Radio color="secondary" />}
                             label="Unapprove User"
-                            labelPlacement="start"
+                            labelPlacement="end"
                           />
                           <FormControlLabel
                             value="Approved_User"
-                            control={<Radio color="primary" />}
+                            control={<Radio color="secondary" />}
                             label="Approve User"
-                            labelPlacement="start"
+                            labelPlacement="end"
                           />
                           <FormControlLabel
                             value="Admin"
-                            control={<Radio color="secondary" />}
+                            control={<Radio color="primary" />}
                             label="Make Admin"
-                            labelPlacement="start"
+                            labelPlacement="end"
                           />
                           {/* <FormControlLabel value="end" control={<Radio color="primary" />} label="End" /> */}
                         </RadioGroup>
@@ -254,7 +285,7 @@ class EditOtherUserForm extends Component {
                         <FormControlLabel
                           sm={2}
                           // label="Display on Website"
-                          control={<Switch checked={this.state.user.display_on_website} onChange={this.changeDisplayState} />}
+                          control={<Switch defaultChecked={this.state.orgUser.display_on_website} onChange={this.changeDisplayState} />}
                         />
                       </Col>
                     </Row>
@@ -264,23 +295,23 @@ class EditOtherUserForm extends Component {
               <Row className="form-group">
                 {/* md={{ size: 2 }} */}
                 <Col sm={{ size: 5, offset: 4 }}>
-                  <Button color="primary" onClick={this.confirmDeleteOpen}>
+                  <Button variant="outlined" color="primary" onClick={this.confirmDeleteOpen}>
                     Remove User
                   </Button>
                 </Col>
-                <Dialog open={this.state.isDeleteDailogOpen} onClose={this.confirmDeleteClose}>
+                <Dialog open={this.state.isDeleteDailogOpen} fullWidth onClose={this.confirmDeleteClose}>
                   <DialogContent>
                     <Typography variant='h5'>
-                      Are you sure you want to remove the user {this.state.user.name}
+                      Are you sure you want to remove the user {this.state.orgUser.name}
                     </Typography>
                     <Row className="form-group">
                       <Col xs={{ size: 7, offset: 1 }} md={{ size: 4, offset: 3 }}>
-                        <Button onClick={this.handleDelete} color="primary">
+                        <Button variant="contained" onClick={this.handleDelete} color="primary">
                           Confirm Delete
                         </Button>
                       </Col>
                       <Col xs={3} md={{ size: 2 }}>
-                        <Button color="primary" onClick={this.confirmDeleteClose}>
+                        <Button variant="outlined" color="primary" onClick={this.confirmDeleteClose}>
                           Cancel
                         </Button>
                       </Col>
@@ -290,12 +321,12 @@ class EditOtherUserForm extends Component {
               </Row> 
               <Row className="form-group">
                 <Col sm={{ size: 4, offset: 3 }}>
-                  <Button color="primary" onClick={this.handleSubmit}>
+                  <Button variant="contained" color="primary" onClick={this.handleSubmit}>
                     Save Changes
                   </Button>
                 </Col>
                 <Col sm={{ size: 2 }}>
-                  <Button color="primary" onClick={this.cancelUserEdit}>
+                  <Button variant="contained" color="primary" onClick={this.cancelUserEdit}>
                     Cancel
                   </Button>
                 </Col>

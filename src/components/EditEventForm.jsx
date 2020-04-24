@@ -3,11 +3,11 @@ import { makeStyles, useTheme } from '@material-ui/core/styles';
 import { Grid, Typography,
   TableContainer, Dialog, DialogTitle, DialogContent,
   FormControlLabel, Radio, RadioGroup, Switch, InputLabel,
-  Select, Input, Chip, MenuItem, FormLabel, FormControl, 
+  Select, Input, Chip, MenuItem, FormLabel, FormControl, Button, 
   TextField, Fab, Checkbox, ListItemText, Snackbar } from '@material-ui/core';
 // import PendingTasks from './PendingTasks';
 import { Card, CardImg, CardImgOverlay, CardText, 
-  CardBody, CardTitle, CardFooter, CardLink, Button, Popover,
+  CardBody, CardTitle, CardFooter, CardLink, Popover,
   PopoverHeader, PopoverBody, ListGroup, ListGroupItem,
   Row, Col, CardHeader, CardSubtitle, Label,
   TabContent, TabPane, Nav, NavItem, NavLink } from 'reactstrap';
@@ -32,6 +32,7 @@ class EditEventForm extends Component {
         display_on_website: this.props.dumEvents[this.props.index].display_on_website,
         url: this.props.dumEvents[this.props.index].url,
         assignee: this.props.dumEvents[this.props.index].assignee,
+        orgEvent: this.props.dumEvents[this.props.index],
         event: this.props.dumEvents[this.props.index],
         urlFields: Array.from(this.props.dumEvents[this.props.index].url).map(([key, value]) => ({type: key, url: value})),
         memberNames: this.props.dumUsers.filter((user) => user.privelege_level !== 'Unapproved_User').map(user => user.name),
@@ -59,11 +60,13 @@ class EditEventForm extends Component {
       this.handleDelete = this.handleDelete.bind(this);
       this.handleSuccessClose = this.handleSuccessClose.bind(this);
       this.strMapToObj = this.strMapToObj.bind(this);
+      this.cancelEdit = this.cancelEdit.bind(this);
     }
 
     componentWillReceiveProps (props) {
       this.setState({
         ...this.state,
+        orgEvent: props.dumEvents[props.index],
         event: props.dumEvents[props.index],
       });
     }
@@ -229,6 +232,22 @@ class EditEventForm extends Component {
         isDeleteDailogOpen: false,
       });
     };
+
+    cancelEdit = () => {
+      // this.setState({
+      //   event: {
+      //     ...this.state.event,
+      //     ...this.state.orgEvent,
+      //   },
+      //   urlFields: Array.from(this.props.dumEvents[this.props.index].url).map(([key, value]) => ({type: key, url: value})),
+      //   memberNames: this.props.dumUsers.filter((user) => user.privelege_level !== 'Unapproved_User').map(user => user.name),
+      //   selectedMembers: this.props.dumEvents[this.props.index].assignee.map((userId) => (this.props.dumUsers.filter(user => user._id === userId)[0]).name),
+      // });
+      // // this.componentWillReceiveProps({ })
+      // this.forceUpdate();
+      // this.handleFormClose();
+      window.location.reload(false);
+    };
   
     handleDelete = () => {
       // Call delete thunk here,
@@ -295,7 +314,8 @@ class EditEventForm extends Component {
             <Button onClick={() => { 
                 this.handleFormOpen(); 
             }} 
-                color="primary"
+                color="secondary"
+                variant="contained"
             >
                 Edit Event
             </Button>
@@ -315,7 +335,7 @@ class EditEventForm extends Component {
                         id="name"
                         name="name"
                         // defaultValue={this.state.name}
-                        defaultValue={this.state.event.name}
+                        defaultValue={this.state.orgEvent.name}
                         placeholder="Event Name*"
                         className="form-control"
                         onChange={this.changeName}
@@ -344,7 +364,7 @@ class EditEventForm extends Component {
                         name="description"
                         placeholder="Event Description*"
                         // defaultValue={this.state.description}
-                        defaultValue={this.state.event.description}
+                        defaultValue={this.state.orgEvent.description}
                         rows="8"
                         className="form-control"
                         onChange={this.changeDescription}
@@ -371,7 +391,8 @@ class EditEventForm extends Component {
                             label="Select Start Date of Event"
                             format="MM/dd/yyyy"
                             // value={this.state.start_date}
-                            value={this.state.event.start_date}
+                            defaultValue={this.state.orgEvent.start_date}
+                            // value={this.state.event.start_date}
                             onChange={this.startDateChange}
                             // minDate={Date.now()}
                             KeyboardButtonProps={{
@@ -389,8 +410,8 @@ class EditEventForm extends Component {
                             id="date-picker-dialog"
                             label="Select End Date of Event"
                             format="MM/dd/yyyy"
-                            // value={this.state.end_date}
-                            value={this.state.event.end_date}
+                            defaultValue={this.state.orgEvent.end_date}
+                            // value={this.state.event.end_date}
                             onChange={this.endDateChange}
                             minDate={this.state.start_date}
                             KeyboardButtonProps={{
@@ -408,7 +429,7 @@ class EditEventForm extends Component {
                         id="embed_code"
                         name="embed_code"
                         // defaultValue={this.state.embed_code}
-                        defaultValue={this.state.event.embed_code}
+                        defaultValue={this.state.orgEvent.embed_code}
                         placeholder="Type embedded code"
                         rows="4"
                         className="form-control"
@@ -432,9 +453,7 @@ class EditEventForm extends Component {
                         <Label htmlFor="embed_code" sm={5}><h6>Display on website:  </h6></Label>
                         <FormControlLabel
                         sm={2}
-                        // label="Display on Website"
-                        // control={<Switch checked={this.state.display_on_website} onChange={this.changeDisplayState} />}
-                        control={<Switch checked={this.state.event.display_on_website} onChange={this.changeDisplayState} />}
+                        control={<Switch defaultChecked={this.state.orgEvent.display_on_website} onChange={this.changeDisplayState} />}
                         />
                     </Col>
                     </Row>
@@ -482,8 +501,8 @@ class EditEventForm extends Component {
                             </Row>
                         </Fragment>
                         ))}
-                        <Fab size="small" color="primary" aria-label="add" onClick={() => this.handleAddUrlFields()}>
-                        <AddIcon />
+                        <Fab size="small" color="secondary" aria-label="add" onClick={() => this.handleAddUrlFields()}>
+                          <AddIcon />
                         </Fab>
                     </Col>
                     </Row>
@@ -541,7 +560,7 @@ class EditEventForm extends Component {
                     <Row className="form-group">
                     {/* md={{ size: 2 }} */}
                     <Col sm={{ size: 5, offset: 4 }}>
-                        <Button color="primary" onClick={this.confirmDeleteOpen}>
+                        <Button variant="outlined" color="primary" onClick={this.confirmDeleteOpen}>
                         Delete Event
                         </Button>
                     </Col>
@@ -552,12 +571,12 @@ class EditEventForm extends Component {
                         </Typography>
                         <Row className="form-group">
                             <Col xs={{ size: 7, offset: 1 }} md={{ size: 4, offset: 3 }}>
-                            <Button onClick={this.handleDelete} color="primary">
+                            <Button onClick={this.handleDelete} variant="contained" color="primary">
                                 Confirm Delete
                             </Button>
                             </Col>
                             <Col xs={3} md={{ size: 2 }}>
-                            <Button color="primary" onClick={this.confirmDeleteClose}>
+                            <Button variant="outlined" color="primary" onClick={this.confirmDeleteClose}>
                                 Cancel
                             </Button>
                             </Col>
@@ -567,17 +586,17 @@ class EditEventForm extends Component {
                     </Row>
                     <Row className="form-group">
                     {/* md={{ size: 4, offset: 3 }} */}
-                    <Col xs={{ size: 7, offset: 1 }} md={{ size: 4, offset: 3 }}>
-                    <Button onClick={this.handleSubmit} color="primary">
-                        Save changes
-                    </Button>
-                    </Col>
+                      <Col xs={{ size: 7, offset: 1 }} md={{ size: 4, offset: 3 }}>
+                        <Button onClick={this.handleSubmit} variant="contained" color="primary">
+                            Save changes
+                        </Button>
+                      </Col>
                     {/* md={{ size: 2 }} */}
-                    <Col xs={3} md={{ size: 2 }}>
-                    <Button color="primary" onClick={this.handleFormClose}>
-                        Cancel
-                    </Button>
-                    </Col>
+                      <Col xs={3} md={{ size: 2 }}>
+                        <Button variant="contained" color="primary" onClick={this.cancelEdit}>
+                            Cancel
+                        </Button>
+                      </Col>
                     </Row>
                 </LocalForm>
                 </DialogContent>

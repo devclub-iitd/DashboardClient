@@ -348,8 +348,9 @@ export const updateUser = updatedUser => (dispatch) => {
 export const removeOtherUser = uId => (dispatch) => {
   const bearer = `Bearer ${localStorage.getItem('dcIITDDashboardToken')}`;
 
-  return fetch(`${API.userAPI}delete/${uId}`, {
+  return fetch(`${API.userAPI}delete`, {
     method: 'POST',
+    body: JSON.stringify({ id: uId }),
     headers: {
       'Content-Type': 'application/json',
       Authorization: bearer,
