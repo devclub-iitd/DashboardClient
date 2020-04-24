@@ -122,7 +122,7 @@ function SignInSide(props) {
         open={auth.errMess !== null}
         autoHideDuration={2000}
         onClose={handleClose}
-        message="Login Error !!! Try again"
+        message={auth.errMess === 'Unapproved' ? 'You are not approved yet. Ask the admin to approve your registration !' : 'Login Error !!! Try again'}
       />
       <Snackbar
         anchorOrigin={{

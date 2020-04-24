@@ -40,6 +40,7 @@ class EditEventForm extends Component {
         isDailogOpen: false,
         isDeleteDailogOpen: false,
         success: false,
+        cancelled: true,
       };
   
       this.endDateChange = this.endDateChange.bind(this);
@@ -234,19 +235,15 @@ class EditEventForm extends Component {
     };
 
     cancelEdit = () => {
-      // this.setState({
-      //   event: {
-      //     ...this.state.event,
-      //     ...this.state.orgEvent,
-      //   },
-      //   urlFields: Array.from(this.props.dumEvents[this.props.index].url).map(([key, value]) => ({type: key, url: value})),
-      //   memberNames: this.props.dumUsers.filter((user) => user.privelege_level !== 'Unapproved_User').map(user => user.name),
-      //   selectedMembers: this.props.dumEvents[this.props.index].assignee.map((userId) => (this.props.dumUsers.filter(user => user._id === userId)[0]).name),
-      // });
-      // // this.componentWillReceiveProps({ })
-      // this.forceUpdate();
-      // this.handleFormClose();
-      window.location.reload(false);
+      this.setState({
+        ...this.state,
+        event: {
+          ...this.state.orgEvent,
+        },
+        urlFields: Array.from(this.state.orgEvent.url).map(([key, value]) => ({type: key, url: value})),
+        memberNames: this.props.dumUsers.filter((user) => user.privelege_level !== 'Unapproved_User').map(user => user.name),
+        selectedMembers: this.state.orgEvent.assignee.map((userId) => (this.props.dumUsers.filter(user => user._id === userId)[0]).name),
+      }, () => this.handleFormClose());
     };
   
     handleDelete = () => {
@@ -335,7 +332,7 @@ class EditEventForm extends Component {
                         id="name"
                         name="name"
                         // defaultValue={this.state.name}
-                        defaultValue={this.state.orgEvent.name}
+                        defaultValue={this.state.event.name}
                         placeholder="Event Name*"
                         className="form-control"
                         onChange={this.changeName}
@@ -364,7 +361,7 @@ class EditEventForm extends Component {
                         name="description"
                         placeholder="Event Description*"
                         // defaultValue={this.state.description}
-                        defaultValue={this.state.orgEvent.description}
+                        defaultValue={this.state.event.description}
                         rows="8"
                         className="form-control"
                         onChange={this.changeDescription}
@@ -391,8 +388,8 @@ class EditEventForm extends Component {
                             label="Select Start Date of Event"
                             format="MM/dd/yyyy"
                             // value={this.state.start_date}
-                            defaultValue={this.state.orgEvent.start_date}
-                            // value={this.state.event.start_date}
+                            // defaultValue={this.state.orgEvent.start_date}
+                            value={this.state.event.start_date}
                             onChange={this.startDateChange}
                             // minDate={Date.now()}
                             KeyboardButtonProps={{
@@ -410,8 +407,8 @@ class EditEventForm extends Component {
                             id="date-picker-dialog"
                             label="Select End Date of Event"
                             format="MM/dd/yyyy"
-                            defaultValue={this.state.orgEvent.end_date}
-                            // value={this.state.event.end_date}
+                            // defaultValue={this.state.orgEvent.end_date}
+                            value={this.state.event.end_date}
                             onChange={this.endDateChange}
                             minDate={this.state.start_date}
                             KeyboardButtonProps={{
@@ -429,7 +426,7 @@ class EditEventForm extends Component {
                         id="embed_code"
                         name="embed_code"
                         // defaultValue={this.state.embed_code}
-                        defaultValue={this.state.orgEvent.embed_code}
+                        defaultValue={this.state.event.embed_code}
                         placeholder="Type embedded code"
                         rows="4"
                         className="form-control"
@@ -453,7 +450,7 @@ class EditEventForm extends Component {
                         <Label htmlFor="embed_code" sm={5}><h6>Display on website:  </h6></Label>
                         <FormControlLabel
                         sm={2}
-                        control={<Switch defaultChecked={this.state.orgEvent.display_on_website} onChange={this.changeDisplayState} />}
+                        control={<Switch checked={this.state.event.display_on_website} onChange={this.changeDisplayState} />}
                         />
                     </Col>
                     </Row>
@@ -507,31 +504,6 @@ class EditEventForm extends Component {
                     </Col>
                     </Row>
                     <Row className="form-group">
-                    {/* <Col>
-                        <FormControl variant="outlined">
-                        <InputLabel id="assignee">
-                            Assigned Member
-                        </InputLabel>
-                        <Select
-                            labelId="assignee"
-                            id="assignee"
-                            // value={this.state.assignee}
-                            value={this.state.event.assignee}
-                            onChange={this.changeAssignee}
-                        >
-                            <MenuItem value="">
-                            <em>None</em>
-                            </MenuItem>
-                            {
-                            this.props.dumUsers.filter((dumUser) => dumUser.privelege_level !== 'Unapproved_User').map((user) => {
-                                return(
-                                <MenuItem value={user.name}>{user.name}</MenuItem>
-                                );
-                            })
-                            }
-                        </Select>
-                        </FormControl>
-                    </Col> */}
                       <Col>
                         <FormControl>
                         <InputLabel id="demo-mutiple-checkbox-label">Assignees</InputLabel>

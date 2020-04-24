@@ -229,7 +229,10 @@ export const loginUser = creds => (dispatch) => {
       }
       response.json()
         .then((res) => {
-          console.log('Server response: ', res);
+          // console.log('Server response: ', res);
+          if (res.title === 'Unapproved user') {
+            dispatch(loginError('Unapproved'));
+          }
         });
       const error = new Error(`Error ${response.status}: ${response.statusText}`);
       error.response = response;

@@ -384,19 +384,6 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 function Dashboard(props) {
-
-  // if(!props.auth.isAuthenticated) {
-  //   return <Redirect to="/login" />;
-  // }
-
-  ////////////only this call here
-
-  // props.fetchUser();
-  
-  // props.fetchAllEvents();
-  // props.fetchAllUsers();
-  // props.fetchAllProjects();
-  // props.fetchAllResources();
   
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);

@@ -680,3 +680,65 @@ const [single, setSingle] = React.useState(null);
                       </Row>
                     </Fragment>
                   ))}
+                changeInternalName = (event) => {
+      this.setState({
+        ...this.state,
+        internal_name: event.target.value,
+      });
+    };
+
+    changeDirectoryYear = (event) => {
+      this.setState({
+        ...this.state,
+        directory_year: event.target.value,
+      });
+    };
+
+    changeSubDirectory = (event) => {
+      this.setState({
+        ...this.state,
+        subdirectory: event.target.value,
+      });
+    };
+
+    changeName = (event) => {
+      this.setState({
+        ...this.state,
+        name: event.target.value,
+      });
+    };
+
+    changeArchiveState = (event) => {
+      this.setState({
+        ...this.state,
+        archive: event.target.checked,
+      });
+    };
+
+    changeDescription = (event) => {
+      this.setState({
+        ...this.state,
+        description: event.target.value,
+      });
+    };
+
+    changeUrl = (event) => {
+      this.setState({
+        ...this.state,
+        url: event.target.value,
+      });
+    };
+
+    changeNewState = (event) => {
+      this.setState({
+        ...this.state,
+        new: event.target.checked,
+      });
+    };
+
+    changeDisplayState = (event) => {
+      this.setState({
+        ...this.state,
+        display_on_website: event.target.checked,
+      });
+    };

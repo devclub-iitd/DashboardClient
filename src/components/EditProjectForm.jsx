@@ -48,6 +48,7 @@ class EditProjectForm extends Component {
         selectedMembers: this.props.dumProjects[this.props.index].members.map((userId) => (this.props.dumUsers.filter(user => user._id === userId)[0]).name),
         // selectedMembers: this.props.dumUsers.filter(user => this.props.dumProjects[this.props.index].members.includes(user._id)),
         project: this.props.dumProjects[this.props.index],
+        orgProject: this.props.dumProjects[this.props.index],
         isDailogOpen: false,
         isDeleteDailogOpen: false,
         success: false,
@@ -366,7 +367,16 @@ class EditProjectForm extends Component {
     }
 
     cancelEdit = () => {
-      window.location.reload(false);
+      this.setState({
+        ...this.state,
+        project: {
+          ...this.state.orgProject,
+        },
+        urlFields: Array.from(this.state.orgProject.url).map(([key, value]) => ({type: key, url: value})),
+        memberNames: this.props.dumUsers.filter((user) => user.privelege_level !== 'Unapproved_User').map(user => user.name),
+        selectedMembers: this.state.orgProject.members.map((userId) => (this.props.dumUsers.filter(user => user._id === userId)[0]).name),
+      }, () => this.handleFormClose());
+      // window.location.reload(false);
     }
   
     handleSubmit = () => {
