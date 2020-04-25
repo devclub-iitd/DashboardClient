@@ -729,6 +729,12 @@ export default function Home(props) {
               >
                 <ListGroup>
                   {
+                    dumEvents.length === 0
+                    ?
+                    <div>
+                      <h4>No Club Events</h4>
+                    </div>
+                    :
                     dumEvents.map((event, index) => {
                       return(
                         <Fragment key={`${event}~${index}`}>
@@ -991,6 +997,12 @@ export default function Home(props) {
               <PopoverBody className={classes.popBody}>
                 <ListGroup>
                   {
+                    dumProjects.length === 0
+                    ?
+                    <div>
+                      <h4>No Club Projects</h4>
+                    </div>
+                    :
                     dumProjects.map((project, index) => {
                       return(
                         <Fragment key={`${project}~${index}`}>
@@ -1181,6 +1193,12 @@ export default function Home(props) {
               >
                 <ListGroup>
                   {
+                    dumResources.length === 0
+                    ?
+                    <div>
+                      <h4>No Club Resources</h4>
+                    </div>
+                    :
                     dumResources.map((res, index) => {
                       return(
                         <Fragment key={`${res}~${index}`}>
@@ -1454,6 +1472,12 @@ export default function Home(props) {
               >
                 <ListGroup>
                   {
+                    dumUsers.length === 0
+                    ?
+                    <div>
+                      <h4>No Club Members</h4>
+                    </div>
+                    :
                     dumUsers.map((user, index) => {
                       return(
                         <Fragment key={`${user}~${index}`}>
@@ -1472,7 +1496,7 @@ export default function Home(props) {
                                 <Typography className={classes.popCardFooter} color="textSecondary">{`${user.category}\n${(user.privelege_level === 'Unapproved_User') ? 'Unapproved':''}`}</Typography>
                                 {/* <CardLink onClick={null}>Manage User</CardLink> */}
                                   {
-                                    curUser.privelege_level === 'Admin'
+                                    curUser.privelege_level === 'Admin' && user.privelege_level !== 'Admin'
                                     ?
                                     <EditOtherUserForm
                                       removeUser={props.removeUser}

@@ -38,7 +38,7 @@ const useStyles = makeStyles(theme => ({
     },
     grid: {
         padding: '1em',
-        height: '25em',
+        height: '27em',
         overflowY: 'scroll',
         scrollBehavior: 'smooth',
     },
@@ -92,15 +92,16 @@ const ResourcesPage = ({resources, fetchAllResources, editResource, deleteResour
           </Backdrop>
             <Paper elevation={3} variant="outlined" className={classes.paper}>
             <Grid container justify='flex-start'>
-                <Grid item xs={4}>
+                <Grid item xs={12} sm={4}>
                     <Typography variant='h4' color="primary" className={classes.head}>Current</Typography>
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={10} sm={6}>
                     <TextField
                         className={classes.search}
                         label='Search'
                         name='current'
                         fullWidth
+                        style={{ marginLeft: '1em' }}
                         value={search.current}
                         onChange={searchChange}
                         InputProps={{
@@ -170,15 +171,16 @@ const ResourcesPage = ({resources, fetchAllResources, editResource, deleteResour
             </Paper>
             <Paper elevation={3} variant="outlined" className={classes.paper}>
             <Grid container justify='flex-start'>
-                <Grid item xs={4}>
+                <Grid item xs={12} sm={4}>
                     <Typography variant='h4' color="primary" className={classes.head}>Archived</Typography>
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={10} sm={6}>
                     <TextField
                         className={classes.search}
                         label='Search'
                         name='archives'
                         fullWidth
+                        style={{ marginLeft: '1em' }}
                         value={search.archives}
                         onChange={searchChange}
                         InputProps={{

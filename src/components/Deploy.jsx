@@ -36,8 +36,8 @@ class DeployManager extends Component {
             filter: false,
             sort: false,
             customBodyRender: index => (
-              <IconButton variant="outlined" color="primary" component="span">
-                <EditIcon fontSize="small" color="primary" />
+              <IconButton variant="outlined" color="secondary" component="span">
+                <EditIcon fontSize="small" color="secondary" />
               </IconButton>
             ),
           },
@@ -48,8 +48,8 @@ class DeployManager extends Component {
             filter: false,
             sort: false,
             customBodyRender: index => (
-              <IconButton variant="outlined" color="primary" component="span">
-                <GetAppIcon fontSize="small" color="primary" />
+              <IconButton variant="outlined" color="secondary" component="span">
+                <GetAppIcon fontSize="small" color="secondary" />
               </IconButton>
             ),
           },
@@ -72,8 +72,8 @@ class DeployManager extends Component {
             filter: false,
             sort: false,
             customBodyRender: index => (
-              <IconButton variant="outlined" color="primary" component="span">
-                <PowerSettingsNewIcon fontSize="small" color="primary" />
+              <IconButton variant="outlined" color="error" component="span">
+                <PowerSettingsNewIcon fontSize="small" color="error" />
               </IconButton>
             ),
           },
@@ -146,7 +146,7 @@ class DeployManager extends Component {
         <Grid container spacing={1}>
           <Grid item xs={12}>
             <Tooltip title="Add deployment" aria-label="add">
-              <Fab color="primary" onClick={this.handleNewDeploymentOpen}>
+              <Fab color="secondary" onClick={this.handleNewDeploymentOpen}>
                 <AddIcon />
               </Fab>
             </Tooltip>

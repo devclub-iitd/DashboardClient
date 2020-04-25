@@ -63,24 +63,19 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function ManageUsers(props) {
-  
-  // const [state, setState] = React.useState({
-  //   curUser: {},
-  //   dumUsers: [],
-  // });
-  
-  // React.useEffect(() => {
-  //   props.fetchAllUsers();
-  // }, []);
   const classes = useStyles();
   const curUser = props.users.user;
   const dumUsers = props.users.allUsers;
+  const { deleteAllUsers, rejectAllUnapproved } = props;
 
   const [search, setSearch] = React.useState({
     admins: '',
     approved: '',
     unapproved: '',
   });
+
+  const [deleteAll, setDeleteState] = React.useState(false);
+  const [rejectAll, setRejectState] = React.useState(false);
 
   const searchChange = (event) => {
       event.preventDefault();
@@ -91,19 +86,27 @@ export default function ManageUsers(props) {
       });
   };
 
+  const confirmDeleteOpen = () => {
+    setDeleteState(true);
+  };
+
+  const confirmDeleteClose = () => {
+    setDeleteState(false);
+  };
+
+  const confirmRejectOpen = () => {
+    setRejectState(true);
+  };
+
+  const confirmRejectClose = () => {
+    setRejectState(false);
+  };
+
   const admins = dumUsers.filter((user) => user.privelege_level === 'Admin').filter(user => user.name.toLowerCase().startsWith(search.admins.toLowerCase()));
   const approved = dumUsers.filter((user) => user.privelege_level === 'Approved_User').filter(user => user.name.toLowerCase().startsWith(search.approved.toLowerCase()));
   const unapproved = dumUsers.filter((user) => user.privelege_level === 'Unapproved_User').filter(user => user.name.toLowerCase().startsWith(search.unapproved.toLowerCase()));
 
-  // console.log('Admins: ', admins);
-  // console.log('Approved: ', approved);
-  // console.log('Unapproved: ', unapproved);
-
   return (
-      // props.users.errMess !== null
-      //   ?
-      //   <Typography variant='h4' color='textSecondary'>Failed to fetch Users</Typography>
-      //   :
     <Grid container justify="space-evenly">
       {
         props.users.usersErrMess !== null
@@ -114,6 +117,44 @@ export default function ManageUsers(props) {
       <Backdrop className={classes.backdrop} open={props.users.isLoading}>
         <CircularProgress color="inherit" />
       </Backdrop>
+      <Dialog open={rejectAll} maxWidth='md' onClose={confirmRejectClose}>
+        <DialogContent>
+          <Typography variant='h5'>
+            This is a highly sensitive operation. Do you Really want to <b>REJECT ALL</b> unapproved users ?
+          </Typography>
+          <Row style={{ marginTop: '1em' }} className="form-group">
+            <Col xs={{ size: 7, offset: 1 }} md={{ size: 4, offset: 3 }}>
+              <Button variant="contained" onClick={rejectAllUnapproved} color="primary">
+                Reject All
+              </Button>
+            </Col>
+            <Col xs={3} md={{ size: 2 }}>
+              <Button variant="outlined" color="primary" onClick={confirmRejectClose}>
+                Cancel
+              </Button>
+            </Col>
+          </Row>
+        </DialogContent>
+      </Dialog>
+      <Dialog open={deleteAll} maxWidth='md' onClose={confirmDeleteClose}>
+        <DialogContent>
+          <Typography variant='h5'>
+            This is a highly sensitive operation. Do you Really want to <b>DELETE ALL</b> users ?
+          </Typography>
+          <Row style={{ marginTop: '1em' }} className="form-group">
+            <Col xs={{ size: 7, offset: 1 }} md={{ size: 4, offset: 3 }}>
+              <Button variant="contained" onClick={deleteAllUsers} color="primary">
+                Delete All
+              </Button>
+            </Col>
+            <Col xs={3} md={{ size: 2 }}>
+              <Button variant="outlined" color="primary" onClick={confirmDeleteClose}>
+                Cancel
+              </Button>
+            </Col>
+          </Row>
+        </DialogContent>
+      </Dialog>
       <Grid item xs={12} md={6}>
         <Typography variant='h4' align='center' className={{ width: '100%' }}>Admins</Typography>
         <TextField
@@ -186,6 +227,21 @@ export default function ManageUsers(props) {
                             }
                           </CardText>
                         </CardBody>
+                        {/* For admin to give up admin priveleges */}
+                        {/* <CardFooter>
+                          {
+                            curUser._id === user._id
+                            ?
+                            <EditOtherUserForm
+                              thisUser={true}
+                              removeUser={props.removeUser}
+                              dumUsers={approved}
+                              editUser={props.editOtherUser} 
+                              index={index}
+                              serverError={props.users.serverError} />
+                            : null
+                          }
+                        </CardFooter> */}
                       </Card>
                     </ListGroupItem>
                   </Fragment>
@@ -197,32 +253,52 @@ export default function ManageUsers(props) {
       </Grid>
       <Grid item xs={12} md={6}>
         <Typography variant='h4' align='center' className={{ width: '100%' }}>Approved Users</Typography>
-        <TextField
-          className={classes.search}
-          label='Search'
-          name='approved'
-          fullWidth
-          value={search.approved}
-          onChange={searchChange}
-          InputProps={{
-              endAdornment: (
-              <InputAdornment>
-                  {
-                      search.approved === ''
-                      ?
-                      <IconButton>
-                          <SearchIcon />
-                      </IconButton>
-                      :
-                      <IconButton onClick={() => {setSearch({...search, approved: ''})}}>
-                          <CloseIcon />
-                      </IconButton>
-                  }
-              </InputAdornment>
-              )
-          }}
-        />
-        <Paper elevation={3} variant="outlined" className={classes.paper}>
+        <Grid container alignItems="center">
+          <Grid item xs={7}>
+            <TextField
+              className={classes.search}
+              label='Search'
+              name='approved'
+              fullWidth
+              value={search.approved}
+              onChange={searchChange}
+              InputProps={{
+                  endAdornment: (
+                  <InputAdornment>
+                      {
+                          search.approved === ''
+                          ?
+                          <IconButton>
+                              <SearchIcon />
+                          </IconButton>
+                          :
+                          <IconButton onClick={() => {setSearch({...search, approved: ''})}}>
+                              <CloseIcon />
+                          </IconButton>
+                      }
+                  </InputAdornment>
+                  )
+              }}
+            />
+          </Grid>
+          <Grid item xs={5}>
+            { 
+              curUser.privelege_level === 'Admin'
+              ? 
+              <Button onClick={() => { 
+                confirmDeleteOpen(); 
+              }} 
+                style={{ marginTop: '1em', marginLeft: 'auto', marginRight: 'auto' }}
+                color="primary"
+                variant="contained"
+              >
+                Delete All
+              </Button>
+              : null
+            }
+          </Grid>
+        </Grid>
+        <Paper elevation={3} variant="outlined" className={classes.paper}>    
           <ListGroup>
             {
               approved.length === 0
@@ -291,31 +367,51 @@ export default function ManageUsers(props) {
       </Grid>
       <Grid item xs={12} md={6}>
         <Typography variant='h4' align='center' className={{ width: '100%' }}>Unapproved Users</Typography>
-        <TextField
-          className={classes.search}
-          label='Search'
-          name='unapproved'
-          fullWidth
-          value={search.unapproved}
-          onChange={searchChange}
-          InputProps={{
-              endAdornment: (
-              <InputAdornment>
-                  {
-                      search.unapproved === ''
-                      ?
-                      <IconButton>
-                          <SearchIcon />
-                      </IconButton>
-                      :
-                      <IconButton onClick={() => {setSearch({...search, unapproved: ''})}}>
-                          <CloseIcon />
-                      </IconButton>
-                  }
-              </InputAdornment>
-              )
-          }}
-        />
+        <Grid container alignItems="center">
+          <Grid item xs={7}>
+            <TextField
+              className={classes.search}
+              label='Search'
+              name='unapproved'
+              fullWidth
+              value={search.unapproved}
+              onChange={searchChange}
+              InputProps={{
+                endAdornment: (
+                <InputAdornment>
+                    {
+                        search.unapproved === ''
+                        ?
+                        <IconButton>
+                            <SearchIcon />
+                        </IconButton>
+                        :
+                        <IconButton onClick={() => {setSearch({...search, unapproved: ''})}}>
+                            <CloseIcon />
+                        </IconButton>
+                    }
+                </InputAdornment>
+                )
+              }}
+            />
+          </Grid>
+          <Grid item xs={5}>
+            { 
+              curUser.privelege_level === 'Admin'
+              ? 
+              <Button onClick={() => { 
+                confirmRejectOpen(); 
+              }} 
+                style={{ marginTop: '1em', marginLeft: 'auto', marginRight: 'auto' }}
+                color="primary"
+                variant="contained"
+              >
+                Reject All
+              </Button>
+              : null
+            }
+          </Grid>
+        </Grid>
         <Paper elevation={3} variant="outlined" className={classes.paper}>
           <ListGroup>
             {

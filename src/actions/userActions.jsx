@@ -387,6 +387,81 @@ export const removeOtherUser = uId => (dispatch) => {
     .catch(error => dispatch(userServerError(error)));
 };
 
+export const deleteAllUsers = () => (dispatch) => {
+  const bearer = `Bearer ${localStorage.getItem('dcIITDDashboardToken')}`;
+
+  return fetch(`${API.userAPI}deleteAll`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: bearer,
+    },
+    credentials: 'same-origin',
+  })
+    .then((response) => {
+      if (response.ok || response.status === 304) {
+        return response;
+      }
+      response.json()
+        .then((res) => {
+          console.log('Server response: ', res);
+          if (res.name === 'Unauthorized') {
+            dispatch(logoutUser('timeout'));
+          }
+        });
+      const error = new Error(`Error ${response.status}: ${response.statusText}`);
+      error.response = response;
+      throw error;
+    },
+    (error) => {
+      throw error;
+    })
+    .then(response => response.json())
+    .then((res) => {
+      // console.log('User data updated', user);
+      console.log(res);
+      dispatch(fetchAllUsers());
+    })
+    .catch(error => dispatch(userServerError(error)));
+};
+
+export const rejectAllUnapproved = () => (dispatch) => {
+  const bearer = `Bearer ${localStorage.getItem('dcIITDDashboardToken')}`;
+
+  return fetch(`${API.userAPI}rejectAll`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: bearer,
+    },
+    credentials: 'same-origin',
+  })
+    .then((response) => {
+      if (response.ok || response.status === 304) {
+        return response;
+      }
+      response.json()
+        .then((res) => {
+          console.log('Server response: ', res);
+          if (res.name === 'Unauthorized') {
+            dispatch(logoutUser('timeout'));
+          }
+        });
+      const error = new Error(`Error ${response.status}: ${response.statusText}`);
+      error.response = response;
+      throw error;
+    },
+    (error) => {
+      throw error;
+    })
+    .then((res) => {
+      console.log('Rejection response', res);
+      console.log(res);
+      dispatch(fetchAllUsers());
+    })
+    .catch(error => dispatch(userServerError(error)));
+};
+
 // change password
 export const changePassword = newPass => (dispatch) => {
   const bearer = `Bearer ${localStorage.getItem('dcIITDDashboardToken')}`;

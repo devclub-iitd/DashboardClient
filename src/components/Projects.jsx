@@ -36,7 +36,7 @@ const useStyles = makeStyles(theme => ({
     },
     grid: {
         padding: '1em',
-        height: '25em',
+        height: '27em',
         overflowY: 'scroll',
         scrollBehavior: 'smooth',
     },
@@ -94,15 +94,16 @@ const ProjectsPage = ({ projects, fetchAllProjects, editProject, deleteProject, 
             {/* <GridList spacing={1} className={classes.gridList}> */}
             {/* <Typography variant='h4' color="primary" className={classes.head}>Ideated</Typography> */}
                 <Grid container justify='flex-start'>
-                    <Grid item xs={4}>
+                    <Grid item xs={12} sm={4}>
                         <Typography variant='h4' color="primary" className={classes.head}>Ideated</Typography>
                     </Grid>
-                    <Grid item xs={6}>
+                    <Grid item xs={10} sm={6}>
                         <TextField
                             className={classes.search}
                             label='Search'
                             name='idea'
                             fullWidth
+                            style={{ marginLeft: '1em' }}
                             value={search.idea}
                             onChange={searchChange}
                             InputProps={{
@@ -183,15 +184,16 @@ const ProjectsPage = ({ projects, fetchAllProjects, editProject, deleteProject, 
             {/* <GridList spacing={1} className={classes.gridList}> */}
             {/* <Typography variant='h4' color="primary" className={classes.head}>Ongoing</Typography> */}
                 <Grid container justify='flex-start'>
-                    <Grid item xs={4}>
+                    <Grid item xs={12} sm={4}>
                         <Typography variant='h4' color="primary" className={classes.head}>Ongoing</Typography>
                     </Grid>
-                    <Grid item xs={6}>
+                    <Grid item xs={10} sm={6}>
                         <TextField
                             className={classes.search}
                             label='Search'
                             name='ongoing'
                             fullWidth
+                            style={{ marginLeft: '1em' }}
                             value={search.ongoing}
                             onChange={searchChange}
                             InputProps={{
@@ -271,15 +273,16 @@ const ProjectsPage = ({ projects, fetchAllProjects, editProject, deleteProject, 
             {/* <GridList spacing={1} className={classes.gridList}> */}
             {/* <Typography variant='h4' color="primary" className={classes.head}>Completed</Typography> */}
                 <Grid container justify='flex-start'>
-                    <Grid item xs={4}>
+                    <Grid item xs={12} sm={4}>
                         <Typography variant='h4' color="primary" className={classes.head}>Completed</Typography>
                     </Grid>
-                    <Grid item xs={6}>
+                    <Grid item xs={10} sm={6}>
                         <TextField
                             className={classes.search}
                             label='Search'
                             name='completed'
                             fullWidth
+                            style={{ marginLeft: '1em' }}
                             value={search.completed}
                             onChange={searchChange}
                             InputProps={{

@@ -6,8 +6,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import {
   Grid, Card, CardActionArea, CardMedia, CardContent, Typography, CardActions,
-  Dialog, DialogTitle,
-  Modal, Backdrop, DialogContent,
+  Dialog, DialogTitle, Tooltip,
+  Modal, Backdrop, DialogContent, Avatar,
   FormLabel, FormControlLabel, Radio, RadioGroup, FormControl,
   Snackbar,
 } from '@material-ui/core';
@@ -74,6 +74,11 @@ const useStyles = makeStyles(theme => ({
   backdrop: {
     zIndex: theme.zIndex.drawer + 1,
     color: '#fff',
+  },
+  large: {
+    width: theme.spacing(28),
+    height: theme.spacing(28),
+    marginLeft: '1em',
   },
 }));
 
@@ -766,18 +771,19 @@ const Profile = (props) => {
           </Dialog>
         </div>
         <Grid item xs={12}>
-          <Fab onClick={handleOpen} color="primary" aria-label="edit">
-            <EditIcon />
-          </Fab>
+          <Tooltip title="Edit Profile" aria-label="edit">
+            <Fab onClick={handleOpen} color="secondary">
+              <EditIcon color="action" />
+            </Fab>
+          </Tooltip>
         </Grid>
         <Grid item sm={9} lg={5}>
           <Card className={classes.card}>
-            {/* <img className={classes.image} src={state.orgUser.url.get('picture_url')} alt="Profile Pic" /> */}
-            <CardMedia
-              className={classes.media}
-              image={state.orgUser.url.get('picture_url')}
-              // title="Paella dish"
-            />
+            <Grid style={{ marginTop: '1em' }} container alignContent="center" justify="center">
+              <Grid item xs={6}>
+                <Avatar alt="Profile Pic" src={state.orgUser.url.get('picture_url')} className={classes.large} />
+              </Grid>
+            </Grid>
             <CardContent>
               <Typography gutterBottom variant="h5" component="h2" align="right">
                 {state.orgUser.name}

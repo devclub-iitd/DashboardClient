@@ -36,7 +36,7 @@ import { actions } from 'react-redux-form';
 import { 
   fetchUser, fetchAllUsers, logoutUser,
   updateUser, editOtherUser, changePassword,
-  removeOtherUser, userErrorFin,
+  removeOtherUser, userErrorFin, deleteAllUsers, rejectAllUnapproved,
 } from '../actions/userActions';
 import { 
   fetchAllEvents, createEvent,
@@ -238,6 +238,8 @@ function renderPage(subPage, classProp, classPaper, props) {
             users={props.users}
             fetchAllUsers={props.fetchAllUsers}
             removeUser={props.removeUser}
+            deleteAllUsers={props.deleteAllUsers}
+            rejectAllUnapproved={props.rejectAllUnapproved}
             editOtherUser={props.editOtherUser}
           />
         </div>
@@ -365,6 +367,8 @@ const mapDispatchToProps = (dispatch) => ({
   changePass: (newPass) => { dispatch(changePassword(newPass)) },
   editOtherUser: (user) => { dispatch(editOtherUser(user)) },
   removeUser: (uId) => { dispatch(removeOtherUser(uId)) },
+  deleteAllUsers: () => { dispatch(deleteAllUsers()) },
+  rejectAllUnapproved: () => { dispatch(rejectAllUnapproved()) },
   userErrorFin: () => { dispatch(userErrorFin()) },
   fetchAllEvents: () => { dispatch(fetchAllEvents()) },
   createEvent: (newEvent) => { dispatch(createEvent(newEvent)) },
@@ -412,8 +416,9 @@ function Dashboard(props) {
     // fetchAllProjects();
     fetchAllUsers();
     fetchAllProjects();
-    fetchUser(localStorage.getItem('userId'));
     fetchAllEvents();
+    fetchUser(localStorage.getItem('userId'));
+    // fetchAllEvents();
     // fetchAllUsers();
     // fetchAllProjects();
     fetchAllResources();
@@ -526,6 +531,8 @@ Dashboard.propTypes = {
   updateUser: PropTypes.func.isRequired,
   changePass: PropTypes.func.isRequired,
   removeUser: PropTypes.func.isRequired,
+  deleteAllUsers: PropTypes.func.isRequired,
+  rejectAllUnapproved: PropTypes.func.isRequired,
   userErrorFin: PropTypes.func.isRequired,
   editOtherUser: PropTypes.func.isRequired,
   fetchAllEvents: PropTypes.func.isRequired,
