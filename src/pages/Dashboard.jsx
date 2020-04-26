@@ -389,6 +389,22 @@ const mapDispatchToProps = (dispatch) => ({
 
 function Dashboard(props) {
   
+  const {
+    fetchUser,
+    fetchAllEvents,
+    fetchAllProjects,
+    fetchAllResources,
+    fetchAllUsers,
+  } = props;
+
+  React.useEffect(() => {
+    fetchAllUsers();
+    fetchAllProjects();
+    fetchAllEvents();
+    fetchUser(localStorage.getItem('userId'));
+    fetchAllResources();
+  }, []);
+
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   const handleDrawerOpen = () => {
@@ -403,27 +419,6 @@ function Dashboard(props) {
   const { match } = props;
   const { params } = match;
   const { subPage } = params;
-  const {
-    fetchUser,
-    fetchAllEvents,
-    fetchAllProjects,
-    fetchAllResources,
-    fetchAllUsers,
-  } = props;
-
-  React.useEffect(() => {
-    // localStorage.setItem('dcIITDDashboard', { token: null, userId: null });
-    // fetchAllProjects();
-    fetchAllUsers();
-    fetchAllProjects();
-    fetchAllEvents();
-    fetchUser(localStorage.getItem('userId'));
-    // fetchAllEvents();
-    // fetchAllUsers();
-    // fetchAllProjects();
-    fetchAllResources();
-
-  }, []);
 
   // const [serverError, setServerError] = React.useState(props.users.passwordFailed || props.users.editFailed || props.users.removeFailed);
   const handleErrorClose = () => {
@@ -442,10 +437,10 @@ function Dashboard(props) {
 
   const isAdmin = props.users.user.privelege_level === 'Admin';
 
-  console.log('Users: ', props.users.allUsers);
-  console.log('Projects: ', props.projects.allProjects);
-  console.log('Events: ', props.events.allEvents);
-  console.log('Resources: ', props.resources.allResources);
+  // console.log('Users: ', props.users.allUsers);
+  // console.log('Projects: ', props.projects.allProjects);
+  // console.log('Events: ', props.events.allEvents);
+  // console.log('Resources: ', props.resources.allResources);
 
   
   return (

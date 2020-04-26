@@ -227,26 +227,25 @@ export const loginUser = creds => (dispatch) => {
       if (response.ok || response.status === 304) {
         return response;
       }
+      const error = new Error(`Error ${response.status}: ${response.statusText}`);
+      error.response = response;
       response.json()
         .then((res) => {
-          // console.log('Server response: ', res);
-          if (res.title === 'Unapproved user') {
+          console.log('Server response: ', res);
+          if (res.name === 'Unapproved user') {
             dispatch(loginError('Unapproved'));
           }
         });
-      const error = new Error(`Error ${response.status}: ${response.statusText}`);
-      error.response = response;
-      console.log('Error: ', error);
+      // console.log('Response: ', response);
+      // const error = new Error(`Error ${response.status}: ${response.statusText}`);
+      // error.response = response;
+      // console.log('Error: ', error);
       throw error;
     },
     (error) => {
       throw error;
     })
     .then(response => response.json())
-    // .then((response) => {
-    //   console.log(response);
-    //   return response;
-    // })
     .then((response) => {
       if (response.status === 200) {
         console.log('Response: ', response.result);
@@ -258,11 +257,12 @@ export const loginUser = creds => (dispatch) => {
         dispatch(addUser(response.result));
         dispatch(receiveLogin(response));
         // dispatch(fetchUser(response.result._id));
-      } else {
-        const error = new Error(`Error ${response.status}`);
-        error.response = response;
-        throw error;
       }
+      // else {
+      //   const error = new Error(`Error ${response.status}`);
+      //   error.response = response;
+      //   throw error;
+      // }
     })
     .catch(error => dispatch(loginError(error.message)));
 };

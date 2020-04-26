@@ -410,8 +410,8 @@ class EditResourceForm extends Component {
               </Row>
               <Row className="form-group">
                 {/* md={{ size: 2 }} */}
-                <Col sm={{ size: 5, offset: 4 }}>
-                  <Button variant="outlined" color="primary" onClick={this.confirmDeleteOpen}>
+                <Col sm={{ size: 6, offset: 3 }}>
+                  <Button fullWidth variant="outlined" color="primary" onClick={this.confirmDeleteOpen}>
                             Delete Resource
                   </Button>
                 </Col>
@@ -422,7 +422,7 @@ class EditResourceForm extends Component {
                       {' '}
                       {this.state.name}
                     </Typography>
-                    <Row className="form-group">
+                    <Row style={{ marginTop: '2em' }} className="form-group">
                       <Col xs={{ size: 7, offset: 1 }} md={{ size: 4, offset: 3 }}>
                         <Button variant="contained" onClick={this.handleDelete} color="primary">
                                         Confirm Delete
@@ -438,14 +438,14 @@ class EditResourceForm extends Component {
                 </Dialog>
               </Row>
               <Row className="form-group">
-                <Col sm={{ size: 5, offset: 2 }}>
-                  <Button variant="contained" type="submit" color="primary">
-                                Save Changes
+                <Col xs={{ size: 7, offset: 1 }} md={{ size: 4, offset: 3 }}>
+                  <Button fullWidth variant="contained" type="submit" color="primary">
+                    Save Changes
                   </Button>
                 </Col>
-                <Col sm={{ size: 2 }}>
-                  <Button variant="contained" type="reset" color="primary" onClick={this.cancelEdit}>
-                                Cancel
+                <Col xs={3} md={2}>
+                  <Button fullWidth variant="contained" type="reset" color="primary" onClick={this.cancelEdit}>
+                    Cancel
                   </Button>
                 </Col>
               </Row>

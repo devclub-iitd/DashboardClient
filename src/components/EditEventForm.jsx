@@ -531,8 +531,8 @@ class EditEventForm extends Component {
                     </Row>
                     <Row className="form-group">
                     {/* md={{ size: 2 }} */}
-                    <Col sm={{ size: 5, offset: 4 }}>
-                        <Button variant="outlined" color="primary" onClick={this.confirmDeleteOpen}>
+                    <Col sm={{ size: 6, offset: 3 }}>
+                        <Button fullWidth variant="outlined" color="primary" onClick={this.confirmDeleteOpen}>
                         Delete Event
                         </Button>
                     </Col>
@@ -541,13 +541,13 @@ class EditEventForm extends Component {
                         <Typography variant='h5'>
                             Are you sure you want to delete the event {this.state.name}
                         </Typography>
-                        <Row className="form-group">
+                        <Row style={{ marginTop: '2em' }} className="form-group">
                             <Col xs={{ size: 7, offset: 1 }} md={{ size: 4, offset: 3 }}>
                             <Button onClick={this.handleDelete} variant="contained" color="primary">
                                 Confirm Delete
                             </Button>
                             </Col>
-                            <Col xs={3} md={{ size: 2 }}>
+                            <Col xs={3} md={2}>
                             <Button variant="outlined" color="primary" onClick={this.confirmDeleteClose}>
                                 Cancel
                             </Button>
@@ -559,13 +559,13 @@ class EditEventForm extends Component {
                     <Row className="form-group">
                     {/* md={{ size: 4, offset: 3 }} */}
                       <Col xs={{ size: 7, offset: 1 }} md={{ size: 4, offset: 3 }}>
-                        <Button onClick={this.handleSubmit} variant="contained" color="primary">
+                        <Button fullWidth onClick={this.handleSubmit} variant="contained" color="primary">
                             Save changes
                         </Button>
                       </Col>
                     {/* md={{ size: 2 }} */}
-                      <Col xs={3} md={{ size: 2 }}>
-                        <Button variant="contained" color="primary" onClick={this.cancelEdit}>
+                      <Col xs={3} md={2}>
+                        <Button fullWidth variant="contained" color="primary" onClick={this.cancelEdit}>
                             Cancel
                         </Button>
                       </Col>

@@ -779,8 +779,8 @@ const Profile = (props) => {
         </Grid>
         <Grid item sm={9} lg={5}>
           <Card className={classes.card}>
-            <Grid style={{ marginTop: '1em' }} container alignContent="center" justify="center">
-              <Grid item xs={6}>
+            <Grid style={{ marginTop: '2em' }} container alignContent="center" justify="center">
+              <Grid item xs={{ size: 6, offset: 3 }}>
                 <Avatar alt="Profile Pic" src={state.orgUser.url.get('picture_url')} className={classes.large} />
               </Grid>
             </Grid>

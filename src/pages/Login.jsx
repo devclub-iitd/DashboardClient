@@ -120,7 +120,7 @@ function SignInSide(props) {
           horizontal: 'center',
         }}
         open={auth.errMess !== null}
-        autoHideDuration={2000}
+        autoHideDuration={4000}
         onClose={handleClose}
         message={auth.errMess === 'Unapproved' ? 'You are not approved yet. Ask the admin to approve your registration !' : 'Login Error !!! Try again'}
       />
@@ -138,7 +138,7 @@ function SignInSide(props) {
       <Grid item xs={false} sm={4} md={7} className={classes.image} />
       <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
         <div className={classes.paper}>
-          <Typography className="h1" variant="h3">
+          <Typography align="center" className="h1" variant="h3">
             Club DashBoard
           </Typography>
           <Avatar className={classes.avatar}>
