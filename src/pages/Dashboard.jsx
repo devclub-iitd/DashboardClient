@@ -150,6 +150,11 @@ const drawerWidth = 240;
 
 // const classes = useStyles;
 
+// const redirectFunc = (subPath, closeDrawer) => () => {
+//   closeDrawer();
+//   props.history.push(`/dashboard/${subPath}`);
+// };
+
 function renderPage(subPage, classProp, classPaper, props) {
   switch (subPage) {
     case 'profile':
@@ -644,6 +649,7 @@ class Dashboard extends Component {
 
     this.handleDrawerClose = this.handleDrawerClose.bind(this);
     this.handleDrawerOpen = this.handleDrawerOpen.bind(this);
+    this.redirectFunc = this.redirectFunc.bind(this);
   }
   
   componentWillMount() {
@@ -658,13 +664,10 @@ class Dashboard extends Component {
     return JSON.stringify(this.props.users.user) === JSON.stringify(nextProps.users.user);
   }
   
-  // React.useEffect(() => {
-    // fetchAllUsers();
-    // fetchAllProjects();
-    // fetchAllEvents();
-    // fetchUser(localStorage.getItem('userId'));
-    // fetchAllResources();
-  // }, []);
+  redirectFunc = (subPath, closeDrawer) => () => {
+    closeDrawer();
+    this.props.history.push(`/dashboard/${subPath}`);
+  };
 
   handleDrawerOpen = () => {
     this.setState({
@@ -753,7 +756,7 @@ class Dashboard extends Component {
                 getPageName(subPage)
               }
             </Typography>
-            <IconButton color="inherit">
+            <IconButton onClick={this.redirectFunc('profile', this.handleDrawerClose)} color="inherit">
               {`Hi ${this.props.users.user.name}! ${this.props.users.user.privelege_level === 'Admin' ? '(You\`re Admin)': ''}`}
               <Badge color="secondary">
                 <NotificationsIcon />
