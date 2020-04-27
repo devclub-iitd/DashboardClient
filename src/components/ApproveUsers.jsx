@@ -22,7 +22,7 @@ import FilterListIcon from '@material-ui/icons/FilterList';
 import {
   Grid, Card, CardActionArea, CardContent, Dialog, DialogTitle, DialogActions, Button, FormGroup,
 } from '@material-ui/core';
-import { dumUsers } from './dumUser';
+import dumUsers from './dumUser';
 
 function createData(name, calories, fat, carbs, protein) {
   return {

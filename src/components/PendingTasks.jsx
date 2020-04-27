@@ -48,20 +48,7 @@ const useStyles = makeStyles(theme => ({
   // }
 }));
 
-function createData(taskname, deadline) {
-  return {
-    taskname, deadline,
-  };
-}
-
-const rows = [
-  createData('New Club Website', '15th July'),
-  createData('Capture the Flag', '1st August'),
-  createData('GradeSpot', '10th December'),
-  createData('IITDConnect', '15th Jan'),
-];
-
-export default function SimpleTable() {
+export default function TaskData() {
   const classes = useStyles();
 
   return (
@@ -147,24 +134,4 @@ export default function SimpleTable() {
       </Paper>
     </div>
   );
-  // {/* <Table className={classes.table} stickyHeader>
-  //   <TableHead>
-  //     <TableRow>
-  //       <TableCell><b>Task Name</b></TableCell>
-  //       <TableCell align="right"><b>Deadline</b></TableCell>
-  //     </TableRow>
-  //   </TableHead>
-  //   <TableBody>
-  //     {rows.map(row => (
-  //       <TableRow key={row.name}>
-  //         <TableCell component="th" scope="row">
-  //           {row.taskname}
-  //         </TableCell>
-  //         <TableCell align="right">{row.deadline}</TableCell>
-  //       </TableRow>
-  //     ))}
-  //   </TableBody>
-  // </Table> */}
-  // </>
-  // </Paper>
 }

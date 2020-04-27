@@ -1,9 +1,16 @@
-
 import { combineReducers } from 'redux';
-import loginReducer from './loginReducer';
-import registerReducer from './registerReducer';
+import Auth from './loginReducer';
+import Register from './registerReducer';
+import Users from './userReducer';
+import Projects from './projectReducer';
+import Events from './eventReducer';
+import Resources from './resourceReducer';
 
 export default combineReducers({
-  loginReducer,
-  registerReducer,
+  Auth,
+  Register,
+  Users,
+  Events,
+  Projects,
+  Resources,
 });

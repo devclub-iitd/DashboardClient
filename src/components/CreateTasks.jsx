@@ -1,61 +1,21 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import clsx from 'clsx';
-// import Select from 'react-select';
+/* eslint-disable react/no-array-index-key */
+/* eslint-disable no-console */
+import React, { Fragment } from 'react';
 import { emphasize, makeStyles, useTheme } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
-import NoSsr from '@material-ui/core/NoSsr';
-import TextField from '@material-ui/core/TextField';
-import Paper from '@material-ui/core/Paper';
-import Chip from '@material-ui/core/Chip';
-import MenuItem from '@material-ui/core/MenuItem';
-import CancelIcon from '@material-ui/icons/Cancel';
 import {
-  Grid, FormControl, FormControlLabel, InputLabel, Button, FormLabel, RadioGroup, Radio, Select,
+  Grid, FormControlLabel, Button, Switch, Fab, Snackbar, Typography,
+  TextField, Paper,
 } from '@material-ui/core';
+import {
+  Card, CardBody, CardTitle, Row, Col, Label,
+} from 'reactstrap';
+import {
+  Control, Form, Errors,
+} from 'react-redux-form';
 import DateFnsUtils from '@date-io/date-fns';
-import { MuiPickersUtilsProvider, KeyboardDatePicker, KeyboardTimePicker } from '@material-ui/pickers';
-import { dumUsers } from './dumUser';
-
-const suggestions = [
-  { label: 'Afghanistan' },
-  { label: 'Aland Islands' },
-  { label: 'Albania' },
-  { label: 'Algeria' },
-  { label: 'American Samoa' },
-  { label: 'Andorra' },
-  { label: 'Angola' },
-  { label: 'Anguilla' },
-  { label: 'Antarctica' },
-  { label: 'Antigua and Barbuda' },
-  { label: 'Argentina' },
-  { label: 'Armenia' },
-  { label: 'Aruba' },
-  { label: 'Australia' },
-  { label: 'Austria' },
-  { label: 'Azerbaijan' },
-  { label: 'Bahamas' },
-  { label: 'Bahrain' },
-  { label: 'Bangladesh' },
-  { label: 'Barbados' },
-  { label: 'Belarus' },
-  { label: 'Belgium' },
-  { label: 'Belize' },
-  { label: 'Benin' },
-  { label: 'Bermuda' },
-  { label: 'Bhutan' },
-  { label: 'Bolivia, Plurinational State of' },
-  { label: 'Bonaire, Sint Eustatius and Saba' },
-  { label: 'Bosnia and Herzegovina' },
-  { label: 'Botswana' },
-  { label: 'Bouvet Island' },
-  { label: 'Brazil' },
-  { label: 'British Indian Ocean Territory' },
-  { label: 'Brunei Darussalam' },
-].map(suggestion => ({
-  value: suggestion.label,
-  label: suggestion.label,
-}));
+import AddIcon from '@material-ui/icons/Add';
+import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
+import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutline';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -125,299 +85,218 @@ const useStyles = makeStyles(theme => ({
     marginTop: '1em',
     textAlign: 'center',
   },
+  urlField: {
+    marginBottom: 10,
+  },
 }));
 
-function NoOptionsMessage(props) {
-  return (
-    <Typography
-      color="textSecondary"
-      className={props.selectProps.classes.noOptionsMessage}
-      {...props.innerProps}
-    >
-      {props.children}
-    </Typography>
-  );
-}
-
-NoOptionsMessage.propTypes = {
-  /**
-   * The children to be rendered.
-   */
-  children: PropTypes.node,
-  /**
-   * Props to be passed on to the wrapper.
-   */
-  innerProps: PropTypes.object.isRequired,
-  selectProps: PropTypes.object.isRequired,
-};
-
-function inputComponent({ inputRef, ...props }) {
-  return <div ref={inputRef} {...props} />;
-}
-
-inputComponent.propTypes = {
-  inputRef: PropTypes.oneOfType([
-    PropTypes.func,
-    PropTypes.shape({
-      current: PropTypes.any.isRequired,
-    }),
-  ]),
-};
-
-function Control(props) {
-  const {
-    children,
-    innerProps,
-    innerRef,
-    selectProps: { classes, TextFieldProps },
-  } = props;
-
-  return (
-    <TextField
-      fullWidth
-      InputProps={{
-        inputComponent,
-        inputProps: {
-          className: classes.input,
-          ref: innerRef,
-          children,
-          ...innerProps,
-        },
-      }}
-      {...TextFieldProps}
-    />
-  );
-}
-
-Control.propTypes = {
-  /**
-   * Children to render.
-   */
-  children: PropTypes.node,
-  /**
-   * The mouse down event and the innerRef to pass down to the controller element.
-   */
-  innerProps: PropTypes.shape({
-    onMouseDown: PropTypes.func.isRequired,
-  }).isRequired,
-  innerRef: PropTypes.oneOfType([
-    PropTypes.oneOf([null]),
-    PropTypes.func,
-    PropTypes.shape({
-      current: PropTypes.any.isRequired,
-    }),
-  ]).isRequired,
-  selectProps: PropTypes.object.isRequired,
-};
-
-function Option(props) {
-  return (
-    <MenuItem
-      ref={props.innerRef}
-      selected={props.isFocused}
-      component="div"
-      style={{
-        fontWeight: props.isSelected ? 500 : 400,
-      }}
-      {...props.innerProps}
-    >
-      {props.children}
-    </MenuItem>
-  );
-}
-
-Option.propTypes = {
-  /**
-   * The children to be rendered.
-   */
-  children: PropTypes.node,
-  /**
-   * props passed to the wrapping element for the group.
-   */
-  innerProps: PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    key: PropTypes.string.isRequired,
-    onClick: PropTypes.func.isRequired,
-    onMouseMove: PropTypes.func.isRequired,
-    onMouseOver: PropTypes.func.isRequired,
-    tabIndex: PropTypes.number.isRequired,
-  }).isRequired,
-  /**
-   * Inner ref to DOM Node
-   */
-  innerRef: PropTypes.oneOfType([
-    PropTypes.oneOf([null]),
-    PropTypes.func,
-    PropTypes.shape({
-      current: PropTypes.any.isRequired,
-    }),
-  ]).isRequired,
-  /**
-   * Whether the option is focused.
-   */
-  isFocused: PropTypes.bool.isRequired,
-  /**
-   * Whether the option is selected.
-   */
-  isSelected: PropTypes.bool.isRequired,
-};
-
-function Placeholder(props) {
-  const { selectProps, innerProps = {}, children } = props;
-  return (
-    <Typography color="textSecondary" className={selectProps.classes.placeholder} {...innerProps}>
-      {children}
-    </Typography>
-  );
-}
-
-Placeholder.propTypes = {
-  /**
-   * The children to be rendered.
-   */
-  children: PropTypes.node,
-  /**
-   * props passed to the wrapping element for the group.
-   */
-  innerProps: PropTypes.object,
-  selectProps: PropTypes.object.isRequired,
-};
-
-function SingleValue(props) {
-  return (
-    <Typography className={props.selectProps.classes.singleValue} {...props.innerProps}>
-      {props.children}
-    </Typography>
-  );
-}
-
-SingleValue.propTypes = {
-  /**
-   * The children to be rendered.
-   */
-  children: PropTypes.node,
-  /**
-   * Props passed to the wrapping element for the group.
-   */
-  innerProps: PropTypes.any.isRequired,
-  selectProps: PropTypes.object.isRequired,
-};
-
-function ValueContainer(props) {
-  return <div className={props.selectProps.classes.valueContainer}>{props.children}</div>;
-}
-
-ValueContainer.propTypes = {
-  /**
-   * The children to be rendered.
-   */
-  children: PropTypes.node,
-  selectProps: PropTypes.object.isRequired,
-};
-
-function MultiValue(props) {
-  return (
-    <Chip
-      tabIndex={-1}
-      label={props.children}
-      className={clsx(props.selectProps.classes.chip, {
-        [props.selectProps.classes.chipFocused]: props.isFocused,
-      })}
-      onDelete={props.removeProps.onClick}
-      deleteIcon={<CancelIcon {...props.removeProps} />}
-    />
-  );
-}
-
-MultiValue.propTypes = {
-  children: PropTypes.node,
-  isFocused: PropTypes.bool.isRequired,
-  removeProps: PropTypes.shape({
-    onClick: PropTypes.func.isRequired,
-    onMouseDown: PropTypes.func.isRequired,
-    onTouchEnd: PropTypes.func.isRequired,
-  }).isRequired,
-  selectProps: PropTypes.object.isRequired,
-};
-
-function Menu(props) {
-  return (
-    <Paper square className={props.selectProps.classes.paper} {...props.innerProps}>
-      {props.children}
-    </Paper>
-  );
-}
-
-Menu.propTypes = {
-  /**
-   * The children to be rendered.
-   */
-  children: PropTypes.element.isRequired,
-  /**
-   * Props to be passed to the menu wrapper.
-   */
-  innerProps: PropTypes.object.isRequired,
-  selectProps: PropTypes.object.isRequired,
-};
-
-const components = {
-  Control,
-  Menu,
-  MultiValue,
-  NoOptionsMessage,
-  Option,
-  Placeholder,
-  SingleValue,
-  ValueContainer,
-};
-
-export default function IntegrationReactSelect() {
+export default function CreateTasks(props) {
   const classes = useStyles();
   const theme = useTheme();
-  const [single, setSingle] = React.useState(null);
-  const [multi, setMulti] = React.useState(null);
 
-  function handleChangeSingle(value) {
-    setSingle(value);
-  }
-
-  function handleChangeMulti(value) {
-    setMulti(value);
-  }
-
-  const selectStyles = {
-    input: base => ({
-      ...base,
-      color: theme.palette.text.primary,
-      '& input': {
-        font: 'inherit',
-      },
-    }),
+  const [itemType, setItemType] = React.useState(null);
+  const handleTypeChange = (value) => {
+    setItemType(value);
   };
 
-  const [selectedDate, setSelectedDate] = React.useState(new Date('2014-08-18T21:11:54'));
-
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
+  const [endDate, setEndDate] = React.useState(new Date(Date.now()));
+  const endDateChange = (date) => {
+    setEndDate(date);
   };
-  const [radioValue, setValue] = React.useState('low');
 
-  const handleRadioChange = (event) => {
-    setValue(event.target.value);
+  const [startDate, setStartDate] = React.useState(new Date(Date.now()));
+  const startDateChange = (date) => {
+    setStartDate(date);
   };
-  const [typeState, setTypeState] = React.useState({
-    type: '',
+
+  const [displayState, setDisplayState] = React.useState(false);
+  const changeDisplayState = (event) => {
+    setDisplayState(event.target.checked);
+  };
+
+  const [archiveState, setArchiveState] = React.useState(false);
+  const changeArchiveState = (event) => {
+    setArchiveState(event.target.checked);
+  };
+
+  const [newState, setNewState] = React.useState(false);
+  const changeNewState = (event) => {
+    setNewState(event.target.checked);
+  };
+
+  const [internalState, setInternalState] = React.useState(false);
+  const changeInternalState = (event) => {
+    setInternalState(event.target.checked);
+  };
+
+  const required = val => val && val.length;
+  const maxLength = len => val => !(val) || (val.length <= len);
+  const minLength = len => val => (val) && (val.length >= len);
+
+  const [urlFields, setUrlFields] = React.useState([
+    { type: '', url: '' },
+  ]);
+  const handleAddUrlFields = () => {
+    const values = [...urlFields];
+    values.push({ type: '', url: '' });
+    setUrlFields(values);
+  };
+
+  const handleRemoveUrlFields = (index) => {
+    const values = [...urlFields];
+    values.splice(index, 1);
+    setUrlFields(values);
+  };
+
+  const handleUrlFieldChange = (index, event) => {
+    const values = [...urlFields];
+    if (event.target.name === 'type') {
+      values[index].type = event.target.value;
+    } else {
+      values[index].url = event.target.value;
+    }
+    setUrlFields(values);
+  };
+
+  // const handleEventFormReset = () => {
+  //   // console.log('Reset Event form');
+  //   props.resetEventForm();
+  // };
+
+  const [labelFields, setLabelFields] = React.useState([
+    '',
+  ]);
+  const handleAddLabelFields = () => {
+    const values = [...labelFields];
+    values.push('');
+    setLabelFields(values);
+  };
+
+  const handleRemoveLabelFields = (index) => {
+    const values = [...labelFields];
+    values.splice(index, 1);
+    setLabelFields(values);
+  };
+
+  const handleLabelFieldChange = (index, event) => {
+    const values = [...labelFields];
+    values[index] = event.target.value;
+    setLabelFields(values);
+  };
+
+  // const handleProjectFormReset = () => {
+  //   // console.log('Reset Project form');
+  //   props.resetProjectForm();
+  // };
+
+  // const handleResourceFormReset = () => {
+  //   // console.log('Reset Resource form');
+  //   props.resetResourceForm();
+  // };
+
+  const [successState, setSuccessState] = React.useState({
+    eventSuccess: false,
+    projectSuccess: false,
+    resourceSuccess: false,
   });
-  const inputLabel = React.useRef(null);
-  const [labelWidth, setLabelWidth] = React.useState(0);
-  React.useEffect(() => {
-    setLabelWidth(inputLabel.current.offsetWidth);
-  }, []);
-  const handleTypeChange = type => (event) => {
-    setTypeState({
-      ...typeState,
-      [type]: event.target.value,
+
+  const handleSuccessClose = () => {
+    setSuccessState({
+      ...successState,
+      eventSuccess: false,
+      projectSuccess: false,
+      resourceSuccess: false,
     });
+  };
+
+  const resetEForm = () => {
+    props.resetEventForm();
+    setUrlFields([
+      { type: '', url: '' },
+    ]);
+  };
+  const resetPForm = () => {
+    props.resetProjectForm();
+    setUrlFields([
+      { type: '', url: '' },
+    ]);
+    setLabelFields([
+      '',
+    ]);
+  };
+  const resetRForm = () => {
+    props.resetResourceForm();
+  };
+
+  const strMapToObj = (strMap) => {
+    const obj = Object.create(null);
+    Array.from(strMap).map(([k, v]) => { obj[k] = v; });
+    return obj;
+  };
+
+  const submitEventForm = (values) => {
+    const urlMap = new Map();
+    urlFields.map(urlField => urlMap.set(urlField.type, urlField.url));
+    const newEvent = {
+      ...values,
+      start_date: startDate,
+      end_date: endDate,
+      display_on_website: displayState,
+      url: strMapToObj(urlMap),
+      assignee: [],
+    };
+    // console.log('event: ', newEvent);
+    props.createEvent(newEvent);
+    if (props.eventError === null) {
+      setSuccessState({
+        ...successState,
+        eventSuccess: true,
+      });
+    }
+    resetEForm();
+  };
+
+  const submitProjectForm = (values) => {
+    const urlMap = new Map();
+    urlFields.map(urlField => urlMap.set(urlField.type, urlField.url));
+
+    const newProject = {
+      ...values,
+      members: [],
+      start_date: startDate,
+      end_date: endDate,
+      display_on_website: displayState,
+      is_internal: internalState,
+      labels: labelFields,
+      url: strMapToObj(urlMap),
+    };
+    // console.log('project: ', newProject);
+    props.createProject(newProject);
+    if (props.projectError == null) {
+      setSuccessState({
+        ...successState,
+        projectSuccess: true,
+      });
+    }
+    resetPForm();
+  };
+
+  const submitResourceForm = (values) => {
+    const newResource = {
+      ...values,
+      display_on_website: displayState,
+      archive: archiveState,
+      new: newState,
+    };
+    // console.log('resource: ', newResource);
+    props.createResource(newResource);
+    if (props.resourceError === null) {
+      setSuccessState({
+        ...successState,
+        resourceSuccess: true,
+      });
+    }
+    resetRForm();
   };
 
   return (
@@ -426,161 +305,740 @@ export default function IntegrationReactSelect() {
       {/* {'Change type of field (date/checkbox/text) accordingly'}
       <br /> */}
       <Grid container direction="row" justify="center">
-        <Grid item sm={8} lg={6}>
+        <Snackbar
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'center',
+          }}
+          open={successState.eventSuccess}
+          autoHideDuration={2000}
+          onClose={handleSuccessClose}
+          message="Event created successfully !"
+        />
+        <Snackbar
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'center',
+          }}
+          open={successState.projectSuccess}
+          autoHideDuration={2000}
+          onClose={handleSuccessClose}
+          message="Project created successfully !"
+        />
+        <Snackbar
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'center',
+          }}
+          open={successState.resourceSuccess}
+          autoHideDuration={2000}
+          onClose={handleSuccessClose}
+          message="Resource created successfully !"
+        />
+        <Grid item sm={10} lg={6}>
           <Paper elevation={3}>
-            {/* <For */}
-            <Typography variant="h4" className={classes.head}>
-              Create a new Task
-            </Typography>
-            <Grid container justify="center">
-              <Grid item sm={10}>
-                <form className={classes.form} noValidate autoComplete="off">
-                  {/* <TextField
-                    required
-                    id="filled-required"
-                    label=""
-                    placeholder="Task Name"
-                    variant="filled"
-                  /> */}
-                  <TextField
-                    variant="outlined"
-                    margin="normal"
-                    required
-                    fullWidth
-                    id="taskName"
-                    label="Task Name"
-                    name="taskName"
-                    autoFocus
-                  />
-                  <TextField
-                    variant="outlined"
-                    margin="normal"
-                    required
-                    fullWidth
-                    id="taskDescription"
-                    label="Task Description"
-                    name="taskDescription"
-                  />
-                  <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                    <KeyboardDatePicker
-                      disableToolbar
-                      variant="inline"
-                      format="MM/dd/yyyy"
-                      margin="normal"
-                      id="taskDeadline"
-                      label="Task Deadline"
-                      value={selectedDate}
-                      onChange={handleDateChange}
-                      KeyboardButtonProps={{
-                        'aria-label': 'change date',
-                      }}
-                    />
-                  </MuiPickersUtilsProvider>
-                  <FormLabel component="legend">Priority</FormLabel>
-                  <RadioGroup row value={radioValue} onChange={handleRadioChange}>
-                    <FormControlLabel
-                      value="low"
-                      label="Low"
-                      control={(
-                        <Radio />
-                        )}
-                    />
-                    <FormControlLabel
-                      value="medium"
-                      label="Medium"
-                      control={(
-                        <Radio />
-                        )}
-                    />
-                    <FormControlLabel
-                      value="high"
-                      label="High"
-                      control={(
-                        <Radio />
-                      )}
-                    />
-                  </RadioGroup>
-                  <FormControl variant="outlined" className={classes.formControl}>
-                    <InputLabel ref={inputLabel} htmlFor="type">
-                      Type
-                    </InputLabel>
-                    <Select
-                      native
-                      value={typeState.type}
-                      onChange={handleTypeChange('type')}
-                      labelWidth={labelWidth}
-                      inputProps={{
-                        name: 'type',
-                        id: 'type',
-                      }}
-                    >
-                      <option value="" />
-                      <option value={0}>Project</option>
-                      <option value={1}>Event</option>
-                      <option value={2}>Resource</option>
-                    </Select>
-                  </FormControl>
-                  <br />
-                  <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                    <KeyboardTimePicker
-                      margin="normal"
-                      id="startTime"
-                      label="Select start time"
-                      value={selectedDate}
-                      onChange={handleDateChange}
-                      KeyboardButtonProps={{
-                        'aria-label': 'change time',
-                      }}
-                    />
-                    <KeyboardTimePicker
-                      margin="normal"
-                      id="endTime"
-                      label="Select end time"
-                      value={selectedDate}
-                      onChange={handleDateChange}
-                      KeyboardButtonProps={{
-                        'aria-label': 'change time',
-                      }}
-                    />
-                  </MuiPickersUtilsProvider>
-                  <Grid container justify="center">
-                    <Grid item xs={6}>
-                      <Button variant="contained" size="large" color="primary" className={classes.margin}>
-                        Create Task
-                      </Button>
+            <Card>
+              <CardBody>
+                <CardTitle>
+                  <Typography variant="h4" className={classes.head}>
+                    Create a new Item
+                  </Typography>
+                </CardTitle>
+                <Row className="form-group">
+                  <Label htmlFor="type" sm={12}><h6>Type of Item:</h6></Label>
+                  <Col sm={12}>
+                    <Grid container direction="row" justify="space-evenly">
+                      <Grid item sm={3}>
+                        <Button active={itemType === 'event'} variant={itemType === 'event' ? 'contained' : 'outlined'} color="primary" onClick={() => handleTypeChange('event')}>Event</Button>
+                      </Grid>
+                      <Grid item sm={3}>
+                        <Button active={itemType === 'project'} variant={itemType === 'project' ? 'contained' : 'outlined'} color="primary" onClick={() => handleTypeChange('project')}>Project</Button>
+                      </Grid>
+                      <Grid item sm={3}>
+                        <Button active={itemType === 'resource'} variant={itemType === 'resource' ? 'contained' : 'outlined'} color="primary" onClick={() => handleTypeChange('resource')}>Resource</Button>
+                      </Grid>
                     </Grid>
-                  </Grid>
-                </form>
-              </Grid>
-            </Grid>
+                  </Col>
+                </Row>
+                {
+                  itemType === 'event'
+                    ? (
+                      <Form model="eventForm" onSubmit={values => submitEventForm(values)}>
+                        <Row className="form-group">
+                          <Label htmlFor="name" md={4}><h6>Name of Event:</h6></Label>
+                          <Col md={8}>
+                            <Control.text
+                              model=".name"
+                              id="name"
+                              name="name"
+                              placeholder="Event Name*"
+                              className="form-control"
+                              validators={{
+                                required, minLength: minLength(1), maxLength: maxLength(20),
+                              }}
+                            />
+                            <Errors
+                              className="text-danger"
+                              model=".name"
+                              show="touched"
+                              messages={{
+                                required: 'Required ',
+                                minLength: 'Must be greater than 2 characters',
+                                maxLength: 'Must be 25 characters or less',
+                              }}
+                            />
+                          </Col>
+                        </Row>
+                        <Row className="form-group">
+                          <Label htmlFor="description" md={12}><h6>Description:</h6></Label>
+                          <Col md={12}>
+                            <Control.textarea
+                              model=".description"
+                              id="description"
+                              name="description"
+                              placeholder="Event Description*"
+                              rows="8"
+                              className="form-control"
+                              validators={{
+                                required,
+                              }}
+                            />
+                            <Errors
+                              className="text-danger"
+                              model=".description"
+                              show="touched"
+                              messages={{
+                                required: 'Required',
+                              }}
+                            />
+                          </Col>
+                        </Row>
+                        <Row className="form-group">
+                          <Col>
+                            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                              <KeyboardDatePicker
+                                margin="normal"
+                                id="date-picker-dialog"
+                                label="Select Start Date of Event"
+                                format="MM/dd/yyyy"
+                                value={startDate}
+                                onChange={startDateChange}
+                                minDate={Date.now()}
+                                KeyboardButtonProps={{
+                                  'aria-label': 'change date',
+                                }}
+                              />
+                            </MuiPickersUtilsProvider>
+                          </Col>
+                        </Row>
+                        <Row className="form-group">
+                          <Col>
+                            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                              <KeyboardDatePicker
+                                margin="normal"
+                                id="date-picker-dialog"
+                                label="Select End Date of Event"
+                                format="MM/dd/yyyy"
+                                value={endDate}
+                                onChange={endDateChange}
+                                minDate={startDate}
+                                KeyboardButtonProps={{
+                                  'aria-label': 'change date',
+                                }}
+                              />
+                            </MuiPickersUtilsProvider>
+                          </Col>
+                        </Row>
+                        <Row className="form-group">
+                          <Label htmlFor="embed_code" md={12}><h6>Embedded Code:</h6></Label>
+                          <Col md={{ size: 8, offset: 2 }}>
+                            <Control.textarea
+                              model=".embed_code"
+                              id="embed_code"
+                              name="embed_code"
+                              placeholder="Type embedded code"
+                              rows="4"
+                              className="form-control"
+                              validators={{
+                                required,
+                              }}
+                            />
+                            <Errors
+                              className="text-danger"
+                              model=".embed_code"
+                              show="touched"
+                              messages={{
+                                required: 'Required',
+                              }}
+                            />
+                          </Col>
+                        </Row>
+                        <Row className="form-group">
+                          <Col>
+                            <Label htmlFor="embed_code" sm={5}><h6>Display on website:  </h6></Label>
+                            <FormControlLabel
+                              sm={2}
+                              // label="Display on Website"
+                              control={<Switch checked={displayState} onChange={changeDisplayState} />}
+                            />
+                          </Col>
+                        </Row>
+                        <Row className="form-group">
+                          <Label htmlFor="urlFields" md={12}><h6>Url:</h6></Label>
+                          <Col sm={12}>
+                            {urlFields.map((urlField, index) => (
+                              <Fragment key={`${urlField}~${index}`}>
+                                <Row className="form-group">
+                                  {/* sm={12} md={{ size: 4, offset: 1 }} */}
+                                  <Col sm={12} md={{ size: 4, offset: 1 }}>
+                                    <TextField
+                                      label="type"
+                                      // className="form-control"
+                                      className={classes.urlField}
+                                      id="type"
+                                      name="type"
+                                      variant="filled"
+                                      value={urlField.type}
+                                      onChange={event => handleUrlFieldChange(index, event)}
+                                    />
+                                  </Col>
+                                  {/* sm={12} md={4} */}
+                                  <Col sm={12} md={4}>
+                                    <TextField
+                                      label="url"
+                                      // className="form-control"
+                                      className={classes.urlField}
+                                      id="url"
+                                      name="url"
+                                      variant="filled"
+                                      value={urlField.url}
+                                      onChange={event => handleUrlFieldChange(index, event)}
+                                    />
+                                  </Col>
+                                  {/* sm={2} */}
+                                  <Col md={2}>
+                                    <Fab size="small" aria-label="delete" onClick={() => handleRemoveUrlFields(index)}>
+                                      <DeleteOutlinedIcon />
+                                    </Fab>
+                                  </Col>
+                                </Row>
+                              </Fragment>
+                            ))}
+                            <Fab size="small" color="secondary" aria-label="add" onClick={() => handleAddUrlFields()}>
+                              <AddIcon />
+                            </Fab>
+                          </Col>
+                        </Row>
+                        <Row className="form-group">
+                          {/* md={{ size: 4, offset: 3 }} */}
+                          <Col xs={{ size: 7, offset: 1 }} md={{ size: 4, offset: 3 }}>
+                            <Button type="submit" variant="contained" color="primary">
+                              Create Event
+                            </Button>
+                          </Col>
+                          {/* md={{ size: 2 }} */}
+                          <Col xs={3} md={{ size: 2 }}>
+                            <Button type="reset" variant="contained" color="primary" onClick={() => resetEForm()}>
+                              Reset
+                            </Button>
+                          </Col>
+                        </Row>
+                      </Form>
+                    )
+                    : null
+                }
+                {
+                  itemType === 'project'
+                    ? (
+                      <Form model="projectForm" onSubmit={values => submitProjectForm(values)}>
+                        <Row className="form-group">
+                          <Label htmlFor="name" md={4}><h6>Name of Project:</h6></Label>
+                          <Col md={8}>
+                            <Control.text
+                              model=".name"
+                              id="name"
+                              name="name"
+                              placeholder="Project Name*"
+                              className="form-control"
+                              validators={{
+                                required, minLength: minLength(1), maxLength: maxLength(20),
+                              }}
+                            />
+                            <Errors
+                              className="text-danger"
+                              model=".name"
+                              show="touched"
+                              messages={{
+                                required: 'Required ',
+                                minLength: 'Must be greater than 2 characters',
+                                maxLength: 'Must be 25 characters or less',
+                              }}
+                            />
+                          </Col>
+                        </Row>
+                        <Row className="form-group">
+                          <Label htmlFor="description" md={12}><h6>Description:</h6></Label>
+                          <Col md={12}>
+                            <Control.textarea
+                              model=".description"
+                              id="description"
+                              name="description"
+                              placeholder="Project Description*"
+                              rows="8"
+                              className="form-control"
+                              validators={{
+                                required,
+                              }}
+                            />
+                            <Errors
+                              className="text-danger"
+                              model=".description"
+                              show="touched"
+                              messages={{
+                                required: 'Required',
+                              }}
+                            />
+                          </Col>
+                        </Row>
+                        <Row className="form-group">
+                          <Col>
+                            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                              <KeyboardDatePicker
+                                margin="normal"
+                                id="date-picker-dialog"
+                                label="Select proposed Start Date of Project"
+                                format="MM/dd/yyyy"
+                                value={startDate}
+                                onChange={startDateChange}
+                                minDate={Date.now()}
+                                KeyboardButtonProps={{
+                                  'aria-label': 'change date',
+                                }}
+                              />
+                            </MuiPickersUtilsProvider>
+                          </Col>
+                        </Row>
+                        <Row className="form-group">
+                          <Col>
+                            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                              <KeyboardDatePicker
+                                margin="normal"
+                                id="date-picker-dialog"
+                                label="Select proposed End Date of Project"
+                                format="MM/dd/yyyy"
+                                value={endDate}
+                                onChange={endDateChange}
+                                minDate={startDate}
+                                KeyboardButtonProps={{
+                                  'aria-label': 'change date',
+                                }}
+                              />
+                            </MuiPickersUtilsProvider>
+                          </Col>
+                        </Row>
+                        <Row className="form-group">
+                          <Label htmlFor="origin" md={4}><h6>Origin of Project:</h6></Label>
+                          <Col md={8}>
+                            <Control.text
+                              model=".origin"
+                              id="origin"
+                              name="origin"
+                              placeholder="Origin*"
+                              className="form-control"
+                              validators={{
+                                required,
+                              }}
+                            />
+                            <Errors
+                              className="text-danger"
+                              model=".origin"
+                              show="touched"
+                              messages={{
+                                required: 'Required ',
+                              }}
+                            />
+                          </Col>
+                        </Row>
+                        <Row className="form-group">
+                          <Label htmlFor="origin_contact" md={4}><h6>Contact of Origin:</h6></Label>
+                          <Col md={8}>
+                            <Control.text
+                              model=".origin_contact"
+                              id="origin_contact"
+                              name="origin_contact"
+                              placeholder="Origin Contact*"
+                              className="form-control"
+                              validators={{
+                                required,
+                              }}
+                            />
+                            <Errors
+                              className="text-danger"
+                              model=".origin_contact"
+                              show="touched"
+                              messages={{
+                                required: 'Required ',
+                              }}
+                            />
+                          </Col>
+                        </Row>
+                        <Row className="form-group">
+                          <Label htmlFor="perks" md={4}><h6>Perks:</h6></Label>
+                          <Col md={8}>
+                            <Control.text
+                              model=".perks"
+                              id="perks"
+                              name="perks"
+                              placeholder="Perks*"
+                              className="form-control"
+                              validators={{
+                                required,
+                              }}
+                            />
+                            <Errors
+                              className="text-danger"
+                              model=".perks"
+                              show="touched"
+                              messages={{
+                                required: 'Required ',
+                              }}
+                            />
+                          </Col>
+                        </Row>
+                        <Row className="form-group">
+                          <Label htmlFor="requirements" md={4}><h6>Requirements:</h6></Label>
+                          <Col md={8}>
+                            <Control.text
+                              model=".requirements"
+                              id="requirements"
+                              name="requirements"
+                              placeholder="Requirements*"
+                              className="form-control"
+                              validators={{
+                                required,
+                              }}
+                            />
+                            <Errors
+                              className="text-danger"
+                              model=".requirements"
+                              show="touched"
+                              messages={{
+                                required: 'Required ',
+                              }}
+                            />
+                          </Col>
+                        </Row>
+                        <Row className="form-group">
+                          <Col>
+                            <Label htmlFor="embed_code" sm={5}><h6>Display on website:  </h6></Label>
+                            <FormControlLabel
+                              sm={2}
+                              // label="Display on Website"
+                              control={<Switch checked={displayState} onChange={changeDisplayState} />}
+                            />
+                          </Col>
+                        </Row>
+                        <Row className="form-group">
+                          <Col>
+                            <Label htmlFor="embed_code" sm={5}><h6>Internal Project:  </h6></Label>
+                            <FormControlLabel
+                              sm={2}
+                              // label="Display on Website"
+                              control={<Switch checked={internalState} onChange={changeInternalState} />}
+                            />
+                          </Col>
+                        </Row>
+                        <Row className="form-group">
+                          <Label htmlFor="labelFields" md={12}><h6>Add Label:</h6></Label>
+                          <Col sm={12}>
+                            {labelFields.map((labelField, index) => (
+                              <Fragment key={`${labelField}~${index}`}>
+                                <Row className="form-group">
+                                  <Col sm={{ size: 4, offset: 4 }}>
+                                    <TextField
+                                      label="label"
+                                      className="form-control"
+                                      id="label"
+                                      name="label"
+                                      variant="filled"
+                                      value={labelField}
+                                      onChange={event => handleLabelFieldChange(index, event)}
+                                    />
+                                  </Col>
+                                  <Col sm={2}>
+                                    <Fab size="small" aria-label="delete" onClick={() => handleRemoveLabelFields(index)}>
+                                      <DeleteOutlinedIcon />
+                                    </Fab>
+                                  </Col>
+                                </Row>
+                              </Fragment>
+                            ))}
+                            <Fab size="small" color="secondary" aria-label="add" onClick={() => handleAddLabelFields()}>
+                              <AddIcon />
+                            </Fab>
+                          </Col>
+                        </Row>
+                        <Row className="form-group">
+                          <Label htmlFor="urlFields" md={12}><h6>Url:</h6></Label>
+                          <Col sm={12}>
+                            {urlFields.map((urlField, index) => (
+                              <Fragment key={`${urlField}~${index}`}>
+                                <Row className="form-group">
+                                  <Col sm={{ size: 4, offset: 1 }}>
+                                    <TextField
+                                      sm={5}
+                                      label="type"
+                                      className="form-control"
+                                      id="type"
+                                      name="type"
+                                      variant="filled"
+                                      value={urlField.type}
+                                      onChange={event => handleUrlFieldChange(index, event)}
+                                    />
+                                  </Col>
+                                  <Col sm={4}>
+                                    <TextField
+                                      sm={5}
+                                      label="url"
+                                      className="form-control"
+                                      id="url"
+                                      name="url"
+                                      variant="filled"
+                                      value={urlField.url}
+                                      onChange={event => handleUrlFieldChange(index, event)}
+                                    />
+                                  </Col>
+                                  <Col sm={2}>
+                                    <Fab sm={2} size="small" aria-label="delete" onClick={() => handleRemoveUrlFields(index)}>
+                                      <DeleteOutlinedIcon />
+                                    </Fab>
+                                  </Col>
+                                </Row>
+                              </Fragment>
+                            ))}
+                            <Fab size="small" color="secondary" aria-label="add" onClick={() => handleAddUrlFields()}>
+                              <AddIcon />
+                            </Fab>
+                          </Col>
+                        </Row>
+                        <Row className="form-group">
+                          <Col sm={{ size: 4, offset: 3 }}>
+                            <Button type="submit" variant="contained" color="primary">
+                              Create Project
+                            </Button>
+                          </Col>
+                          <Col sm={{ size: 2 }}>
+                            <Button type="reset" variant="contained" color="primary" onClick={() => resetPForm()}>
+                              Reset
+                            </Button>
+                          </Col>
+                        </Row>
+                      </Form>
+                    )
+                    : null
+                }
+                {
+                  itemType === 'resource'
+                    ? (
+                      <Form model="resourceForm" onSubmit={values => submitResourceForm(values)}>
+                        <Row className="form-group">
+                          <Label htmlFor="internal_name" md={4}><h6>Internal Name:</h6></Label>
+                          <Col md={8}>
+                            <Control.text
+                              model=".internal_name"
+                              id="internal_name"
+                              name="internal_name"
+                              placeholder="Internal Name*"
+                              className="form-control"
+                              validators={{
+                                required, minLength: minLength(1), maxLength: maxLength(20),
+                              }}
+                            />
+                            <Errors
+                              className="text-danger"
+                              model=".internal_name"
+                              show="touched"
+                              messages={{
+                                required: 'Required ',
+                                minLength: 'Must be greater than 2 characters',
+                                maxLength: 'Must be 25 characters or less',
+                              }}
+                            />
+                          </Col>
+                        </Row>
+                        <Row className="form-group">
+                          <Label htmlFor="directory_year" md={4}><h6>Directory year:</h6></Label>
+                          <Col md={8}>
+                            <Control.text
+                              model=".directory_year"
+                              id="directory_year"
+                              name="directory_year"
+                              placeholder="Directory Year*"
+                              className="form-control"
+                              validators={{
+                                required, minLength: minLength(1), maxLength: maxLength(20),
+                              }}
+                            />
+                            <Errors
+                              className="text-danger"
+                              model=".directory_year"
+                              show="touched"
+                              messages={{
+                                required: 'Required ',
+                                minLength: 'Must be greater than 2 characters',
+                                maxLength: 'Must be 25 characters or less',
+                              }}
+                            />
+                          </Col>
+                        </Row>
+                        <Row className="form-group">
+                          <Label htmlFor="subdirectory" md={4}><h6>Sub-Directory:</h6></Label>
+                          <Col md={8}>
+                            <Control.text
+                              model=".subdirectory"
+                              id="subdirectory"
+                              name="subdirectory"
+                              placeholder="Sub-Directory*"
+                              className="form-control"
+                              validators={{
+                                required, minLength: minLength(1), maxLength: maxLength(20),
+                              }}
+                            />
+                            <Errors
+                              className="text-danger"
+                              model=".subdirectory"
+                              show="touched"
+                              messages={{
+                                required: 'Required ',
+                                minLength: 'Must be greater than 2 characters',
+                                maxLength: 'Must be 25 characters or less',
+                              }}
+                            />
+                          </Col>
+                        </Row>
+                        <Row className="form-group">
+                          <Label htmlFor="name" md={4}><h6>Name of Resource:</h6></Label>
+                          <Col md={8}>
+                            <Control.text
+                              model=".name"
+                              id="name"
+                              name="name"
+                              placeholder="Resource Name*"
+                              className="form-control"
+                              validators={{
+                                required, minLength: minLength(1), maxLength: maxLength(30),
+                              }}
+                            />
+                            <Errors
+                              className="text-danger"
+                              model=".name"
+                              show="touched"
+                              messages={{
+                                required: 'Required ',
+                                minLength: 'Must be greater than 2 characters',
+                                maxLength: 'Must be 25 characters or less',
+                              }}
+                            />
+                          </Col>
+                        </Row>
+                        <Row className="form-group">
+                          <Label htmlFor="description" md={12}><h6>Description:</h6></Label>
+                          <Col md={12}>
+                            <Control.textarea
+                              model=".description"
+                              id="description"
+                              name="description"
+                              placeholder="Resource Description*"
+                              rows="8"
+                              className="form-control"
+                              validators={{
+                                required,
+                              }}
+                            />
+                            <Errors
+                              className="text-danger"
+                              model=".description"
+                              show="touched"
+                              messages={{
+                                required: 'Required',
+                              }}
+                            />
+                          </Col>
+                        </Row>
+                        <Row className="form-group">
+                          <Label htmlFor="url" md={4}><h6>Url of Resource:</h6></Label>
+                          <Col md={8}>
+                            <Control.text
+                              model=".url"
+                              id="url"
+                              name="url"
+                              placeholder="Resource Url*"
+                              className="form-control"
+                              validators={{
+                                required,
+                              }}
+                            />
+                            <Errors
+                              className="text-danger"
+                              model=".url"
+                              show="touched"
+                              messages={{
+                                required: 'Required ',
+                              }}
+                            />
+                          </Col>
+                        </Row>
+                        <Row className="form-group">
+                          <Col>
+                            <Label htmlFor="displayOnWebsite" sm={5}><h6>Display on website:  </h6></Label>
+                            <FormControlLabel
+                              sm={2}
+                              // label="Display on Website"
+                              control={<Switch checked={displayState} onChange={changeDisplayState} />}
+                            />
+                          </Col>
+                        </Row>
+                        <Row className="form-group">
+                          <Col>
+                            <Label htmlFor="archive" sm={5}><h6>Archive:  </h6></Label>
+                            <FormControlLabel
+                              sm={2}
+                              // label="Display on Website"
+                              control={<Switch checked={archiveState} onChange={changeArchiveState} />}
+                            />
+                          </Col>
+                        </Row>
+                        <Row className="form-group">
+                          <Col>
+                            <Label htmlFor="new" sm={5}><h6>New Resource:  </h6></Label>
+                            <FormControlLabel
+                              sm={2}
+                              // label="Display on Website"
+                              control={<Switch checked={newState} onChange={changeNewState} />}
+                            />
+                          </Col>
+                        </Row>
+                        <Row className="form-group">
+                          <Col sm={{ size: 5, offset: 2 }}>
+                            <Button type="submit" variant="contained" color="primary">
+                              Create Resource
+                            </Button>
+                          </Col>
+                          <Col sm={{ size: 2 }}>
+                            <Button type="reset" variant="contained" color="primary" onClick={() => resetRForm()}>
+                              Reset
+                            </Button>
+                          </Col>
+                        </Row>
+                      </Form>
+                    )
+                    : null
+                }
+              </CardBody>
+            </Card>
           </Paper>
         </Grid>
       </Grid>
-
-
-      <div className={classes.root}>
-        <NoSsr>
-          <div className={classes.divider} />
-          <Select
-            classes={classes}
-            styles={selectStyles}
-            inputId="react-select-multiple"
-            TextFieldProps={{
-              label: 'Assign People',
-              InputLabelProps: {
-                htmlFor: 'react-select-multiple',
-                shrink: true,
-              },
-            }}
-            placeholder="Select multiple people"
-            options={suggestions}
-            components={components}
-            value={multi}
-            onChange={handleChangeMulti}
-            isMulti
-          />
-        </NoSsr>
-      </div>
     </div>
   );
 }
