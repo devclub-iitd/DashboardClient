@@ -114,7 +114,7 @@ export default function ManageUsers(props) {
         <Typography variant='h4' color='textSecondary'>Failed to fetch Users</Typography>
         : null
       }
-      <Backdrop className={classes.backdrop} open={props.users.isLoading}>
+      <Backdrop className={classes.backdrop} open={props.users.usersLoading}>
         <CircularProgress color="inherit" />
       </Backdrop>
       <Dialog open={rejectAll} maxWidth='md' onClose={confirmRejectClose}>

@@ -467,7 +467,7 @@ export default function Home(props) {
     setUserDailogOpen(false);
   }
 
-  function isOngoing (startDate: Date, endDate: Date) {
+  function isOngoing (startDate, endDate) {
     let today = new Date();
     if(today >= startDate && today <= endDate) {
       return true;
@@ -477,7 +477,7 @@ export default function Home(props) {
     }
   }
 
-  function isCompleted (endDate: Date) {
+  function isCompleted (endDate) {
     let today = new Date();
     if(today > endDate) {
       return true;
@@ -487,7 +487,7 @@ export default function Home(props) {
     }
   }
 
-  function isUpcoming (startDate: Date) {
+  function isUpcoming (startDate) {
     let today = new Date();
     if(today < startDate) {
       return true;
@@ -1246,7 +1246,7 @@ export default function Home(props) {
                 <h4>Error fetching members</h4>
                 :
                 <CardBody>
-                  <Backdrop className={classes.backdrop} open={props.users.isLoading}>
+                  <Backdrop className={classes.backdrop} open={props.users.usersLoading}>
                     <CircularProgress color="inherit" />
                   </Backdrop>
                   <CardTitle>Members</CardTitle>
@@ -1333,7 +1333,7 @@ export default function Home(props) {
                                         {
                                           Array.from(user.url).map(([key, value]) => {
                                             return(
-                                              <Typography variant='body1'>{`${key}: `}<CardLink href={value}>{`${value.substr(0, 30)}...`}</CardLink></Typography>
+                                              <Typography key={`${key}`} variant='body1'>{`${key}: `}<CardLink href={value}>{`${value.substr(0, 30)}...`}</CardLink></Typography>
                                             );
                                           })
                                         }
@@ -1518,7 +1518,7 @@ export default function Home(props) {
             </Popover>
           </Grid>
         </Grid>
-        <Grid item id="myTaskContainer" spacing={3} xs={12} md={5} className={classes.cardBorderR}>
+        <Grid item id="myTaskContainer" xs={12} md={5} className={classes.cardBorderR}>
           <Grid item xs={12}>
             <Typography align="center" variant="h4">My Tasks</Typography>
           </Grid>

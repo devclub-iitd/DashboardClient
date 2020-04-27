@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import clsx from 'clsx';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
@@ -66,87 +66,87 @@ function MadeWithLove() {
 
 const drawerWidth = 240;
 
-const useStyles = makeStyles(theme => ({
-  root: {
-    display: 'flex',
-  },
-  toolbar: {
-    backgroundImage: "url('./logo.png')",
-    backgroundRepeat: "no-repeat",
-    backgroundPosition: "center center",
-    paddingRight: 24, // keep right padding when drawer closed
-  },
-  toolbarIcon: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-    padding: '0 8px',
-    ...theme.mixins.toolbar,
-  },
-  appBar: {
-    zIndex: theme.zIndex.drawer + 1,
-    transition: theme.transitions.create(['width', 'margin'], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-  },
-  appBarShift: {
-    marginLeft: drawerWidth,
-    width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(['width', 'margin'], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  },
-  menuButton: {
-    marginRight: 36,
-  },
-  menuButtonHidden: {
-    display: 'none',
-  },
-  title: {
-    flexGrow: 1,
-  },
-  drawerPaper: {
-    position: 'relative',
-    whiteSpace: 'nowrap',
-    width: drawerWidth,
-    transition: theme.transitions.create('width', {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  },
-  drawerPaperClose: {
-    overflowX: 'hidden',
-    transition: theme.transitions.create('width', {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-    width: theme.spacing(7),
-    [theme.breakpoints.up('sm')]: {
-      width: theme.spacing(9),
-    },
-  },
-  appBarSpacer: theme.mixins.toolbar,
-  content: {
-    flexGrow: 1,
-    height: '100vh',
-    overflow: 'auto',
-  },
-  container: {
-    paddingTop: theme.spacing(4),
-    paddingBottom: theme.spacing(4),
-  },
-  paper: {
-    padding: theme.spacing(2),
-    display: 'flex',
-    overflow: 'auto',
-    flexDirection: 'column',
-  },
-  fixedHeight: {
-    height: 240,
-  },
-}));
+// const useStyles = makeStyles(theme => ({
+//   root: {
+//     display: 'flex',
+//   },
+//   toolbar: {
+//     backgroundImage: "url('./logo.png')",
+//     backgroundRepeat: "no-repeat",
+//     backgroundPosition: "center center",
+//     paddingRight: 24, // keep right padding when drawer closed
+//   },
+//   toolbarIcon: {
+//     display: 'flex',
+//     alignItems: 'center',
+//     justifyContent: 'flex-end',
+//     padding: '0 8px',
+//     ...theme.mixins.toolbar,
+//   },
+//   appBar: {
+//     zIndex: theme.zIndex.drawer + 1,
+//     transition: theme.transitions.create(['width', 'margin'], {
+//       easing: theme.transitions.easing.sharp,
+//       duration: theme.transitions.duration.leavingScreen,
+//     }),
+//   },
+//   appBarShift: {
+//     marginLeft: drawerWidth,
+//     width: `calc(100% - ${drawerWidth}px)`,
+//     transition: theme.transitions.create(['width', 'margin'], {
+//       easing: theme.transitions.easing.sharp,
+//       duration: theme.transitions.duration.enteringScreen,
+//     }),
+//   },
+//   menuButton: {
+//     marginRight: 36,
+//   },
+//   menuButtonHidden: {
+//     display: 'none',
+//   },
+//   title: {
+//     flexGrow: 1,
+//   },
+//   drawerPaper: {
+//     position: 'relative',
+//     whiteSpace: 'nowrap',
+//     width: drawerWidth,
+//     transition: theme.transitions.create('width', {
+//       easing: theme.transitions.easing.sharp,
+//       duration: theme.transitions.duration.enteringScreen,
+//     }),
+//   },
+//   drawerPaperClose: {
+//     overflowX: 'hidden',
+//     transition: theme.transitions.create('width', {
+//       easing: theme.transitions.easing.sharp,
+//       duration: theme.transitions.duration.leavingScreen,
+//     }),
+//     width: theme.spacing(7),
+//     [theme.breakpoints.up('sm')]: {
+//       width: theme.spacing(9),
+//     },
+//   },
+//   appBarSpacer: theme.mixins.toolbar,
+//   content: {
+//     flexGrow: 1,
+//     height: '100vh',
+//     overflow: 'auto',
+//   },
+//   container: {
+//     paddingTop: theme.spacing(4),
+//     paddingBottom: theme.spacing(4),
+//   },
+//   paper: {
+//     padding: theme.spacing(2),
+//     display: 'flex',
+//     overflow: 'auto',
+//     flexDirection: 'column',
+//   },
+//   fixedHeight: {
+//     height: 240,
+//   },
+// }));
 
 // const classes = useStyles;
 
@@ -158,8 +158,9 @@ function renderPage(subPage, classProp, classPaper, props) {
           <Profile
             // user={props.users.user}
             // error={props.users.errMess}
-            fetchUser={props.fetchUser}
+            // fetchUser={props.fetchUser}
             user={props.users.user}
+            isLoading={props.users.userLoading}
             // events={props.events}
             // editEvent={props.editEvent}
             serverError={props.users.serverError}
@@ -387,128 +388,406 @@ const mapDispatchToProps = (dispatch) => ({
   resourceErrorFin: () => { dispatch(resourceErrorFin()) },
 });
 
-function Dashboard(props) {
+// function Dashboard(props) {
   
-  const {
-    fetchUser,
-    fetchAllEvents,
-    fetchAllProjects,
-    fetchAllResources,
-    fetchAllUsers,
-  } = props;
+//   const {
+//     fetchUser,
+//     fetchAllEvents,
+//     fetchAllProjects,
+//     fetchAllResources,
+//     fetchAllUsers,
+//   } = props;
 
-  React.useEffect(() => {
-    fetchAllUsers();
-    fetchAllProjects();
-    fetchAllEvents();
-    fetchUser(localStorage.getItem('userId'));
-    fetchAllResources();
-  }, []);
+//   React.useEffect(() => {
+//     fetchAllUsers();
+//     fetchAllProjects();
+//     fetchAllEvents();
+//     fetchUser(localStorage.getItem('userId'));
+//     fetchAllResources();
+//   }, []);
 
-  const classes = useStyles();
-  const [open, setOpen] = React.useState(false);
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
+//   const classes = useStyles();
+//   const [open, setOpen] = React.useState(false);
+//   const handleDrawerOpen = () => {
+//     setOpen(true);
+//   };
+//   const handleDrawerClose = () => {
+//     setOpen(false);
+//   };
 
-  const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
-  // console.log(props);
-  const { match } = props;
-  const { params } = match;
-  const { subPage } = params;
+//   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+//   // console.log(props);
+//   const { match } = props;
+//   const { params } = match;
+//   const { subPage } = params;
 
-  // const [serverError, setServerError] = React.useState(props.users.passwordFailed || props.users.editFailed || props.users.removeFailed);
-  const handleErrorClose = () => {
-    // setServerError(false);
-    props.userErrorFin();
-    props.eventErrorFin();
-    props.projectErrorFin();
-    props.resourceErrorFin();
-  };
-  if(!props.auth.isAuthenticated) {
-    console.log('NOT AUTHENTICATED!!!!!!!!!!!');
-    return (
-      <Redirect to="/login" />
-    );
+//   // const [serverError, setServerError] = React.useState(props.users.passwordFailed || props.users.editFailed || props.users.removeFailed);
+//   const handleErrorClose = () => {
+//     // setServerError(false);
+//     props.userErrorFin();
+//     props.eventErrorFin();
+//     props.projectErrorFin();
+//     props.resourceErrorFin();
+//   };
+//   if(!props.auth.isAuthenticated) {
+//     console.log('NOT AUTHENTICATED!!!!!!!!!!!');
+//     return (
+//       <Redirect to="/login" />
+//     );
+//   }
+
+//   const isAdmin = props.users.user.privelege_level === 'Admin';
+
+//   // console.log('Users: ', props.users.allUsers);
+//   // console.log('Projects: ', props.projects.allProjects);
+//   // console.log('Events: ', props.events.allEvents);
+//   // console.log('Resources: ', props.resources.allResources);
+
+  
+//   return (
+//     <div className={classes.root}>
+//       <CssBaseline />
+//       <Snackbar
+//         anchorOrigin={{
+//           vertical: 'top',
+//           horizontal: 'center',
+//         }}
+//         open={
+//           props.users.serverError === 'ERROR' || props.events.serverError === 'ERROR'
+//           || props.projects.serverError === 'ERROR' || props.resources.serverError === 'ERROR'
+//         }
+//         autoHideDuration={2000}
+//         onClose={handleErrorClose}
+//         message="Server did not respond!!!"
+//       />
+//       <AppBar position="absolute" classes={{paper: clsx(classes.bgimage)}} className={clsx(classes.appBar, open && classes.appBarShift)}>
+//         <Toolbar className={classes.toolbar}>
+//           <IconButton
+//             edge="start"
+//             color="inherit"
+//             aria-label="open drawer"
+//             onClick={handleDrawerOpen}
+//             className={clsx(classes.menuButton, open && classes.menuButtonHidden)}
+//           >
+//             <MenuIcon />
+//           </IconButton>
+//           <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
+//             {
+//               getPageName(subPage)
+//             }
+//           </Typography>
+//           <IconButton color="inherit">
+//             {`Hi ${props.users.user.name}! ${props.users.user.privelege_level === 'Admin' ? '(You\`re Admin)': ''}`}
+//             <Badge color="secondary">
+//               <NotificationsIcon />
+//             </Badge>
+//           </IconButton>
+//         </Toolbar>
+//       </AppBar>
+//       <Drawer
+//         // variant="permanent"
+//         classes={{
+//           paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
+//         }}
+//         open={open}
+//       >
+//         <div className={classes.toolbarIcon}>
+//           <IconButton onClick={handleDrawerClose}>
+//             <ChevronLeftIcon />
+//           </IconButton>
+//         </div>
+//         <Divider />
+//         <List>
+//           <MainListItems closeDrawer={handleDrawerClose} isAdmin={isAdmin} logout={props.logoutUser} />
+//         </List>
+//       </Drawer>
+//       <main className={classes.content}>
+//         <div className={classes.appBarSpacer} />
+//         <Container maxWidth="lg" className={classes.container}>
+//           {renderPage(subPage, fixedHeightPaper, classes.paper, props)}
+//         </Container>
+//         {/* <MadeWithLove /> */}
+//       </main>
+//     </div>
+//   );
+// }
+
+// Dashboard.propTypes = {
+//   auth: PropTypes.object.isRequired,
+//   users: PropTypes.object.isRequired,
+//   events: PropTypes.object.isRequired,
+//   projects: PropTypes.object.isRequired,
+//   resources: PropTypes.object.isRequired,
+//   resetEventForm: PropTypes.func.isRequired,
+//   resetProjectForm: PropTypes.func.isRequired,
+//   resetResourceForm: PropTypes.func.isRequired,
+//   fetchUser: PropTypes.func.isRequired,
+//   fetchAllUsers: PropTypes.func.isRequired,
+//   logoutUser: PropTypes.func.isRequired,
+//   updateUser: PropTypes.func.isRequired,
+//   changePass: PropTypes.func.isRequired,
+//   removeUser: PropTypes.func.isRequired,
+//   deleteAllUsers: PropTypes.func.isRequired,
+//   rejectAllUnapproved: PropTypes.func.isRequired,
+//   userErrorFin: PropTypes.func.isRequired,
+//   editOtherUser: PropTypes.func.isRequired,
+//   fetchAllEvents: PropTypes.func.isRequired,
+//   createEvent: PropTypes.func.isRequired,
+//   editEvent: PropTypes.func.isRequired,
+//   deleteEvent: PropTypes.func.isRequired,
+//   eventErrorFin: PropTypes.func.isRequired,
+//   fetchAllProjects: PropTypes.func.isRequired,
+//   createProject: PropTypes.func.isRequired,
+//   editProject: PropTypes.func.isRequired,
+//   deleteProject: PropTypes.func.isRequired,
+//   projectErrorFin: PropTypes.func.isRequired,
+//   fetchAllResources: PropTypes.func.isRequired,
+//   createResource: PropTypes.func.isRequired,
+//   editResource: PropTypes.func.isRequired,
+//   deleteResource: PropTypes.func.isRequired,
+//   resourceErrorFin: PropTypes.func.isRequired,
+//   // classes: PropTypes.objectOf(PropTypes.string).isRequired,
+// };
+
+// export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);
+
+const styles = theme => ({
+  root: {
+    display: 'flex',
+  },
+  toolbar: {
+    backgroundImage: "url('./logo.png')",
+    backgroundRepeat: "no-repeat",
+    backgroundPosition: "center center",
+    paddingRight: 24, // keep right padding when drawer closed
+  },
+  toolbarIcon: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    padding: '0 8px',
+    ...theme.mixins.toolbar,
+  },
+  appBar: {
+    zIndex: theme.zIndex.drawer + 1,
+    transition: theme.transitions.create(['width', 'margin'], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+  },
+  appBarShift: {
+    marginLeft: drawerWidth,
+    width: `calc(100% - ${drawerWidth}px)`,
+    transition: theme.transitions.create(['width', 'margin'], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+  },
+  menuButton: {
+    marginRight: 36,
+  },
+  menuButtonHidden: {
+    display: 'none',
+  },
+  title: {
+    flexGrow: 1,
+  },
+  drawerPaper: {
+    position: 'relative',
+    whiteSpace: 'nowrap',
+    width: drawerWidth,
+    transition: theme.transitions.create('width', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+  },
+  drawerPaperClose: {
+    overflowX: 'hidden',
+    transition: theme.transitions.create('width', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+    width: theme.spacing(7),
+    [theme.breakpoints.up('sm')]: {
+      width: theme.spacing(9),
+    },
+  },
+  appBarSpacer: theme.mixins.toolbar,
+  content: {
+    flexGrow: 1,
+    height: '100vh',
+    overflow: 'auto',
+  },
+  container: {
+    paddingTop: theme.spacing(4),
+    paddingBottom: theme.spacing(4),
+  },
+  paper: {
+    padding: theme.spacing(2),
+    display: 'flex',
+    overflow: 'auto',
+    flexDirection: 'column',
+  },
+  fixedHeight: {
+    height: 240,
+  },
+});
+
+class Dashboard extends Component {
+  
+  constructor(props) {
+    super(props);
+    
+    this.state = {
+      open: false,
+    };
+
+    this.handleDrawerClose = this.handleDrawerClose.bind(this);
+    this.handleDrawerOpen = this.handleDrawerOpen.bind(this);
+  }
+  
+  componentWillMount() {
+    this.props.fetchAllUsers();
+    this.props.fetchUser(localStorage.getItem('userId'));
+    this.props.fetchAllProjects();
+    this.props.fetchAllEvents();
+    this.props.fetchAllResources();
   }
 
-  const isAdmin = props.users.user.privelege_level === 'Admin';
+  shouldComponentUpdate(nextProps) {
+    return JSON.stringify(this.props.users.user) === JSON.stringify(nextProps.users.user);
+  }
+  
+  // React.useEffect(() => {
+    // fetchAllUsers();
+    // fetchAllProjects();
+    // fetchAllEvents();
+    // fetchUser(localStorage.getItem('userId'));
+    // fetchAllResources();
+  // }, []);
+
+  handleDrawerOpen = () => {
+    this.setState({
+      ...this.state,
+      open: true,
+    });
+  };
+  handleDrawerClose = () => {
+    this.setState({
+      ...this.state,
+      open: false,
+    });
+  };
+
+  
+
+  // const [serverError, setServerError] = React.useState(props.users.passwordFailed || props.users.editFailed || props.users.removeFailed);
 
   // console.log('Users: ', props.users.allUsers);
   // console.log('Projects: ', props.projects.allProjects);
   // console.log('Events: ', props.events.allEvents);
   // console.log('Resources: ', props.resources.allResources);
 
-  
-  return (
-    <div className={classes.root}>
-      <CssBaseline />
-      <Snackbar
-        anchorOrigin={{
-          vertical: 'top',
-          horizontal: 'center',
-        }}
-        open={
-          props.users.serverError === 'ERROR' || props.events.serverError === 'ERROR'
-          || props.projects.serverError === 'ERROR' || props.resources.serverError === 'ERROR'
-        }
-        autoHideDuration={2000}
-        onClose={handleErrorClose}
-        message="Server did not respond!!!"
-      />
-      <AppBar position="absolute" classes={{paper: clsx(classes.bgimage)}} className={clsx(classes.appBar, open && classes.appBarShift)}>
-        <Toolbar className={classes.toolbar}>
-          <IconButton
-            edge="start"
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            className={clsx(classes.menuButton, open && classes.menuButtonHidden)}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-            {
-              getPageName(subPage)
-            }
-          </Typography>
-          <IconButton color="inherit">
-            {`Hi ${props.users.user.name}! ${props.users.user.privelege_level === 'Admin' ? '(You\`re Admin)': ''}`}
-            <Badge color="secondary">
-              <NotificationsIcon />
-            </Badge>
-          </IconButton>
-        </Toolbar>
-      </AppBar>
-      <Drawer
-        // variant="permanent"
-        classes={{
-          paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
-        }}
-        open={open}
-      >
-        <div className={classes.toolbarIcon}>
-          <IconButton onClick={handleDrawerClose}>
-            <ChevronLeftIcon />
-          </IconButton>
-        </div>
-        <Divider />
-        <List>
-          <MainListItems closeDrawer={handleDrawerClose} isAdmin={isAdmin} logout={props.logoutUser} />
-        </List>
-      </Drawer>
-      <main className={classes.content}>
-        <div className={classes.appBarSpacer} />
-        <Container maxWidth="lg" className={classes.container}>
-          {renderPage(subPage, fixedHeightPaper, classes.paper, props)}
-        </Container>
-        {/* <MadeWithLove /> */}
-      </main>
-    </div>
-  );
+  render() {
+    // const {
+    //   fetchUser,
+    //   fetchAllEvents,
+    //   fetchAllProjects,
+    //   fetchAllResources,
+    //   fetchAllUsers,
+    // } = this.props;
+    const { classes } = this.props;
+
+    const handleErrorClose = () => {
+      // setServerError(false);
+      this.props.userErrorFin();
+      this.props.eventErrorFin();
+      this.props.projectErrorFin();
+      this.props.resourceErrorFin();
+    };
+
+    if(!this.props.auth.isAuthenticated) {
+      console.log('NOT AUTHENTICATED!!!!!!!!!!!');
+      return (
+        <Redirect to="/login" />
+      );
+    }
+
+    const isAdmin = this.props.users.user.privelege_level === 'Admin';
+
+    const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+    // console.log(props);
+    const { match } = this.props;
+    const { params } = match;
+    const { subPage } = params;
+
+    return (
+      <div className={classes.root}>
+        <CssBaseline />
+        <Snackbar
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'center',
+          }}
+          open={
+            this.props.users.serverError === 'ERROR' || this.props.events.serverError === 'ERROR'
+            || this.props.projects.serverError === 'ERROR' || this.props.resources.serverError === 'ERROR'
+          }
+          autoHideDuration={2000}
+          onClose={handleErrorClose}
+          message="Server did not respond!!!"
+        />
+        <AppBar position="absolute" classes={{paper: clsx(classes.bgimage)}} className={clsx(classes.appBar, this.state.open && classes.appBarShift)}>
+          <Toolbar className={classes.toolbar}>
+            <IconButton
+              edge="start"
+              color="inherit"
+              aria-label="open drawer"
+              onClick={this.handleDrawerOpen}
+              className={clsx(classes.menuButton, this.state.open && classes.menuButtonHidden)}
+            >
+              <MenuIcon />
+            </IconButton>
+            <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
+              {
+                getPageName(subPage)
+              }
+            </Typography>
+            <IconButton color="inherit">
+              {`Hi ${this.props.users.user.name}! ${this.props.users.user.privelege_level === 'Admin' ? '(You\`re Admin)': ''}`}
+              <Badge color="secondary">
+                <NotificationsIcon />
+              </Badge>
+            </IconButton>
+          </Toolbar>
+        </AppBar>
+        <Drawer
+          // variant="permanent"
+          classes={{
+            paper: clsx(classes.drawerPaper, !this.state.open && classes.drawerPaperClose),
+          }}
+          open={this.state.open}
+        >
+          <div className={classes.toolbarIcon}>
+            <IconButton onClick={this.handleDrawerClose}>
+              <ChevronLeftIcon />
+            </IconButton>
+          </div>
+          <Divider />
+          <List>
+            <MainListItems closeDrawer={this.handleDrawerClose} isAdmin={isAdmin} logout={this.props.logoutUser} />
+          </List>
+        </Drawer>
+        <main className={classes.content}>
+          <div className={classes.appBarSpacer} />
+          <Container maxWidth="lg" className={classes.container}>
+            {renderPage(subPage, fixedHeightPaper, classes.paper, this.props)}
+          </Container>
+          {/* <MadeWithLove /> */}
+        </main>
+      </div>
+    );
+  }
 }
 
 Dashboard.propTypes = {
@@ -545,7 +824,7 @@ Dashboard.propTypes = {
   editResource: PropTypes.func.isRequired,
   deleteResource: PropTypes.func.isRequired,
   resourceErrorFin: PropTypes.func.isRequired,
-  // classes: PropTypes.objectOf(PropTypes.string).isRequired,
+  classes: PropTypes.objectOf(PropTypes.string).isRequired,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(Dashboard));

@@ -76,7 +76,7 @@ const EventsPage = ({ events, fetchAllEvents, editEvent, deleteEvent, users }) =
         });
     };
 
-    function isOngoing (startDate: Date, endDate: Date) {
+    function isOngoing (startDate, endDate) {
         let today = new Date();
         if(today >= startDate && today <= endDate) {
           return true;
@@ -86,7 +86,7 @@ const EventsPage = ({ events, fetchAllEvents, editEvent, deleteEvent, users }) =
         }
     }
     
-    function isCompleted (endDate: Date) {
+    function isCompleted (endDate) {
         let today = new Date();
         if(today > endDate) {
             return true;

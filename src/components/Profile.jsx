@@ -9,7 +9,7 @@ import {
   Dialog, DialogTitle, Tooltip,
   Modal, Backdrop, DialogContent, Avatar,
   FormLabel, FormControlLabel, Radio, RadioGroup, FormControl,
-  Snackbar,
+  Snackbar, CircularProgress,
 } from '@material-ui/core';
 import EmailOutlinedIcon from '@material-ui/icons/EmailOutlined';
 import PhoneIcon from '@material-ui/icons/Phone';
@@ -82,15 +82,18 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const Profile = (props) => {
-  const classes = useStyles();
-
+const Profile = ({
+  user, serverError, updateUser, isLoading,
+}) => {
   const [state, setState] = React.useState({
-    editUser: props.user,
-    orgUser: props.user,
-    urlFields: Array.from(props.user.url).map(([index, value]) => ({ type: index, url: value })),
+    editUser: user,
+    orgUser: user,
+    urlFields: Array.from(user.url).map(([index, value]) => ({ type: index, url: value })),
     editSuccess: false,
+    isModalOpen: false,
   });
+
+  const classes = useStyles();
 
   const handleSuccessClose = () => {
     setState({
@@ -149,14 +152,22 @@ const Profile = (props) => {
     // });
   };
 
-  const [isModalOpen, setIsModalOpen] = React.useState(false);
+  // const [isModalOpen, setIsModalOpen] = React.useState(false);
 
   const handleOpen = () => {
-    setIsModalOpen(true);
+    // setIsModalOpen(true);
+    setState({
+      ...state,
+      isModalOpen: true,
+    });
   };
 
   const handleClose = () => {
-    setIsModalOpen(false);
+    // setIsModalOpen(false);
+    setState({
+      ...state,
+      isModalOpen: false,
+    });
   };
 
   const handleAddUrlFields = () => {
@@ -254,9 +265,9 @@ const Profile = (props) => {
       url: strMapToObj(urlMap),
     };
 
-    props.updateUser(newUser);
+    updateUser(newUser);
     // setUserOrg(user);
-    if (props.serverError === null) {
+    if (serverError === null) {
       setState({
         ...state,
         editSuccess: true,
@@ -289,7 +300,10 @@ const Profile = (props) => {
   const minLength = len => val => (val) && (val.length >= len);
 
   return (
-    <div>
+    <>
+      <Backdrop className={classes.backdrop} open={isLoading}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <Grid container direction="row" justify="space-evenly" alignItems="flex-start">
         <Snackbar
           anchorOrigin={{
@@ -302,7 +316,7 @@ const Profile = (props) => {
           message="Profile updated Successfully !"
         />
         <div>
-          <Dialog open={isModalOpen} maxWidth="md" fullWidth onClose={() => { cancelEdit(); }} scroll="paper">
+          <Dialog open={state.isModalOpen} maxWidth="md" fullWidth onClose={() => { cancelEdit(); }} scroll="paper">
             <DialogTitle>
               <Typography variant="h4" className={classes.head}>
                 Edit Your Profile
@@ -781,7 +795,7 @@ const Profile = (props) => {
           <Card className={classes.card}>
             <Grid style={{ marginTop: '2em' }} container alignContent="center" justify="center">
               <Grid item xs={{ size: 6, offset: 3 }}>
-                <Avatar alt="Profile Pic" src={state.orgUser.url.get('picture_url')} className={classes.large} />
+                <Avatar alt={state.orgUser.name.substr(0, 1)} src={state.orgUser.url.get('picture_url')} className={classes.large} />
               </Grid>
             </Grid>
             <CardContent>
@@ -949,7 +963,7 @@ const Profile = (props) => {
         </Grid>
       </Grid>
       {'Add more fields in mind/database/API'}
-    </div>
+    </>
   );
   // }
 };

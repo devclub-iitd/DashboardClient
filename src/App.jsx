@@ -8,6 +8,7 @@ import { Provider } from 'react-redux';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
+import Health from './pages/Health';
 import './App.css';
 // import { ConfigureStore } from './store';
 
@@ -18,6 +19,7 @@ function App() {
   return (
     <Router history={hist}>
       <Switch>
+        <Route path="/healthz" component={Health} />
         <Route path="/login" component={Login} />
         <Route path="/register" component={Register} />
         <Route path="/dashboard/:subPage" component={Dashboard} />

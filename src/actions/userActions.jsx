@@ -24,20 +24,18 @@ export const usersFailed = errmess => ({
   payload: errmess,
 });
 
-export const addUser = (user) => {
-  const upUser = {
-    ...user,
-    url: objToStrMap(user.url),
-    join_year: user.join_year === null ? new Date() : new Date(user.join_year),
-    grad_year: user.grad_year === null ? new Date() : new Date(user.grad_year),
-    birth_date: user.birth_date === null ? new Date() : new Date(user.birth_date),
-  };
-  return ({
+export const addUser = upUser =>
+  // const upUser = {
+  //   ...user,
+  //   url: objToStrMap(user.url),
+  //   join_year: user.join_year === null ? new Date() : new Date(user.join_year),
+  //   grad_year: user.grad_year === null ? new Date() : new Date(user.grad_year),
+  //   birth_date: user.birth_date === null ? new Date() : new Date(user.birth_date),
+  // };
+  ({
     type: ActionTypes.ADD_USER,
     payload: upUser,
   });
-};
-
 export const addAllUsers = users => ({
   type: ActionTypes.ADD_ALL_USERS,
   payload: users,
@@ -114,7 +112,6 @@ export const fetchUser = id => (dispatch) => {
   return fetch(API.userQueryAPI, {
     method: 'POST',
     body: JSON.stringify(query),
-
     headers: {
       'Content-Type': 'application/json',
       // Origin: 'localhost:3001/',
@@ -152,7 +149,14 @@ export const fetchUser = id => (dispatch) => {
       //   grad_year: new Date(data[0].grad_year),
       //   birth_date: new Date(data[0].birth_date),
       // };
-      dispatch(addUser(data[0]));
+      const upUser = {
+        ...data[0],
+        url: objToStrMap(data[0].url),
+        join_year: data[0].join_year === null ? new Date() : new Date(data[0].join_year),
+        grad_year: data[0].grad_year === null ? new Date() : new Date(data[0].grad_year),
+        birth_date: data[0].birth_date === null ? new Date() : new Date(data[0].birth_date),
+      };
+      dispatch(addUser(upUser));
     })
     .catch(error => dispatch(userFailed(error.message)));
 };

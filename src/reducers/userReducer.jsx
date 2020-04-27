@@ -3,7 +3,8 @@ import * as ActionTypes from '../actions/ActionTypes';
 import dumUsers from '../components/dumUser';
 
 const Users = (state = {
-  isLoading: false,
+  userLoading: false,
+  usersLoading: false,
   userErrMess: null,
   usersErrMess: null,
   user: {},
@@ -14,7 +15,7 @@ const Users = (state = {
     case ActionTypes.ADD_USER:
       return {
         ...state,
-        isLoading: false,
+        userLoading: false,
         userErrMess: null,
         serverError: null,
         user: action.payload,
@@ -23,7 +24,7 @@ const Users = (state = {
     case ActionTypes.ADD_ALL_USERS:
       return {
         ...state,
-        isLoading: false,
+        usersLoading: false,
         usersErrMess: null,
         serverError: null,
         allUsers: action.payload,
@@ -34,13 +35,13 @@ const Users = (state = {
         ...state,
         userErrMess: null,
         serverError: null,
-        isLoading: true,
+        userLoading: true,
       };
 
     case ActionTypes.USER_FAILED:
       return {
         ...state,
-        isLoading: false,
+        userLoading: false,
         serverError: null,
         userErrMess: action.payload,
       };
@@ -48,7 +49,7 @@ const Users = (state = {
     case ActionTypes.USERS_LOADING:
       return {
         ...state,
-        isLoading: true,
+        usersLoading: true,
         serverError: null,
         usersErrMess: null,
       };
@@ -56,7 +57,7 @@ const Users = (state = {
     case ActionTypes.USERS_FAILED:
       return {
         ...state,
-        isLoading: false,
+        usersLoading: false,
         serverError: null,
         userErrMess: null,
         usersErrMess: action.payload,
@@ -65,14 +66,16 @@ const Users = (state = {
     case ActionTypes.USER_SERVER_ERROR:
       return {
         ...state,
-        isLoading: false,
+        userLoading: false,
+        usersLoading: false,
         serverError: 'ERROR',
       };
 
     case ActionTypes.USER_MISC_ERROR_FIN:
       return {
         ...state,
-        isLoading: false,
+        userLoading: false,
+        usersLoading: false,
         serverError: null,
       };
 
