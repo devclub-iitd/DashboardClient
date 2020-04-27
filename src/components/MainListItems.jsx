@@ -25,7 +25,15 @@ import { withRouter } from 'react-router-dom';
 function MainListItems(props) {
   const redirectFunc = (subPath, closeDrawer) => () => {
     closeDrawer();
-    props.history.push(`/dashboard/${subPath}`);
+    if (subPath === 'users' || subPath === 'deploy') {
+      if (!props.isAdmin) {
+        props.history.push('/dashboard/home');
+      } else {
+        props.history.push(`/dashboard/${subPath}`);
+      }
+    } else {
+      props.history.push(`/dashboard/${subPath}`);
+    }
   };
 
   return (
@@ -98,7 +106,7 @@ function MainListItems(props) {
         <ListItemIcon>
           <PublishIcon />
         </ListItemIcon>
-        <Tooltip title="Manage project deployments">
+        <Tooltip title="Manage project deployments (Only for Admins)">
           <ListItemText primary="Deploy" />
         </Tooltip>
       </ListItem>
@@ -108,7 +116,7 @@ function MainListItems(props) {
         </ListItemIcon>
         <ListItemText primary="Approve Users" />
       </ListItem> */}
-      <ListItem button disabled={!props.isAdmin} onClick={redirectFunc('createTasks', props.closeDrawer)}>
+      <ListItem button onClick={redirectFunc('createTasks', props.closeDrawer)}>
         <ListItemIcon>
           <AddBoxIcon />
         </ListItemIcon>

@@ -155,7 +155,15 @@ const drawerWidth = 240;
 //   props.history.push(`/dashboard/${subPath}`);
 // };
 
-function renderPage(subPage, classProp, classPaper, props) {
+function renderPage(subPage, classProp, classPaper, props, isAdmin, redirect, closeDrawer) {
+  if (subPage === 'users' || subPage === 'deploy') {
+    
+    if (!isAdmin) {
+      redirect('home', closeDrawer);
+      // return;
+      subPage = '';
+    }
+  }
   switch (subPage) {
     case 'profile':
       return (
@@ -298,7 +306,14 @@ function renderPage(subPage, classProp, classPaper, props) {
   }
 }
 
-function getPageName(subPage) {
+function getPageName(subPage, isAdmin) {
+  
+  if (!isAdmin) {
+    if (subPage === 'users' || subPage === 'deploy') {
+      subPage = '';
+    }
+  }
+
   switch (subPage) {
     case 'profile':
       return (
@@ -753,7 +768,7 @@ class Dashboard extends Component {
             </IconButton>
             <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
               {
-                getPageName(subPage)
+                getPageName(subPage, isAdmin)
               }
             </Typography>
             <IconButton onClick={this.redirectFunc('profile', this.handleDrawerClose)} color="inherit">
@@ -784,7 +799,7 @@ class Dashboard extends Component {
         <main className={classes.content}>
           <div className={classes.appBarSpacer} />
           <Container maxWidth="lg" className={classes.container}>
-            {renderPage(subPage, fixedHeightPaper, classes.paper, this.props)}
+            {renderPage(subPage, fixedHeightPaper, classes.paper, this.props, isAdmin, this.redirectFunc, this.handleDrawerClose)}
           </Container>
           {/* <MadeWithLove /> */}
         </main>
