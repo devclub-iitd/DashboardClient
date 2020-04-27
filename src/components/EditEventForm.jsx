@@ -250,7 +250,7 @@ class EditEventForm extends Component {
       // Call delete thunk here,
       // this.props.deleteEvent(this.props.dumEvents[this.props.index]._id);
       this.props.deleteEvent(this.state.event._id);
-      console.log('Deleting: ', this.state.name);
+      // console.log('Deleting: ', this.state.name);
       this.confirmDeleteClose();
     }
 
@@ -274,7 +274,7 @@ class EditEventForm extends Component {
 
       this.props.editEvent(updatedEvent);
       // this.props.editEvent(this.state.event);
-      console.log('got values: ', updatedEvent);
+      // console.log('got values: ', updatedEvent);
       if (this.props.serverError === null) {
         this.setState({
           ...this.state,

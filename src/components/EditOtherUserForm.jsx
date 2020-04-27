@@ -122,7 +122,7 @@ class EditOtherUserForm extends Component {
   handleDelete = () => {
     // Call delete thunk here,
     this.props.removeUser(this.state.user._id);
-    console.log('Deleting: ', this.state.user.name);
+    // console.log('Deleting: ', this.state.user.name);
     this.confirmDeleteClose();
   };
 
@@ -141,7 +141,7 @@ class EditOtherUserForm extends Component {
   };
 
   handleSubmit = () => {
-    console.log('Editing user: ', this.state.user);
+    // console.log('Editing user: ', this.state.user);
     this.props.editUser(this.state.user);
     if (this.props.serverError === null) {
       this.setState({

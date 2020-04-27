@@ -129,7 +129,7 @@ class SignUp extends React.Component {
       password: target.password.value,
     };
 
-    console.log('Register body:', body);
+    // console.log('Register body:', body);
 
     // const { register } = this.props;
     // window.location.reload(false);

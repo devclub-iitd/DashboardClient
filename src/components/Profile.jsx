@@ -107,8 +107,8 @@ const Profile = ({
     //   ...user,
     //   [event.target.name]: [event.target.value],
     // });
-    // console.log('Name: ', name);
-    // console.log('Event: ', event);
+    // // console.log('Name: ', name);
+    // // console.log('Event: ', event);
 
     if (name === 'birth_date') {
       setState({
@@ -276,7 +276,7 @@ const Profile = ({
         },
       });
     }
-    console.log('Submitting user details update info: ', state.editUser);
+    // console.log('Submitting user details update info: ', state.editUser);
     handleClose();
   };
 
@@ -292,7 +292,7 @@ const Profile = ({
       },
     });
     handleClose();
-    console.log(state.editUser);
+    // console.log(state.editUser);
   };
 
   const required = val => val && val.length;

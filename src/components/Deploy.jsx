@@ -136,7 +136,7 @@ class DeployManager extends Component {
       access: this.state.access,
       build: this.state.build,
     };
-    console.log('Creating new deployment: ', newDeploy);
+    // console.log('Creating new deployment: ', newDeploy);
     this.handleNewDeploymentClose();
   };
 

@@ -170,7 +170,7 @@ export default function CreateTasks(props) {
   };
 
   // const handleEventFormReset = () => {
-  //   console.log('Reset Event form');
+  //   // console.log('Reset Event form');
   //   props.resetEventForm();
   // };
 
@@ -196,12 +196,12 @@ export default function CreateTasks(props) {
   };
 
   // const handleProjectFormReset = () => {
-  //   console.log('Reset Project form');
+  //   // console.log('Reset Project form');
   //   props.resetProjectForm();
   // };
 
   // const handleResourceFormReset = () => {
-  //   console.log('Reset Resource form');
+  //   // console.log('Reset Resource form');
   //   props.resetResourceForm();
   // };
 
@@ -256,7 +256,7 @@ export default function CreateTasks(props) {
       url: strMapToObj(urlMap),
       assignee: [],
     };
-    console.log('event: ', newEvent);
+    // console.log('event: ', newEvent);
     props.createEvent(newEvent);
     if (props.eventError === null) {
       setSuccessState({
@@ -281,7 +281,7 @@ export default function CreateTasks(props) {
       labels: labelFields,
       url: strMapToObj(urlMap),
     };
-    console.log('project: ', newProject);
+    // console.log('project: ', newProject);
     props.createProject(newProject);
     if (props.projectError == null) {
       setSuccessState({
@@ -299,7 +299,7 @@ export default function CreateTasks(props) {
       archive: archiveState,
       new: newState,
     };
-    console.log('resource: ', newResource);
+    // console.log('resource: ', newResource);
     props.createResource(newResource);
     if (props.resourceError === null) {
       setSuccessState({

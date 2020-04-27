@@ -26,9 +26,6 @@ export const eventErrorFin = () => ({
 
 function objToStrMap(obj) {
   const strMap = new Map();
-  // for (const k of Object.keys(obj)) {
-  //   strMap.set(k, obj[k]);
-  // }
   Object.keys(obj).map(k => strMap.set(k, obj[k]));
   return strMap;
 }
@@ -54,14 +51,14 @@ export const fetchAllEvents = () => (dispatch) => {
       }
       response.json()
         .then((res) => {
-          console.log('Server response: ', res);
+          // console.log('Server response: ', res);
           if (res.name === 'Unauthorized') {
             dispatch(logoutUser('timeout'));
           }
         });
       const error = new Error(`Error ${response.status}: ${response.statusText}`);
       error.response = response;
-      console.log(error);
+      // console.log(error);
       throw error;
     },
     (error) => {
@@ -102,7 +99,7 @@ export const createEvent = event => (dispatch) => {
       }
       response.json()
         .then((res) => {
-          console.log('Server response: ', res);
+          // console.log('Server response: ', res);
           if (res.name === 'Unauthorized') {
             dispatch(logoutUser('timeout'));
           }
@@ -116,7 +113,7 @@ export const createEvent = event => (dispatch) => {
     })
     .then(response => response.json())
     .then((cEvent) => {
-      console.log('New Event: ', cEvent);
+      // console.log('New Event: ', cEvent);
       dispatch(fetchAllEvents());
     })
     .catch(error => dispatch(eventServerError(error.message)));
@@ -140,7 +137,7 @@ export const editEvent = event => (dispatch) => {
       }
       response.json()
         .then((res) => {
-          console.log('Server response: ', res);
+          // console.log('Server response: ', res);
           if (res.name === 'Unauthorized') {
             dispatch(logoutUser('timeout'));
           }
@@ -154,7 +151,7 @@ export const editEvent = event => (dispatch) => {
     })
     .then(response => response.json())
     .then((cEvent) => {
-      console.log('Updated Event: ', cEvent);
+      // console.log('Updated Event: ', cEvent);
       dispatch(fetchAllEvents());
     })
     .catch(error => dispatch(eventServerError(error.message)));
@@ -178,7 +175,7 @@ export const deleteEvent = eventId => (dispatch) => {
       }
       response.json()
         .then((res) => {
-          console.log('Server response: ', res);
+          // console.log('Server response: ', res);
           if (res.name === 'Unauthorized') {
             dispatch(logoutUser('timeout'));
           }
@@ -193,7 +190,7 @@ export const deleteEvent = eventId => (dispatch) => {
     .then(response => response.json())
     .then((res) => {
       // console.log('User data updated', user);
-      console.log(res);
+      // console.log(res);
       dispatch(fetchAllEvents());
     })
     .catch(error => dispatch(eventServerError(error.message)));

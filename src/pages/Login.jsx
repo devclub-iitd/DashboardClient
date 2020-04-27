@@ -89,8 +89,8 @@ function SignInSide(props) {
       entry_no: uname,
       password: pass,
     };
-    console.log(creds);
-    console.log(JSON.stringify(creds));
+    // console.log(creds);
+    // console.log(JSON.stringify(creds));
     login(creds);
   };
 

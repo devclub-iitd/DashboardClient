@@ -207,7 +207,7 @@ const minLength = len => val => (val) && (val.length >= len);
 //   handleDelete = () => {
 //     // Call delete thunk here,
 //     this.props.removeUser(this.state.user._id);
-//     console.log('Deleting: ', this.state.user.name);
+//     // console.log('Deleting: ', this.state.user.name);
 //     this.confirmDeleteClose();
 //   }
 
@@ -409,13 +409,13 @@ export default function Home(props) {
   const [userDailogOpen, setUserDailogOpen] =  React.useState(false);
 
   const handleEventCardOpen = () => {
-    console.log('Event card clicked');
+    // console.log('Event card clicked');
     if (!props.events.isLoading && props.events.errMess === null) {
       setEventDailogOpen(true);
     }
   }
   const handleEventCardClose = () => {
-    console.log('Event card clicked');
+    // console.log('Event card clicked');
     setEventDailogOpen(false);
   }
 
@@ -434,36 +434,36 @@ export default function Home(props) {
   };
 
   const handleProjectCardOpen = () => {
-    console.log('Project card clicked');
+    // console.log('Project card clicked');
     if (!props.projects.isLoading && props.projects.errMess === null) {
       setProjectDailogOpen(true);
     }
   };
 
   const handleProjectCardClose = () => {
-    console.log('Project card clicked');
+    // console.log('Project card clicked');
     setProjectDailogOpen(false);
   }
 
   const handleResourceCardOpen = () => {
-    console.log('card clicked');
+    // console.log('card clicked');
     if (!props.resources.isLoading && props.resources.errMess === null) {
       setResourceDailogOpen(true);
     }
   }
   const handleResourceCardClose = () => {
-    console.log('card clicked');
+    // console.log('card clicked');
     setResourceDailogOpen(false);
   }
 
   const handleUserCardOpen = () => {
-    console.log('card clicked');
+    // console.log('card clicked');
     if (!props.users.isLoading && props.users.usersErrMess === null) {
       setUserDailogOpen(true);
     }
   }
   const handleUserCardClose = () => {
-    console.log('card clicked');
+    // console.log('card clicked');
     setUserDailogOpen(false);
   }
 

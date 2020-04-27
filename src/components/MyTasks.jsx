@@ -106,9 +106,9 @@ export default function MyTasks(props) {
   const ongoingProjects = dumProjects.filter((project) => project.members.includes(curUser._id)).filter((project) => project.status === 'ONGOING');
   const completedProjects = dumProjects.filter((project) => project.members.includes(curUser._id)).filter((project) => project.status === 'COMPLETED');
 
-  console.log('Ongoing Events: ', ongoingEvents.length);
-  console.log('Upcoming Events: ', upcomingEvents.length);
-  console.log('Completed Events: ', completedEvents.length);
+  // console.log('Ongoing Events: ', ongoingEvents.length);
+  // console.log('Upcoming Events: ', upcomingEvents.length);
+  // console.log('Completed Events: ', completedEvents.length);
 
   return (
     <Grid container justify='space-evenly'>

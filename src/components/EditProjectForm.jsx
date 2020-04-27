@@ -356,7 +356,7 @@ class EditProjectForm extends Component {
     handleDelete = () => {
       // Call delete thunk here,
       this.props.deleteProject(this.props.dumProjects[this.props.index]._id);
-      console.log('Deleting: ', this.state.name);
+      // console.log('Deleting: ', this.state.name);
       this.confirmDeleteClose();
     }
 
@@ -404,8 +404,8 @@ class EditProjectForm extends Component {
       }
       this.handleFormClose();
       // this.props.editProject(this.state.project);
-      console.log('got values: ', updatedProject);
-      // console.log('submitting edited event: ', this.state.editEvent);
+      // console.log('got values: ', updatedProject);
+      // // console.log('submitting edited event: ', this.state.editEvent);
     };
   
     render() {

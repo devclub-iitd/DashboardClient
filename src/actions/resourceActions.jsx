@@ -44,14 +44,14 @@ export const fetchAllResources = () => (dispatch) => {
       }
       response.json()
         .then((res) => {
-          console.log('Server response: ', res);
+          // console.log('Server response: ', res);
           if (res.name === 'Unauthorized') {
             dispatch(logoutUser('timeout'));
           }
         });
       const error = new Error(`Error ${response.status}: ${response.statusText}`);
       error.response = response;
-      console.log(error);
+      // console.log(error);
       throw error;
     },
     (error) => {
@@ -81,7 +81,7 @@ export const createResource = resource => (dispatch) => {
       }
       response.json()
         .then((res) => {
-          console.log('Server response: ', res);
+          // console.log('Server response: ', res);
           if (res.name === 'Unauthorized') {
             dispatch(logoutUser('timeout'));
           }
@@ -95,7 +95,7 @@ export const createResource = resource => (dispatch) => {
     })
     .then(response => response.json())
     .then((cResource) => {
-      console.log('New Resource: ', cResource);
+      // console.log('New Resource: ', cResource);
       dispatch(fetchAllResources());
     })
     .catch(error => dispatch(resourceServerError(error.message)));
@@ -119,7 +119,7 @@ export const editResource = resource => (dispatch) => {
       }
       response.json()
         .then((res) => {
-          console.log('Server response: ', res);
+          // console.log('Server response: ', res);
           if (res.name === 'Unauthorized') {
             dispatch(logoutUser('timeout'));
           }
@@ -133,7 +133,7 @@ export const editResource = resource => (dispatch) => {
     })
     .then(response => response.json())
     .then((cResource) => {
-      console.log('Updated Resource: ', cResource);
+      // console.log('Updated Resource: ', cResource);
       dispatch(fetchAllResources());
     })
     .catch(error => dispatch(resourceServerError(error.message)));
@@ -157,7 +157,7 @@ export const deleteResource = resourceId => (dispatch) => {
       }
       response.json()
         .then((res) => {
-          console.log('Server response: ', res);
+          // console.log('Server response: ', res);
           if (res.name === 'Unauthorized') {
             dispatch(logoutUser('timeout'));
           }
@@ -172,7 +172,7 @@ export const deleteResource = resourceId => (dispatch) => {
     .then(response => response.json())
     .then((res) => {
       // console.log('User data updated', user);
-      console.log(res);
+      // console.log(res);
       dispatch(fetchAllResources());
     })
     .catch(error => dispatch(resourceServerError(error.message)));

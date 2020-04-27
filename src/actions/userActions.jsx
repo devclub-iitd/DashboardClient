@@ -125,14 +125,14 @@ export const fetchUser = id => (dispatch) => {
       }
       response.json()
         .then((res) => {
-          console.log('Server response: ', res);
+          // // console.log('Server response: ', res);
           if (res.name === 'Unauthorized') {
             dispatch(logoutUser('timeout'));
           }
         });
       const error = new Error(`Error ${response.status}: ${response.statusText}`);
       error.response = response;
-      console.log(error);
+      // // console.log(error);
       throw error;
     },
     (error) => {
@@ -141,7 +141,7 @@ export const fetchUser = id => (dispatch) => {
     })
     .then(response => response.json())
     .then(({ data }) => {
-      console.log('fetched user data: ', data);
+      // // console.log('fetched user data: ', data);
       // const acUser = {
       //   ...data[0],
       //   url: objToStrMap(data[0].url),
@@ -183,14 +183,14 @@ export const fetchAllUsers = () => (dispatch) => {
       }
       response.json()
         .then((res) => {
-          console.log('Server response: ', res);
+          // // console.log('Server response: ', res);
           if (res.name === 'Unauthorized') {
             dispatch(logoutUser('timeout'));
           }
         });
       const error = new Error(`Error ${response.status}: ${response.statusText}`);
       error.response = response;
-      console.log(error);
+      // // console.log(error);
       throw error;
     },
     (error) => {
@@ -199,7 +199,7 @@ export const fetchAllUsers = () => (dispatch) => {
     })
     .then(response => response.json())
     .then((users) => {
-      console.log('got users: ', users);
+      // // console.log('got users: ', users);
       const gotUsers = users.data;
       const allUsers = gotUsers.map(cUser => ({
         ...cUser,
@@ -235,15 +235,15 @@ export const loginUser = creds => (dispatch) => {
       error.response = response;
       response.json()
         .then((res) => {
-          console.log('Server response: ', res);
+          // // console.log('Server response: ', res);
           if (res.name === 'Unapproved user') {
             dispatch(loginError('Unapproved'));
           }
         });
-      // console.log('Response: ', response);
+      // // // console.log('Response: ', response);
       // const error = new Error(`Error ${response.status}: ${response.statusText}`);
       // error.response = response;
-      // console.log('Error: ', error);
+      // // // console.log('Error: ', error);
       throw error;
     },
     (error) => {
@@ -252,8 +252,8 @@ export const loginUser = creds => (dispatch) => {
     .then(response => response.json())
     .then((response) => {
       if (response.status === 200) {
-        console.log('Response: ', response.result);
-        console.log('Id: ', response.result._id);
+        // // console.log('Response: ', response.result);
+        // // console.log('Id: ', response.result._id);
         // If login was successful, set the token in local storage
         localStorage.setItem('dcIITDDashboardToken', response.token);
         localStorage.setItem('userId', response.result._id);
@@ -286,7 +286,7 @@ export const registerUser = registerCreds => (dispatch) => {
       }
       response.json()
         .then((res) => {
-          console.log('Server response: ', res);
+          // // console.log('Server response: ', res);
         });
       const error = new Error(`Error ${response.status}: ${response.statusText}`);
       error.response = response;
@@ -297,7 +297,7 @@ export const registerUser = registerCreds => (dispatch) => {
     })
     .then(response => response.json())
     .then((response) => {
-      console.log('Response: ', response);
+      // // console.log('Response: ', response);
       dispatch(receiveRegister());
     })
     .catch(error => dispatch(registerError(error.message)));
@@ -332,7 +332,7 @@ export const updateUser = updatedUser => (dispatch) => {
       }
       response.json()
         .then((res) => {
-          console.log('Server response: ', res);
+          // // console.log('Server response: ', res);
           if (res.name === 'Unauthorized') {
             dispatch(logoutUser('timeout'));
           }
@@ -346,7 +346,7 @@ export const updateUser = updatedUser => (dispatch) => {
     })
     .then(response => response.json())
     .then((userData) => {
-      console.log('User data updated: ', userData);
+      // // console.log('User data updated: ', userData);
       dispatch(fetchUser(updatedUser._id));
     })
     .catch(error => dispatch(userServerError(error.message)));
@@ -370,7 +370,7 @@ export const removeOtherUser = uId => (dispatch) => {
       }
       response.json()
         .then((res) => {
-          console.log('Server response: ', res);
+          // // console.log('Server response: ', res);
           if (res.name === 'Unauthorized') {
             dispatch(logoutUser('timeout'));
           }
@@ -384,8 +384,8 @@ export const removeOtherUser = uId => (dispatch) => {
     })
     .then(response => response.json())
     .then((res) => {
-      // console.log('User data updated', user);
-      console.log(res);
+      // // // console.log('User data updated', user);
+      // // console.log(res);
       dispatch(fetchAllUsers());
     })
     .catch(error => dispatch(userServerError(error)));
@@ -408,7 +408,7 @@ export const deleteAllUsers = () => (dispatch) => {
       }
       response.json()
         .then((res) => {
-          console.log('Server response: ', res);
+          // // console.log('Server response: ', res);
           if (res.name === 'Unauthorized') {
             dispatch(logoutUser('timeout'));
           }
@@ -422,8 +422,8 @@ export const deleteAllUsers = () => (dispatch) => {
     })
     .then(response => response.json())
     .then((res) => {
-      // console.log('User data updated', user);
-      console.log(res);
+      // // // console.log('User data updated', user);
+      // // console.log(res);
       dispatch(fetchAllUsers());
     })
     .catch(error => dispatch(userServerError(error)));
@@ -446,7 +446,7 @@ export const rejectAllUnapproved = () => (dispatch) => {
       }
       response.json()
         .then((res) => {
-          console.log('Server response: ', res);
+          // // console.log('Server response: ', res);
           if (res.name === 'Unauthorized') {
             dispatch(logoutUser('timeout'));
           }
@@ -459,8 +459,8 @@ export const rejectAllUnapproved = () => (dispatch) => {
       throw error;
     })
     .then((res) => {
-      console.log('Rejection response', res);
-      console.log(res);
+      // // console.log('Rejection response', res);
+      // // console.log(res);
       dispatch(fetchAllUsers());
     })
     .catch(error => dispatch(userServerError(error)));
@@ -486,7 +486,7 @@ export const changePassword = newPass => (dispatch) => {
       }
       response.json()
         .then((res) => {
-          console.log('Server response: ', res);
+          // // console.log('Server response: ', res);
           if (res.name === 'Unauthorized') {
             dispatch(logoutUser('timeout'));
           }
@@ -500,7 +500,7 @@ export const changePassword = newPass => (dispatch) => {
     })
     .then(response => response.json())
     .then((user) => {
-      console.log('User password changed', user);
+      // // console.log('User password changed', user);
       // dispatch(addUser(user));
     })
     .catch(error => dispatch(userServerError(error.message)));
@@ -524,7 +524,7 @@ export const editOtherUser = otherUser => (dispatch) => {
       }
       response.json()
         .then((res) => {
-          console.log('Server response: ', res);
+          // // console.log('Server response: ', res);
           if (res.name === 'Unauthorized') {
             dispatch(logoutUser('timeout'));
           }
@@ -538,7 +538,7 @@ export const editOtherUser = otherUser => (dispatch) => {
     })
     .then(response => response.json())
     .then((allUsers) => {
-      console.log('All users: \n', allUsers);
+      // // // console.log('All users: \n', allUsers);
       // dispatch(addAllUsers(allUsers));
       dispatch(fetchAllUsers());
     })

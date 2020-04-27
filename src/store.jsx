@@ -15,16 +15,12 @@ import { createStore, applyMiddleware, combineReducers } from 'redux';
 import thunk from 'redux-thunk';
 import { createForms } from 'react-redux-form';
 import logger from 'redux-logger';
-import { persistStore, persistReducer } from 'redux-persist';
-import hardSet from 'redux-persist/lib/stateReconciler/hardSet';
-import storage from 'redux-persist/lib/storage';
 import Auth from './reducers/loginReducer';
 import Register from './reducers/registerReducer';
 import Users from './reducers/userReducer';
 import Projects from './reducers/projectReducer';
 import Events from './reducers/eventReducer';
 import Resources from './reducers/resourceReducer';
-import RootReducer from './reducers/rootReducer';
 import { initialEventForm, initialProjectForm, initialResourceForm } from './reducers/forms';
 
 // import rootReducer from './reducers/rootReducer';
@@ -51,7 +47,8 @@ export default function ConfigureStore() {
         resourceForm: initialResourceForm,
       }),
     }),
-    applyMiddleware(thunk, logger),
+    // applyMiddleware(thunk, logger),
+    applyMiddleware(thunk),
   );
 
   // const persistor = persistStore(store);
