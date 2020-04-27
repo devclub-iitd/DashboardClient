@@ -2,6 +2,7 @@ import React from 'react';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
+import { Tooltip } from '@material-ui/core';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 // import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import PeopleIcon from '@material-ui/icons/People';
@@ -33,55 +34,73 @@ function MainListItems(props) {
         <ListItemIcon>
           <DashboardIcon />
         </ListItemIcon>
-        <ListItemText primary="Home" />
+        <Tooltip title="Home">
+          <ListItemText primary="Home" />
+        </Tooltip>
       </ListItem>
       <ListItem button onClick={redirectFunc('profile', props.closeDrawer)}>
         <ListItemIcon>
           <PersonIcon />
         </ListItemIcon>
-        <ListItemText primary="Profile" />
+        <Tooltip title="Profile">
+          <ListItemText primary="Profile" />
+        </Tooltip>
       </ListItem>
       <ListItem button onClick={redirectFunc('changePassword', props.closeDrawer)}>
         <ListItemIcon>
           <VpnKeyIcon />
         </ListItemIcon>
-        <ListItemText primary="Change Password" />
+        <Tooltip title="Change your Password">
+          <ListItemText primary="Change Password" />
+        </Tooltip>
       </ListItem>
       <ListItem button onClick={redirectFunc('events', props.closeDrawer)}>
         <ListItemIcon>
           <EventIcon />
         </ListItemIcon>
-        <ListItemText primary="Events" />
+        <Tooltip title="View club events">
+          <ListItemText primary="Events" />
+        </Tooltip>
       </ListItem>
       <ListItem button onClick={redirectFunc('projects', props.closeDrawer)}>
         <ListItemIcon>
           <DeveloperModeIcon />
         </ListItemIcon>
-        <ListItemText primary="Projects" />
+        <Tooltip title="View club projects">
+          <ListItemText primary="Projects" />
+        </Tooltip>
       </ListItem>
       <ListItem button onClick={redirectFunc('resources', props.closeDrawer)}>
         <ListItemIcon>
           <AllInboxIcon />
         </ListItemIcon>
-        <ListItemText primary="Resources" />
+        <Tooltip title="View club resources">
+          <ListItemText primary="Resources" />
+        </Tooltip>
       </ListItem>
       <ListItem button disabled={!props.isAdmin} onClick={redirectFunc('users', props.closeDrawer)}>
         <ListItemIcon>
           <GroupIcon />
         </ListItemIcon>
-        <ListItemText primary="Manage Users" />
+        <Tooltip title="Manage club users (Only for Admins)">
+          <ListItemText primary="Manage Users" />
+        </Tooltip>
       </ListItem>
       <ListItem button onClick={redirectFunc('myTasks', props.closeDrawer)}>
         <ListItemIcon>
           <AssignmentIcon />
         </ListItemIcon>
-        <ListItemText primary="My Tasks" />
+        <Tooltip title="View your tasks">
+          <ListItemText primary="My Tasks" />
+        </Tooltip>
       </ListItem>
       <ListItem button disabled={!props.isAdmin} onClick={redirectFunc('deploy', props.closeDrawer)}>
         <ListItemIcon>
           <PublishIcon />
         </ListItemIcon>
-        <ListItemText primary="Deploy" />
+        <Tooltip title="Manage project deployments">
+          <ListItemText primary="Deploy" />
+        </Tooltip>
       </ListItem>
       {/* <ListItem button onClick={redirectFunc('approveUsers')}>
         <ListItemIcon>
@@ -93,13 +112,17 @@ function MainListItems(props) {
         <ListItemIcon>
           <AddBoxIcon />
         </ListItemIcon>
-        <ListItemText primary="Create Tasks" />
+        <Tooltip title="Create new Events, Resources or Projects">
+          <ListItemText primary="Create Tasks" />
+        </Tooltip>
       </ListItem>
       <ListItem button onClick={() => props.logout()}>
         <ListItemIcon>
           <ExitToAppOutlinedIcon />
         </ListItemIcon>
-        <ListItemText primary="Logout" />
+        <Tooltip title="Logout of dashboard">
+          <ListItemText primary="Logout" />
+        </Tooltip>
       </ListItem>
       {/* <ListItem button onClick={redirectFunc('assignTasks')}>
         <ListItemIcon>
