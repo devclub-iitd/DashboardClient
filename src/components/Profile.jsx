@@ -1,32 +1,26 @@
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable react/prop-types */
 /* eslint-disable react/destructuring-assignment */
-import React, { Component, Fragment } from 'react';
+import React, { Fragment } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import TextField from '@material-ui/core/TextField';
 import {
-  Grid, Card, CardActionArea, CardMedia, CardContent, Typography, CardActions,
-  Dialog, DialogTitle, Tooltip,
-  Modal, Backdrop, DialogContent, Avatar,
-  FormLabel, FormControlLabel, Radio, RadioGroup, FormControl,
-  Snackbar, CircularProgress,
+  Grid, Card, CardContent, Typography, Dialog, DialogTitle, Tooltip,
+  Backdrop, DialogContent, Avatar, TextField, Fab,
+  FormControlLabel, Radio, RadioGroup, Snackbar, CircularProgress,
 } from '@material-ui/core';
 import EmailOutlinedIcon from '@material-ui/icons/EmailOutlined';
 import PhoneIcon from '@material-ui/icons/Phone';
-import Fab from '@material-ui/core/Fab';
 import EditIcon from '@material-ui/icons/Edit';
 import {
-  Control, Form, LocalForm, Errors,
+  Control, LocalForm, Errors,
 } from 'react-redux-form';
 import DateFnsUtils from '@date-io/date-fns';
 import AddIcon from '@material-ui/icons/Add';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutline';
 import {
-  Label, ModalHeader, ModalBody, Button, Row, Col, CardLink,
+  Label, Button, Row, Col, CardLink,
 } from 'reactstrap';
-import { connect } from 'react-redux';
-import { fetchUserProfile } from '../redux/userActionCreator';
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -962,7 +956,6 @@ const Profile = ({
           </Grid>
         </Grid>
       </Grid>
-      {'Add more fields in mind/database/API'}
     </>
   );
   // }

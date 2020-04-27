@@ -1,25 +1,13 @@
-import React, { Fragment, Component } from 'react';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import React, { Component } from 'react';
 import {
-  Grid, Typography,
-  TableContainer, Dialog, DialogTitle, DialogContent,
-  FormControlLabel, Radio, RadioGroup, Switch, InputLabel,
-  Select, Input, Chip, MenuItem, FormLabel, FormControl, Button,
-  TextField, Fab, Checkbox, ListItemText, Snackbar,
+  Typography,
+  Dialog, DialogTitle, DialogContent,
+  FormControlLabel, Switch, Button,
+  Snackbar,
 } from '@material-ui/core';
-// import PendingTasks from './PendingTasks';
 import {
-  Card, CardImg, CardImgOverlay, CardText,
-  CardBody, CardTitle, CardFooter, CardLink, Popover,
-  PopoverHeader, PopoverBody, ListGroup, ListGroupItem,
-  Row, Col, CardHeader, CardSubtitle, Label,
-  TabContent, TabPane, Nav, NavItem, NavLink,
+  Row, Col, Label,
 } from 'reactstrap';
-import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
-import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutline';
-import AddIcon from '@material-ui/icons/Add';
-import DateFnsUtils from '@date-io/date-fns';
-import classnames from 'classnames';
 import { LocalForm, Control, Errors } from 'react-redux-form';
 
 
@@ -212,7 +200,7 @@ class EditResourceForm extends Component {
             </Typography>
           </DialogTitle>
           <DialogContent>
-            <LocalForm model="resourceForm" onSubmit={values => this.handleSubmit()}>
+            <LocalForm model="resourceForm" onSubmit={() => this.handleSubmit()}>
               <Row className="form-group">
                 <Label htmlFor="internal_name" md={4}><h6>Internal Name:</h6></Label>
                 <Col md={8}>

@@ -1,33 +1,19 @@
-import React, { Fragment, Component } from 'react';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import React, { Fragment } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
 import { Grid, Typography,
-  TableContainer, Dialog, DialogTitle, DialogContent,
-  FormControlLabel, Radio, RadioGroup, Switch, InputLabel,
-  Select, Input, Chip, MenuItem, FormLabel, FormControl, Avatar,
-  TextField, Fab, Checkbox, ListItemText, Backdrop, CircularProgress, Snackbar,
+  Dialog, DialogTitle, DialogContent,
+  Avatar,
+  Backdrop, CircularProgress,
  } from '@material-ui/core';
-// import PendingTasks from './PendingTasks';
-import { Card, CardImg, CardImgOverlay, CardText, 
-  CardBody, CardTitle, CardFooter, CardLink, Button, Popover,
+import { Card, CardText, 
+  CardBody, CardTitle, CardFooter, CardLink, Popover,
   PopoverHeader, PopoverBody, ListGroup, ListGroupItem,
-  Row, Col, CardHeader, CardSubtitle, Label,
-  TabContent, TabPane, Nav, NavItem, NavLink } from 'reactstrap';
-import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
-import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutline';
-import AddIcon from '@material-ui/icons/Add';
-import DateFnsUtils from '@date-io/date-fns';
+  CardHeader, CardSubtitle, TabContent, TabPane, Nav, NavItem, NavLink } from 'reactstrap';
 import classnames from 'classnames';
-import { LocalForm, Control, Errors } from 'react-redux-form';
 import EditEventForm from './EditEventForm';
 import EditProjectForm from './EditProjectForm';
 import EditResourceForm from './EditResourceForm';
 import EditOtherUserForm from './EditOtherUserForm';
-// import {dumTasks} from './dumTasks';
-import dumUsers from './dumUser';
-import dumProjects from './dumProjects';
-import dumEvents from './dumEvents';
-import dumResources from './dumResources';
-// import { classNames } from 'react-select/src/utils';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -117,9 +103,6 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const required = val => val && val.length;
-const maxLength = len => val => !(val) || (val.length <= len);
-const minLength = len => val => (val) && (val.length >= len);
 
 // class EditOtherUserForm extends Component {
 //   constructor (props) {

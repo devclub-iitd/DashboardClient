@@ -1,17 +1,10 @@
 import React, { Component } from 'react';
 import clsx from 'clsx';
-import { makeStyles, withStyles } from '@material-ui/core/styles';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Drawer from '@material-ui/core/Drawer';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import { List, Snackbar } from '@material-ui/core';
-import Typography from '@material-ui/core/Typography';
-import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
-import Badge from '@material-ui/core/Badge';
-import Container from '@material-ui/core/Container';
-import Link from '@material-ui/core/Link';
+import { withStyles } from '@material-ui/core/styles';
+import {
+  CssBaseline, Drawer, AppBar, Toolbar, List, Snackbar,
+  Typography, Divider, IconButton, Badge, Container,
+} from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import NotificationsIcon from '@material-ui/icons/Notifications';
@@ -25,13 +18,10 @@ import ResourcesPage from '../components/Resources';
 import ManageUsers from '../components/ManageUsers';
 import MyTasks from '../components/MyTasks';
 import DeployManager from '../components/Deploy';
-import ApproveUsers from '../components/ApproveUsers';
 import CreateTasks from '../components/CreateTasks';
-import AssignTasks from '../components/AssignTasks';
 import { Redirect } from 'react-router-dom';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
-// import {fetchUserProfile} from '../redux/userActionCreator';
 import { actions } from 'react-redux-form';
 import { 
   fetchUser, fetchAllUsers, logoutUser,
@@ -50,19 +40,6 @@ import {
   fetchAllResources, createResource,
   editResource, deleteResource, resourceErrorFin,
 } from '../actions/resourceActions';
-import { render } from 'react-dom';
-
-function MadeWithLove() {
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {'Built with love by the '}
-      <Link color="inherit" href="https://material-ui.com/">
-        Material-UI
-      </Link>
-      {' team.'}
-    </Typography>
-  );
-}
 
 const drawerWidth = 240;
 
@@ -155,7 +132,7 @@ const drawerWidth = 240;
 //   props.history.push(`/dashboard/${subPath}`);
 // };
 
-function renderPage(subPage, classProp, classPaper, props, isAdmin, redirect, closeDrawer) {
+function renderPage(subPage, props, isAdmin, redirect, closeDrawer) {
   if (subPage === 'users' || subPage === 'deploy') {
     
     if (!isAdmin) {
@@ -636,9 +613,8 @@ class Dashboard extends Component {
         <main className={classes.content}>
           <div className={classes.appBarSpacer} />
           <Container maxWidth="lg" className={classes.container}>
-            {renderPage(subPage, fixedHeightPaper, classes.paper, this.props, isAdmin, this.redirectFunc, this.handleDrawerClose)}
+            {renderPage(subPage, this.props, isAdmin, this.redirectFunc, this.handleDrawerClose)}
           </Container>
-          {/* <MadeWithLove /> */}
         </main>
       </div>
     );

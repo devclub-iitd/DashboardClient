@@ -1,19 +1,12 @@
 import React from 'react';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import { Tooltip } from '@material-ui/core';
+import {
+  ListItem, ListItemText, ListItemIcon, Tooltip,
+} from '@material-ui/core';
 import DashboardIcon from '@material-ui/icons/Dashboard';
-// import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
-import PeopleIcon from '@material-ui/icons/People';
-import BarChartIcon from '@material-ui/icons/BarChart';
-import LayersIcon from '@material-ui/icons/Layers';
 import PersonIcon from '@material-ui/icons/Person';
 import VpnKeyIcon from '@material-ui/icons/VpnKey';
-import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt';
 import AddBoxIcon from '@material-ui/icons/AddBox';
 import ExitToAppOutlinedIcon from '@material-ui/icons/ExitToAppOutlined';
-import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
 import EventIcon from '@material-ui/icons/Event';
 import AllInboxIcon from '@material-ui/icons/AllInbox';
 import DeveloperModeIcon from '@material-ui/icons/DeveloperMode';

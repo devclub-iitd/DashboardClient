@@ -1,6 +1,5 @@
 /* eslint-disable no-undef */
 import * as ActionTypes from '../actions/ActionTypes';
-import dumUsers from '../components/dumUser';
 
 const Users = (state = {
   userLoading: false,

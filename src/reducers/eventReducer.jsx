@@ -1,6 +1,5 @@
 /* eslint-disable no-undef */
 import * as ActionTypes from '../actions/ActionTypes';
-import dumEvents from '../components/dumEvents';
 
 const Events = (
   state = {

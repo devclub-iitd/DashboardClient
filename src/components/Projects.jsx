@@ -1,7 +1,7 @@
-import React, { Fragment, Component } from 'react';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import React from 'react';
+import { makeStyles } from '@material-ui/core/styles';
 import {
-  Paper, GridList, GridListTileBar, GridListTile, TextField,
+  Paper, TextField,
   Typography, Grid, Backdrop, CircularProgress, InputAdornment, IconButton
 } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
@@ -55,7 +55,7 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-const ProjectsPage = ({ projects, fetchAllProjects, editProject, deleteProject, users }) => {
+const ProjectsPage = ({ projects, editProject, deleteProject, users }) => {
     const classes = useStyles();
     const allProjects = projects.allProjects;
     const curUser = users.user;

@@ -1,6 +1,5 @@
 /* eslint-disable no-undef */
 import * as ActionTypes from '../actions/ActionTypes';
-import dumResources from '../components/dumResources';
 
 const Resources = (
   state = {

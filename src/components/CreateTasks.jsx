@@ -1,32 +1,21 @@
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable no-console */
 import React, { Fragment } from 'react';
-import PropTypes from 'prop-types';
-import clsx from 'clsx';
-// import Select from 'react-select';
 import { emphasize, makeStyles, useTheme } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
-import NoSsr from '@material-ui/core/NoSsr';
-import TextField from '@material-ui/core/TextField';
-import Paper from '@material-ui/core/Paper';
-import Chip from '@material-ui/core/Chip';
-import MenuItem from '@material-ui/core/MenuItem';
-import CancelIcon from '@material-ui/icons/Cancel';
 import {
-  Grid, FormControl, FormControlLabel, InputLabel, FormLabel, RadioGroup, Radio, Select, Button, Switch, Fab, Snackbar,
+  Grid, FormControlLabel, Button, Switch, Fab, Snackbar, Typography,
+  TextField, Paper,
 } from '@material-ui/core';
 import {
-  Card, CardText, CardBody, CardTitle, Row, Col, Label, ButtonGroup,
+  Card, CardBody, CardTitle, Row, Col, Label,
 } from 'reactstrap';
 import {
-  Control, Form, LocalForm, Errors,
+  Control, Form, Errors,
 } from 'react-redux-form';
 import DateFnsUtils from '@date-io/date-fns';
 import AddIcon from '@material-ui/icons/Add';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutline';
-import isURL from 'validator/lib/isURL';
-import { dumUsers } from './dumUser';
 
 const useStyles = makeStyles(theme => ({
   root: {

@@ -1,17 +1,3 @@
-// const initState = {
-//   errorMsg: '',
-// };
-
-// export default (state = initState, action) => {
-//   switch (action.type) {
-//     case 'SIMPLE_ACTION':
-//       return {
-//         result: action.payload,
-//       };
-//     default:
-//       return state;
-//   }
-// };
 import * as ActionTypes from '../actions/ActionTypes';
 
 // The auth reducer. The starting state sets authentication
@@ -20,10 +6,8 @@ import * as ActionTypes from '../actions/ActionTypes';
 export default function Auth(state = {
   isLoading: false,
   isAuthenticated: localStorage.getItem('dcIITDDashboardToken') !== null,
-  // isAuthenticated: false,
   sessionTimeout: false,
   token: localStorage.getItem('dcIITDDashboardToken'),
-  // user: localStorage.getItem('creds') ? JSON.parse(localStorage.getItem('creds')) : null,
   errMess: null,
 }, action) {
   switch (action.type) {

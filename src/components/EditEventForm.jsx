@@ -1,21 +1,13 @@
 import React, { Fragment, Component } from 'react';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
-import { Grid, Typography,
-  TableContainer, Dialog, DialogTitle, DialogContent,
-  FormControlLabel, Radio, RadioGroup, Switch, InputLabel,
-  Select, Input, Chip, MenuItem, FormLabel, FormControl, Button, 
+import { Typography, Dialog, DialogTitle, DialogContent,
+  FormControlLabel, Switch, InputLabel,
+  Select, Input, MenuItem, FormControl, Button, 
   TextField, Fab, Checkbox, ListItemText, Snackbar } from '@material-ui/core';
-// import PendingTasks from './PendingTasks';
-import { Card, CardImg, CardImgOverlay, CardText, 
-  CardBody, CardTitle, CardFooter, CardLink, Popover,
-  PopoverHeader, PopoverBody, ListGroup, ListGroupItem,
-  Row, Col, CardHeader, CardSubtitle, Label,
-  TabContent, TabPane, Nav, NavItem, NavLink } from 'reactstrap';
+import { Row, Col, Label } from 'reactstrap';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutline';
 import AddIcon from '@material-ui/icons/Add';
 import DateFnsUtils from '@date-io/date-fns';
-import classnames from 'classnames';
 import { LocalForm, Control, Errors } from 'react-redux-form';
 
 class EditEventForm extends Component {

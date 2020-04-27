@@ -4,7 +4,6 @@ import {
   InputLabel, Select, MenuItem, FormControl, Fab, Button, IconButton,
   Tooltip,
 } from '@material-ui/core';
-// import PendingTasks from './PendingTasks';
 import {
   Row, Col, Label,
 } from 'reactstrap';

@@ -1,8 +1,8 @@
 /* eslint-disable indent */
-import React, { Fragment, Component } from 'react';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import React from 'react';
+import { makeStyles } from '@material-ui/core/styles';
 import {
-  Paper, GridList, GridListTileBar, GridListTile, InputAdornment, IconButton, TextField,
+  Paper, InputAdornment, IconButton, TextField,
   Typography, Grid, Backdrop, CircularProgress,
 } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
@@ -57,7 +57,7 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-const ResourcesPage = ({resources, fetchAllResources, editResource, deleteResource, users}) => {
+const ResourcesPage = ({resources, editResource, deleteResource, users}) => {
     const classes = useStyles();
     const allResources = resources.allResources;
     const curUser = users.user;

@@ -1,7 +1,7 @@
-import React, { Fragment, Component } from 'react';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import React, {  } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
 import {
-  Paper, GridList, GridListTileBar, GridListTile, TextField,
+  Paper, TextField,
   Typography, Grid, Backdrop, CircularProgress, InputAdornment, IconButton
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
@@ -55,7 +55,7 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-const EventsPage = ({ events, fetchAllEvents, editEvent, deleteEvent, users }) => {
+const EventsPage = ({ events, editEvent, deleteEvent, users }) => {
     const classes = useStyles();
     const allEvents = events.allEvents;
     const curUser = users.user;

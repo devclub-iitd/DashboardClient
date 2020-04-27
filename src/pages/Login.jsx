@@ -1,36 +1,15 @@
 import React from 'react';
-import Avatar from '@material-ui/core/Avatar';
-import Button from '@material-ui/core/Button';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import TextField from '@material-ui/core/TextField';
-import Link from '@material-ui/core/Link';
-import Paper from '@material-ui/core/Paper';
-import Box from '@material-ui/core/Box';
-import Grid from '@material-ui/core/Grid';
+import {
+  Avatar, Button, CssBaseline, TextField, Link, Paper,
+  Box, Grid, Backdrop, Snackbar, CircularProgress, Typography,
+  FormLabel,
+} from '@material-ui/core';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import Backdrop from '@material-ui/core/Backdrop';
-import Snackbar from '@material-ui/core/Snackbar';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { FormLabel } from '@material-ui/core';
 import { Redirect } from 'react-router-dom';
-// import login from '../actions/loginActions';
 import { loginUser, loginErrorFin } from '../actions/userActions';
-
-function MadeWithLove() {
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {'Built with love by the '}
-      <Link color="inherit" href="https://material-ui.com/">
-        Material-UI
-      </Link>
-      {' team.'}
-    </Typography>
-  );
-}
 
 const styles = theme => ({
   root: {
@@ -200,7 +179,6 @@ function SignInSide(props) {
     </Grid>
   );
 }
-// };
 
 
 SignInSide.propTypes = {
