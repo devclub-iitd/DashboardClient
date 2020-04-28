@@ -9,6 +9,7 @@ import {
   Avatar, Button, CssBaseline, TextField, Link,
   Grid, Typography, Container,
 } from '@material-ui/core';
+import { withRouter } from 'react-router-dom';
 import { registerUser } from '../actions/userActions';
 
 const styles = theme => ({
@@ -289,4 +290,4 @@ SignUp.propTypes = {
   registerUser: PropTypes.func.isRequired,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(SignUp));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(SignUp)));

@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Grid, Typography,
   Dialog, DialogTitle, DialogContent,
   Avatar,
-  Backdrop, CircularProgress,
+  Backdrop, CircularProgress, Button, IconButton,
  } from '@material-ui/core';
 import { Card, CardText, 
   CardBody, CardTitle, CardFooter, CardLink, Popover,
@@ -1503,7 +1503,9 @@ export default function Home(props) {
         </Grid>
         <Grid item id="myTaskContainer" xs={12} md={5} className={classes.cardBorderR}>
           <Grid item xs={12}>
-            <Typography align="center" variant="h4">My Tasks</Typography>
+            <Button fullWidth onClick={() => { props.history.push('/dashboard/myTasks') }}>
+              <Typography className="btn" align="center" variant="h4">My Tasks</Typography>
+            </Button>
           </Grid>
           <Grid item xs={12}>
             <Nav tabs>

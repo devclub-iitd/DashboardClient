@@ -19,7 +19,7 @@ import ManageUsers from '../components/ManageUsers';
 import MyTasks from '../components/MyTasks';
 import DeployManager from '../components/Deploy';
 import CreateTasks from '../components/CreateTasks';
-import { Redirect } from 'react-router-dom';
+import { Redirect, withRouter } from 'react-router-dom';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 import { actions } from 'react-redux-form';
@@ -267,6 +267,7 @@ function renderPage(subPage, props, isAdmin, redirect, closeDrawer) {
             fetchAllEvents={props.fetchAllEvents}
             fetchAllProjects={props.fetchAllProjects}
             fetchAllResources={props.fetchAllResources}
+            history={props.history}
             // user={props.users.user}
             users={props.users}
             editEvent={props.editEvent}
@@ -658,4 +659,4 @@ Dashboard.propTypes = {
   classes: PropTypes.objectOf(PropTypes.string).isRequired,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(Dashboard));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(Dashboard)));

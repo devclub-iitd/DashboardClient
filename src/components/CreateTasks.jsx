@@ -92,7 +92,6 @@ const useStyles = makeStyles(theme => ({
 
 export default function CreateTasks(props) {
   const classes = useStyles();
-  const theme = useTheme();
 
   const [itemType, setItemType] = React.useState(null);
   const handleTypeChange = (value) => {

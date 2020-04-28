@@ -58,8 +58,6 @@ export default function ChangePassword(props) {
       return;
     }
 
-    const { target } = e;
-
     props.changePass(state.password);
     setState({
       ...state,
