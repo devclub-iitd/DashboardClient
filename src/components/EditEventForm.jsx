@@ -1,12 +1,18 @@
 import React, { Fragment, Component } from 'react';
 import { Typography, Dialog, DialogTitle, DialogContent,
-  FormControlLabel, Switch, InputLabel,
+  FormControlLabel, Switch, InputLabel, Grid,
   Select, Input, MenuItem, FormControl, Button, 
-  TextField, Fab, Checkbox, ListItemText, Snackbar } from '@material-ui/core';
+  TextField, Fab, Checkbox, ListItemText, Snackbar,
+  Avatar, 
+} from '@material-ui/core';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 import { Row, Col, Label } from 'reactstrap';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutline';
 import AddIcon from '@material-ui/icons/Add';
+import { CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon,
+  CheckBox as CheckBoxIcon
+} from '@material-ui/icons';
 import DateFnsUtils from '@date-io/date-fns';
 import { LocalForm, Control, Errors } from 'react-redux-form';
 
@@ -186,7 +192,7 @@ class EditEventForm extends Component {
       });
     };
   
-    changeAssignee = (event) => {
+    changeAssignee = (values) => {
       this.setState({
         ...this.state,
         // assignee: event.target.value,
@@ -194,7 +200,7 @@ class EditEventForm extends Component {
         //   ...this.state.event,
         //   assignee: event.target.value,
         // },
-        selectedMembers: event.target.value,
+        selectedMembers: values,
       });
     };
   
@@ -496,29 +502,40 @@ class EditEventForm extends Component {
                     </Col>
                     </Row>
                     <Row className="form-group">
-                      <Col>
-                        <FormControl>
-                        <InputLabel id="demo-mutiple-checkbox-label">Assignees</InputLabel>
-                        <Select
-                          labelId="demo-mutiple-checkbox-label"
-                          id="demo-mutiple-checkbox"
+                      <Col xs={12}>
+                        <Autocomplete
                           multiple
+                          fullWidth
+                          id="assignees"
+                          options={this.state.memberNames}
+                          disableCloseOnSelect
                           value={this.state.selectedMembers}
-                          onChange={this.changeAssignee}
-                          input={<Input />}
-                          renderValue={selected => selected.join(', ')}
-                          // MenuProps={MenuProps}
-                        >
-                          {
-                            this.state.memberNames.map(name => (
-                            <MenuItem key={name} value={name}>
-                                <Checkbox checked={this.state.selectedMembers.indexOf(name) !== -1} />
-                                <ListItemText primary={name} />
-                            </MenuItem>
-                            ))
-                          }
-                        </Select>
-                        </FormControl>
+                          onChange={(e,v) => this.changeAssignee(v)}
+                          ChipProps={{
+                            variant: 'outlined',
+                            avatar: <Avatar />,
+                            color: 'secondary',
+                          }}
+                          noOptionsText="No users in club"
+                          getOptionLabel={(option) => option}
+                          renderOption={(option, { selected }) => {
+                              return (
+                                <React.Fragment>
+                                  <Checkbox
+                                    icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
+                                    checkedIcon={<CheckBoxIcon fontSize="small" />}
+                                    style={{ marginRight: 8 }}
+                                    checked={selected}
+                                  />
+                                  {option}
+                                </React.Fragment>
+                              )
+                          }}
+                          style={{ width: '100%' }}
+                          renderInput={(params) => (
+                            <TextField {...params} variant="outlined" label="Members" placeholder="Search" />
+                          )}
+                        />
                       </Col>
                     </Row>
                     <Row className="form-group">

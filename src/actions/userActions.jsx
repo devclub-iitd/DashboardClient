@@ -156,6 +156,15 @@ export const fetchUser = id => (dispatch) => {
         grad_year: data[0].grad_year === null ? new Date() : new Date(data[0].grad_year),
         birth_date: data[0].birth_date === null ? new Date() : new Date(data[0].birth_date),
       };
+      if (!upUser.url.has('facebook_url')) {
+        upUser.url.set('facebook_url', '');
+      }
+      if (!upUser.url.has('github_url')) {
+        upUser.url.set('github_url', '');
+      }
+      if (!upUser.url.has('picture_url')) {
+        upUser.url.set('picture_url', '');
+      }
       dispatch(addUser(upUser));
     })
     .catch(error => dispatch(userFailed(error.message)));
@@ -258,7 +267,7 @@ export const loginUser = creds => (dispatch) => {
         localStorage.setItem('dcIITDDashboardToken', response.token);
         localStorage.setItem('userId', response.result._id);
         // Dispatch the success action
-        dispatch(addUser(response.result));
+        // dispatch(addUser(response.result));
         dispatch(receiveLogin(response));
         // dispatch(fetchUser(response.result._id));
       }

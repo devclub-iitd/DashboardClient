@@ -197,7 +197,7 @@ class SignUp extends React.Component {
                 />
               </Grid>
               <Grid item xs={12}>
-                <FormControl variant="outlined" className={classes.formControl}>
+                <FormControl variant="filled" className={classes.formControl}>
                   <InputLabel id="category">
                     Category
                   </InputLabel>
@@ -205,6 +205,7 @@ class SignUp extends React.Component {
                     labelId="category"
                     id="category"
                     name="category"
+                    label="category"
                   >
                     <MenuItem value="">
                       <em>None</em>

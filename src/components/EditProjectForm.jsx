@@ -1,14 +1,18 @@
 import React, { Fragment, Component } from 'react';
 import {
   Typography,
-  Dialog, DialogTitle, DialogContent,
+  Dialog, DialogTitle, DialogContent, Avatar,
   FormControlLabel, Radio, RadioGroup, Switch, InputLabel,
-  Select, Input, MenuItem, FormControl, Button,
+  Select, Input, MenuItem, FormControl, Button, Chip,
   TextField, Fab, Checkbox, ListItemText, Snackbar
 } from '@material-ui/core';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 import {
   Row, Col, Label,
 } from 'reactstrap';
+import { CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon,
+  CheckBox as CheckBoxIcon
+} from '@material-ui/icons';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutline';
 import AddIcon from '@material-ui/icons/Add';
@@ -69,6 +73,7 @@ class EditProjectForm extends Component {
       this.handleFormOpen = this.handleFormOpen.bind(this);
       this.handleSubmit = this.handleSubmit.bind(this);
       this.handleMemberChange = this.handleMemberChange.bind(this);
+      this.handleMemberDelete = this.handleMemberDelete.bind(this);
       this.confirmDeleteClose = this.confirmDeleteClose.bind(this);
       this.confirmDeleteOpen = this.confirmDeleteOpen.bind(this);
       this.handleDelete = this.handleDelete.bind(this);
@@ -311,10 +316,19 @@ class EditProjectForm extends Component {
       });
     };
   
-    handleMemberChange = event => {
+    handleMemberChange = values => {
       this.setState({
         ...this.state,
-        selectedMembers: event.target.value,
+        selectedMembers: values,
+      });
+    };
+
+    handleMemberDelete = index => {
+      let mems = [...this.state.selectedMembers];
+      mems = mems.splice(index, 1);
+      this.setState({
+        ...this.state,
+        selectedMembers: mems,
       });
     };
   
@@ -777,28 +791,50 @@ class EditProjectForm extends Component {
                   </Col>
                   </Row>
                   <Row className="form-group">
-                  <Col>
-                      <FormControl>
-                      <InputLabel id="demo-mutiple-checkbox-label">Members</InputLabel>
-                      <Select
-                          labelId="demo-mutiple-checkbox-label"
-                          id="demo-mutiple-checkbox"
-                          multiple
-                          value={this.state.selectedMembers}
-                          onChange={this.handleMemberChange}
-                          input={<Input />}
-                          renderValue={selected => selected.join(', ')}
-                          // MenuProps={MenuProps}
-                      >
-                          {this.state.memberNames.map(name => (
-                          <MenuItem key={name} value={name}>
-                              <Checkbox checked={this.state.selectedMembers.indexOf(name) !== -1} />
-                              <ListItemText primary={name} />
-                          </MenuItem>
-                          ))}
-                      </Select>
-                      </FormControl>
-                  </Col>
+                    <Col>
+                      <Autocomplete
+                        multiple
+                        fullWidth
+                        id="members"
+                        options={this.state.memberNames}
+                        disableCloseOnSelect
+                        value={this.state.selectedMembers}
+                        onChange={(e,v) => this.handleMemberChange(v)}
+                        ChipProps={{
+                          variant: 'outlined',
+                          // avatar: <Avatar />,
+                          color: 'secondary',
+                        }}
+                        // renderTags={(values, func) => values.map((value, index) => (
+                        //   <Chip
+                        //     label={value.name}
+                        //     variant="outlined"
+                        //     color="secondary"
+                        //     avatar={<Avatar src={value.img}/>}
+                        //     onDelete={() => this.handleMemberDelete(index)}
+                        //   />
+                        // ))}
+                        noOptionsText="No users in club"
+                        getOptionLabel={(option) => option}
+                        renderOption={(option, { selected }) => {
+                            return (
+                              <React.Fragment>
+                                <Checkbox
+                                  icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
+                                  checkedIcon={<CheckBoxIcon fontSize="small" />}
+                                  style={{ marginRight: 8 }}
+                                  checked={selected}
+                                />
+                                {option}
+                              </React.Fragment>
+                            )
+                        }}
+                        style={{ width: '100%' }}
+                        renderInput={(params) => (
+                          <TextField {...params} variant="outlined" label="Members" placeholder="Search" />
+                        )}
+                      />
+                    </Col>
                   </Row>
                   <Row className="form-group">
                   {/* md={{ size: 2 }} */}

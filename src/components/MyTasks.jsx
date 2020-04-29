@@ -22,6 +22,7 @@ const useStyles = makeStyles(theme => ({
   paper: {
       margin: '2em',
       height: document.documentElement.clientHeight * 0.7,
+      overflowY: 'scroll',
   },
   backdrop: {
     zIndex: theme.zIndex.drawer + 1,

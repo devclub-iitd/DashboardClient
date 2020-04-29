@@ -26,6 +26,13 @@ const theme = createMuiTheme({
       contrastText: '#000',
     },
   },
+  overrides: {
+    MuiAvatar: {
+      fallback: {
+        color: '#fff',
+      },
+    },
+  },
 });
 
 // ------------------- May be used for /healthz---------------------------------------------------

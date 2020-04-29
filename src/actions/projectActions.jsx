@@ -70,13 +70,19 @@ export const fetchAllProjects = () => (dispatch) => {
     .then((projects) => {
       const gotProjects = projects.data;
       // fetch gets url as an object, converting to map strings required
-      const allProjects = gotProjects.map(pro => ({
-        ...pro,
-        url: objToStrMap(pro.url),
-        members: pro.members === null || pro.members === undefined ? [] : pro.members,
-        start_date: pro.start_date === null || pro.start_date === undefined ? new Date() : new Date(pro.start_date),
-        end_date: pro.end_date === null || pro.end_date === undefined ? new Date() : new Date(pro.end_date),
-      }));
+      const allProjects = gotProjects.map((pro) => {
+        const upPro = {
+          ...pro,
+          url: objToStrMap(pro.url),
+          members: pro.members === null || pro.members === undefined ? [] : pro.members,
+          start_date: pro.start_date === null || pro.start_date === undefined ? new Date() : new Date(pro.start_date),
+          end_date: pro.end_date === null || pro.end_date === undefined ? new Date() : new Date(pro.end_date),
+        };
+        if (!upPro.url.has('photo_url')) {
+          upPro.url.set('photo_url', '');
+        }
+        return upPro;
+      });
       dispatch(addProjects(allProjects));
     })
     .catch(error => dispatch(projectsFailed(error.message)));
