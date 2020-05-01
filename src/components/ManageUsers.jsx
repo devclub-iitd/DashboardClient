@@ -100,18 +100,35 @@ export default function ManageUsers(props) {
       </Backdrop>
       <Dialog open={rejectAll} maxWidth='md' onClose={confirmRejectClose}>
         <DialogContent>
-          <Typography variant='h5'>
-            This is a highly sensitive operation. Do you Really want to <b>REJECT ALL</b> unapproved users ?
-          </Typography>
+          {  
+            unapproved.length === 0
+            ?
+            <Typography variant='h5'>
+              No Approved Users !
+            </Typography>
+            :
+            <Typography variant='h5'>
+              This is a highly sensitive operation. Do you Really want to <b>REJECT ALL</b> unapproved users ?
+            </Typography>
+          }
           <Row style={{ marginTop: '1em' }} className="form-group">
-            <Col xs={{ size: 7, offset: 1 }} md={{ size: 4, offset: 3 }}>
-              <Button variant="contained" onClick={rejectAllUnapproved} color="primary">
-                Reject All
-              </Button>
-            </Col>
+            {
+              unapproved.length !== 0
+              ?
+              <Col xs={{ size: 7, offset: 1 }} md={{ size: 4, offset: 3 }}>
+                <Button variant="contained" onClick={rejectAllUnapproved} color="primary">
+                  Reject All
+                </Button>
+              </Col>
+              : null
+            }
             <Col xs={3} md={{ size: 2 }}>
               <Button variant="outlined" color="primary" onClick={confirmRejectClose}>
-                Cancel
+                {
+                  unapproved.length === 0
+                  ? `Close`
+                  : `Cancel`
+                }
               </Button>
             </Col>
           </Row>
@@ -177,10 +194,10 @@ export default function ManageUsers(props) {
                       <Card body style={{ borderColor: '#0288d1' }}>
                         <CardHeader>
                           <Grid container>
-                            <Grid item xs={12} md={9}>
+                            <Grid item xs={9} md={9}>
                               <Typography variant='h3'>{user.name}</Typography>
                             </Grid>
-                            <Grid item xs={12} md={3}>
+                            <Grid item xs={3} md={3}>
                               <Avatar alt="" src={user.url.get('picture_url')} className={classes.large} />
                             </Grid> 
                           </Grid>
@@ -235,7 +252,7 @@ export default function ManageUsers(props) {
       <Grid item xs={12} md={6}>
         <Typography variant='h4' align='center' className={{ width: '100%' }}>Approved Users</Typography>
         <Grid container alignItems="center">
-          <Grid item xs={7}>
+          {/* <Grid item xs={7}> */}
             <TextField
               className={classes.search}
               label='Search'
@@ -261,8 +278,8 @@ export default function ManageUsers(props) {
                   )
               }}
             />
-          </Grid>
-          <Grid item xs={5}>
+          {/* </Grid> */}
+          {/* <Grid item xs={5}>
             { 
               curUser.privelege_level === 'Admin'
               ? 
@@ -277,7 +294,7 @@ export default function ManageUsers(props) {
               </Button>
               : null
             }
-          </Grid>
+          </Grid> */}
         </Grid>
         <Paper elevation={3} variant="outlined" className={classes.paper}>    
           <ListGroup>
@@ -293,10 +310,10 @@ export default function ManageUsers(props) {
                       <Card body style={{ borderColor: '#00c853' }}>
                         <CardHeader>
                           <Grid container>
-                            <Grid item xs={12} md={9}>
+                            <Grid item xs={9} md={9}>
                               <Typography variant='h3'>{user.name}</Typography>
                             </Grid>
-                            <Grid item xs={12} md={3}>
+                            <Grid item xs={3} md={3}>
                               <Avatar alt="" src={user.url.get('picture_url')} className={classes.large} />
                             </Grid> 
                           </Grid>
@@ -407,10 +424,10 @@ export default function ManageUsers(props) {
                       <Card body style={{ borderColor: '#00c853' }}>
                         <CardHeader>
                           <Grid container>
-                            <Grid item xs={12} md={9}>
+                            <Grid item xs={9} md={9}>
                               <Typography variant='h3'>{user.name}</Typography>
                             </Grid>
-                            <Grid item xs={12} md={3}>
+                            <Grid item xs={3} md={3}>
                               <Avatar alt="" src={user.url.get('picture_url')} className={classes.large} />
                             </Grid> 
                           </Grid>

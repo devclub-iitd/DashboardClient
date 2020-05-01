@@ -3,7 +3,8 @@ import { Typography, Dialog, DialogTitle, DialogContent,
   FormControlLabel, Switch, InputLabel, Grid,
   Select, Input, MenuItem, FormControl, Button, 
   TextField, Fab, Checkbox, ListItemText, Snackbar,
-  Avatar, 
+  Avatar,
+  IconButton, 
 } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { Row, Col, Label } from 'reactstrap';
@@ -13,6 +14,7 @@ import AddIcon from '@material-ui/icons/Add';
 import { CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon,
   CheckBox as CheckBoxIcon
 } from '@material-ui/icons';
+import EditIcon from '@material-ui/icons/Edit';
 import DateFnsUtils from '@date-io/date-fns';
 import { LocalForm, Control, Errors } from 'react-redux-form';
 
@@ -293,6 +295,7 @@ class EditEventForm extends Component {
         // const handleClose = () => {
         //   setServerError(false);
         // };
+        const {tableEdit, isInTable} = this.props;
 
         return (
             <div>
@@ -306,14 +309,21 @@ class EditEventForm extends Component {
               onClose={this.handleSuccessClose}
               message="Event edited Successfully !"
             />
-            <Button onClick={() => { 
-                this.handleFormOpen(); 
-            }} 
-                color="secondary"
-                variant="contained"
-            >
-                Edit Event
-            </Button>
+            {
+              isInTable 
+              ? <IconButton onClick={() => this.handleFormOpen()} variant="outlined" color="secondary" component="span">
+                  <EditIcon fontSize="small" color="secondary" />
+                </IconButton>
+              :
+              <Button onClick={() => { 
+                  this.handleFormOpen(); 
+              }} 
+                  color="secondary"
+                  variant="contained"
+              >
+                  Edit Event
+              </Button>
+            }
             <Dialog open={this.state.isDailogOpen} maxWidth="sm" fullWidth onClose={this.handleFormClose} scroll="paper">
                 <DialogTitle>
                 <Typography variant="h4">

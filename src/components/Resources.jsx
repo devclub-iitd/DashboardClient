@@ -4,14 +4,17 @@ import { makeStyles } from '@material-ui/core/styles';
 import {
   Paper, InputAdornment, IconButton, TextField,
   Typography, Grid, Backdrop, CircularProgress,
+  Tooltip, Fab, Dialog, DialogTitle, DialogContent
 } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 import CloseIcon from '@material-ui/icons/Close';
+import AddIcon from '@material-ui/icons/Add';
 import {
  Card, CardBody, CardText, CardTitle, CardFooter,
     CardHeader, CardLink,
 } from 'reactstrap';
 import EditResourceForm from './EditResourceForm';
+import CreateResourceForm from './CreateResourceForm';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -55,9 +58,15 @@ const useStyles = makeStyles(theme => ({
       zIndex: theme.zIndex.drawer + 1,
       color: '#fff',
     },
+    closeButton: {
+      position: 'absolute',
+      right: theme.spacing(1),
+      top: theme.spacing(1),
+      color: theme.palette.grey[500],
+    },
 }));
 
-const ResourcesPage = ({resources, editResource, deleteResource, users}) => {
+const ResourcesPage = ({resources, editResource, deleteResource, users, createResource, resourceError}) => {
     const classes = useStyles();
     const allResources = resources.allResources;
     const curUser = users.user;
@@ -79,6 +88,16 @@ const ResourcesPage = ({resources, editResource, deleteResource, users}) => {
     const current = allResources.filter(resource => !resource.archive).filter(res => res.name.toLowerCase().startsWith(search.current.toLowerCase()));
     const archives = allResources.filter(resource => resource.archive).filter(res => res.name.toLowerCase().startsWith(search.archives.toLowerCase()));
 
+    const [createOpen, setCreateOpen] = React.useState(false);
+
+    const handleCreateOpen = () => {
+      setCreateOpen(true);
+    };
+
+    const handleCreateClose = () => {
+      setCreateOpen(false);
+    };
+
     return (
         <>
           {
@@ -87,6 +106,11 @@ const ResourcesPage = ({resources, editResource, deleteResource, users}) => {
             <Typography variant='h4' color='textSecondary'>Failed to fetch Resources</Typography>
             : null
           }
+          <Tooltip title="Create New Resource" aria-label="add">
+            <Fab color="secondary" onClick={handleCreateOpen}>
+              <AddIcon />
+            </Fab>
+          </Tooltip>
           <Backdrop className={classes.backdrop} open={resources.isLoading}>
             <CircularProgress color="inherit" />
           </Backdrop>
@@ -256,6 +280,19 @@ const ResourcesPage = ({resources, editResource, deleteResource, users}) => {
                         ))}
             </Grid>
             </Paper>
+            <Dialog open={createOpen} maxWidth="md" onClose={handleCreateClose}>
+              <DialogTitle>
+                  <Typography variaeventErrornt="h5" align="center" fullWidth>
+                    Create a Resource
+                  </Typography>
+                  <IconButton aria-label="close" className={classes.closeButton} onClick={handleCreateClose}>
+                    <CloseIcon />
+                  </IconButton>
+              </DialogTitle>
+              <DialogContent>
+                <CreateResourceForm createResource={createResource} resourceError={resourceError} />
+              </DialogContent>
+            </Dialog>
         </>
     );
 };

@@ -150,9 +150,11 @@ function renderPage(subPage, props, isAdmin, redirect, closeDrawer) {
             // error={props.users.errMess}
             // fetchUser={props.fetchUser}
             user={props.users.user}
+            users={props.users}
             isLoading={props.users.userLoading}
             // events={props.events}
             // editEvent={props.editEvent}
+            changePassword={props.changePass}
             serverError={props.users.serverError}
             updateUser={props.updateUser}  
           />
@@ -189,7 +191,9 @@ function renderPage(subPage, props, isAdmin, redirect, closeDrawer) {
           <EventsPage
             events={props.events}
             fetchAllEvents={props.fetchAllEvents}
+            createEvent={props.createEvent}
             editEvent={props.editEvent}
+            eventError={props.events.serverError}
             deleteEvent={props.deleteEvent}
             users={props.users}
           />
@@ -201,6 +205,8 @@ function renderPage(subPage, props, isAdmin, redirect, closeDrawer) {
         <div>
           <ProjectsPage
             projects={props.projects}
+            createProject={props.createProject}
+            projectError={props.projects.serverError}
             fetchAllProjects={props.fetchAllProjects}
             editProject={props.editProject}
             deleteProject={props.deleteProject}
@@ -216,6 +222,7 @@ function renderPage(subPage, props, isAdmin, redirect, closeDrawer) {
             resources={props.resources}
             fetchAllResources={props.fetchAllResources}
             editResource={props.editResource}
+            resourceError={props.resources.serverError}
             deleteResource={props.deleteResource}
             users={props.users}
           />
@@ -229,6 +236,7 @@ function renderPage(subPage, props, isAdmin, redirect, closeDrawer) {
             users={props.users}
             fetchAllUsers={props.fetchAllUsers}
             removeUser={props.removeUser}
+            createResource={props.createResource}
             deleteAllUsers={props.deleteAllUsers}
             rejectAllUnapproved={props.rejectAllUnapproved}
             editOtherUser={props.editOtherUser}
@@ -482,7 +490,7 @@ class Dashboard extends Component {
     this.redirectFunc = this.redirectFunc.bind(this);
   }
   
-  componentWillMount() {
+  componentDidMount() {
     this.props.fetchAllUsers();
     this.props.fetchUser(localStorage.getItem('userId'));
     this.props.fetchAllProjects();
@@ -490,9 +498,9 @@ class Dashboard extends Component {
     this.props.fetchAllResources();
   }
 
-  shouldComponentUpdate(nextProps) {
-    return JSON.stringify(this.props.users.user) === JSON.stringify(nextProps.users.user);
-  }
+  // shouldComponentUpdate(nextProps) {
+  //   return JSON.stringify(this.props.users.user) === JSON.stringify(nextProps.users.user);
+  // }
   
   redirectFunc = (subPath, closeDrawer) => () => {
     closeDrawer();

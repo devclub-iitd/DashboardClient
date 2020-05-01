@@ -25,8 +25,8 @@ export default function ConfigureStore() {
         resourceForm: initialResourceForm,
       }),
     }),
-    // applyMiddleware(thunk, logger),
-    applyMiddleware(thunk),
+    applyMiddleware(thunk, logger),
+    // applyMiddleware(thunk),
   );
 
   return store;

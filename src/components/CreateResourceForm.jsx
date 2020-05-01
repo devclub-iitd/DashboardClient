@@ -212,7 +212,7 @@ export default function CreateTasks(props) {
 
       {/* {'Change type of field (date/checkbox/text) accordingly'}
       <br /> */}
-      <Grid container direction="row" justify="center">
+      <Grid fullWidth container direction="row" justify="center">
         <Snackbar
           anchorOrigin={{
             vertical: 'top',

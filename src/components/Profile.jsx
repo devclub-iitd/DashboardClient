@@ -16,11 +16,13 @@ import {
 } from 'react-redux-form';
 import DateFnsUtils from '@date-io/date-fns';
 import AddIcon from '@material-ui/icons/Add';
+import VPNKeyIcon from '@material-ui/icons/VpnKey';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutline';
 import {
   Label, Button, Row, Col, CardLink,
 } from 'reactstrap';
+import ChangePassword from './ChangePassword';
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -81,7 +83,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Profile = ({
-  user, serverError, updateUser, isLoading,
+  user, serverError, updateUser, isLoading, changePassword, users,
 }) => {
   const [state, setState] = React.useState({
     editUser: user,
@@ -89,6 +91,11 @@ const Profile = ({
     urlFields: Array.from(user.url).map(([index, value]) => ({ type: index, url: value })),
     editSuccess: false,
     isModalOpen: false,
+    isChangePassOpen: false,
+    password: '',
+    // confirmPassword: '',
+    confirmPassError: null,
+    changeSuccess: false,
   });
 
   const classes = useStyles();
@@ -97,6 +104,7 @@ const Profile = ({
     setState({
       ...state,
       editSuccess: false,
+      changeSuccess: false,
     });
   };
 
@@ -157,6 +165,20 @@ const Profile = ({
     setState({
       ...state,
       isModalOpen: true,
+    });
+  };
+
+  const handlePasswordOpen = () => {
+    setState({
+      ...state,
+      isChangePassOpen: true,
+    });
+  };
+
+  const handlePasswordClose = () => {
+    setState({
+      ...state,
+      isChangePassOpen: false,
     });
   };
 
@@ -281,6 +303,59 @@ const Profile = ({
     handleClose();
   };
 
+  const handlePassFormChange = (e, type) => {
+    const { value } = e.target;
+    setState({
+      ...state,
+      [type]: value,
+    });
+    if (type === 'confirmPassword') {
+      const { password } = state;
+      setState({
+        ...state,
+        confirmPassError: (value !== password),
+      });
+    }
+  };
+
+  const changePass = () => {
+    // e.preventDefault();
+
+    const { confirmPassError } = state;
+
+    if (confirmPassError) {
+      return;
+    }
+
+    changePassword(state.password);
+    // setState({
+    //   ...state,
+    //   password: '',
+    //   confirmPassword: '',
+    //   confirmPassError: null,
+    // });
+
+    if (serverError === null) {
+      setState({
+        ...state,
+        password: '',
+        confirmPassword: '',
+        confirmPassError: null,
+        changeSuccess: true,
+      });
+    } else {
+      setState({
+        ...state,
+        password: '',
+        confirmPassword: '',
+        confirmPassError: null,
+        changeSuccess: false,
+      });
+    }
+    handlePasswordClose();
+    // window.location.reload(false);
+  };
+
   const cancelEdit = () => {
     // setUser({
     //   ...user,
@@ -332,6 +407,16 @@ const Profile = ({
           autoHideDuration={2000}
           onClose={handleSuccessClose}
           message="Profile updated Successfully !"
+        />
+        <Snackbar
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'center',
+          }}
+          open={state.changeSuccess}
+          autoHideDuration={2000}
+          onClose={handleSuccessClose}
+          message="Password changed succesfully !"
         />
         <div>
           <Dialog open={state.isModalOpen} maxWidth="md" fullWidth onClose={() => { cancelEdit(); }} scroll="paper">
@@ -810,10 +895,25 @@ const Profile = ({
             {/* </ModalBody> */}
           </Dialog>
         </div>
+        <Dialog open={state.isChangePassOpen} maxWidth="md" fullWidth onClose={handlePasswordClose}>
+          <DialogTitle>
+            <Typography fullWidth align="center" variant="h4" className={classes.head}>
+              Change Your Password
+            </Typography>
+          </DialogTitle>
+          <DialogContent>
+            <ChangePassword changePass={changePassword} users={users} />
+          </DialogContent>
+        </Dialog>
         <Grid item xs={12}>
           <Tooltip title="Edit Profile" aria-label="edit">
             <Fab onClick={handleOpen} color="secondary">
               <EditIcon color="action" />
+            </Fab>
+          </Tooltip>
+          <Tooltip title="Change Password" aria-label="edit">
+            <Fab style={{ margin: '1em' }} onClick={handlePasswordOpen} color="secondary">
+              <VPNKeyIcon color="action" />
             </Fab>
           </Tooltip>
         </Grid>

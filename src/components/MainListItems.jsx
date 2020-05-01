@@ -47,14 +47,14 @@ function MainListItems(props) {
           <ListItemText primary="Profile" />
         </Tooltip>
       </ListItem>
-      <ListItem button onClick={redirectFunc('changePassword', props.closeDrawer)}>
+      {/* <ListItem button onClick={redirectFunc('changePassword', props.closeDrawer)}>
         <ListItemIcon>
           <VpnKeyIcon />
         </ListItemIcon>
         <Tooltip title="Change your Password">
           <ListItemText primary="Change Password" />
         </Tooltip>
-      </ListItem>
+      </ListItem> */}
       <ListItem button onClick={redirectFunc('events', props.closeDrawer)}>
         <ListItemIcon>
           <EventIcon />
