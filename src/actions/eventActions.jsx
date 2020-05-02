@@ -69,13 +69,19 @@ export const fetchAllEvents = () => (dispatch) => {
     .then((events) => {
       const gotEvents = events.data;
       // fetch gets url as an object, converting to map strings required
-      const allEvents = gotEvents.map(event => ({
-        ...event,
-        url: objToStrMap(event.url),
-        assignee: event.assignee === null || event.assignee === undefined ? [] : event.assignee,
-        start_date: event.start_date === null || event.start_date === undefined ? new Date() : new Date(event.start_date),
-        end_date: event.end_date === null || event.end_date === undefined ? new Date() : new Date(event.end_date),
-      }));
+      const allEvents = gotEvents.map((event) => {
+        const upEvent = {
+          ...event,
+          url: objToStrMap(event.url),
+          assignee: event.assignee === null || event.assignee === undefined ? [] : event.assignee,
+          start_date: event.start_date === null || event.start_date === undefined ? new Date() : new Date(event.start_date),
+          end_date: event.end_date === null || event.end_date === undefined ? new Date() : new Date(event.end_date),
+        };
+        if (!upEvent.url.has('url')) {
+          upEvent.url.set('url', '');
+        }
+        return upEvent;
+      });
       dispatch(addEvents(allEvents));
     })
     .catch(error => dispatch(eventsFailed(error.message)));

@@ -26,6 +26,13 @@ const theme = createMuiTheme({
       contrastText: '#000',
     },
   },
+  overrides: {
+    MuiAvatar: {
+      fallback: {
+        color: '#fff',
+      },
+    },
+  },
 });
 
 // ------------------- May be used for /healthz---------------------------------------------------
@@ -69,11 +76,11 @@ const theme = createMuiTheme({
 
 ReactDOM.render(
   <Provider store={ConfigureStore()}>
-    <BrowserRouter>
-      <MuiThemeProvider theme={theme}>
-        <App />
-      </MuiThemeProvider>
-    </BrowserRouter>
+    {/* <BrowserRouter> */}
+    <MuiThemeProvider theme={theme}>
+      <App />
+    </MuiThemeProvider>
+    {/* </BrowserRouter> */}
   </Provider>,
   document.getElementById('root'),
 );

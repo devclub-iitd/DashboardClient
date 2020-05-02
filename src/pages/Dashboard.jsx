@@ -19,7 +19,7 @@ import ManageUsers from '../components/ManageUsers';
 import MyTasks from '../components/MyTasks';
 import DeployManager from '../components/Deploy';
 import CreateTasks from '../components/CreateTasks';
-import { Redirect } from 'react-router-dom';
+import { Redirect, withRouter } from 'react-router-dom';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 import { actions } from 'react-redux-form';
@@ -150,9 +150,11 @@ function renderPage(subPage, props, isAdmin, redirect, closeDrawer) {
             // error={props.users.errMess}
             // fetchUser={props.fetchUser}
             user={props.users.user}
+            users={props.users}
             isLoading={props.users.userLoading}
             // events={props.events}
             // editEvent={props.editEvent}
+            changePassword={props.changePass}
             serverError={props.users.serverError}
             updateUser={props.updateUser}  
           />
@@ -189,7 +191,9 @@ function renderPage(subPage, props, isAdmin, redirect, closeDrawer) {
           <EventsPage
             events={props.events}
             fetchAllEvents={props.fetchAllEvents}
+            createEvent={props.createEvent}
             editEvent={props.editEvent}
+            eventError={props.events.serverError}
             deleteEvent={props.deleteEvent}
             users={props.users}
           />
@@ -201,6 +205,8 @@ function renderPage(subPage, props, isAdmin, redirect, closeDrawer) {
         <div>
           <ProjectsPage
             projects={props.projects}
+            createProject={props.createProject}
+            projectError={props.projects.serverError}
             fetchAllProjects={props.fetchAllProjects}
             editProject={props.editProject}
             deleteProject={props.deleteProject}
@@ -216,6 +222,7 @@ function renderPage(subPage, props, isAdmin, redirect, closeDrawer) {
             resources={props.resources}
             fetchAllResources={props.fetchAllResources}
             editResource={props.editResource}
+            resourceError={props.resources.serverError}
             deleteResource={props.deleteResource}
             users={props.users}
           />
@@ -229,6 +236,7 @@ function renderPage(subPage, props, isAdmin, redirect, closeDrawer) {
             users={props.users}
             fetchAllUsers={props.fetchAllUsers}
             removeUser={props.removeUser}
+            createResource={props.createResource}
             deleteAllUsers={props.deleteAllUsers}
             rejectAllUnapproved={props.rejectAllUnapproved}
             editOtherUser={props.editOtherUser}
@@ -267,6 +275,7 @@ function renderPage(subPage, props, isAdmin, redirect, closeDrawer) {
             fetchAllEvents={props.fetchAllEvents}
             fetchAllProjects={props.fetchAllProjects}
             fetchAllResources={props.fetchAllResources}
+            history={props.history}
             // user={props.users.user}
             users={props.users}
             editEvent={props.editEvent}
@@ -481,7 +490,7 @@ class Dashboard extends Component {
     this.redirectFunc = this.redirectFunc.bind(this);
   }
   
-  componentWillMount() {
+  componentDidMount() {
     this.props.fetchAllUsers();
     this.props.fetchUser(localStorage.getItem('userId'));
     this.props.fetchAllProjects();
@@ -489,9 +498,9 @@ class Dashboard extends Component {
     this.props.fetchAllResources();
   }
 
-  shouldComponentUpdate(nextProps) {
-    return JSON.stringify(this.props.users.user) === JSON.stringify(nextProps.users.user);
-  }
+  // shouldComponentUpdate(nextProps) {
+  //   return JSON.stringify(this.props.users.user) === JSON.stringify(nextProps.users.user);
+  // }
   
   redirectFunc = (subPath, closeDrawer) => () => {
     closeDrawer();
@@ -658,4 +667,4 @@ Dashboard.propTypes = {
   classes: PropTypes.objectOf(PropTypes.string).isRequired,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(Dashboard));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(Dashboard)));

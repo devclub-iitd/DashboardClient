@@ -1,15 +1,17 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
-  Paper, TextField,
+  Paper, TextField, Tooltip, Fab, Dialog, DialogTitle, DialogContent,
   Typography, Grid, Backdrop, CircularProgress, InputAdornment, IconButton
 } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 import CloseIcon from '@material-ui/icons/Close';
+import AddIcon from '@material-ui/icons/Add';
 import { Card, CardBody, CardText, CardTitle, CardFooter,
     CardHeader, CardLink
 } from 'reactstrap';
 import EditProjectForm from './EditProjectForm';
+import CreateProjectForm from './CreateProjectForm';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -36,7 +38,7 @@ const useStyles = makeStyles(theme => ({
     },
     grid: {
         padding: '1em',
-        height: '27em',
+        height: '29em',
         overflowY: 'scroll',
         scrollBehavior: 'smooth',
     },
@@ -48,14 +50,21 @@ const useStyles = makeStyles(theme => ({
     },
     paper: {
         margin: '2em',
+        height: document.documentElement.clientHeight * 0.63,
     },
     backdrop: {
         zIndex: theme.zIndex.drawer + 1,
         color: '#fff',
     },
+    closeButton: {
+      position: 'absolute',
+      right: theme.spacing(1),
+      top: theme.spacing(1),
+      color: theme.palette.grey[500],
+    },
 }));
 
-const ProjectsPage = ({ projects, editProject, deleteProject, users }) => {
+const ProjectsPage = ({ projects, editProject, deleteProject, users, createProject, projectError }) => {
     const classes = useStyles();
     const allProjects = projects.allProjects;
     const curUser = users.user;
@@ -79,6 +88,16 @@ const ProjectsPage = ({ projects, editProject, deleteProject, users }) => {
     const ongoing = allProjects.filter((project) => project.status === 'ONGOING').filter(pro => pro.name.toLowerCase().startsWith(search.ongoing.toLowerCase()));
     const completed = allProjects.filter((project) => project.status === 'COMPLETED').filter(pro => pro.name.toLowerCase().startsWith(search.completed.toLowerCase()));
 
+    const [createOpen, setCreateOpen] = React.useState(false);
+
+    const handleCreateOpen = () => {
+      setCreateOpen(true);
+    };
+
+    const handleCreateClose = () => {
+      setCreateOpen(false);
+    };
+
     return (
         <>
         {
@@ -87,6 +106,11 @@ const ProjectsPage = ({ projects, editProject, deleteProject, users }) => {
           <Typography variant='h4' color='textSecondary'>Failed to fetch Projects</Typography>
           : null
         }
+        <Tooltip title="Create New Project" aria-label="add">
+          <Fab color="secondary" onClick={handleCreateOpen}>
+            <AddIcon />
+          </Fab>
+        </Tooltip>
         <Backdrop className={classes.backdrop} open={projects.isLoading}>
           <CircularProgress color="inherit" />
         </Backdrop>
@@ -358,6 +382,19 @@ const ProjectsPage = ({ projects, editProject, deleteProject, users }) => {
                 </Grid>
             {/* </GridList> */}
         </Paper>
+        <Dialog open={createOpen} maxWidth="md" onClose={handleCreateClose}>
+          <DialogTitle>
+            <Typography variaeventErrornt="h5" align="center" fullWidth>
+              Create a Project
+            </Typography>
+            <IconButton aria-label="close" className={classes.closeButton} onClick={handleCreateClose}>
+              <CloseIcon />
+            </IconButton>
+          </DialogTitle>
+          <DialogContent>
+            <CreateProjectForm createProject={createProject} projectError={projectError} />
+          </DialogContent>
+        </Dialog>
         </>
     );
 }

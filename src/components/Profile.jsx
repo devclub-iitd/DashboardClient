@@ -5,8 +5,8 @@ import React, { Fragment } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
   Grid, Card, CardContent, Typography, Dialog, DialogTitle, Tooltip,
-  Backdrop, DialogContent, Avatar, TextField, Fab,
-  FormControlLabel, Radio, RadioGroup, Snackbar, CircularProgress,
+  Backdrop, DialogContent, Avatar, TextField, Fab, FormControl, InputLabel,
+  MenuItem, Select, FormControlLabel, Radio, RadioGroup, Snackbar, CircularProgress,
 } from '@material-ui/core';
 import EmailOutlinedIcon from '@material-ui/icons/EmailOutlined';
 import PhoneIcon from '@material-ui/icons/Phone';
@@ -16,11 +16,13 @@ import {
 } from 'react-redux-form';
 import DateFnsUtils from '@date-io/date-fns';
 import AddIcon from '@material-ui/icons/Add';
+import VPNKeyIcon from '@material-ui/icons/VpnKey';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutline';
 import {
   Label, Button, Row, Col, CardLink,
 } from 'reactstrap';
+import ChangePassword from './ChangePassword';
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -74,10 +76,14 @@ const useStyles = makeStyles(theme => ({
     height: theme.spacing(28),
     marginLeft: '1em',
   },
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 120,
+  },
 }));
 
 const Profile = ({
-  user, serverError, updateUser, isLoading,
+  user, serverError, updateUser, isLoading, changePassword, users,
 }) => {
   const [state, setState] = React.useState({
     editUser: user,
@@ -85,6 +91,11 @@ const Profile = ({
     urlFields: Array.from(user.url).map(([index, value]) => ({ type: index, url: value })),
     editSuccess: false,
     isModalOpen: false,
+    isChangePassOpen: false,
+    password: '',
+    // confirmPassword: '',
+    confirmPassError: null,
+    changeSuccess: false,
   });
 
   const classes = useStyles();
@@ -93,6 +104,7 @@ const Profile = ({
     setState({
       ...state,
       editSuccess: false,
+      changeSuccess: false,
     });
   };
 
@@ -156,6 +168,20 @@ const Profile = ({
     });
   };
 
+  const handlePasswordOpen = () => {
+    setState({
+      ...state,
+      isChangePassOpen: true,
+    });
+  };
+
+  const handlePasswordClose = () => {
+    setState({
+      ...state,
+      isChangePassOpen: false,
+    });
+  };
+
   const handleClose = () => {
     // setIsModalOpen(false);
     setState({
@@ -207,6 +233,9 @@ const Profile = ({
   const handleUrlFieldChange = (index, event) => {
     const values = [...state.urlFields];
     if (event.target.name === 'type') {
+      if (values[index].type === 'picture_url' || values[index].type === 'facebook_url' || values[index].type === 'github_url') {
+        return;
+      }
       values[index].type = event.target.value;
     } else {
       values[index].url = event.target.value;
@@ -256,7 +285,7 @@ const Profile = ({
     state.urlFields.map(urlField => urlMap.set(urlField.type, urlField.url));
     const newUser = {
       ...state.editUser,
-      url: strMapToObj(urlMap),
+      url: urlMap,
     };
 
     updateUser(newUser);
@@ -274,6 +303,59 @@ const Profile = ({
     handleClose();
   };
 
+  const handlePassFormChange = (e, type) => {
+    const { value } = e.target;
+    setState({
+      ...state,
+      [type]: value,
+    });
+    if (type === 'confirmPassword') {
+      const { password } = state;
+      setState({
+        ...state,
+        confirmPassError: (value !== password),
+      });
+    }
+  };
+
+  const changePass = () => {
+    // e.preventDefault();
+
+    const { confirmPassError } = state;
+
+    if (confirmPassError) {
+      return;
+    }
+
+    changePassword(state.password);
+    // setState({
+    //   ...state,
+    //   password: '',
+    //   confirmPassword: '',
+    //   confirmPassError: null,
+    // });
+
+    if (serverError === null) {
+      setState({
+        ...state,
+        password: '',
+        confirmPassword: '',
+        confirmPassError: null,
+        changeSuccess: true,
+      });
+    } else {
+      setState({
+        ...state,
+        password: '',
+        confirmPassword: '',
+        confirmPassError: null,
+        changeSuccess: false,
+      });
+    }
+    handlePasswordClose();
+    // window.location.reload(false);
+  };
+
   const cancelEdit = () => {
     // setUser({
     //   ...user,
@@ -289,15 +371,32 @@ const Profile = ({
     // console.log(state.editUser);
   };
 
+  const hostels = [
+    'Aravali',
+    'Girnar',
+    'Jwalamukhi',
+    'Karakoram',
+    'Kumaon',
+    'Nilgiri',
+    'Shivalik',
+    'Satpura',
+    'Udaigiri',
+    'Vindhyanchal',
+    'Zanskar',
+    'Kailash',
+    'Himadri',
+    'New Kailash',
+  ];
+
   const required = val => val && val.length;
   const maxLength = len => val => !(val) || (val.length <= len);
   const minLength = len => val => (val) && (val.length >= len);
 
   return (
     <>
-      <Backdrop className={classes.backdrop} open={isLoading}>
+      {/* <Backdrop className={classes.backdrop} open={isLoading}>
         <CircularProgress color="inherit" />
-      </Backdrop>
+      </Backdrop> */}
       <Grid container direction="row" justify="space-evenly" alignItems="flex-start">
         <Snackbar
           anchorOrigin={{
@@ -308,6 +407,16 @@ const Profile = ({
           autoHideDuration={2000}
           onClose={handleSuccessClose}
           message="Profile updated Successfully !"
+        />
+        <Snackbar
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'center',
+          }}
+          open={state.changeSuccess}
+          autoHideDuration={2000}
+          onClose={handleSuccessClose}
+          message="Password changed succesfully !"
         />
         <div>
           <Dialog open={state.isModalOpen} maxWidth="md" fullWidth onClose={() => { cancelEdit(); }} scroll="paper">
@@ -405,29 +514,29 @@ const Profile = ({
                 <Row className="form-group">
                   <Label htmlFor="hostel" md={4}><h6>Hostel:</h6></Label>
                   <Col md={8}>
-                    <Control.text
-                      model=".hostel"
-                      id="hostel"
-                      name="hostel"
-                      // defaultValue={user.hostel}
-                      defaultValue={state.editUser.hostel}
-                      onChange={handleFormValuesChange}
-                      placeholder="Hostel*"
-                      className="form-control"
-                      validators={{
-                        required, minLength: minLength(1), maxLength: maxLength(20),
-                      }}
-                    />
-                    <Errors
-                      className="text-danger"
-                      model=".hostel"
-                      show="touched"
-                      messages={{
-                        required: 'Required ',
-                        minLength: 'Must be greater than 2 characters',
-                        maxLength: 'Must be 25 characters or less',
-                      }}
-                    />
+                    <FormControl variant="outlined" className={classes.formControl}>
+                      <InputLabel id="hostel">
+                        Hostel
+                      </InputLabel>
+                      <Select
+                        required
+                        labelId="hostel"
+                        id="hostel"
+                        name="hostel"
+                        label="Hostel"
+                        defaultValue={state.orgUser.hostel}
+                        onChange={handleFormValuesChange}
+                      >
+                        <MenuItem value="">
+                          <em>None</em>
+                        </MenuItem>
+                        {
+                          hostels.map(hostel => (
+                            <MenuItem value={hostel.toUpperCase()}>{hostel}</MenuItem>
+                          ))
+                        }
+                      </Select>
+                    </FormControl>
                   </Col>
                 </Row>
                 <Row className="form-group">
@@ -505,13 +614,13 @@ const Profile = ({
                   </Col>
                 </Row>
                 <Row className="form-group">
-                  <Label htmlFor="join_year" md={4}><h6>Date of Joining:</h6></Label>
+                  <Label htmlFor="join_year" md={4}><h6>Date of Joining Club:</h6></Label>
                   <Col md={8}>
                     <MuiPickersUtilsProvider utils={DateFnsUtils}>
                       <KeyboardDatePicker
                         margin="normal"
                         id="date-picker-dialog"
-                        label="Date of Joining"
+                        label="Date of Joining Club"
                         format="MM/dd/yyyy"
                         value={state.editUser.join_year}
                         name="join_year"
@@ -655,29 +764,31 @@ const Profile = ({
                   </Col>
                 </Row>
                 <Row className="form-group">
-                  <Label htmlFor="category" md={4}><h6>Category:</h6></Label>
-                  <Col md={8}>
-                    <Control.text
-                      model=".category"
-                      id="category"
-                      name="category"
-                      // defaultValue={user.category}
-                      defaultValue={state.editUser.category}
-                      onChange={handleFormValuesChange}
-                      placeholder="Category*"
-                      className="form-control"
-                      validators={{
-                        required,
-                      }}
-                    />
-                    <Errors
-                      className="text-danger"
-                      model=".hometown"
-                      show="touched"
-                      messages={{
-                        required: 'Required ',
-                      }}
-                    />
+                  <Label htmlFor="category" md={2}><h6>Category: </h6></Label>
+                  <Col md={10}>
+                    <FormControl variant="filled" className={classes.formControl}>
+                      <InputLabel id="category">
+                      Category
+                      </InputLabel>
+                      <Select
+                        required
+                        labelId="category"
+                        id="category"
+                        name="category"
+                        label="Category"
+                        defaultValue={state.orgUser.category}
+                        onChange={handleFormValuesChange}
+                      >
+                        <MenuItem value="">
+                          <em>None</em>
+                        </MenuItem>
+                        <MenuItem value="Fresher">Fresher</MenuItem>
+                        <MenuItem value="Sophomore">Sophomore</MenuItem>
+                        <MenuItem value="Junior Undergraduate">Junior Undergraduate</MenuItem>
+                        <MenuItem value="Senior Undergraduate">Senior Undergraduate</MenuItem>
+                        <MenuItem value="Alumni">Alumni</MenuItem>
+                      </Select>
+                    </FormControl>
                   </Col>
                 </Row>
                 <Row className="form-group">
@@ -710,11 +821,17 @@ const Profile = ({
                               onChange={event => handleUrlFieldChange(index, event)}
                             />
                           </Col>
-                          <Col sm={2}>
-                            <Fab sm={2} size="small" aria-label="delete" onClick={() => handleRemoveUrlFields(index)}>
-                              <DeleteOutlinedIcon />
-                            </Fab>
-                          </Col>
+                          {
+                            urlField.type === 'picture_url' || urlField.type === 'facebook_url' || urlField.type === 'github_url'
+                              ? null
+                              : (
+                                <Col sm={2}>
+                                  <Fab sm={2} size="small" aria-label="delete" onClick={() => handleRemoveUrlFields(index)}>
+                                    <DeleteOutlinedIcon />
+                                  </Fab>
+                                </Col>
+                              )
+                          }
                         </Row>
                       </Fragment>
                     ))}
@@ -778,10 +895,25 @@ const Profile = ({
             {/* </ModalBody> */}
           </Dialog>
         </div>
+        <Dialog open={state.isChangePassOpen} maxWidth="md" fullWidth onClose={handlePasswordClose}>
+          <DialogTitle>
+            <Typography fullWidth align="center" variant="h4" className={classes.head}>
+              Change Your Password
+            </Typography>
+          </DialogTitle>
+          <DialogContent>
+            <ChangePassword changePass={changePassword} users={users} />
+          </DialogContent>
+        </Dialog>
         <Grid item xs={12}>
           <Tooltip title="Edit Profile" aria-label="edit">
             <Fab onClick={handleOpen} color="secondary">
               <EditIcon color="action" />
+            </Fab>
+          </Tooltip>
+          <Tooltip title="Change Password" aria-label="edit">
+            <Fab style={{ margin: '1em' }} onClick={handlePasswordOpen} color="secondary">
+              <VPNKeyIcon color="action" />
             </Fab>
           </Tooltip>
         </Grid>

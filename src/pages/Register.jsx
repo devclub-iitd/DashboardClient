@@ -9,6 +9,7 @@ import {
   Avatar, Button, CssBaseline, TextField, Link,
   Grid, Typography, Container,
 } from '@material-ui/core';
+import { withRouter } from 'react-router-dom';
 import { registerUser } from '../actions/userActions';
 
 const styles = theme => ({
@@ -196,7 +197,7 @@ class SignUp extends React.Component {
                 />
               </Grid>
               <Grid item xs={12}>
-                <FormControl variant="outlined" className={classes.formControl}>
+                <FormControl variant="filled" className={classes.formControl}>
                   <InputLabel id="category">
                     Category
                   </InputLabel>
@@ -204,6 +205,7 @@ class SignUp extends React.Component {
                     labelId="category"
                     id="category"
                     name="category"
+                    label="category"
                   >
                     <MenuItem value="">
                       <em>None</em>
@@ -289,4 +291,4 @@ SignUp.propTypes = {
   registerUser: PropTypes.func.isRequired,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(SignUp));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(SignUp)));

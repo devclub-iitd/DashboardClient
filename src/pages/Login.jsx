@@ -8,7 +8,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Redirect } from 'react-router-dom';
+import { Redirect, withRouter } from 'react-router-dom';
 import { loginUser, loginErrorFin } from '../actions/userActions';
 
 const styles = theme => ({
@@ -57,7 +57,6 @@ function SignInSide(props) {
     setPassword(event.target.value);
   };
 
-  const [errMess, setErrMess] = React.useState(auth.loginFailed);
   const handleClose = () => {
     // setErrMess(false);
     props.finishError();
@@ -199,4 +198,4 @@ const mapDispatchToProps = dispatch => ({
   finishError: () => dispatch(loginErrorFin()),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(SignInSide));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(SignInSide)));

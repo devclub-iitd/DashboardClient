@@ -1,15 +1,19 @@
 import React, {  } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
-  Paper, TextField,
-  Typography, Grid, Backdrop, CircularProgress, InputAdornment, IconButton
+  Paper, TextField, Tooltip, Fab,
+  Typography, Grid, Backdrop, CircularProgress, InputAdornment, IconButton, Hidden, Dialog, DialogTitle, DialogContent
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import SearchIcon from '@material-ui/icons/Search';
+import EditIcon from '@material-ui/icons/Edit';
 import { Card, CardBody, CardText, CardTitle, CardFooter,
     CardHeader, CardLink
 } from 'reactstrap';
+import MUIDataTable from 'mui-datatables';
+import AddIcon from '@material-ui/icons/Add';
 import EditEventForm from './EditEventForm';
+import CreateEventForm from './CreateEventForm';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -36,7 +40,7 @@ const useStyles = makeStyles(theme => ({
     },
     grid: {
         padding: '1em',
-        height: '27em',
+        height: '29em',
         overflowY: 'scroll',
         scrollBehavior: 'smooth',
     },
@@ -48,14 +52,21 @@ const useStyles = makeStyles(theme => ({
     },
     paper: {
         margin: '2em',
+        height: document.documentElement.clientHeight * 0.63,
     },
     backdrop: {
         zIndex: theme.zIndex.drawer + 1,
         color: '#fff',
     },
+    closeButton: {
+      position: 'absolute',
+      right: theme.spacing(1),
+      top: theme.spacing(1),
+      color: theme.palette.grey[500],
+    },
 }));
 
-const EventsPage = ({ events, editEvent, deleteEvent, users }) => {
+const EventsPage = ({ events, editEvent, deleteEvent, users, createEvent, eventError }) => {
     const classes = useStyles();
     const allEvents = events.allEvents;
     const curUser = users.user;
@@ -110,6 +121,133 @@ const EventsPage = ({ events, editEvent, deleteEvent, users }) => {
     const upcoming = allEvents.filter((event) => isUpcoming(event.start_date)).filter(event => event.name.startsWith(search.upcoming));
     const completed = allEvents.filter((event) => isCompleted(event.end_date)).filter(event => event.name.startsWith(search.completed));
 
+    const getEventRow = (event) => {
+      return ([
+        event.name,
+        event.description,
+        event.start_date.toDateString(),
+        event.end_date.toDateString(),
+        event.display_on_website ? 'True' : 'False',
+        dumUsers.filter(user => event.assignee.includes(user._id)).map(user => user.name + ', '),
+      ]);
+    };
+
+    // const [dataTable, setdataTable] = React.useState({
+    const columns = [
+      {
+        name: "name",
+        label: "Name",
+        options: {
+          filter: true,
+          sort: true,
+          setCellHeaderProps: value => ({ style: { fontWeight: 'bold' } }),
+        }
+      },
+      {
+        name: "description",
+        label: "Description",
+        options: {
+          filter: false,
+          sort: false,
+          setCellHeaderProps: value => ({ style: { fontWeight: 'bold' } }),
+        }
+      },
+      {
+        name: "startDate",
+        label: "Starting",
+        options: {
+          filter: false,
+          sort: true,
+          setCellHeaderProps: value => ({ style: { fontWeight: 'bold' } }),
+        }
+      },
+      {
+        name: "endDate",
+        label: "Ending",
+        options: {
+          filter: false,
+          sort: true,
+          setCellHeaderProps: value => ({ style: { fontWeight: 'bold' } }),
+        }
+      },
+      {
+        name: "display",
+        label: "On Main Website",
+        options: {
+          filter: true,
+          sort: false,
+          setCellHeaderProps: value => ({ style: { fontWeight: 'bold' } }),
+        }
+      },
+      {
+        name: "mems",
+        label: "Members",
+        options: {
+          filter: false,
+          sort: false,
+          setCellHeaderProps: value => ({ style: { fontWeight: 'bold' } }),
+        }
+      },
+      {
+        name: "edit",
+        label: "Edit",
+        options: {
+          filter: false,
+          sort: false,
+          download: false,
+          print: false,
+          display: curUser.privelege_level === 'Admin',
+          setCellHeaderProps: value => ({ style: { fontWeight: 'bold' } }),
+          customBodyRender: (value, tableMeta, updateValue) => (
+            <>
+              {/* <IconButton onClick={() => setTableEdit({ index: tableMeta.rowIndex, value: true })} variant="outlined" color="secondary" component="span">
+                <EditIcon fontSize="small" color="secondary" />
+              </IconButton> */}
+              {
+                curUser.privelege_level === 'Admin'
+                ?
+                <EditEventForm
+                  isInTable={true}
+                  deleteEvent={deleteEvent} 
+                  dumEvents={allEvents}
+                  dumUsers={users.allUsers} 
+                  editEvent={editEvent} 
+                  index={tableMeta.rowIndex} 
+                  serverError={events.serverError} />
+                : null
+              }
+            </>
+          ),
+        }
+      }
+    ];
+    const data = [...allEvents.map(event => getEventRow(event))];
+    const options = {
+      filterType: 'checkbox',
+      responsive: 'scrollMaxHeight',
+      rowsPerPage: 7,
+      selectableRows: 'none',
+      fixedHeaderOptions: {
+        xAxis: false,
+        yAxis: true,
+      },
+      rowsPerPageOptions: [5, 7, 10, 15, 25 ,50 ,100],
+      // customSearchRender: (searchText, handleSearch, hideSearch, options)
+    };
+
+    const [createOpen, setCreateOpen] = React.useState(false);
+
+    const handleCreateOpen = () => {
+      setCreateOpen(true);
+    };
+
+    const handleCreateClose = () => {
+      setCreateOpen(false);
+    };
+    
+    // });
+    // console.log(data);
+
     return (
         <>
         {
@@ -118,9 +256,23 @@ const EventsPage = ({ events, editEvent, deleteEvent, users }) => {
           <Typography variant='h4' color='textSecondary'>Failed to fetch Events</Typography>
           : null
         }
+        <Tooltip title="Create New Event" aria-label="add">
+          <Fab color="secondary" onClick={handleCreateOpen}>
+            <AddIcon />
+          </Fab>
+        </Tooltip>
+        {/* <Hidden > */}
+          {/* <MUIDataTable
+            title="Club Events"
+            data={data}
+            columns={columns}
+            options={options}
+          /> */}
+        {/* </Hidden> */}
         <Backdrop className={classes.backdrop} open={events.isLoading}>
           <CircularProgress color="inherit" />
         </Backdrop>
+        
         <Paper elevation={3} variant="outlined" className={classes.paper}>
                 <Grid container justify='flex-start'>
                     <Grid item xs={12} sm={4}>
@@ -397,6 +549,19 @@ const EventsPage = ({ events, editEvent, deleteEvent, users }) => {
                 </Grid>
             {/* </GridList> */}
         </Paper>
+        <Dialog open={createOpen} maxWidth="md" onClose={handleCreateClose}>
+          <DialogTitle>
+            <Typography variant="h5" align="center" fullWidth>
+              Create An Event
+            </Typography>
+            <IconButton aria-label="close" className={classes.closeButton} onClick={handleCreateClose}>
+              <CloseIcon />
+            </IconButton>
+          </DialogTitle>
+          <DialogContent>
+            <CreateEventForm createEvent={createEvent} eventError={eventError} />
+          </DialogContent>
+        </Dialog>
         </>
     );
 }
