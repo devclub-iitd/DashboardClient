@@ -40,7 +40,7 @@ const useStyles = makeStyles(theme => ({
     },
     grid: {
         padding: '1em',
-        height: '27em',
+        height: '29em',
         overflowY: 'scroll',
         scrollBehavior: 'smooth',
     },
@@ -52,6 +52,7 @@ const useStyles = makeStyles(theme => ({
     },
     paper: {
         margin: '2em',
+        height: document.documentElement.clientHeight * 0.63,
     },
     backdrop: {
         zIndex: theme.zIndex.drawer + 1,
@@ -226,7 +227,12 @@ const EventsPage = ({ events, editEvent, deleteEvent, users, createEvent, eventE
       responsive: 'scrollMaxHeight',
       rowsPerPage: 7,
       selectableRows: 'none',
+      fixedHeaderOptions: {
+        xAxis: false,
+        yAxis: true,
+      },
       rowsPerPageOptions: [5, 7, 10, 15, 25 ,50 ,100],
+      // customSearchRender: (searchText, handleSearch, hideSearch, options)
     };
 
     const [createOpen, setCreateOpen] = React.useState(false);
@@ -256,12 +262,12 @@ const EventsPage = ({ events, editEvent, deleteEvent, users, createEvent, eventE
           </Fab>
         </Tooltip>
         {/* <Hidden > */}
-          <MUIDataTable
+          {/* <MUIDataTable
             title="Club Events"
             data={data}
             columns={columns}
             options={options}
-          />
+          /> */}
         {/* </Hidden> */}
         <Backdrop className={classes.backdrop} open={events.isLoading}>
           <CircularProgress color="inherit" />

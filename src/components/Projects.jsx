@@ -38,7 +38,7 @@ const useStyles = makeStyles(theme => ({
     },
     grid: {
         padding: '1em',
-        height: '27em',
+        height: '29em',
         overflowY: 'scroll',
         scrollBehavior: 'smooth',
     },
@@ -50,6 +50,7 @@ const useStyles = makeStyles(theme => ({
     },
     paper: {
         margin: '2em',
+        height: document.documentElement.clientHeight * 0.63,
     },
     backdrop: {
         zIndex: theme.zIndex.drawer + 1,

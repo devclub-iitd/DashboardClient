@@ -3,6 +3,7 @@ import {
   Grid, Dialog, DialogTitle, DialogContent,
   InputLabel, Select, MenuItem, FormControl, Fab, Button, IconButton,
   Tooltip,
+  TextField,
 } from '@material-ui/core';
 import {
   Row, Col, Label,
@@ -14,6 +15,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import RestoreIcon from '@material-ui/icons/Restore';
 import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
+import { FastForward } from '@material-ui/icons';
 
 class DeployManager extends Component {
   constructor(props) {
@@ -139,6 +141,10 @@ class DeployManager extends Component {
     this.handleNewDeploymentClose();
   };
 
+  handleClick = () => {
+    console.log('clicked on icon!');
+  }
+
   render() {
     const columns = [
       {
@@ -229,10 +235,24 @@ class DeployManager extends Component {
       filter: true,
       filterType: 'dropdown',
       responsive: 'scrollMaxHeight',
+      rowsPerPage: 5,
+      rowsPerPageOptions: [5, 7, 10, 15, 25, 50, 100],
       fixedHeaderOptions: {
         xAxis: false,
         yAxis: true,
       },
+      // search: false,
+      // print: false,
+      // download: false,
+      // viewColumns: false,
+      customToolbar: () => (
+        <Tooltip title="custom icon">
+          <IconButton onClick={this.handleClick}>
+            <AddIcon />
+          </IconButton>
+        </Tooltip>
+      ),
+      // customSearchRender: (searchText, handleSearch, hideSearch, options) => (<TextField label="Hi" />),
     };
     return (
       <>
@@ -244,9 +264,14 @@ class DeployManager extends Component {
               </Fab>
             </Tooltip>
           </Grid>
-          <Grid item xs={12}>
-            <MUIDataTable title="ACME Employee list" data={data} columns={columns} options={options} />
-          </Grid>
+          {/* <Grid item xs={12}>
+            <MUIDataTable
+              title="ACME Employee list"
+              data={data}
+              columns={columns}
+              options={options}
+            />
+          </Grid> */}
           <Grid item xs={12}>
             <MUIDataTable
               title="Deploy Log"
