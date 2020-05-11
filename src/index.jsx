@@ -12,27 +12,27 @@ import * as serviceWorker from './serviceWorker';
 import ConfigureStore from './store';
 
 const theme = createMuiTheme({
-  palette: {
-    primary: {
-      main: '#0288d1',
-      light: '#5eb8ff',
-      dark: '#005b9f',
-      contrastText: '#fff',
+    palette: {
+        primary: {
+            main: '#0288d1',
+            light: '#5eb8ff',
+            dark: '#005b9f',
+            contrastText: '#fff',
+        },
+        secondary: {
+            main: '#00c853',
+            light: '#5efc82',
+            dark: '#009624',
+            contrastText: '#000',
+        },
     },
-    secondary: {
-      main: '#00c853',
-      light: '#5efc82',
-      dark: '#009624',
-      contrastText: '#000',
+    overrides: {
+        MuiAvatar: {
+            fallback: {
+                color: '#fff',
+            },
+        },
     },
-  },
-  overrides: {
-    MuiAvatar: {
-      fallback: {
-        color: '#fff',
-      },
-    },
-  },
 });
 
 // ------------------- May be used for /healthz---------------------------------------------------
@@ -75,14 +75,14 @@ const theme = createMuiTheme({
 // -----------------------------------------------------------------------------
 
 ReactDOM.render(
-  <Provider store={ConfigureStore()}>
-    {/* <BrowserRouter> */}
-    <MuiThemeProvider theme={theme}>
-      <App />
-    </MuiThemeProvider>
-    {/* </BrowserRouter> */}
-  </Provider>,
-  document.getElementById('root'),
+    <Provider store={ConfigureStore()}>
+        {/* <BrowserRouter> */}
+        <MuiThemeProvider theme={theme}>
+            <App />
+        </MuiThemeProvider>
+        {/* </BrowserRouter> */}
+    </Provider>,
+    document.getElementById('root')
 );
 
 // If you want your app to work offline and load faster, you can change

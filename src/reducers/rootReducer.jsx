@@ -7,10 +7,10 @@ import Events from './eventReducer';
 import Resources from './resourceReducer';
 
 export default combineReducers({
-  Auth,
-  Register,
-  Users,
-  Events,
-  Projects,
-  Resources,
+    Auth,
+    Register,
+    Users,
+    Events,
+    Projects,
+    Resources,
 });
