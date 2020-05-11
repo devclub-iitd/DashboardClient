@@ -1,6 +1,6 @@
 name: Lint
 
-on: [push, pull_request]
+on: [push]
 
 jobs:
   run-linters:
@@ -26,3 +26,6 @@ jobs:
           github_token: ${{ secrets.github_token }}
           # Enable linters
           eslint: true
+          eslint_extensions: js,jsx
+          prettier: true
+          prettier_dir: src/
