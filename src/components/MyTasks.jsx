@@ -65,30 +65,27 @@ export default function MyTasks(props) {
     };
 
     function isOngoing(startDate: Date, endDate: Date) {
-        let today = new Date();
+        const today = new Date();
         if (today > startDate && today < endDate) {
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
     function isCompleted(endDate: Date) {
-        let today = new Date();
+        const today = new Date();
         if (today > endDate) {
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
     function isUpcoming(startDate: Date) {
-        let today = new Date();
+        const today = new Date();
         if (today < startDate) {
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
     const ongoingEvents = dumEvents
@@ -245,8 +242,7 @@ export default function MyTasks(props) {
                                                                 )
                                                                 .map(
                                                                     (user) =>
-                                                                        user.name +
-                                                                        ', '
+                                                                        `${user.name}, `
                                                                 )}
                                                         </CardFooter>
                                                     </Card>
@@ -332,8 +328,7 @@ export default function MyTasks(props) {
                                                                 )
                                                                 .map(
                                                                     (user) =>
-                                                                        user.name +
-                                                                        ', '
+                                                                        `${user.name}, `
                                                                 )}
                                                         </CardFooter>
                                                     </Card>
@@ -419,8 +414,7 @@ export default function MyTasks(props) {
                                                                 )
                                                                 .map(
                                                                     (user) =>
-                                                                        user.name +
-                                                                        ', '
+                                                                        `${user.name}, `
                                                                 )}
                                                         </CardFooter>
                                                     </Card>
@@ -564,9 +558,7 @@ export default function MyTasks(props) {
                                                                 )
                                                                 .map(
                                                                     (user) =>
-                                                                        ' ' +
-                                                                        user.name +
-                                                                        ','
+                                                                        ` ${user.name},`
                                                                 )}
                                                         </CardFooter>
                                                     </Card>
@@ -654,9 +646,7 @@ export default function MyTasks(props) {
                                                                 )
                                                                 .map(
                                                                     (user) =>
-                                                                        ' ' +
-                                                                        user.name +
-                                                                        ','
+                                                                        ` ${user.name},`
                                                                 )}
                                                         </CardFooter>
                                                     </Card>
@@ -744,9 +734,7 @@ export default function MyTasks(props) {
                                                                 )
                                                                 .map(
                                                                     (user) =>
-                                                                        ' ' +
-                                                                        user.name +
-                                                                        ','
+                                                                        ` ${user.name},`
                                                                 )}
                                                         </CardFooter>
                                                     </Card>

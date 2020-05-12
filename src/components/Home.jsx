@@ -473,30 +473,27 @@ export default function Home(props) {
     };
 
     function isOngoing(startDate, endDate) {
-        let today = new Date();
+        const today = new Date();
         if (today >= startDate && today <= endDate) {
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
     function isCompleted(endDate) {
-        let today = new Date();
+        const today = new Date();
         if (today > endDate) {
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
     function isUpcoming(startDate) {
-        let today = new Date();
+        const today = new Date();
         if (today < startDate) {
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
     return (
@@ -680,8 +677,7 @@ export default function Home(props) {
                                                                                     (
                                                                                         user
                                                                                     ) =>
-                                                                                        user.name +
-                                                                                        ', '
+                                                                                        `${user.name}, `
                                                                                 )}
                                                                         </CardFooter>
                                                                     </Card>
@@ -778,8 +774,7 @@ export default function Home(props) {
                                                                                     (
                                                                                         user
                                                                                     ) =>
-                                                                                        user.name +
-                                                                                        ', '
+                                                                                        `${user.name}, `
                                                                                 )}
                                                                         </CardFooter>
                                                                     </Card>
@@ -876,8 +871,7 @@ export default function Home(props) {
                                                                                     (
                                                                                         user
                                                                                     ) =>
-                                                                                        user.name +
-                                                                                        ', '
+                                                                                        `${user.name}, `
                                                                                 )}
                                                                         </CardFooter>
                                                                     </Card>
@@ -961,8 +955,7 @@ export default function Home(props) {
                                                                         (
                                                                             user
                                                                         ) =>
-                                                                            user.name +
-                                                                            ', '
+                                                                            `${user.name}, `
                                                                     )}{' '}
                                                                 {curUser.privelege_level ===
                                                                 'Admin' ? (
@@ -1160,8 +1153,7 @@ export default function Home(props) {
                                                                                     (
                                                                                         user
                                                                                     ) =>
-                                                                                        user.name +
-                                                                                        ', '
+                                                                                        `${user.name}, `
                                                                                 )}
                                                                         </CardFooter>
                                                                     </Card>
@@ -1261,8 +1253,7 @@ export default function Home(props) {
                                                                                     (
                                                                                         user
                                                                                     ) =>
-                                                                                        user.name +
-                                                                                        ', '
+                                                                                        `${user.name}, `
                                                                                 )}
                                                                         </CardFooter>
                                                                     </Card>
@@ -1362,8 +1353,7 @@ export default function Home(props) {
                                                                                     (
                                                                                         user
                                                                                     ) =>
-                                                                                        user.name +
-                                                                                        ', '
+                                                                                        `${user.name}, `
                                                                                 )}
                                                                         </CardFooter>
                                                                     </Card>
@@ -1445,8 +1435,7 @@ export default function Home(props) {
                                                                                   (
                                                                                       user
                                                                                   ) =>
-                                                                                      user.name +
-                                                                                      ', '
+                                                                                      `${user.name}, `
                                                                               )[0]
                                                                         : ''
                                                                 }...`}</Typography>
@@ -2550,8 +2539,7 @@ export default function Home(props) {
                                                                             (
                                                                                 user
                                                                             ) =>
-                                                                                user.name +
-                                                                                ', '
+                                                                                `${user.name}, `
                                                                         )}
                                                                 </CardFooter>
                                                             </Card>

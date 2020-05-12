@@ -90,7 +90,7 @@ const ProjectsPage = ({
     projectError,
 }) => {
     const classes = useStyles();
-    const allProjects = projects.allProjects;
+    const { allProjects } = projects;
     const curUser = users.user;
 
     const [search, setSearch] = React.useState({
@@ -251,7 +251,7 @@ const ProjectsPage = ({
                                                     user._id
                                                 )
                                             )
-                                            .map((user) => user.name + ', ')}
+                                            .map((user) => `${user.name}, `)}
                                         {curUser.privelege_level === 'Admin' ? (
                                             <EditProjectForm
                                                 deleteProject={deleteProject}
@@ -377,7 +377,7 @@ const ProjectsPage = ({
                                                     user._id
                                                 )
                                             )
-                                            .map((user) => user.name + ', ')}
+                                            .map((user) => `${user.name}, `)}
                                         {curUser.privelege_level === 'Admin' ? (
                                             <EditProjectForm
                                                 deleteProject={deleteProject}
@@ -503,7 +503,7 @@ const ProjectsPage = ({
                                                     user._id
                                                 )
                                             )
-                                            .map((user) => user.name + ', ')}
+                                            .map((user) => `${user.name}, `)}
                                         {curUser.privelege_level === 'Admin' ? (
                                             <EditProjectForm
                                                 deleteProject={deleteProject}

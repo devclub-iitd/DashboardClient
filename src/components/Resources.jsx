@@ -91,7 +91,7 @@ const ResourcesPage = ({
     resourceError,
 }) => {
     const classes = useStyles();
-    const allResources = resources.allResources;
+    const { allResources } = resources;
     const curUser = users.user;
 
     const [search, setSearch] = React.useState({

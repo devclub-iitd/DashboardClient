@@ -93,7 +93,7 @@ const EventsPage = ({
     eventError,
 }) => {
     const classes = useStyles();
-    const allEvents = events.allEvents;
+    const { allEvents } = events;
     const curUser = users.user;
     const dumUsers = users.allUsers;
 
@@ -113,30 +113,27 @@ const EventsPage = ({
     };
 
     function isOngoing(startDate, endDate) {
-        let today = new Date();
+        const today = new Date();
         if (today >= startDate && today <= endDate) {
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
     function isCompleted(endDate) {
-        let today = new Date();
+        const today = new Date();
         if (today > endDate) {
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
     function isUpcoming(startDate: Date) {
-        let today = new Date();
+        const today = new Date();
         if (today < startDate) {
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
     const ongoing = allEvents
@@ -158,7 +155,7 @@ const EventsPage = ({
             event.display_on_website ? 'True' : 'False',
             dumUsers
                 .filter((user) => event.assignee.includes(user._id))
-                .map((user) => user.name + ', '),
+                .map((user) => `${user.name}, `),
         ];
     };
 
@@ -249,7 +246,7 @@ const EventsPage = ({
               </IconButton> */}
                         {curUser.privelege_level === 'Admin' ? (
                             <EditEventForm
-                                isInTable={true}
+                                isInTable
                                 deleteEvent={deleteEvent}
                                 dumEvents={allEvents}
                                 dumUsers={users.allUsers}
@@ -414,7 +411,7 @@ const EventsPage = ({
                                                     user._id
                                                 )
                                             )
-                                            .map((user) => user.name + ', ')}
+                                            .map((user) => `${user.name}, `)}
                                         {curUser.privelege_level === 'Admin' ? (
                                             <EditEventForm
                                                 deleteEvent={deleteEvent}
@@ -538,7 +535,7 @@ const EventsPage = ({
                                                     user._id
                                                 )
                                             )
-                                            .map((user) => user.name + ', ')}
+                                            .map((user) => `${user.name}, `)}
                                         {curUser.privelege_level === 'Admin' ? (
                                             <EditEventForm
                                                 deleteEvent={deleteEvent}
@@ -663,7 +660,7 @@ const EventsPage = ({
                                                     user._id
                                                 )
                                             )
-                                            .map((user) => user.name + ', ')}
+                                            .map((user) => `${user.name}, `)}
                                         {curUser.privelege_level === 'Admin' ? (
                                             <EditEventForm
                                                 deleteEvent={deleteEvent}

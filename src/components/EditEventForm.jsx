@@ -664,7 +664,7 @@ class EditEventForm extends Component {
                                             { selected }
                                         ) => {
                                             return (
-                                                <React.Fragment>
+                                                <>
                                                     <Checkbox
                                                         icon={
                                                             <CheckBoxOutlineBlankIcon fontSize="small" />
@@ -678,7 +678,7 @@ class EditEventForm extends Component {
                                                         checked={selected}
                                                     />
                                                     {option}
-                                                </React.Fragment>
+                                                </>
                                             );
                                         }}
                                         style={{ width: '100%' }}

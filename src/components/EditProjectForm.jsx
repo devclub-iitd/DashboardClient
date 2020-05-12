@@ -1023,7 +1023,7 @@ class EditProjectForm extends Component {
                                             { selected }
                                         ) => {
                                             return (
-                                                <React.Fragment>
+                                                <>
                                                     <Checkbox
                                                         icon={
                                                             <CheckBoxOutlineBlankIcon fontSize="small" />
@@ -1037,7 +1037,7 @@ class EditProjectForm extends Component {
                                                         checked={selected}
                                                     />
                                                     {option}
-                                                </React.Fragment>
+                                                </>
                                             );
                                         }}
                                         style={{ width: '100%' }}

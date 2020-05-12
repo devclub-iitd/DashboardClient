@@ -17,6 +17,10 @@ import {
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import NotificationsIcon from '@material-ui/icons/Notifications';
+import { Redirect, withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import { actions } from 'react-redux-form';
 import MainListItems from '../components/MainListItems';
 import Home from '../components/Home';
 import Profile from '../components/Profile';
@@ -28,10 +32,6 @@ import ManageUsers from '../components/ManageUsers';
 import MyTasks from '../components/MyTasks';
 import DeployManager from '../components/Deploy';
 import CreateTasks from '../components/CreateTasks';
-import { Redirect, withRouter } from 'react-router-dom';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
-import { actions } from 'react-redux-form';
 import {
     fetchUser,
     fetchAllUsers,
@@ -574,6 +574,7 @@ class Dashboard extends Component {
             open: true,
         });
     };
+
     handleDrawerClose = () => {
         this.setState({
             ...this.state,
