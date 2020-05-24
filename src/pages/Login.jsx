@@ -4,7 +4,6 @@ import {
     Button,
     CssBaseline,
     TextField,
-    Link,
     Paper,
     Box,
     Grid,
@@ -18,7 +17,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Redirect, withRouter } from 'react-router-dom';
+import { Redirect, withRouter, Link } from 'react-router-dom';
 import { loginUser, loginErrorFin } from '../actions/userActions';
 
 const styles = (theme) => ({
@@ -181,7 +180,7 @@ function SignInSide(props) {
                         </Button>
                         <Grid container>
                             <Grid item>
-                                <Link href="/register" variant="body2">
+                                <Link to="/register" variant="body2">
                                     Don't have an account? Sign Up
                                 </Link>
                             </Grid>

@@ -8,14 +8,14 @@ import {
     BrowserRouter,
     HashRouter,
 } from 'react-router-dom';
-import { createBrowserHistory } from 'history';
+import { createHashHistory } from 'history';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import Health from './pages/Health';
 import './App.css';
 
-const hist = createBrowserHistory();
+const hist = createHashHistory();
 
 function App() {
     return (
