@@ -1,7 +1,7 @@
 import { createStore, applyMiddleware, combineReducers } from 'redux';
 import thunk from 'redux-thunk';
 import { createForms } from 'react-redux-form';
-import logger from 'redux-logger';
+// import logger from 'redux-logger';
 import Auth from './reducers/loginReducer';
 import Register from './reducers/registerReducer';
 import Users from './reducers/userReducer';
@@ -29,8 +29,8 @@ export default function ConfigureStore() {
                 resourceForm: initialResourceForm,
             }),
         }),
-        applyMiddleware(thunk, logger)
-        // applyMiddleware(thunk)
+        // applyMiddleware(thunk, logger)
+        applyMiddleware(thunk)
     );
 
     return store;
