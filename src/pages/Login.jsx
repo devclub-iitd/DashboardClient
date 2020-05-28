@@ -175,7 +175,7 @@ function SignInSide(props) {
                         <Grid container>
                             <Grid item>
                                 <Link to="/register" variant="body2">
-                                    Don{`&#39;`}t have an account? Sign Up
+                                    Don&#39;t have an account? Sign Up
                                 </Link>
                             </Grid>
                         </Grid>
