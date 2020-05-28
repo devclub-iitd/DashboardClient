@@ -1,8 +1,11 @@
+/* eslint-disable react/forbid-prop-types */
 import React from 'react';
 import { TextField, Button, Grid, Snackbar } from '@material-ui/core';
+import PropTypes from 'prop-types';
 
 export default function ChangePassword(props) {
     // const [confirmPassError, setConfirmPassError] = React.useState(false);
+    // const { closeDialog } = props;
 
     const [state, setState] = React.useState({
         password: '',
@@ -81,6 +84,7 @@ export default function ChangePassword(props) {
                 changePassError: true,
             });
         }
+        // closeDialog();
         // window.location.reload(false);
     };
 
@@ -177,3 +181,9 @@ export default function ChangePassword(props) {
         </div>
     );
 }
+
+ChangePassword.propTypes = {
+    changePass: PropTypes.func.isRequired,
+    users: PropTypes.object.isRequired,
+    // closeDialog: PropTypes.func.isRequired,
+};

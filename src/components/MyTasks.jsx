@@ -1,3 +1,5 @@
+/* eslint-disable react/forbid-prop-types */
+/* eslint-disable no-underscore-dangle */
 import React, { Fragment } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
@@ -23,6 +25,7 @@ import {
     NavItem,
     NavLink,
 } from 'reactstrap';
+import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 const useStyles = makeStyles((theme) => ({
@@ -43,11 +46,11 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function MyTasks(props) {
-    const curUser = props.users.user;
-    const dumUsers = props.users.allUsers;
-    const dumEvents = props.events.allEvents;
-    const dumProjects = props.projects.allProjects;
+export default function MyTasks({ users, events, projects }) {
+    const curUser = users.user;
+    const dumUsers = users.allUsers;
+    const dumEvents = events.allEvents;
+    const dumProjects = projects.allProjects;
     const classes = useStyles();
 
     const [activeEventTab, setActiveEventTab] = React.useState('Ongoing');
@@ -64,7 +67,7 @@ export default function MyTasks(props) {
         }
     };
 
-    function isOngoing(startDate: Date, endDate: Date) {
+    function isOngoing(startDate, endDate) {
         const today = new Date();
         if (today > startDate && today < endDate) {
             return true;
@@ -72,7 +75,7 @@ export default function MyTasks(props) {
         return false;
     }
 
-    function isCompleted(endDate: Date) {
+    function isCompleted(endDate) {
         const today = new Date();
         if (today > endDate) {
             return true;
@@ -80,7 +83,7 @@ export default function MyTasks(props) {
         return false;
     }
 
-    function isUpcoming(startDate: Date) {
+    function isUpcoming(startDate) {
         const today = new Date();
         if (today < startDate) {
             return true;
@@ -130,7 +133,7 @@ export default function MyTasks(props) {
                     {/* <Typography variant='h4' align='center' className={{ width: '100%' }}>My Events</Typography> */}
                     <Backdrop
                         className={classes.backdrop}
-                        open={props.events.isLoading}
+                        open={events.isLoading}
                     >
                         <CircularProgress color="inherit" />
                     </Backdrop>
@@ -168,10 +171,10 @@ export default function MyTasks(props) {
                     </Nav>
                     <TabContent activeTab={activeEventTab}>
                         <TabPane tabId="Ongoing">
-                            {props.events.errMess !== null ? (
+                            {events.errMess !== null ? (
                                 <div>
                                     <h4>Failed to fetch Events</h4>
-                                    <h4>{props.events.errMess}</h4>
+                                    <h4>{events.errMess}</h4>
                                 </div>
                             ) : null}
                             {ongoingEvents.length === 0 ? (
@@ -180,9 +183,9 @@ export default function MyTasks(props) {
                                 </Typography>
                             ) : (
                                 <ListGroup>
-                                    {ongoingEvents.map((event, index) => {
+                                    {ongoingEvents.map((event) => {
                                         return (
-                                            <Fragment key={`${event}~${index}`}>
+                                            <Fragment key={`${event}`}>
                                                 <ListGroupItem>
                                                     <Card
                                                         body
@@ -254,10 +257,10 @@ export default function MyTasks(props) {
                             )}
                         </TabPane>
                         <TabPane tabId="Upcoming">
-                            {props.events.errMess !== null ? (
+                            {events.errMess !== null ? (
                                 <div>
                                     <h4>Failed to fetch Events</h4>
-                                    <h4>{props.events.errMess}</h4>
+                                    <h4>{events.errMess}</h4>
                                 </div>
                             ) : null}
                             {upcomingEvents.length === 0 ? (
@@ -266,9 +269,9 @@ export default function MyTasks(props) {
                                 </Typography>
                             ) : (
                                 <ListGroup>
-                                    {upcomingEvents.map((event, index) => {
+                                    {upcomingEvents.map((event) => {
                                         return (
-                                            <Fragment key={`${event}~${index}`}>
+                                            <Fragment key={`${event}`}>
                                                 <ListGroupItem>
                                                     <Card
                                                         body
@@ -340,10 +343,10 @@ export default function MyTasks(props) {
                             )}
                         </TabPane>
                         <TabPane tabId="Completed">
-                            {props.events.errMess !== null ? (
+                            {events.errMess !== null ? (
                                 <div>
                                     <h4>Failed to fetch Events</h4>
-                                    <h4>{props.events.errMess}</h4>
+                                    <h4>{events.errMess}</h4>
                                 </div>
                             ) : null}
                             {completedEvents.length === 0 ? (
@@ -352,9 +355,9 @@ export default function MyTasks(props) {
                                 </Typography>
                             ) : (
                                 <ListGroup>
-                                    {completedEvents.map((event, index) => {
+                                    {completedEvents.map((event) => {
                                         return (
-                                            <Fragment key={`${event}~${index}`}>
+                                            <Fragment key={`${event}`}>
                                                 <ListGroupItem>
                                                     <Card
                                                         body
@@ -444,7 +447,7 @@ export default function MyTasks(props) {
                     {/* <Typography variant='h4' align='center' className={{ width: '100%' }}>My Projects</Typography> */}
                     <Backdrop
                         className={classes.backdrop}
-                        open={props.projects.isLoading}
+                        open={projects.isLoading}
                     >
                         <CircularProgress color="inherit" />
                     </Backdrop>
@@ -482,10 +485,10 @@ export default function MyTasks(props) {
                     </Nav>
                     <TabContent activeTab={activeProjectTab}>
                         <TabPane tabId="Idea">
-                            {props.projects.errMess !== null ? (
+                            {projects.errMess !== null ? (
                                 <div>
                                     <h4>Failed to fetch Projects</h4>
-                                    <h4>{props.projects.errMess}</h4>
+                                    <h4>{projects.errMess}</h4>
                                 </div>
                             ) : null}
                             {ideaProjects.length === 0 ? (
@@ -494,11 +497,9 @@ export default function MyTasks(props) {
                                 </Typography>
                             ) : (
                                 <ListGroup>
-                                    {ideaProjects.map((project, index) => {
+                                    {ideaProjects.map((project) => {
                                         return (
-                                            <Fragment
-                                                key={`${project}~${index}`}
-                                            >
+                                            <Fragment key={`${project}`}>
                                                 <ListGroupItem>
                                                     <Card
                                                         body
@@ -549,7 +550,7 @@ export default function MyTasks(props) {
                                                         </CardBody>
                                                         <CardFooter>
                                                             Assigned to:
-                                                            {props.users.allUsers
+                                                            {dumUsers
                                                                 .filter(
                                                                     (user) =>
                                                                         project.members.includes(
@@ -570,10 +571,10 @@ export default function MyTasks(props) {
                             )}
                         </TabPane>
                         <TabPane tabId="Ongoing">
-                            {props.projects.errMess !== null ? (
+                            {projects.errMess !== null ? (
                                 <div>
                                     <h4>Failed to fetch Projects</h4>
-                                    <h4>{props.projects.errMess}</h4>
+                                    <h4>{projects.errMess}</h4>
                                 </div>
                             ) : null}
                             {ongoingProjects.length === 0 ? (
@@ -582,11 +583,9 @@ export default function MyTasks(props) {
                                 </Typography>
                             ) : (
                                 <ListGroup>
-                                    {ongoingProjects.map((project, index) => {
+                                    {ongoingProjects.map((project) => {
                                         return (
-                                            <Fragment
-                                                key={`${project}~${index}`}
-                                            >
+                                            <Fragment key={`${project}`}>
                                                 <ListGroupItem>
                                                     <Card
                                                         body
@@ -637,7 +636,7 @@ export default function MyTasks(props) {
                                                         </CardBody>
                                                         <CardFooter>
                                                             Assigned to:
-                                                            {props.users.allUsers
+                                                            {dumUsers
                                                                 .filter(
                                                                     (user) =>
                                                                         project.members.includes(
@@ -658,10 +657,10 @@ export default function MyTasks(props) {
                             )}
                         </TabPane>
                         <TabPane tabId="Completed">
-                            {props.projects.errMess !== null ? (
+                            {projects.errMess !== null ? (
                                 <div>
                                     <h4>Failed to fetch Projects</h4>
-                                    <h4>{props.projects.errMess}</h4>
+                                    <h4>{projects.errMess}</h4>
                                 </div>
                             ) : null}
                             {completedProjects.length === 0 ? (
@@ -670,11 +669,9 @@ export default function MyTasks(props) {
                                 </Typography>
                             ) : (
                                 <ListGroup>
-                                    {completedProjects.map((project, index) => {
+                                    {completedProjects.map((project) => {
                                         return (
-                                            <Fragment
-                                                key={`${project}~${index}`}
-                                            >
+                                            <Fragment key={`${project}`}>
                                                 <ListGroupItem>
                                                     <Card
                                                         body
@@ -725,7 +722,7 @@ export default function MyTasks(props) {
                                                         </CardBody>
                                                         <CardFooter>
                                                             Assigned to:
-                                                            {props.users.allUsers
+                                                            {dumUsers
                                                                 .filter(
                                                                     (user) =>
                                                                         project.members.includes(
@@ -751,3 +748,9 @@ export default function MyTasks(props) {
         </Grid>
     );
 }
+
+MyTasks.propTypes = {
+    users: PropTypes.object.isRequired,
+    projects: PropTypes.object.isRequired,
+    events: PropTypes.object.isRequired,
+};

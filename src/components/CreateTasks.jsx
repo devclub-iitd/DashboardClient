@@ -1,27 +1,8 @@
-/* eslint-disable react/no-array-index-key */
-/* eslint-disable no-console */
-import React, { Fragment } from 'react';
-import { emphasize, makeStyles, useTheme } from '@material-ui/core/styles';
-import {
-    Grid,
-    FormControlLabel,
-    Button,
-    Switch,
-    Fab,
-    Snackbar,
-    Typography,
-    TextField,
-    Paper,
-} from '@material-ui/core';
+import React from 'react';
+import { emphasize, makeStyles } from '@material-ui/core/styles';
+import { Grid, Button, Snackbar, Typography, Paper } from '@material-ui/core';
 import { Card, CardBody, CardTitle, Row, Col, Label } from 'reactstrap';
-import { Control, Form, Errors } from 'react-redux-form';
-import DateFnsUtils from '@date-io/date-fns';
-import AddIcon from '@material-ui/icons/Add';
-import {
-    MuiPickersUtilsProvider,
-    KeyboardDatePicker,
-} from '@material-ui/pickers';
-import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutline';
+import PropTypes from 'prop-types';
 import CreateEventForm from './CreateEventForm';
 import CreateProjectForm from './CreateProjectForm';
 import CreateResourceForm from './CreateResourceForm';
@@ -101,104 +82,20 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function CreateTasks(props) {
+export default function CreateTasks({
+    createEvent,
+    eventError,
+    createProject,
+    projectError,
+    createResource,
+    resourceError,
+}) {
     const classes = useStyles();
 
     const [itemType, setItemType] = React.useState(null);
     const handleTypeChange = (value) => {
         setItemType(value);
     };
-
-    const [endDate, setEndDate] = React.useState(new Date(Date.now()));
-    const endDateChange = (date) => {
-        setEndDate(date);
-    };
-
-    const [startDate, setStartDate] = React.useState(new Date(Date.now()));
-    const startDateChange = (date) => {
-        setStartDate(date);
-    };
-
-    const [displayState, setDisplayState] = React.useState(false);
-    const changeDisplayState = (event) => {
-        setDisplayState(event.target.checked);
-    };
-
-    const [archiveState, setArchiveState] = React.useState(false);
-    const changeArchiveState = (event) => {
-        setArchiveState(event.target.checked);
-    };
-
-    const [newState, setNewState] = React.useState(false);
-    const changeNewState = (event) => {
-        setNewState(event.target.checked);
-    };
-
-    const [internalState, setInternalState] = React.useState(false);
-    const changeInternalState = (event) => {
-        setInternalState(event.target.checked);
-    };
-
-    const required = (val) => val && val.length;
-    const maxLength = (len) => (val) => !val || val.length <= len;
-    const minLength = (len) => (val) => val && val.length >= len;
-
-    const [urlFields, setUrlFields] = React.useState([{ type: '', url: '' }]);
-    const handleAddUrlFields = () => {
-        const values = [...urlFields];
-        values.push({ type: '', url: '' });
-        setUrlFields(values);
-    };
-
-    const handleRemoveUrlFields = (index) => {
-        const values = [...urlFields];
-        values.splice(index, 1);
-        setUrlFields(values);
-    };
-
-    const handleUrlFieldChange = (index, event) => {
-        const values = [...urlFields];
-        if (event.target.name === 'type') {
-            values[index].type = event.target.value;
-        } else {
-            values[index].url = event.target.value;
-        }
-        setUrlFields(values);
-    };
-
-    // const handleEventFormReset = () => {
-    //   // console.log('Reset Event form');
-    //   props.resetEventForm();
-    // };
-
-    const [labelFields, setLabelFields] = React.useState(['']);
-    const handleAddLabelFields = () => {
-        const values = [...labelFields];
-        values.push('');
-        setLabelFields(values);
-    };
-
-    const handleRemoveLabelFields = (index) => {
-        const values = [...labelFields];
-        values.splice(index, 1);
-        setLabelFields(values);
-    };
-
-    const handleLabelFieldChange = (index, event) => {
-        const values = [...labelFields];
-        values[index] = event.target.value;
-        setLabelFields(values);
-    };
-
-    // const handleProjectFormReset = () => {
-    //   // console.log('Reset Project form');
-    //   props.resetProjectForm();
-    // };
-
-    // const handleResourceFormReset = () => {
-    //   // console.log('Reset Resource form');
-    //   props.resetResourceForm();
-    // };
 
     const [successState, setSuccessState] = React.useState({
         eventSuccess: false,
@@ -215,91 +112,14 @@ export default function CreateTasks(props) {
         });
     };
 
-    const resetEForm = () => {
-        props.resetEventForm();
-        setUrlFields([{ type: '', url: '' }]);
-    };
-    const resetPForm = () => {
-        props.resetProjectForm();
-        setUrlFields([{ type: '', url: '' }]);
-        setLabelFields(['']);
-    };
-    const resetRForm = () => {
-        props.resetResourceForm();
-    };
-
-    const strMapToObj = (strMap) => {
-        const obj = Object.create(null);
-        Array.from(strMap).map(([k, v]) => {
-            obj[k] = v;
-        });
-        return obj;
-    };
-
-    const submitEventForm = (values) => {
-        const urlMap = new Map();
-        urlFields.map((urlField) => urlMap.set(urlField.type, urlField.url));
-        const newEvent = {
-            ...values,
-            start_date: startDate,
-            end_date: endDate,
-            display_on_website: displayState,
-            url: strMapToObj(urlMap),
-            assignee: [],
-        };
-        // console.log('event: ', newEvent);
-        props.createEvent(newEvent);
-        if (props.eventError === null) {
-            setSuccessState({
-                ...successState,
-                eventSuccess: true,
-            });
-        }
-        resetEForm();
-    };
-
-    const submitProjectForm = (values) => {
-        const urlMap = new Map();
-        urlFields.map((urlField) => urlMap.set(urlField.type, urlField.url));
-
-        const newProject = {
-            ...values,
-            members: [],
-            start_date: startDate,
-            end_date: endDate,
-            display_on_website: displayState,
-            is_internal: internalState,
-            labels: labelFields,
-            url: strMapToObj(urlMap),
-        };
-        // console.log('project: ', newProject);
-        props.createProject(newProject);
-        if (props.projectError == null) {
-            setSuccessState({
-                ...successState,
-                projectSuccess: true,
-            });
-        }
-        resetPForm();
-    };
-
-    const submitResourceForm = (values) => {
-        const newResource = {
-            ...values,
-            display_on_website: displayState,
-            archive: archiveState,
-            new: newState,
-        };
-        // console.log('resource: ', newResource);
-        props.createResource(newResource);
-        if (props.resourceError === null) {
-            setSuccessState({
-                ...successState,
-                resourceSuccess: true,
-            });
-        }
-        resetRForm();
-    };
+    // const {
+    //     createEvent,
+    //     eventError,
+    //     createProject,
+    //     projectError,
+    //     createResource,
+    //     resourceError,
+    // } = props;
 
     return (
         <div>
@@ -423,20 +243,20 @@ export default function CreateTasks(props) {
                                 </Row>
                                 {itemType === 'event' ? (
                                     <CreateEventForm
-                                        createEvent={props.createEvent}
-                                        eventError={props.eventError}
+                                        createEvent={createEvent}
+                                        eventError={eventError}
                                     />
                                 ) : null}
                                 {itemType === 'project' ? (
                                     <CreateProjectForm
-                                        createProject={props.createProject}
-                                        projectError={props.projectError}
+                                        createProject={createProject}
+                                        projectError={projectError}
                                     />
                                 ) : null}
                                 {itemType === 'resource' ? (
                                     <CreateResourceForm
-                                        createResource={props.createResource}
-                                        resourceError={props.resourceError}
+                                        createResource={createResource}
+                                        resourceError={resourceError}
                                     />
                                 ) : null}
                             </CardBody>
@@ -447,3 +267,12 @@ export default function CreateTasks(props) {
         </div>
     );
 }
+
+CreateTasks.propTypes = {
+    createEvent: PropTypes.func.isRequired,
+    createProject: PropTypes.func.isRequired,
+    createResource: PropTypes.func.isRequired,
+    eventError: PropTypes.string.isRequired,
+    projectError: PropTypes.string.isRequired,
+    resourceError: PropTypes.string.isRequired,
+};

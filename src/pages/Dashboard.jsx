@@ -1,3 +1,4 @@
+/* eslint-disable react/forbid-prop-types */
 import React, { Component } from 'react';
 import clsx from 'clsx';
 import { withStyles } from '@material-ui/core/styles';
@@ -158,14 +159,15 @@ const drawerWidth = 240;
 // };
 
 function renderPage(subPage, props, isAdmin, redirect, closeDrawer) {
+    let validSubPage = subPage;
     if (subPage === 'users' || subPage === 'deploy') {
         if (!isAdmin) {
             redirect('home', closeDrawer);
             // return;
-            subPage = '';
+            validSubPage = '';
         }
     }
-    switch (subPage) {
+    switch (validSubPage) {
         case 'profile':
             return (
                 <div>
@@ -199,9 +201,9 @@ function renderPage(subPage, props, isAdmin, redirect, closeDrawer) {
             return (
                 <div>
                     <CreateTasks
-                        resetEventForm={props.resetEventForm}
-                        resetProjectForm={props.resetProjectForm}
-                        resetResourceForm={props.resetResourceForm}
+                        // resetEventForm={props.resetEventForm}
+                        // resetProjectForm={props.resetProjectForm}
+                        // resetResourceForm={props.resetResourceForm}
                         createEvent={props.createEvent}
                         createProject={props.createProject}
                         createResource={props.createResource}
@@ -320,13 +322,14 @@ function renderPage(subPage, props, isAdmin, redirect, closeDrawer) {
 }
 
 function getPageName(subPage, isAdmin) {
+    let validSubPage = subPage;
     if (!isAdmin) {
         if (subPage === 'users' || subPage === 'deploy') {
-            subPage = '';
+            validSubPage = '';
         }
     }
 
-    switch (subPage) {
+    switch (validSubPage) {
         case 'profile':
             return 'Profile';
         case 'changePassword':
@@ -545,6 +548,11 @@ class Dashboard extends Component {
         this.state = {
             open: false,
         };
+        // props.fetchAllUsers();
+        // props.fetchUser(localStorage.getItem('userId'));
+        // props.fetchAllProjects();
+        // props.fetchAllEvents();
+        // props.fetchAllResources();
 
         this.handleDrawerClose = this.handleDrawerClose.bind(this);
         this.handleDrawerOpen = this.handleDrawerOpen.bind(this);
@@ -552,11 +560,23 @@ class Dashboard extends Component {
     }
 
     componentDidMount() {
-        this.props.fetchAllUsers();
-        this.props.fetchUser(localStorage.getItem('userId'));
-        this.props.fetchAllProjects();
-        this.props.fetchAllEvents();
-        this.props.fetchAllResources();
+        const {
+            fetchAllUsers: fetchAllUsersT,
+            fetchUser: fetchUserT,
+            fetchAllProjects: fetchAllProjectsT,
+            fetchAllEvents: fetchAllEventsT,
+            fetchAllResources: fetchAllResourcesT,
+        } = this.props;
+        // this.props.fetchAllUsers();
+        // this.props.fetchUser(localStorage.getItem('userId'));
+        // this.props.fetchAllProjects();
+        // this.props.fetchAllEvents();
+        // this.props.fetchAllResources();
+        fetchAllUsersT();
+        fetchUserT(localStorage.getItem('userId'));
+        fetchAllProjectsT();
+        fetchAllEventsT();
+        fetchAllResourcesT();
     }
 
     // shouldComponentUpdate(nextProps) {
@@ -565,21 +585,22 @@ class Dashboard extends Component {
 
     redirectFunc = (subPath, closeDrawer) => () => {
         closeDrawer();
-        this.props.history.push(`/dashboard/${subPath}`);
+        const { history } = this.props;
+        history.push(`/dashboard/${subPath}`);
     };
 
     handleDrawerOpen = () => {
-        this.setState({
-            ...this.state,
+        this.setState((prevState) => ({
+            ...prevState,
             open: true,
-        });
+        }));
     };
 
     handleDrawerClose = () => {
-        this.setState({
-            ...this.state,
+        this.setState((prevState) => ({
+            ...prevState,
             open: false,
-        });
+        }));
     };
 
     // const [serverError, setServerError] = React.useState(props.users.passwordFailed || props.users.editFailed || props.users.removeFailed);
@@ -597,24 +618,42 @@ class Dashboard extends Component {
         //   fetchAllResources,
         //   fetchAllUsers,
         // } = this.props;
-        const { classes } = this.props;
+        const {
+            classes,
+            // userErrorFin,
+            // eventErrorFin,
+            // projectErrorFin,
+            // resourceErrorFin,
+            auth,
+            users,
+            events,
+            projects,
+            resources,
+            logoutUser: logoutUserT,
+            userErrorFin: userErrorFinT,
+            eventErrorFin: eventErrorFinT,
+            projectErrorFin: projectErrorFinT,
+            resourceErrorFin: resourceErrorFinT,
+        } = this.props;
+
+        const { open } = this.state;
 
         const handleErrorClose = () => {
             // setServerError(false);
-            this.props.userErrorFin();
-            this.props.eventErrorFin();
-            this.props.projectErrorFin();
-            this.props.resourceErrorFin();
+            userErrorFinT();
+            eventErrorFinT();
+            projectErrorFinT();
+            resourceErrorFinT();
         };
 
-        if (!this.props.auth.isAuthenticated) {
+        if (!auth.isAuthenticated) {
             // console.log('NOT AUTHENTICATED!!!!!!!!!!!');
             return <Redirect to="/login" />;
         }
 
-        const isAdmin = this.props.users.user.privelege_level === 'Admin';
+        const isAdmin = users.user.privelege_level === 'Admin';
 
-        const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+        // const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
         // console.log(props);
         const { match } = this.props;
         const { params } = match;
@@ -629,10 +668,10 @@ class Dashboard extends Component {
                         horizontal: 'center',
                     }}
                     open={
-                        this.props.users.serverError === 'ERROR' ||
-                        this.props.events.serverError === 'ERROR' ||
-                        this.props.projects.serverError === 'ERROR' ||
-                        this.props.resources.serverError === 'ERROR'
+                        users.serverError === 'ERROR' ||
+                        events.serverError === 'ERROR' ||
+                        projects.serverError === 'ERROR' ||
+                        resources.serverError === 'ERROR'
                     }
                     autoHideDuration={2000}
                     onClose={handleErrorClose}
@@ -643,7 +682,7 @@ class Dashboard extends Component {
                     classes={{ paper: clsx(classes.bgimage) }}
                     className={clsx(
                         classes.appBar,
-                        this.state.open && classes.appBarShift
+                        open && classes.appBarShift
                     )}
                 >
                     <Toolbar className={classes.toolbar}>
@@ -654,7 +693,7 @@ class Dashboard extends Component {
                             onClick={this.handleDrawerOpen}
                             className={clsx(
                                 classes.menuButton,
-                                this.state.open && classes.menuButtonHidden
+                                open && classes.menuButtonHidden
                             )}
                         >
                             <MenuIcon />
@@ -675,9 +714,8 @@ class Dashboard extends Component {
                             )}
                             color="inherit"
                         >
-                            {`Hi ${this.props.users.user.name}! ${
-                                this.props.users.user.privelege_level ===
-                                'Admin'
+                            {`Hi ${users.user.name}! ${
+                                users.user.privelege_level === 'Admin'
                                     ? '(You`re Admin)'
                                     : ''
                             }`}
@@ -692,10 +730,10 @@ class Dashboard extends Component {
                     classes={{
                         paper: clsx(
                             classes.drawerPaper,
-                            !this.state.open && classes.drawerPaperClose
+                            !open && classes.drawerPaperClose
                         ),
                     }}
-                    open={this.state.open}
+                    open={open}
                 >
                     <div className={classes.toolbarIcon}>
                         <IconButton onClick={this.handleDrawerClose}>
@@ -707,7 +745,7 @@ class Dashboard extends Component {
                         <MainListItems
                             closeDrawer={this.handleDrawerClose}
                             isAdmin={isAdmin}
-                            logout={this.props.logoutUser}
+                            logout={logoutUserT}
                         />
                     </List>
                 </Drawer>
@@ -728,39 +766,94 @@ class Dashboard extends Component {
     }
 }
 
-Dashboard.propTypes = {
-    auth: PropTypes.object.isRequired,
+renderPage.propTypes = {
+    history: PropTypes.any.isRequired,
     users: PropTypes.object.isRequired,
     events: PropTypes.object.isRequired,
     projects: PropTypes.object.isRequired,
     resources: PropTypes.object.isRequired,
-    resetEventForm: PropTypes.func.isRequired,
-    resetProjectForm: PropTypes.func.isRequired,
-    resetResourceForm: PropTypes.func.isRequired,
+    // resetEventForm: PropTypes.func.isRequired,
+    // resetProjectForm: PropTypes.func.isRequired,
+    // resetResourceForm: PropTypes.func.isRequired,
     fetchUser: PropTypes.func.isRequired,
     fetchAllUsers: PropTypes.func.isRequired,
-    logoutUser: PropTypes.func.isRequired,
     updateUser: PropTypes.func.isRequired,
     changePass: PropTypes.func.isRequired,
     removeUser: PropTypes.func.isRequired,
     deleteAllUsers: PropTypes.func.isRequired,
     rejectAllUnapproved: PropTypes.func.isRequired,
-    userErrorFin: PropTypes.func.isRequired,
     editOtherUser: PropTypes.func.isRequired,
     fetchAllEvents: PropTypes.func.isRequired,
     createEvent: PropTypes.func.isRequired,
     editEvent: PropTypes.func.isRequired,
     deleteEvent: PropTypes.func.isRequired,
-    eventErrorFin: PropTypes.func.isRequired,
     fetchAllProjects: PropTypes.func.isRequired,
     createProject: PropTypes.func.isRequired,
     editProject: PropTypes.func.isRequired,
     deleteProject: PropTypes.func.isRequired,
-    projectErrorFin: PropTypes.func.isRequired,
     fetchAllResources: PropTypes.func.isRequired,
     createResource: PropTypes.func.isRequired,
     editResource: PropTypes.func.isRequired,
     deleteResource: PropTypes.func.isRequired,
+};
+
+// Dashboard.propTypes = {
+//     auth: PropTypes.object.isRequired,
+//     users: PropTypes.object.isRequired,
+//     events: PropTypes.object.isRequired,
+//     projects: PropTypes.object.isRequired,
+//     resources: PropTypes.object.isRequired,
+//     // resetEventForm: PropTypes.func.isRequired,
+//     // resetProjectForm: PropTypes.func.isRequired,
+//     // resetResourceForm: PropTypes.func.isRequired,
+//     fetchUser: PropTypes.func.isRequired,
+//     fetchAllUsers: PropTypes.func.isRequired,
+//     logoutUser: PropTypes.func.isRequired,
+//     updateUser: PropTypes.func.isRequired,
+//     changePass: PropTypes.func.isRequired,
+//     removeUser: PropTypes.func.isRequired,
+//     deleteAllUsers: PropTypes.func.isRequired,
+//     rejectAllUnapproved: PropTypes.func.isRequired,
+//     userErrorFin: PropTypes.func.isRequired,
+//     editOtherUser: PropTypes.func.isRequired,
+//     fetchAllEvents: PropTypes.func.isRequired,
+//     createEvent: PropTypes.func.isRequired,
+//     editEvent: PropTypes.func.isRequired,
+//     deleteEvent: PropTypes.func.isRequired,
+//     eventErrorFin: PropTypes.func.isRequired,
+//     fetchAllProjects: PropTypes.func.isRequired,
+//     createProject: PropTypes.func.isRequired,
+//     editProject: PropTypes.func.isRequired,
+//     deleteProject: PropTypes.func.isRequired,
+//     projectErrorFin: PropTypes.func.isRequired,
+//     fetchAllResources: PropTypes.func.isRequired,
+//     createResource: PropTypes.func.isRequired,
+//     editResource: PropTypes.func.isRequired,
+//     deleteResource: PropTypes.func.isRequired,
+//     resourceErrorFin: PropTypes.func.isRequired,
+//     classes: PropTypes.objectOf(PropTypes.string).isRequired,
+// };
+
+Dashboard.propTypes = {
+    history: PropTypes.any.isRequired,
+    match: PropTypes.any.isRequired,
+    auth: PropTypes.object.isRequired,
+    users: PropTypes.object.isRequired,
+    events: PropTypes.object.isRequired,
+    projects: PropTypes.object.isRequired,
+    resources: PropTypes.object.isRequired,
+    // resetEventForm: PropTypes.func.isRequired,
+    // resetProjectForm: PropTypes.func.isRequired,
+    // resetResourceForm: PropTypes.func.isRequired,
+    fetchUser: PropTypes.func.isRequired,
+    fetchAllUsers: PropTypes.func.isRequired,
+    logoutUser: PropTypes.func.isRequired,
+    userErrorFin: PropTypes.func.isRequired,
+    fetchAllEvents: PropTypes.func.isRequired,
+    eventErrorFin: PropTypes.func.isRequired,
+    fetchAllProjects: PropTypes.func.isRequired,
+    projectErrorFin: PropTypes.func.isRequired,
+    fetchAllResources: PropTypes.func.isRequired,
     resourceErrorFin: PropTypes.func.isRequired,
     classes: PropTypes.objectOf(PropTypes.string).isRequired,
 };

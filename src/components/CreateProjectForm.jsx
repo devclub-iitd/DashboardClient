@@ -1,7 +1,5 @@
-/* eslint-disable react/no-array-index-key */
-/* eslint-disable no-console */
 import React, { Fragment } from 'react';
-import { emphasize, makeStyles, useTheme } from '@material-ui/core/styles';
+import { emphasize, makeStyles } from '@material-ui/core/styles';
 import {
     Grid,
     FormControlLabel,
@@ -9,13 +7,12 @@ import {
     Switch,
     Fab,
     Snackbar,
-    Typography,
     TextField,
-    Paper,
 } from '@material-ui/core';
-import { Card, CardBody, CardTitle, Row, Col, Label } from 'reactstrap';
-import { Control, Form, Errors, LocalForm } from 'react-redux-form';
+import { Row, Col, Label } from 'reactstrap';
+import { Control, Errors, LocalForm } from 'react-redux-form';
 import DateFnsUtils from '@date-io/date-fns';
+import PropTypes from 'prop-types';
 import AddIcon from '@material-ui/icons/Add';
 import {
     MuiPickersUtilsProvider,
@@ -100,7 +97,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function CreateTasks(props) {
     const classes = useStyles();
-
     const [state, setState] = React.useState({
         newProject: {
             name: '',
@@ -279,14 +275,6 @@ export default function CreateTasks(props) {
             },
             urlFields: [{ type: 'photo_url', url: '' }],
         });
-    };
-
-    const strMapToObj = (strMap) => {
-        const obj = Object.create(null);
-        Array.from(strMap).map(([k, v]) => {
-            obj[k] = v;
-        });
-        return obj;
     };
 
     const submitProjectForm = () => {
@@ -599,7 +587,7 @@ export default function CreateTasks(props) {
                         <Col sm={12}>
                             {state.newProject.labels.map(
                                 (labelField, index) => (
-                                    <Fragment key={`${labelField}~${index}`}>
+                                    <Fragment key={`${labelField}`}>
                                         <Row className="form-group">
                                             <Col sm={{ size: 4, offset: 4 }}>
                                                 <TextField
@@ -650,13 +638,13 @@ export default function CreateTasks(props) {
                         </Label>
                         <Col sm={12}>
                             {state.urlFields.map((urlField, index) => (
-                                <Fragment key={`${urlField}~${index}`}>
+                                <Fragment key={`${urlField}`}>
                                     <Row className="form-group">
                                         <Col sm={{ size: 4, offset: 1 }}>
                                             <TextField
                                                 sm={5}
                                                 label="type"
-                                                className="form-control"
+                                                className={classes.urlField}
                                                 id="type"
                                                 name="type"
                                                 variant="filled"
@@ -673,7 +661,7 @@ export default function CreateTasks(props) {
                                             <TextField
                                                 sm={5}
                                                 label="url"
-                                                className="form-control"
+                                                className={classes.urlField}
                                                 id="url"
                                                 name="url"
                                                 variant="filled"
@@ -742,3 +730,8 @@ export default function CreateTasks(props) {
         </div>
     );
 }
+
+CreateTasks.propTypes = {
+    createProject: PropTypes.func.isRequired,
+    projectError: PropTypes.string.isRequired,
+};

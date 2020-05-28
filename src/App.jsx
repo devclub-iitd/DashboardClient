@@ -1,13 +1,5 @@
 import React from 'react';
-import {
-    Redirect,
-    Router,
-    Route,
-    Switch,
-    withRouter,
-    BrowserRouter,
-    HashRouter,
-} from 'react-router-dom';
+import { Redirect, Router, Route, Switch, HashRouter } from 'react-router-dom';
 import { createHashHistory } from 'history';
 import Login from './pages/Login';
 import Register from './pages/Register';

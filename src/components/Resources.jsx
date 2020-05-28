@@ -1,4 +1,4 @@
-/* eslint-disable indent */
+/* eslint-disable react/forbid-prop-types */
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
@@ -28,6 +28,7 @@ import {
     CardHeader,
     CardLink,
 } from 'reactstrap';
+import PropTypes from 'prop-types';
 import EditResourceForm from './EditResourceForm';
 import CreateResourceForm from './CreateResourceForm';
 
@@ -196,13 +197,7 @@ const ResourcesPage = ({
                         </Typography>
                     ) : (
                         current.map((res, index) => (
-                            <Grid
-                                key={`${res}~${index}`}
-                                item
-                                xs={12}
-                                md={6}
-                                lg={4}
-                            >
+                            <Grid key={`${res}`} item xs={12} md={6} lg={4}>
                                 <Card body style={{ borderColor: '#00c853' }}>
                                     <CardHeader>
                                         <Typography variant="h4">
@@ -300,13 +295,7 @@ const ResourcesPage = ({
                     ) : (
                         archives.map((res, index) => (
                             // <GridListTile key={`${resource}~${index}`} cols={2} rows={2}>
-                            <Grid
-                                key={`${res}~${index}`}
-                                item
-                                xs={12}
-                                md={6}
-                                lg={4}
-                            >
+                            <Grid key={`${res}`} item xs={12} md={6} lg={4}>
                                 <Card body style={{ borderColor: '#00c853' }}>
                                     <CardHeader>
                                         <Typography variant="h4">
@@ -380,6 +369,15 @@ const ResourcesPage = ({
             </Dialog>
         </>
     );
+};
+
+ResourcesPage.propTypes = {
+    resources: PropTypes.object.isRequired,
+    editResource: PropTypes.func.isRequired,
+    deleteResource: PropTypes.func.isRequired,
+    users: PropTypes.object.isRequired,
+    createResource: PropTypes.func.isRequired,
+    resourceError: PropTypes.string.isRequired,
 };
 
 export default ResourcesPage;

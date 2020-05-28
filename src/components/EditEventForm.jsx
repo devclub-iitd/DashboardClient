@@ -1,3 +1,5 @@
+/* eslint-disable react/forbid-prop-types */
+/* eslint-disable no-underscore-dangle */
 import React, { Fragment, Component } from 'react';
 import {
     Typography,
@@ -6,17 +8,10 @@ import {
     DialogContent,
     FormControlLabel,
     Switch,
-    InputLabel,
-    Grid,
-    Select,
-    Input,
-    MenuItem,
-    FormControl,
     Button,
     TextField,
     Fab,
     Checkbox,
-    ListItemText,
     Snackbar,
     Avatar,
     IconButton,
@@ -33,6 +28,7 @@ import {
     CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon,
     CheckBox as CheckBoxIcon,
 } from '@material-ui/icons';
+import PropTypes from 'prop-types';
 import EditIcon from '@material-ui/icons/Edit';
 import DateFnsUtils from '@date-io/date-fns';
 import { LocalForm, Control, Errors } from 'react-redux-form';
@@ -42,29 +38,28 @@ class EditEventForm extends Component {
         super(props);
 
         this.state = {
-            name: this.props.dumEvents[this.props.index].name,
-            description: this.props.dumEvents[this.props.index].description,
-            start_date: this.props.dumEvents[this.props.index].start_date,
-            end_date: this.props.dumEvents[this.props.index].end_date,
-            embed_code: this.props.dumEvents[this.props.index].embed_code,
-            display_on_website: this.props.dumEvents[this.props.index]
-                .display_on_website,
-            url: this.props.dumEvents[this.props.index].url,
-            assignee: this.props.dumEvents[this.props.index].assignee,
-            orgEvent: this.props.dumEvents[this.props.index],
-            event: this.props.dumEvents[this.props.index],
-            urlFields: Array.from(
-                this.props.dumEvents[this.props.index].url
-            ).map(([key, value]) => ({ type: key, url: value })),
-            memberNames: this.props.dumUsers
+            name: props.dumEvents[props.index].name,
+            description: props.dumEvents[props.index].description,
+            start_date: props.dumEvents[props.index].start_date,
+            end_date: props.dumEvents[props.index].end_date,
+            embed_code: props.dumEvents[props.index].embed_code,
+            display_on_website: props.dumEvents[props.index].display_on_website,
+            url: props.dumEvents[props.index].url,
+            assignee: props.dumEvents[props.index].assignee,
+            orgEvent: props.dumEvents[props.index],
+            event: props.dumEvents[props.index],
+            urlFields: Array.from(props.dumEvents[props.index].url).map(
+                ([key, value]) => ({
+                    type: key,
+                    url: value,
+                })
+            ),
+            memberNames: props.dumUsers
                 .filter((user) => user.privelege_level !== 'Unapproved_User')
                 .map((user) => user.name),
-            selectedMembers: this.props.dumEvents[
-                this.props.index
-            ].assignee.map(
+            selectedMembers: props.dumEvents[props.index].assignee.map(
                 (userId) =>
-                    this.props.dumUsers.filter((user) => user._id === userId)[0]
-                        .name
+                    props.dumUsers.filter((user) => user._id === userId)[0].name
             ),
             isDailogOpen: false,
             isDeleteDailogOpen: false,
@@ -93,85 +88,89 @@ class EditEventForm extends Component {
         this.cancelEdit = this.cancelEdit.bind(this);
     }
 
-    componentWillReceiveProps(props) {
-        this.setState({
-            ...this.state,
-            orgEvent: props.dumEvents[props.index],
-            event: props.dumEvents[props.index],
-        });
+    componentWillReceiveProps({ dumEvents, index }) {
+        this.setState((prevState) => ({
+            ...prevState,
+            orgEvent: dumEvents[index],
+            event: dumEvents[index],
+        }));
     }
 
     handleSuccessClose = () => {
-        this.setState({
-            ...this.state,
+        this.setState((prevState) => ({
+            ...prevState,
             success: false,
-        });
+        }));
     };
 
     changeName = (event) => {
-        this.setState({
-            ...this.state,
+        const { value } = event.target;
+        this.setState((prevState) => ({
+            ...prevState,
             // name: event.target.value,
             event: {
-                ...this.state.event,
-                name: event.target.value,
+                ...prevState.event,
+                name: value,
             },
-        });
+        }));
     };
 
     changeDescription = (event) => {
-        this.setState({
-            ...this.state,
+        const { value } = event.target;
+        this.setState((prevState) => ({
+            ...prevState,
             // description: event.target.value,
             event: {
-                ...this.state.event,
-                description: event.target.value,
+                ...prevState.event,
+                description: value,
             },
-        });
+        }));
     };
 
     changeEmbedCode = (event) => {
-        this.setState({
-            ...this.state,
+        const { value } = event.target;
+        this.setState((prevState) => ({
+            ...prevState,
             // embed_code: event.target.value,
             event: {
-                ...this.state.event,
-                embed_code: event.target.value,
+                ...prevState.event,
+                embed_code: value,
             },
-        });
+        }));
     };
 
     endDateChange = (date) => {
-        this.setState({
-            ...this.state,
+        this.setState((prevState) => ({
+            ...prevState,
             // end_date: date,
             event: {
-                ...this.state.event,
+                ...prevState.event,
                 end_date: date,
             },
-        });
+        }));
     };
 
     startDateChange = (date) => {
-        this.setState({
-            ...this.state,
+        this.setState((prevState) => ({
+            ...prevState,
             // start_date: date,
             event: {
-                ...this.state.event,
+                ...prevState.event,
                 start_date: date,
             },
-        });
+        }));
     };
 
     changeDisplayState = (event) => {
-        this.setState({
-            ...this.state,
+        const { checked } = event.target;
+        this.setState((prevState) => ({
+            ...prevState,
             // display_on_website: event.target.checked,
             event: {
-                ...this.state.event,
-                display_on_website: event.target.checked,
+                ...prevState.event,
+                display_on_website: checked,
             },
-        });
+        }));
     };
 
     handleAddUrlFields = () => {
@@ -181,12 +180,13 @@ class EditEventForm extends Component {
         //   ...this.state,
         //   url: urlVals,
         // });
-        const values = [...this.state.urlFields];
+        const { urlFields } = this.state;
+        const values = [...urlFields];
         values.push({ type: '', url: '' });
-        this.setState({
-            ...this.state,
+        this.setState((prevState) => ({
+            ...prevState,
             urlFields: values,
-        });
+        }));
     };
 
     handleRemoveUrlFields = (index) => {
@@ -196,12 +196,13 @@ class EditEventForm extends Component {
         //   ...this.state,
         //   url: urlVals,
         // });
-        const values = [...this.state.urlFields];
+        const { urlFields } = this.state;
+        const values = [...urlFields];
         values.splice(index, 1);
-        this.setState({
-            ...this.state,
+        this.setState((prevState) => ({
+            ...prevState,
             urlFields: values,
-        });
+        }));
     };
 
     handleUrlFieldChange = (index, event) => {
@@ -211,124 +212,126 @@ class EditEventForm extends Component {
         //   ...this.state,
         //   url: urlVals,
         // });
-        const values = [...this.state.urlFields];
+        const { urlFields } = this.state;
+        const values = [...urlFields];
         if (event.target.name === 'type') {
             values[index].type = event.target.value;
         } else {
             values[index].url = event.target.value;
         }
-        this.setState({
-            ...this.state,
+        this.setState((prevState) => ({
+            ...prevState,
             urlFields: values,
-        });
+        }));
     };
 
     changeAssignee = (values) => {
-        this.setState({
-            ...this.state,
+        this.setState((prevState) => ({
+            ...prevState,
             // assignee: event.target.value,
             // event: {
-            //   ...this.state.event,
+            //   ...event,
             //   assignee: event.target.value,
             // },
             selectedMembers: values,
-        });
+        }));
     };
 
     handleFormOpen = () => {
-        this.setState({
-            ...this.state,
+        this.setState((prevState) => ({
+            ...prevState,
             isDailogOpen: true,
-        });
+        }));
     };
 
     handleFormClose = () => {
-        this.setState({
-            ...this.state,
+        this.setState((prevState) => ({
+            ...prevState,
             isDailogOpen: false,
-        });
+        }));
     };
 
     confirmDeleteOpen = () => {
-        this.setState({
-            ...this.state,
+        this.setState((prevState) => ({
+            ...prevState,
             isDeleteDailogOpen: true,
-        });
+        }));
     };
 
     confirmDeleteClose = () => {
-        this.setState({
-            ...this.state,
+        this.setState((prevState) => ({
+            ...prevState,
             isDeleteDailogOpen: false,
-        });
+        }));
     };
 
     cancelEdit = () => {
+        const { dumUsers } = this.props;
         this.setState(
-            {
-                ...this.state,
+            (prevState) => ({
+                ...prevState,
                 event: {
-                    ...this.state.orgEvent,
+                    ...prevState.orgEvent,
                 },
                 urlFields: Array.from(
-                    this.state.orgEvent.url
+                    prevState.orgEvent.url
                 ).map(([key, value]) => ({ type: key, url: value })),
-                memberNames: this.props.dumUsers
+                memberNames: dumUsers
                     .filter(
                         (user) => user.privelege_level !== 'Unapproved_User'
                     )
                     .map((user) => user.name),
-                selectedMembers: this.state.orgEvent.assignee.map(
+                selectedMembers: prevState.orgEvent.assignee.map(
                     (userId) =>
-                        this.props.dumUsers.filter(
-                            (user) => user._id === userId
-                        )[0].name
+                        dumUsers.filter((user) => user._id === userId)[0].name
                 ),
-            },
+            }),
             () => this.handleFormClose()
         );
     };
 
     handleDelete = () => {
+        const { deleteEvent } = this.props;
         // Call delete thunk here,
-        // this.props.deleteEvent(this.props.dumEvents[this.props.index]._id);
-        this.props.deleteEvent(this.state.event._id);
+        // this.props.deleteEvent(dumEvents[index]._id);
+        const { event } = this.state;
+        deleteEvent(event._id);
         // console.log('Deleting: ', this.state.name);
         this.confirmDeleteClose();
+        this.handleFormClose();
     };
 
     strMapToObj = (strMap) => {
         const obj = Object.create(null);
         Array.from(strMap).map(([k, v]) => {
             obj[k] = v;
+            return null;
         });
         return obj;
     };
 
     handleSubmit = () => {
         const urlMap = new Map();
-        this.state.urlFields.map((urlField) =>
-            urlMap.set(urlField.type, urlField.url)
-        );
+        const { dumUsers, serverError, editEvent } = this.props;
+        const { event, urlFields, selectedMembers } = this.state;
+        urlFields.map((urlField) => urlMap.set(urlField.type, urlField.url));
 
         const updatedEvent = {
-            ...this.state.event,
-            url: this.strMapToObj(urlMap),
-            assignee: this.state.selectedMembers.map(
-                (name) =>
-                    this.props.dumUsers.filter((user) => user.name === name)[0]
-                        ._id
+            ...event,
+            url: urlMap,
+            assignee: selectedMembers.map(
+                (name) => dumUsers.filter((user) => user.name === name)[0]._id
             ),
         };
 
-        this.props.editEvent(updatedEvent);
-        // this.props.editEvent(this.state.event);
+        editEvent(updatedEvent);
+        // this.props.editEvent(event);
         // console.log('got values: ', updatedEvent);
-        if (this.props.serverError === null) {
-            this.setState({
-                ...this.state,
+        if (serverError === null) {
+            this.setState((prevState) => ({
+                ...prevState,
                 success: true,
-            });
+            }));
         }
         this.handleFormClose();
     };
@@ -344,7 +347,16 @@ class EditEventForm extends Component {
         // const handleClose = () => {
         //   setServerError(false);
         // };
-        const { tableEdit, isInTable } = this.props;
+        const { isInTable } = this.props;
+        const {
+            success,
+            isDailogOpen,
+            event,
+            urlFields,
+            memberNames,
+            selectedMembers,
+            isDeleteDailogOpen,
+        } = this.state;
 
         return (
             <div>
@@ -353,7 +365,7 @@ class EditEventForm extends Component {
                         vertical: 'top',
                         horizontal: 'center',
                     }}
-                    open={this.state.success}
+                    open={success}
                     autoHideDuration={2000}
                     onClose={this.handleSuccessClose}
                     message="Event edited Successfully !"
@@ -379,7 +391,7 @@ class EditEventForm extends Component {
                     </Button>
                 )}
                 <Dialog
-                    open={this.state.isDailogOpen}
+                    open={isDailogOpen}
                     maxWidth="sm"
                     fullWidth
                     onClose={this.handleFormClose}
@@ -402,7 +414,7 @@ class EditEventForm extends Component {
                                         id="name"
                                         name="name"
                                         // defaultValue={this.state.name}
-                                        defaultValue={this.state.event.name}
+                                        defaultValue={event.name}
                                         placeholder="Event Name*"
                                         className="form-control"
                                         onChange={this.changeName}
@@ -437,9 +449,7 @@ class EditEventForm extends Component {
                                         name="description"
                                         placeholder="Event Description*"
                                         // defaultValue={this.state.description}
-                                        defaultValue={
-                                            this.state.event.description
-                                        }
+                                        defaultValue={event.description}
                                         rows="8"
                                         className="form-control"
                                         onChange={this.changeDescription}
@@ -464,12 +474,12 @@ class EditEventForm extends Component {
                                     >
                                         <KeyboardDatePicker
                                             margin="normal"
-                                            id="date-picker-dialog"
+                                            id="startdate-picker-dialog"
                                             label="Select Start Date of Event"
                                             format="MM/dd/yyyy"
                                             // value={this.state.start_date}
                                             // defaultValue={this.state.orgEvent.start_date}
-                                            value={this.state.event.start_date}
+                                            value={event.start_date}
                                             onChange={this.startDateChange}
                                             // minDate={Date.now()}
                                             KeyboardButtonProps={{
@@ -486,13 +496,13 @@ class EditEventForm extends Component {
                                     >
                                         <KeyboardDatePicker
                                             margin="normal"
-                                            id="date-picker-dialog"
+                                            id="enddate-picker-dialog"
                                             label="Select End Date of Event"
                                             format="MM/dd/yyyy"
                                             // defaultValue={this.state.orgEvent.end_date}
-                                            value={this.state.event.end_date}
+                                            value={event.end_date}
                                             onChange={this.endDateChange}
-                                            minDate={this.state.start_date}
+                                            minDate={event.start_date}
                                             KeyboardButtonProps={{
                                                 'aria-label': 'change date',
                                             }}
@@ -510,9 +520,7 @@ class EditEventForm extends Component {
                                         id="embed_code"
                                         name="embed_code"
                                         // defaultValue={this.state.embed_code}
-                                        defaultValue={
-                                            this.state.event.embed_code
-                                        }
+                                        defaultValue={event.embed_code}
                                         placeholder="Type embedded code"
                                         rows="4"
                                         className="form-control"
@@ -541,8 +549,7 @@ class EditEventForm extends Component {
                                         control={
                                             <Switch
                                                 checked={
-                                                    this.state.event
-                                                        .display_on_website
+                                                    event.display_on_website
                                                 }
                                                 onChange={
                                                     this.changeDisplayState
@@ -558,76 +565,70 @@ class EditEventForm extends Component {
                                 </Label>
                                 <Col sm={12}>
                                     {/* {Array.from(this.state.url).map(([index, value]) => ( */}
-                                    {this.state.urlFields.map(
-                                        (urlField, index) => (
-                                            <Fragment
-                                                key={`${urlField}~${index}`}
-                                            >
-                                                <Row className="form-group">
-                                                    {/* sm={12} md={{ size: 4, offset: 1 }} */}
-                                                    <Col
-                                                        sm={12}
-                                                        md={{
-                                                            size: 4,
-                                                            offset: 1,
-                                                        }}
+                                    {urlFields.map((urlField, index) => (
+                                        <Fragment key={`${urlField}`}>
+                                            <Row className="form-group">
+                                                {/* sm={12} md={{ size: 4, offset: 1 }} */}
+                                                <Col
+                                                    sm={12}
+                                                    md={{
+                                                        size: 4,
+                                                        offset: 1,
+                                                    }}
+                                                >
+                                                    <TextField
+                                                        label="type"
+                                                        // className="form-control"
+                                                        // className={classes.urlField}
+                                                        id="type"
+                                                        name="type"
+                                                        variant="filled"
+                                                        // value={index}
+                                                        value={urlField.type}
+                                                        onChange={(e) =>
+                                                            this.handleUrlFieldChange(
+                                                                index,
+                                                                e
+                                                            )
+                                                        }
+                                                    />
+                                                </Col>
+                                                {/* sm={12} md={4} */}
+                                                <Col sm={12} md={4}>
+                                                    <TextField
+                                                        label="url"
+                                                        // className="form-control"
+                                                        // className={classes.urlField}
+                                                        id="url"
+                                                        name="url"
+                                                        variant="filled"
+                                                        // value={value}
+                                                        value={urlField.url}
+                                                        onChange={(e) =>
+                                                            this.handleUrlFieldChange(
+                                                                index,
+                                                                e
+                                                            )
+                                                        }
+                                                    />
+                                                </Col>
+                                                {/* sm={2} */}
+                                                <Col md={2}>
+                                                    <Fab
+                                                        size="small"
+                                                        aria-label="delete"
+                                                        onClick={() =>
+                                                            this.handleRemoveUrlFields(
+                                                                index
+                                                            )
+                                                        }
                                                     >
-                                                        <TextField
-                                                            label="type"
-                                                            // className="form-control"
-                                                            // className={classes.urlField}
-                                                            id="type"
-                                                            name="type"
-                                                            variant="filled"
-                                                            // value={index}
-                                                            value={
-                                                                urlField.type
-                                                            }
-                                                            onChange={(event) =>
-                                                                this.handleUrlFieldChange(
-                                                                    index,
-                                                                    event
-                                                                )
-                                                            }
-                                                        />
-                                                    </Col>
-                                                    {/* sm={12} md={4} */}
-                                                    <Col sm={12} md={4}>
-                                                        <TextField
-                                                            label="url"
-                                                            // className="form-control"
-                                                            // className={classes.urlField}
-                                                            id="url"
-                                                            name="url"
-                                                            variant="filled"
-                                                            // value={value}
-                                                            value={urlField.url}
-                                                            onChange={(event) =>
-                                                                this.handleUrlFieldChange(
-                                                                    index,
-                                                                    event
-                                                                )
-                                                            }
-                                                        />
-                                                    </Col>
-                                                    {/* sm={2} */}
-                                                    <Col md={2}>
-                                                        <Fab
-                                                            size="small"
-                                                            aria-label="delete"
-                                                            onClick={() =>
-                                                                this.handleRemoveUrlFields(
-                                                                    index
-                                                                )
-                                                            }
-                                                        >
-                                                            <DeleteOutlinedIcon />
-                                                        </Fab>
-                                                    </Col>
-                                                </Row>
-                                            </Fragment>
-                                        )
-                                    )}
+                                                        <DeleteOutlinedIcon />
+                                                    </Fab>
+                                                </Col>
+                                            </Row>
+                                        </Fragment>
+                                    ))}
                                     <Fab
                                         size="small"
                                         color="secondary"
@@ -646,9 +647,9 @@ class EditEventForm extends Component {
                                         multiple
                                         fullWidth
                                         id="assignees"
-                                        options={this.state.memberNames}
+                                        options={memberNames}
                                         disableCloseOnSelect
-                                        value={this.state.selectedMembers}
+                                        value={selectedMembers}
                                         onChange={(e, v) =>
                                             this.changeAssignee(v)
                                         }
@@ -684,6 +685,7 @@ class EditEventForm extends Component {
                                         style={{ width: '100%' }}
                                         renderInput={(params) => (
                                             <TextField
+                                                // eslint-disable-next-line react/jsx-props-no-spreading
                                                 {...params}
                                                 variant="outlined"
                                                 label="Members"
@@ -706,13 +708,13 @@ class EditEventForm extends Component {
                                     </Button>
                                 </Col>
                                 <Dialog
-                                    open={this.state.isDeleteDailogOpen}
+                                    open={isDeleteDailogOpen}
                                     onClose={this.confirmDeleteClose}
                                 >
                                     <DialogContent>
                                         <Typography variant="h5">
                                             Are you sure you want to delete the
-                                            event {this.state.name}
+                                            event {event.name}
                                         </Typography>
                                         <Row
                                             style={{ marginTop: '2em' }}
@@ -779,5 +781,15 @@ class EditEventForm extends Component {
         );
     }
 }
+
+EditEventForm.propTypes = {
+    dumEvents: PropTypes.object.isRequired,
+    index: PropTypes.number.isRequired,
+    dumUsers: PropTypes.object.isRequired,
+    deleteEvent: PropTypes.func.isRequired,
+    editEvent: PropTypes.func.isRequired,
+    serverError: PropTypes.string.isRequired,
+    isInTable: PropTypes.bool.isRequired,
+};
 
 export default EditEventForm;

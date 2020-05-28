@@ -1,7 +1,5 @@
-/* eslint-disable react/no-array-index-key */
-/* eslint-disable no-console */
 import React, { Fragment } from 'react';
-import { emphasize, makeStyles, useTheme } from '@material-ui/core/styles';
+import { emphasize, makeStyles } from '@material-ui/core/styles';
 import {
     Grid,
     FormControlLabel,
@@ -9,14 +7,13 @@ import {
     Switch,
     Fab,
     Snackbar,
-    Typography,
     TextField,
-    Paper,
 } from '@material-ui/core';
-import { Card, CardBody, CardTitle, Row, Col, Label } from 'reactstrap';
-import { Control, Form, Errors, LocalForm } from 'react-redux-form';
+import { Row, Col, Label } from 'reactstrap';
+import { Control, Errors, LocalForm } from 'react-redux-form';
 import DateFnsUtils from '@date-io/date-fns';
 import AddIcon from '@material-ui/icons/Add';
+import PropTypes from 'prop-types';
 import {
     MuiPickersUtilsProvider,
     KeyboardDatePicker,
@@ -213,14 +210,6 @@ export default function CreateTasks(props) {
             },
             urlFields: [{ type: 'url', url: '' }],
         });
-    };
-
-    const strMapToObj = (strMap) => {
-        const obj = Object.create(null);
-        Array.from(strMap).map(([k, v]) => {
-            obj[k] = v;
-        });
-        return obj;
     };
 
     const submitEventForm = () => {
@@ -425,7 +414,7 @@ export default function CreateTasks(props) {
                         </Label>
                         <Col sm={12}>
                             {state.urlFields.map((urlField, index) => (
-                                <Fragment key={`${urlField}~${index}`}>
+                                <Fragment key={`${urlField}`}>
                                     <Row className="form-group">
                                         {/* sm={12} md={{ size: 4, offset: 1 }} */}
                                         <Col
@@ -524,3 +513,8 @@ export default function CreateTasks(props) {
         </div>
     );
 }
+
+CreateTasks.propTypes = {
+    createEvent: PropTypes.func.isRequired,
+    eventError: PropTypes.string.isRequired,
+};

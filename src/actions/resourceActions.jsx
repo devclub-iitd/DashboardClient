@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import * as ActionTypes from './ActionTypes';
 import * as API from '../data/api_links';
 import { logoutUser } from './userActions';
@@ -100,7 +101,7 @@ export const createResource = (resource) => (dispatch) => {
             }
         )
         .then((response) => response.json())
-        .then((cResource) => {
+        .then(() => {
             // console.log('New Resource: ', cResource);
             dispatch(fetchAllResources());
         })
@@ -141,7 +142,7 @@ export const editResource = (resource) => (dispatch) => {
             }
         )
         .then((response) => response.json())
-        .then((cResource) => {
+        .then(() => {
             // console.log('Updated Resource: ', cResource);
             dispatch(fetchAllResources());
         })
@@ -182,7 +183,7 @@ export const deleteResource = (resourceId) => (dispatch) => {
             }
         )
         .then((response) => response.json())
-        .then((res) => {
+        .then(() => {
             // console.log('User data updated', user);
             // console.log(res);
             dispatch(fetchAllResources());

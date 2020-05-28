@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import * as ActionTypes from './ActionTypes';
 import * as API from '../data/api_links';
 import { logoutUser } from './userActions';
@@ -134,7 +135,7 @@ export const createProject = (project) => (dispatch) => {
             }
         )
         .then((response) => response.json())
-        .then((cProject) => {
+        .then(() => {
             // console.log('New Project: ', cProject);
             dispatch(fetchAllProjects());
         })
@@ -175,7 +176,7 @@ export const editProject = (project) => (dispatch) => {
             }
         )
         .then((response) => response.json())
-        .then((cEvent) => {
+        .then(() => {
             // console.log('Updated Project: ', cEvent);
             dispatch(fetchAllProjects());
         })
@@ -216,7 +217,7 @@ export const deleteProject = (projectId) => (dispatch) => {
             }
         )
         .then((response) => response.json())
-        .then((res) => {
+        .then(() => {
             // console.log('User data updated', user);
             // console.log(res);
             dispatch(fetchAllProjects());
