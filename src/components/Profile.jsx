@@ -1,6 +1,4 @@
-/* eslint-disable react/no-array-index-key */
-/* eslint-disable react/prop-types */
-/* eslint-disable react/destructuring-assignment */
+/* eslint-disable react/forbid-prop-types */
 import React, { Fragment } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
@@ -11,7 +9,6 @@ import {
     Dialog,
     DialogTitle,
     Tooltip,
-    Backdrop,
     DialogContent,
     Avatar,
     TextField,
@@ -24,7 +21,6 @@ import {
     Radio,
     RadioGroup,
     Snackbar,
-    CircularProgress,
 } from '@material-ui/core';
 import EmailOutlinedIcon from '@material-ui/icons/EmailOutlined';
 import PhoneIcon from '@material-ui/icons/Phone';
@@ -37,6 +33,7 @@ import {
     MuiPickersUtilsProvider,
     KeyboardDatePicker,
 } from '@material-ui/pickers';
+import PropTypes from 'prop-types';
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutline';
 import { Label, Button, Row, Col, CardLink } from 'reactstrap';
 import ChangePassword from './ChangePassword';
@@ -98,14 +95,13 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const Profile = ({
+export default function Profile({
     user,
     serverError,
     updateUser,
-    isLoading,
     changePassword,
     users,
-}) => {
+}) {
     const [state, setState] = React.useState({
         editUser: user,
         orgUser: user,
@@ -285,14 +281,6 @@ const Profile = ({
         // });
     };
 
-    function strMapToObj(strMap) {
-        const obj = Object.create(null);
-        Array.from(strMap).map(([k, v]) => {
-            obj[k] = v;
-        });
-        return obj;
-    }
-
     const handleSubmit = () => {
         // setUser({
         //   ...user,
@@ -335,58 +323,58 @@ const Profile = ({
         handleClose();
     };
 
-    const handlePassFormChange = (e, type) => {
-        const { value } = e.target;
-        setState({
-            ...state,
-            [type]: value,
-        });
-        if (type === 'confirmPassword') {
-            const { password } = state;
-            setState({
-                ...state,
-                confirmPassError: value !== password,
-            });
-        }
-    };
+    // const handlePassFormChange = (e, type) => {
+    //     const { value } = e.target;
+    //     setState({
+    //         ...state,
+    //         [type]: value,
+    //     });
+    //     if (type === 'confirmPassword') {
+    //         const { password } = state;
+    //         setState({
+    //             ...state,
+    //             confirmPassError: value !== password,
+    //         });
+    //     }
+    // };
 
-    const changePass = () => {
-        // e.preventDefault();
+    // const changePass = () => {
+    //     // e.preventDefault();
 
-        const { confirmPassError } = state;
+    //     const { confirmPassError } = state;
 
-        if (confirmPassError) {
-            return;
-        }
+    //     if (confirmPassError) {
+    //         return;
+    //     }
 
-        changePassword(state.password);
-        // setState({
-        //   ...state,
-        //   password: '',
-        //   confirmPassword: '',
-        //   confirmPassError: null,
-        // });
+    //     changePassword(state.password);
+    //     // setState({
+    //     //   ...state,
+    //     //   password: '',
+    //     //   confirmPassword: '',
+    //     //   confirmPassError: null,
+    //     // });
 
-        if (serverError === null) {
-            setState({
-                ...state,
-                password: '',
-                confirmPassword: '',
-                confirmPassError: null,
-                changeSuccess: true,
-            });
-        } else {
-            setState({
-                ...state,
-                password: '',
-                confirmPassword: '',
-                confirmPassError: null,
-                changeSuccess: false,
-            });
-        }
-        handlePasswordClose();
-        // window.location.reload(false);
-    };
+    //     if (serverError === null) {
+    //         setState({
+    //             ...state,
+    //             password: '',
+    //             confirmPassword: '',
+    //             confirmPassError: null,
+    //             changeSuccess: true,
+    //         });
+    //     } else {
+    //         setState({
+    //             ...state,
+    //             password: '',
+    //             confirmPassword: '',
+    //             confirmPassError: null,
+    //             changeSuccess: false,
+    //         });
+    //     }
+    //     handlePasswordClose();
+    //     // window.location.reload(false);
+    // };
 
     const cancelEdit = () => {
         // setUser({
@@ -954,9 +942,7 @@ const Profile = ({
                                     <Col sm={12}>
                                         {state.urlFields.map(
                                             (urlField, index) => (
-                                                <Fragment
-                                                    key={`${urlField}~${index}`}
-                                                >
+                                                <Fragment key={`${urlField}`}>
                                                     <Row className="form-group">
                                                         <Col
                                                             sm={{
@@ -1121,6 +1107,7 @@ const Profile = ({
                         <ChangePassword
                             changePass={changePassword}
                             users={users}
+                            closeDialog={handlePasswordClose}
                         />
                     </DialogContent>
                 </Dialog>
@@ -1484,6 +1471,12 @@ const Profile = ({
         </>
     );
     // }
-};
+}
 
-export default Profile;
+Profile.propTypes = {
+    user: PropTypes.object.isRequired,
+    serverError: PropTypes.string.isRequired,
+    updateUser: PropTypes.func.isRequired,
+    changePassword: PropTypes.func.isRequired,
+    users: PropTypes.object.isRequired,
+};

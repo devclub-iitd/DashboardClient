@@ -1,3 +1,5 @@
+/* eslint-disable react/forbid-prop-types */
+/* eslint-disable no-underscore-dangle */
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
@@ -11,14 +13,14 @@ import {
     CircularProgress,
     InputAdornment,
     IconButton,
-    Hidden,
+    // Hidden,
     Dialog,
     DialogTitle,
     DialogContent,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import SearchIcon from '@material-ui/icons/Search';
-import EditIcon from '@material-ui/icons/Edit';
+// import EditIcon from '@material-ui/icons/Edit';
 import {
     Card,
     CardBody,
@@ -28,8 +30,9 @@ import {
     CardHeader,
     CardLink,
 } from 'reactstrap';
-import MUIDataTable from 'mui-datatables';
+// import MUIDataTable from 'mui-datatables';
 import AddIcon from '@material-ui/icons/Add';
+import PropTypes from 'prop-types';
 import EditEventForm from './EditEventForm';
 import CreateEventForm from './CreateEventForm';
 
@@ -128,7 +131,7 @@ const EventsPage = ({
         return false;
     }
 
-    function isUpcoming(startDate: Date) {
+    function isUpcoming(startDate) {
         const today = new Date();
         if (today < startDate) {
             return true;
@@ -146,133 +149,133 @@ const EventsPage = ({
         .filter((event) => isCompleted(event.end_date))
         .filter((event) => event.name.startsWith(search.completed));
 
-    const getEventRow = (event) => {
-        return [
-            event.name,
-            event.description,
-            event.start_date.toDateString(),
-            event.end_date.toDateString(),
-            event.display_on_website ? 'True' : 'False',
-            dumUsers
-                .filter((user) => event.assignee.includes(user._id))
-                .map((user) => `${user.name}, `),
-        ];
-    };
+    // const getEventRow = (event) => {
+    //     return [
+    //         event.name,
+    //         event.description,
+    //         event.start_date.toDateString(),
+    //         event.end_date.toDateString(),
+    //         event.display_on_website ? 'True' : 'False',
+    //         dumUsers
+    //             .filter((user) => event.assignee.includes(user._id))
+    //             .map((user) => `${user.name}, `),
+    //     ];
+    // };
 
     // const [dataTable, setdataTable] = React.useState({
-    const columns = [
-        {
-            name: 'name',
-            label: 'Name',
-            options: {
-                filter: true,
-                sort: true,
-                setCellHeaderProps: (value) => ({
-                    style: { fontWeight: 'bold' },
-                }),
-            },
-        },
-        {
-            name: 'description',
-            label: 'Description',
-            options: {
-                filter: false,
-                sort: false,
-                setCellHeaderProps: (value) => ({
-                    style: { fontWeight: 'bold' },
-                }),
-            },
-        },
-        {
-            name: 'startDate',
-            label: 'Starting',
-            options: {
-                filter: false,
-                sort: true,
-                setCellHeaderProps: (value) => ({
-                    style: { fontWeight: 'bold' },
-                }),
-            },
-        },
-        {
-            name: 'endDate',
-            label: 'Ending',
-            options: {
-                filter: false,
-                sort: true,
-                setCellHeaderProps: (value) => ({
-                    style: { fontWeight: 'bold' },
-                }),
-            },
-        },
-        {
-            name: 'display',
-            label: 'On Main Website',
-            options: {
-                filter: true,
-                sort: false,
-                setCellHeaderProps: (value) => ({
-                    style: { fontWeight: 'bold' },
-                }),
-            },
-        },
-        {
-            name: 'mems',
-            label: 'Members',
-            options: {
-                filter: false,
-                sort: false,
-                setCellHeaderProps: (value) => ({
-                    style: { fontWeight: 'bold' },
-                }),
-            },
-        },
-        {
-            name: 'edit',
-            label: 'Edit',
-            options: {
-                filter: false,
-                sort: false,
-                download: false,
-                print: false,
-                display: curUser.privelege_level === 'Admin',
-                setCellHeaderProps: (value) => ({
-                    style: { fontWeight: 'bold' },
-                }),
-                customBodyRender: (value, tableMeta, updateValue) => (
-                    <>
-                        {/* <IconButton onClick={() => setTableEdit({ index: tableMeta.rowIndex, value: true })} variant="outlined" color="secondary" component="span">
-                <EditIcon fontSize="small" color="secondary" />
-              </IconButton> */}
-                        {curUser.privelege_level === 'Admin' ? (
-                            <EditEventForm
-                                isInTable
-                                deleteEvent={deleteEvent}
-                                dumEvents={allEvents}
-                                dumUsers={users.allUsers}
-                                editEvent={editEvent}
-                                index={tableMeta.rowIndex}
-                                serverError={events.serverError}
-                            />
-                        ) : null}
-                    </>
-                ),
-            },
-        },
-    ];
-    const data = [...allEvents.map((event) => getEventRow(event))];
-    const options = {
-        filterType: 'checkbox',
-        responsive: 'scrollMaxHeight',
-        rowsPerPage: 7,
-        selectableRows: 'none',
-        fixedHeaderOptions: {
-            xAxis: false,
-            yAxis: true,
-        },
-        rowsPerPageOptions: [5, 7, 10, 15, 25, 50, 100],
-        // customSearchRender: (searchText, handleSearch, hideSearch, options)
-    };
+    // const columns = [
+    //     {
+    //         name: 'name',
+    //         label: 'Name',
+    //         options: {
+    //             filter: true,
+    //             sort: true,
+    //             setCellHeaderProps: (value) => ({
+    //                 style: { fontWeight: 'bold' },
+    //             }),
+    //         },
+    //     },
+    //     {
+    //         name: 'description',
+    //         label: 'Description',
+    //         options: {
+    //             filter: false,
+    //             sort: false,
+    //             setCellHeaderProps: (value) => ({
+    //                 style: { fontWeight: 'bold' },
+    //             }),
+    //         },
+    //     },
+    //     {
+    //         name: 'startDate',
+    //         label: 'Starting',
+    //         options: {
+    //             filter: false,
+    //             sort: true,
+    //             setCellHeaderProps: (value) => ({
+    //                 style: { fontWeight: 'bold' },
+    //             }),
+    //         },
+    //     },
+    //     {
+    //         name: 'endDate',
+    //         label: 'Ending',
+    //         options: {
+    //             filter: false,
+    //             sort: true,
+    //             setCellHeaderProps: (value) => ({
+    //                 style: { fontWeight: 'bold' },
+    //             }),
+    //         },
+    //     },
+    //     {
+    //         name: 'display',
+    //         label: 'On Main Website',
+    //         options: {
+    //             filter: true,
+    //             sort: false,
+    //             setCellHeaderProps: (value) => ({
+    //                 style: { fontWeight: 'bold' },
+    //             }),
+    //         },
+    //     },
+    //     {
+    //         name: 'mems',
+    //         label: 'Members',
+    //         options: {
+    //             filter: false,
+    //             sort: false,
+    //             setCellHeaderProps: (value) => ({
+    //                 style: { fontWeight: 'bold' },
+    //             }),
+    //         },
+    //     },
+    //     {
+    //         name: 'edit',
+    //         label: 'Edit',
+    //         options: {
+    //             filter: false,
+    //             sort: false,
+    //             download: false,
+    //             print: false,
+    //             display: curUser.privelege_level === 'Admin',
+    //             setCellHeaderProps: (value) => ({
+    //                 style: { fontWeight: 'bold' },
+    //             }),
+    //             customBodyRender: (value, tableMeta, updateValue) => (
+    //                 <>
+    //                     {/* <IconButton onClick={() => setTableEdit({ index: tableMeta.rowIndex, value: true })} variant="outlined" color="secondary" component="span">
+    //             <EditIcon fontSize="small" color="secondary" />
+    //           </IconButton> */}
+    //                     {curUser.privelege_level === 'Admin' ? (
+    //                         <EditEventForm
+    //                             isInTable
+    //                             deleteEvent={deleteEvent}
+    //                             dumEvents={allEvents}
+    //                             dumUsers={users.allUsers}
+    //                             editEvent={editEvent}
+    //                             index={tableMeta.rowIndex}
+    //                             serverError={events.serverError}
+    //                         />
+    //                     ) : null}
+    //                 </>
+    //             ),
+    //         },
+    //     },
+    // ];
+    // const data = [...allEvents.map((event) => getEventRow(event))];
+    // const options = {
+    //     filterType: 'checkbox',
+    //     responsive: 'scrollMaxHeight',
+    //     rowsPerPage: 7,
+    //     selectableRows: 'none',
+    //     fixedHeaderOptions: {
+    //         xAxis: false,
+    //         yAxis: true,
+    //     },
+    //     rowsPerPageOptions: [5, 7, 10, 15, 25, 50, 100],
+    //     // customSearchRender: (searchText, handleSearch, hideSearch, options)
+    // };
 
     const [createOpen, setCreateOpen] = React.useState(false);
 
@@ -364,13 +367,7 @@ const EventsPage = ({
                     ) : (
                         ongoing.map((event, index) => (
                             // <GridListTile key={`${event}~${index}`} cols={2} rows={2}>
-                            <Grid
-                                key={`${event}~${index}`}
-                                item
-                                xs={12}
-                                md={6}
-                                lg={4}
-                            >
+                            <Grid key={`${event}`} item xs={12} md={6} lg={4}>
                                 <Card body style={{ borderColor: '#00c853' }}>
                                     <CardHeader>
                                         <Typography variant="h4">
@@ -488,13 +485,7 @@ const EventsPage = ({
                     ) : (
                         upcoming.map((event, index) => (
                             // <GridListTile key={`${event}~${index}`} cols={2} rows={2}>
-                            <Grid
-                                key={`${event}~${index}`}
-                                item
-                                xs={12}
-                                md={6}
-                                lg={4}
-                            >
+                            <Grid key={`${event}`} item xs={12} md={6} lg={4}>
                                 <Card body style={{ borderColor: '#00c853' }}>
                                     <CardHeader>
                                         <Typography variant="h4">
@@ -613,13 +604,7 @@ const EventsPage = ({
                     ) : (
                         completed.map((event, index) => (
                             // <GridListTile key={`${event}~${index}`} cols={2} rows={2}>
-                            <Grid
-                                key={`${event}~${index}`}
-                                item
-                                xs={12}
-                                md={6}
-                                lg={4}
-                            >
+                            <Grid key={`${event}`} item xs={12} md={6} lg={4}>
                                 <Card body style={{ borderColor: '#00c853' }}>
                                     <CardHeader>
                                         <Typography variant="h4">
@@ -705,6 +690,15 @@ const EventsPage = ({
             </Dialog>
         </>
     );
+};
+
+EventsPage.propTypes = {
+    events: PropTypes.object.isRequired,
+    editEvent: PropTypes.func.isRequired,
+    deleteEvent: PropTypes.func.isRequired,
+    users: PropTypes.object.isRequired,
+    createEvent: PropTypes.func.isRequired,
+    eventError: PropTypes.string.isRequired,
 };
 
 export default EventsPage;

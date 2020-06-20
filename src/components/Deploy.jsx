@@ -1,3 +1,5 @@
+/* eslint-disable react/destructuring-assignment */
+/* eslint-disable no-unused-vars */
 import React, { Component } from 'react';
 import {
     Grid,
@@ -12,7 +14,6 @@ import {
     Button,
     IconButton,
     Tooltip,
-    TextField,
 } from '@material-ui/core';
 import { Row, Col, Label } from 'reactstrap';
 import AddIcon from '@material-ui/icons/Add';
@@ -22,7 +23,6 @@ import EditIcon from '@material-ui/icons/Edit';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import RestoreIcon from '@material-ui/icons/Restore';
 import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
-import { FastForward } from '@material-ui/icons';
 
 class DeployManager extends Component {
     constructor(props) {
@@ -46,7 +46,7 @@ class DeployManager extends Component {
                     options: {
                         filter: false,
                         sort: false,
-                        customBodyRender: (index) => (
+                        customBodyRender: () => (
                             <IconButton
                                 variant="outlined"
                                 color="secondary"
@@ -62,7 +62,7 @@ class DeployManager extends Component {
                     options: {
                         filter: false,
                         sort: false,
-                        customBodyRender: (index) => (
+                        customBodyRender: () => (
                             <IconButton
                                 variant="outlined"
                                 color="secondary"
@@ -81,7 +81,7 @@ class DeployManager extends Component {
                     options: {
                         filter: false,
                         sort: false,
-                        customBodyRender: (index) => (
+                        customBodyRender: () => (
                             <IconButton
                                 variant="outlined"
                                 color="primary"
@@ -97,7 +97,7 @@ class DeployManager extends Component {
                     options: {
                         filter: false,
                         sort: false,
-                        customBodyRender: (index) => (
+                        customBodyRender: () => (
                             <IconButton
                                 variant="outlined"
                                 color="error"
@@ -140,46 +140,46 @@ class DeployManager extends Component {
     }
 
     handleNewDeploymentOpen = () => {
-        this.setState({
-            ...this.state,
+        this.setState((prevState) => ({
+            ...prevState,
             isNewDeploymentOpen: true,
-        });
+        }));
     };
 
     handleNewDeploymentClose = () => {
-        this.setState({
-            ...this.state,
+        this.setState((prevState) => ({
+            ...prevState,
             isNewDeploymentOpen: false,
-        });
+        }));
     };
 
     handleAccessChange = (event) => {
-        this.setState({
-            ...this.state,
+        this.setState((prevState) => ({
+            ...prevState,
             access: event.target.value,
-        });
+        }));
     };
 
     handleBuildChange = (event) => {
-        this.setState({
-            ...this.state,
+        this.setState((prevState) => ({
+            ...prevState,
             build: event.target.value,
-        });
+        }));
     };
 
     handleNewDeploymentSubmit = (values) => {
         // const newValues = { ...values };
-        const newDeploy = {
-            ...values,
-            access: this.state.access,
-            build: this.state.build,
-        };
+        // const newDeploy = {
+        //     ...values,
+        //     access: this.state.access,
+        //     build: this.state.build,
+        // };
         // console.log('Creating new deployment: ', newDeploy);
         this.handleNewDeploymentClose();
     };
 
     handleClick = () => {
-        console.log('clicked on icon!');
+        // console.log('clicked on icon!');
     };
 
     render() {

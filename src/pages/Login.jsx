@@ -1,10 +1,10 @@
+/* eslint-disable react/forbid-prop-types */
 import React from 'react';
 import {
     Avatar,
     Button,
     CssBaseline,
     TextField,
-    Link,
     Paper,
     Box,
     Grid,
@@ -18,15 +18,16 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Redirect, withRouter } from 'react-router-dom';
+import { Redirect, withRouter, Link } from 'react-router-dom';
 import { loginUser, loginErrorFin } from '../actions/userActions';
+import logo from '../images/LogoSquare.svg';
 
 const styles = (theme) => ({
     root: {
         height: '100vh',
     },
     image: {
-        backgroundImage: 'url(./logo.png)',
+        backgroundImage: `url(${logo})`,
         backgroundRepeat: 'no-repeat',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
@@ -125,16 +126,8 @@ function SignInSide(props) {
                 message="Your session has timed out!! Login again"
             />
             <CssBaseline />
-            <Grid item xs={false} sm={4} md={7} className={classes.image} />
-            <Grid
-                item
-                xs={12}
-                sm={8}
-                md={5}
-                component={Paper}
-                elevation={6}
-                square
-            >
+            <Grid item sm={false} md={7} className={classes.image} />
+            <Grid item xs={12} md={5} component={Paper} elevation={6} square>
                 <div className={classes.paper}>
                     <Typography align="center" className="h1" variant="h3">
                         Club DashBoard
@@ -181,8 +174,8 @@ function SignInSide(props) {
                         </Button>
                         <Grid container>
                             <Grid item>
-                                <Link href="/register" variant="body2">
-                                    Don't have an account? Sign Up
+                                <Link to="/register" variant="body2">
+                                    Don&#39;t have an account? Sign Up
                                 </Link>
                             </Grid>
                         </Grid>

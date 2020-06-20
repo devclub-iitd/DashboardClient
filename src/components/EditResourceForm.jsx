@@ -1,3 +1,5 @@
+/* eslint-disable react/forbid-prop-types */
+/* eslint-disable no-underscore-dangle */
 import React, { Component } from 'react';
 import {
     Typography,
@@ -10,6 +12,7 @@ import {
     Snackbar,
 } from '@material-ui/core';
 import { Row, Col, Label } from 'reactstrap';
+import PropTypes from 'prop-types';
 import { LocalForm, Control, Errors } from 'react-redux-form';
 
 class EditResourceForm extends Component {
@@ -17,21 +20,18 @@ class EditResourceForm extends Component {
         super(props);
 
         this.state = {
-            internal_name: this.props.dumResources[this.props.index]
-                .internal_name,
-            directory_year: this.props.dumResources[this.props.index]
-                .directory_year,
-            subdirectory: this.props.dumResources[this.props.index]
-                .subdirectory,
-            name: this.props.dumResources[this.props.index].name,
-            archive: this.props.dumResources[this.props.index].archive,
-            description: this.props.dumResources[this.props.index].description,
-            url: this.props.dumResources[this.props.index].url,
-            new: this.props.dumResources[this.props.index].new,
-            display_on_website: this.props.dumResources[this.props.index]
-                .display_on_website,
-            resource: this.props.dumResources[this.props.index],
-            orgResource: this.props.dumResources[this.props.index],
+            internal_name: props.dumResources[props.index].internal_name,
+            directory_year: props.dumResources[props.index].directory_year,
+            subdirectory: props.dumResources[props.index].subdirectory,
+            name: props.dumResources[props.index].name,
+            archive: props.dumResources[props.index].archive,
+            description: props.dumResources[props.index].description,
+            url: props.dumResources[props.index].url,
+            new: props.dumResources[props.index].new,
+            display_on_website:
+                props.dumResources[props.index].display_on_website,
+            resource: props.dumResources[props.index],
+            orgResource: props.dumResources[props.index],
             isDailogOpen: false,
             isDeleteDailogOpen: false,
             success: false,
@@ -46,101 +46,101 @@ class EditResourceForm extends Component {
     }
 
     componentWillReceiveProps(props) {
-        this.setState({
-            ...this.state,
+        this.setState((prevState) => ({
+            ...prevState,
             orgResource: props.dumResources[props.index],
             resource: props.dumResources[props.index],
-        });
+        }));
     }
 
-    handleFormValuesChange = (event, name) => {
-        if (name === 'archive') {
-            this.setState({
-                ...this.state,
+    handleFormValuesChange = (event, fieldName) => {
+        const { checked, value, name } = event.target;
+        if (fieldName === 'archive') {
+            this.setState((prevState) => ({
+                ...prevState,
                 resource: {
-                    ...this.state.resource,
-                    archive: event.target.checked,
+                    ...prevState.resource,
+                    archive: checked,
                 },
-            });
-        } else if (name === 'display_on_website') {
-            this.setState({
-                ...this.state,
+            }));
+        } else if (fieldName === 'display_on_website') {
+            this.setState((prevState) => ({
+                ...prevState,
                 resource: {
-                    ...this.state.resource,
-                    display_on_website: event.target.checked,
+                    ...prevState.resource,
+                    display_on_website: checked,
                 },
-            });
-        } else if (name === 'new') {
-            this.setState({
-                ...this.state,
+            }));
+        } else if (fieldName === 'new') {
+            this.setState((prevState) => ({
+                ...prevState,
                 resource: {
-                    ...this.state.resource,
-                    new: event.target.checked,
+                    ...prevState.resource,
+                    new: checked,
                 },
-            });
+            }));
         } else {
-            this.setState({
-                ...this.state,
+            this.setState((prevState) => ({
+                ...prevState,
                 resource: {
-                    ...this.state.resource,
-                    [event.target.name]: event.target.value,
+                    ...prevState.resource,
+                    [name]: value,
                 },
-            });
+            }));
         }
     };
 
     handleSuccessClose = () => {
-        this.setState({
-            ...this.state,
+        this.setState((prevState) => ({
+            ...prevState,
             success: false,
-        });
+        }));
     };
 
     handleFormOpen = () => {
-        this.setState({
-            ...this.state,
+        this.setState((prevState) => ({
+            ...prevState,
             isDailogOpen: true,
-        });
+        }));
     };
 
     handleFormClose = () => {
-        this.setState({
-            ...this.state,
+        this.setState((prevState) => ({
+            ...prevState,
             isDailogOpen: false,
-        });
+        }));
     };
 
     confirmDeleteOpen = () => {
-        this.setState({
-            ...this.state,
+        this.setState((prevState) => ({
+            ...prevState,
             isDeleteDailogOpen: true,
-        });
+        }));
     };
 
     confirmDeleteClose = () => {
-        this.setState({
-            ...this.state,
+        this.setState((prevState) => ({
+            ...prevState,
             isDeleteDailogOpen: false,
-        });
+        }));
     };
 
     handleDelete = () => {
         // Call delete thunk here,
-        this.props.deleteResource(
-            this.props.dumResources[this.props.index]._id
-        );
+        const { deleteResource, dumResources, index } = this.props;
+        deleteResource(dumResources[index]._id);
         // console.log('Deleting: ', this.state.name);
         this.confirmDeleteClose();
     };
 
     cancelEdit = () => {
         this.setState(
-            {
-                ...this.state,
+            (prevState) => ({
+                ...prevState,
                 resource: {
-                    ...this.state.orgResource,
+                    ...prevState.orgResource,
                 },
-            },
+            }),
             () => this.handleFormClose()
         );
         // window.location.reload(false);
@@ -148,7 +148,7 @@ class EditResourceForm extends Component {
 
     handleSubmit = () => {
         // const updatedResource = {
-        //   ...this.props.dumResources[this.props.index],
+        //   ...dumResources[index],
         //   ...this.state,
         // };
 
@@ -157,12 +157,14 @@ class EditResourceForm extends Component {
         // delete updatedResource.serverError;
 
         // this.props.editResource(updatedResource);
-        this.props.editResource(this.state.resource);
-        if (this.props.serverError === null) {
-            this.setState({
-                ...this.state,
+        const { resource } = this.state;
+        const { editResource, serverError } = this.props;
+        editResource(resource);
+        if (serverError === null) {
+            this.setState((prevState) => ({
+                ...prevState,
                 success: true,
-            });
+            }));
         }
         // console.log('got values: ', this.state);
         this.handleFormClose();
@@ -181,6 +183,12 @@ class EditResourceForm extends Component {
         //   editFailed = false;
         //   removeFailed = false;
         // };
+        const {
+            success,
+            isDailogOpen,
+            resource,
+            isDeleteDailogOpen,
+        } = this.state;
 
         return (
             <div>
@@ -189,7 +197,7 @@ class EditResourceForm extends Component {
                         vertical: 'top',
                         horizontal: 'center',
                     }}
-                    open={this.state.success}
+                    open={success}
                     autoHideDuration={2000}
                     onClose={this.handleSuccessClose}
                     message="Resource Edited successfully !"
@@ -204,7 +212,7 @@ class EditResourceForm extends Component {
                     Edit Resource
                 </Button>
                 <Dialog
-                    open={this.state.isDailogOpen}
+                    open={isDailogOpen}
                     maxWidth="sm"
                     fullWidth
                     onClose={this.handleFormClose}
@@ -227,9 +235,7 @@ class EditResourceForm extends Component {
                                         model=".internal_name"
                                         id="internal_name"
                                         name="internal_name"
-                                        defaultValue={
-                                            this.state.resource.internal_name
-                                        }
+                                        defaultValue={resource.internal_name}
                                         // onChange={this.changeInternalName}
                                         onChange={this.handleFormValuesChange}
                                         placeholder="Internal Name*"
@@ -264,9 +270,7 @@ class EditResourceForm extends Component {
                                         id="directory_year"
                                         name="directory_year"
                                         placeholder="Directory Year*"
-                                        defaultValue={
-                                            this.state.resource.directory_year
-                                        }
+                                        defaultValue={resource.directory_year}
                                         // onChange={this.changeDirectoryYear}
                                         onChange={this.handleFormValuesChange}
                                         className="form-control"
@@ -300,9 +304,7 @@ class EditResourceForm extends Component {
                                         id="sub_directory"
                                         name="sub_directory"
                                         placeholder="Sub-Directory*"
-                                        defaultValue={
-                                            this.state.resource.subdirectory
-                                        }
+                                        defaultValue={resource.subdirectory}
                                         onChange={this.handleFormValuesChange}
                                         // onChange={this.changeSubDirectory}
                                         className="form-control"
@@ -336,7 +338,7 @@ class EditResourceForm extends Component {
                                         id="name"
                                         name="name"
                                         placeholder="Resource Name*"
-                                        defaultValue={this.state.resource.name}
+                                        defaultValue={resource.name}
                                         // onChange={this.changeName}
                                         onChange={this.handleFormValuesChange}
                                         className="form-control"
@@ -370,9 +372,7 @@ class EditResourceForm extends Component {
                                         id="description"
                                         name="description"
                                         placeholder="Resource Description*"
-                                        defaultValue={
-                                            this.state.resource.description
-                                        }
+                                        defaultValue={resource.description}
                                         // onChange={this.changeDescription}
                                         onChange={this.handleFormValuesChange}
                                         rows="8"
@@ -401,7 +401,7 @@ class EditResourceForm extends Component {
                                         id="url"
                                         name="url"
                                         placeholder="Resource Url*"
-                                        defaultValue={this.state.resource.url}
+                                        defaultValue={resource.url}
                                         // onChange={this.changeUrl}
                                         onChange={this.handleFormValuesChange}
                                         className="form-control"
@@ -430,8 +430,7 @@ class EditResourceForm extends Component {
                                         control={
                                             <Switch
                                                 checked={
-                                                    this.state.resource
-                                                        .display_on_website
+                                                    resource.display_on_website
                                                 }
                                                 onChange={(event) =>
                                                     this.handleFormValuesChange(
@@ -454,9 +453,7 @@ class EditResourceForm extends Component {
                                         // label="Display on Website"
                                         control={
                                             <Switch
-                                                checked={
-                                                    this.state.resource.archive
-                                                }
+                                                checked={resource.archive}
                                                 onChange={(event) =>
                                                     this.handleFormValuesChange(
                                                         event,
@@ -478,9 +475,7 @@ class EditResourceForm extends Component {
                                         // label="Display on Website"
                                         control={
                                             <Switch
-                                                checked={
-                                                    this.state.resource.new
-                                                }
+                                                checked={resource.new}
                                                 onChange={(event) =>
                                                     this.handleFormValuesChange(
                                                         event,
@@ -505,13 +500,13 @@ class EditResourceForm extends Component {
                                     </Button>
                                 </Col>
                                 <Dialog
-                                    open={this.state.isDeleteDailogOpen}
+                                    open={isDeleteDailogOpen}
                                     onClose={this.confirmDeleteClose}
                                 >
                                     <DialogContent>
                                         <Typography variant="h5">
                                             Are you sure you want to delete the
-                                            resource {this.state.name}
+                                            resource {resource.name}
                                         </Typography>
                                         <Row
                                             style={{ marginTop: '2em' }}
@@ -577,5 +572,13 @@ class EditResourceForm extends Component {
         );
     }
 }
+
+EditResourceForm.propTypes = {
+    dumResources: PropTypes.object.isRequired,
+    index: PropTypes.number.isRequired,
+    deleteResource: PropTypes.func.isRequired,
+    editResource: PropTypes.func.isRequired,
+    serverError: PropTypes.string.isRequired,
+};
 
 export default EditResourceForm;

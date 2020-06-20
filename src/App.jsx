@@ -1,24 +1,19 @@
 import React from 'react';
-import {
-    Redirect,
-    Router,
-    Route,
-    Switch,
-    withRouter,
-    BrowserRouter,
-    HashRouter,
-} from 'react-router-dom';
-import { createBrowserHistory } from 'history';
+import { Redirect, Router, Route, Switch, HashRouter } from 'react-router-dom';
+import { createHashHistory } from 'history';
+// import { Provider } from 'react-redux';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import Health from './pages/Health';
 import './App.css';
+// import ConfigureStore from './store';
 
-const hist = createBrowserHistory();
+const hist = createHashHistory();
 
 function App() {
     return (
+        // <Provider store={ConfigureStore}>
         <HashRouter>
             <Router history={hist}>
                 <Switch>
@@ -30,6 +25,7 @@ function App() {
                 </Switch>
             </Router>
         </HashRouter>
+        // </Provider>
     );
 }
 

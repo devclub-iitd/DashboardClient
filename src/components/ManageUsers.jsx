@@ -1,3 +1,4 @@
+/* eslint-disable react/forbid-prop-types */
 import React, { Fragment } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
@@ -30,6 +31,7 @@ import {
     CardHeader,
     CardSubtitle,
 } from 'reactstrap';
+import PropTypes from 'prop-types';
 import EditOtherUserForm from './EditOtherUserForm';
 
 const useStyles = makeStyles((theme) => ({
@@ -61,11 +63,16 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function ManageUsers(props) {
+export default function ManageUsers({
+    users,
+    // deleteAllUsers,
+    rejectAllUnapproved,
+    removeUser,
+    editOtherUser,
+}) {
     const classes = useStyles();
-    const curUser = props.users.user;
-    const dumUsers = props.users.allUsers;
-    const { deleteAllUsers, rejectAllUnapproved } = props;
+    const curUser = users.user;
+    const dumUsers = users.allUsers;
 
     const [search, setSearch] = React.useState({
         admins: '',
@@ -73,7 +80,7 @@ export default function ManageUsers(props) {
         unapproved: '',
     });
 
-    const [deleteAll, setDeleteState] = React.useState(false);
+    // const [deleteAll, setDeleteState] = React.useState(false);
     const [rejectAll, setRejectState] = React.useState(false);
 
     const searchChange = (event) => {
@@ -85,13 +92,13 @@ export default function ManageUsers(props) {
         });
     };
 
-    const confirmDeleteOpen = () => {
-        setDeleteState(true);
-    };
+    // const confirmDeleteOpen = () => {
+    //     setDeleteState(true);
+    // };
 
-    const confirmDeleteClose = () => {
-        setDeleteState(false);
-    };
+    // const confirmDeleteClose = () => {
+    //     setDeleteState(false);
+    // };
 
     const confirmRejectOpen = () => {
         setRejectState(true);
@@ -119,15 +126,12 @@ export default function ManageUsers(props) {
 
     return (
         <Grid container justify="space-evenly">
-            {props.users.usersErrMess !== null ? (
+            {users.usersErrMess !== null ? (
                 <Typography variant="h4" color="textSecondary">
                     Failed to fetch Users
                 </Typography>
             ) : null}
-            <Backdrop
-                className={classes.backdrop}
-                open={props.users.usersLoading}
-            >
+            <Backdrop className={classes.backdrop} open={users.usersLoading}>
                 <CircularProgress color="inherit" />
             </Backdrop>
             <Dialog open={rejectAll} maxWidth="md" onClose={confirmRejectClose}>
@@ -169,7 +173,7 @@ export default function ManageUsers(props) {
                     </Row>
                 </DialogContent>
             </Dialog>
-            <Dialog open={deleteAll} maxWidth="md" onClose={confirmDeleteClose}>
+            {/* <Dialog open={deleteAll} maxWidth="md" onClose={confirmDeleteClose}>
                 <DialogContent>
                     <Typography variant="h5">
                         This is a highly sensitive operation. Do you Really want
@@ -199,7 +203,7 @@ export default function ManageUsers(props) {
                         </Col>
                     </Row>
                 </DialogContent>
-            </Dialog>
+            </Dialog> */}
             <Grid item xs={12} md={6}>
                 <Typography
                     variant="h4"
@@ -249,9 +253,9 @@ export default function ManageUsers(props) {
                                 No admins of the club!! SHIT!!
                             </Typography>
                         ) : (
-                            admins.map((user, index) => {
+                            admins.map((user) => {
                                 return (
-                                    <Fragment key={`${user}~${index}`}>
+                                    <Fragment key={`${user}`}>
                                         <ListGroupItem>
                                             <Card
                                                 body
@@ -423,7 +427,7 @@ export default function ManageUsers(props) {
                         ) : (
                             approved.map((user, index) => {
                                 return (
-                                    <Fragment key={`${user}~${index}`}>
+                                    <Fragment key={`${user}`}>
                                         <ListGroupItem>
                                             <Card
                                                 body
@@ -505,16 +509,15 @@ export default function ManageUsers(props) {
                                                     'Admin' ? (
                                                         <EditOtherUserForm
                                                             removeUser={
-                                                                props.removeUser
+                                                                removeUser
                                                             }
                                                             dumUsers={approved}
                                                             editUser={
-                                                                props.editOtherUser
+                                                                editOtherUser
                                                             }
                                                             index={index}
                                                             serverError={
-                                                                props.users
-                                                                    .serverError
+                                                                users.serverError
                                                             }
                                                         />
                                                     ) : null}
@@ -601,7 +604,7 @@ export default function ManageUsers(props) {
                         ) : (
                             unapproved.map((user, index) => {
                                 return (
-                                    <Fragment key={`${user}~${index}`}>
+                                    <Fragment key={`${user}`}>
                                         <ListGroupItem>
                                             <Card
                                                 body
@@ -657,18 +660,17 @@ export default function ManageUsers(props) {
                                                     'Admin' ? (
                                                         <EditOtherUserForm
                                                             removeUser={
-                                                                props.removeUser
+                                                                removeUser
                                                             }
                                                             dumUsers={
                                                                 unapproved
                                                             }
                                                             editUser={
-                                                                props.editOtherUser
+                                                                editOtherUser
                                                             }
                                                             index={index}
                                                             serverError={
-                                                                props.users
-                                                                    .serverError
+                                                                users.serverError
                                                             }
                                                         />
                                                     ) : null}
@@ -685,3 +687,10 @@ export default function ManageUsers(props) {
         </Grid>
     );
 }
+
+ManageUsers.propTypes = {
+    users: PropTypes.object.isRequired,
+    rejectAllUnapproved: PropTypes.func.isRequired,
+    removeUser: PropTypes.func.isRequired,
+    editOtherUser: PropTypes.func.isRequired,
+};

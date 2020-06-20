@@ -8,7 +8,8 @@
 
 // export const userAPI = 'http://localhost:3001/api/user/';
 // export const userGetAllDBAPI = 'http://localhost:3001/api/user/getAllDB/';
-// export const userChangePassAPI = 'http://localhost:3001/api/user/changePassword/';
+// export const userChangePassAPI =
+//     'http://localhost:3001/api/user/changePassword/';
 // export const userQueryAPI = 'http://localhost:3001/api/user/query/';
 
 // export const eventAPI = 'http://localhost:3001/api/event/';
@@ -20,7 +21,8 @@
 // export const projectDeleteAPI = 'http://localhost:3001/api/project/delete/';
 
 // export const resourceAPI = 'http://localhost:3001/api/resource/';
-// export const resourceGetAllDBAPI = 'http://localhost:3001/api/resource/getAllDB/';
+// export const resourceGetAllDBAPI =
+//     'http://localhost:3001/api/resource/getAllDB/';
 // export const resourceDeleteAPI = 'http://localhost:3001/api/resource/delete/';
 
 /*

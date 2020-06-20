@@ -2,12 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core';
 import App from './App';
-import Health from './pages/Health';
-import logo from './components/logo.png';
+// import Health from './pages/Health';
 import * as serviceWorker from './serviceWorker';
 import ConfigureStore from './store';
 

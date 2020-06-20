@@ -1,3 +1,5 @@
+/* eslint-disable react/forbid-prop-types */
+/* eslint-disable no-underscore-dangle */
 import React, { Fragment } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
@@ -10,7 +12,6 @@ import {
     Backdrop,
     CircularProgress,
     Button,
-    IconButton,
 } from '@material-ui/core';
 import {
     Card,
@@ -32,6 +33,7 @@ import {
     NavItem,
     NavLink,
 } from 'reactstrap';
+import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import EditEventForm from './EditEventForm';
 import EditProjectForm from './EditProjectForm';
@@ -126,284 +128,53 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-// class EditOtherUserForm extends Component {
-//   constructor (props) {
-//     super(props);
-
-//     this.state = {
-//       user: this.props.dumUsers[this.props.index],
-//       isDailogOpen: false,
-//       isDeleteDailogOpen: false,
-//       serverError: this.props.editFailed || this.props.removeFailed,
-//       // privelege_level: this.state.dumUsers[this.props.index].privelege_level,
-//       // display_on_website: this.state.dumUsers[this.props.index].display_on_website,
-//     };
-
-//     this.changeDisplayState = this.changeDisplayState.bind(this);
-//     this.changePrivLevel = this.changePrivLevel.bind(this);
-//     this.handleFormOpen = this.handleFormOpen.bind(this);
-//     this.handleFormClose = this.handleFormClose.bind(this);
-//     this.cancelUserEdit = this.cancelUserEdit.bind(this);
-//     this.confirmDeleteClose = this.confirmDeleteClose.bind(this);
-//     this.confirmDeleteOpen = this.confirmDeleteOpen.bind(this);
-//     this.handleDelete = this.handleDelete.bind(this);
-//     this.handleServerErrorClose = this.handleServerErrorClose.bind(this);
-//   }
-
-//   handleServerErrorClose = () => {
-//     this.setState({
-//       ...this.state,
-//       serverError: false,
-//     });
-//   };
-
-//   changeDisplayState = (event) => {
-//     this.setState({
-//       ...this.state,
-//       user: {
-//         ...this.state.user,
-//         display_on_website: event.target.checked,
-//       },
-//     });
-//   };
-
-//   changePrivLevel = (event) => {
-//     this.setState({
-//       ...this.state,
-//       user: {
-//         ...this.state.user,
-//         privelege_level: event.target.value,
-//       },
-//     });
-//   };
-
-//   handleFormOpen = () => {
-//     this.setState({
-//       ...this.state,
-//       isDailogOpen: true,
-//     });
-//   };
-
-//   handleFormClose = () => {
-//     this.setState({
-//       ...this.state,
-//       isDailogOpen: false,
-//     });
-//   };
-
-//   cancelUserEdit = () => {
-//     this.handleFormClose();
-//   };
-
-//   confirmDeleteOpen = () => {
-//     this.setState({
-//       ...this.state,
-//       isDeleteDailogOpen: true,
-//     });
-//   };
-
-//   confirmDeleteClose = () => {
-//     this.setState({
-//       ...this.state,
-//       isDeleteDailogOpen: false,
-//     });
-//   };
-
-//   handleDelete = () => {
-//     // Call delete thunk here,
-//     this.props.removeUser(this.state.user._id);
-//     // console.log('Deleting: ', this.state.user.name);
-//     this.confirmDeleteClose();
-//   }
-
-//   handleSubmit = () => {
-
-//   }
-
-//   render() {
-
-//     // const { editFailed, removeFailed } = this.props;
-
-//     // const [serverError, setServerError] = React.useState(editFailed || removeFailed);
-
-//     // const handleClose = () => {
-//     //   setServerError(false);
-//     // };
-
-//     return(
-//       <div>
-//         <Snackbar
-//           anchorOrigin={{
-//             vertical: 'top',
-//             horizontal: 'center',
-//           }}
-//           open={this.state.serverError}
-//           autoHideDuration={2000}
-//           onClose={this.handleServerErrorClose}
-//           message="Server Error !!! Try again"
-//         />
-//         <Button onClick={() => {
-//           this.handleFormOpen();
-//         }}
-//           color="primary"
-//         >
-//           Edit User
-//         </Button>
-//           <Dialog open={this.state.isDailogOpen} maxWidth="sm" fullWidth onClose={this.handleFormClose} scroll="paper">
-//             <DialogTitle>
-//               <Typography variant="h4">
-//                 Manage User
-//               </Typography>
-//             </DialogTitle>
-//             <DialogContent>
-//               <Card>
-//                 <CardHeader>
-//                   <Typography variant='h2'>{this.state.user.name}</Typography>
-//                 </CardHeader>
-//                 <CardBody>
-//                   <CardTitle>
-//                     <Typography variant='h5'>{this.state.user.entry_no}</Typography>
-//                   </CardTitle>
-//                   <CardSubtitle>
-//                     <Typography variant='h6'>{this.state.user.category}</Typography>
-//                   </CardSubtitle>
-//                   <CardText>
-//                     <Typography variant='body1'>{this.state.user.intro}</Typography>
-//                     <Typography variant='body1'>{`Interests: ${this.state.user.interests}`}</Typography>
-//                     <Typography variant='body1'>{`Specializations: ${this.state.user.specializations}`}</Typography>
-//                     <Typography variant='body1'>{`Hostel: ${this.state.user.hostel}`}</Typography>
-//                     <Typography variant='caption'>{`Email: ${this.state.user.email}`}</Typography>
-//                     <Typography variant='body1'>{`Mobile: ${this.state.user.mobile_number}`}</Typography>
-//                     {
-//                       Array.from(this.state.user.url).map(([key, value]) => {
-//                         return(
-//                           <Typography variant='body1'>{`${key}: `}<CardLink href={value}>{value}</CardLink></Typography>
-//                         );
-//                       })
-//                     }
-//                   </CardText>
-//                 </CardBody>
-//                 <CardFooter>
-//                   <LocalForm>
-//                     <Row className="form-group">
-//                       <Label htmlFor="privelege_level" md={12}><h6>Set privelege level:</h6></Label>
-//                       <Col sm={12}>
-//                         <RadioGroup row aria-label="privelege_level" name="privelege_level" defaultValue={this.state.user.privelege_level} onChange={this.handlePrivChange}>
-//                           <FormControlLabel
-//                             value="Unapproved_User"
-//                             control={<Radio color="primary" />}
-//                             label="Unapprove User"
-//                             labelPlacement="start"
-//                           />
-//                           <FormControlLabel
-//                             value="Approved_User"
-//                             control={<Radio color="primary" />}
-//                             label="A[pprove User"
-//                             labelPlacement="start"
-//                           />
-//                           <FormControlLabel
-//                             value="Admin"
-//                             control={<Radio color="secondary" />}
-//                             label="Make Admin"
-//                             labelPlacement="start"
-//                           />
-//                           {/* <FormControlLabel value="end" control={<Radio color="primary" />} label="End" /> */}
-//                         </RadioGroup>
-//                       </Col>
-//                     </Row>
-//                     <Row className="form-group">
-//                       <Col>
-//                         <Label htmlFor="display_on_website" sm={5}><h6>Display on website:  </h6></Label>
-//                         <FormControlLabel
-//                           sm={2}
-//                           // label="Display on Website"
-//                           control={<Switch checked={this.state.user.display_on_website} onChange={this.changeDisplayState} />}
-//                         />
-//                       </Col>
-//                     </Row>
-//                   </LocalForm>
-//                 </CardFooter>
-//               </Card>
-//               <Row className="form-group">
-//                 {/* md={{ size: 2 }} */}
-//                 <Col sm={{ size: 5, offset: 4 }}>
-//                   <Button color="primary" onClick={this.confirmDeleteOpen}>
-//                     Remove User
-//                   </Button>
-//                 </Col>
-//                 <Dialog open={this.state.isDeleteDailogOpen} onClose={this.confirmDeleteClose}>
-//                   <DialogContent>
-//                     <Typography variant='h5'>
-//                       Are you sure you want to remove the user {this.state.user.name}
-//                     </Typography>
-//                     <Row className="form-group">
-//                       <Col xs={{ size: 7, offset: 1 }} md={{ size: 4, offset: 3 }}>
-//                         <Button onClick={this.handleDelete} color="primary">
-//                           Confirm Delete
-//                         </Button>
-//                       </Col>
-//                       <Col xs={3} md={{ size: 2 }}>
-//                         <Button color="primary" onClick={this.confirmDeleteClose}>
-//                           Cancel
-//                         </Button>
-//                       </Col>
-//                     </Row>
-//                   </DialogContent>
-//                 </Dialog>
-//               </Row>
-//               <Row className="form-group">
-//                 <Col sm={{ size: 4, offset: 3 }}>
-//                   <Button color="primary" onClick={this.handleSubmit}>
-//                     Save Changes
-//                   </Button>
-//                 </Col>
-//                 <Col sm={{ size: 2 }}>
-//                   <Button color="primary" onClick={this.cancelUserEdit}>
-//                     Cancel
-//                   </Button>
-//                 </Col>
-//               </Row>
-//             </DialogContent>
-//             {/* </ModalBody> */}
-//           </Dialog>
-//       </div>
-//     );
-//   }
-// };
-
-export default function Home(props) {
+export default function Home({
+    users,
+    events,
+    projects,
+    resources,
+    removeUser,
+    editOtherUser,
+    deleteEvent,
+    editEvent,
+    deleteProject,
+    editProject,
+    deleteResource,
+    editResource,
+    history,
+}) {
     const classes = useStyles();
     // const curUser = dumUsers[0];
-    const curUser = props.users.user;
-    const dumUsers = props.users.allUsers;
-    const dumEvents = props.events.allEvents;
-    const dumProjects = props.projects.allProjects;
-    const dumResources = props.resources.allResources;
+    const curUser = users.user;
+    const dumUsers = users.allUsers;
+    const dumEvents = events.allEvents;
+    const dumProjects = projects.allProjects;
+    const dumResources = resources.allResources;
 
     const [eventPopOpen, setEventPopOpen] = React.useState(false);
     const toggleEventPop = () => {
-        if (!props.events.isLoading && props.events.errMess === null) {
+        if (!events.isLoading && events.errMess === null) {
             setEventPopOpen(!eventPopOpen);
         }
     };
 
     const [projectPopOpen, setProjectPopOpen] = React.useState(false);
     const toggleProjectPop = () => {
-        if (!props.projects.isLoading && props.projects.errMess === null) {
+        if (!projects.isLoading && projects.errMess === null) {
             setProjectPopOpen(!projectPopOpen);
         }
     };
 
     const [resourcePopOpen, setResourcePopOpen] = React.useState(false);
     const toggleResourcePop = () => {
-        if (!props.resources.isLoading && props.resources.errMess === null) {
+        if (!resources.isLoading && resources.errMess === null) {
             setResourcePopOpen(!resourcePopOpen);
         }
     };
 
     const [memPopOpen, setMemPopOpen] = React.useState(false);
     const toggleMemPop = () => {
-        if (!props.users.isLoading && props.users.usersErrMess === null) {
+        if (!users.isLoading && users.usersErrMess === null) {
             setMemPopOpen(!memPopOpen);
         }
     };
@@ -415,7 +186,7 @@ export default function Home(props) {
 
     const handleEventCardOpen = () => {
         // console.log('Event card clicked');
-        if (!props.events.isLoading && props.events.errMess === null) {
+        if (!events.isLoading && events.errMess === null) {
             setEventDailogOpen(true);
         }
     };
@@ -440,7 +211,7 @@ export default function Home(props) {
 
     const handleProjectCardOpen = () => {
         // console.log('Project card clicked');
-        if (!props.projects.isLoading && props.projects.errMess === null) {
+        if (!projects.isLoading && projects.errMess === null) {
             setProjectDailogOpen(true);
         }
     };
@@ -452,7 +223,7 @@ export default function Home(props) {
 
     const handleResourceCardOpen = () => {
         // console.log('card clicked');
-        if (!props.resources.isLoading && props.resources.errMess === null) {
+        if (!resources.isLoading && resources.errMess === null) {
             setResourceDailogOpen(true);
         }
     };
@@ -463,7 +234,7 @@ export default function Home(props) {
 
     const handleUserCardOpen = () => {
         // console.log('card clicked');
-        if (!props.users.isLoading && props.users.usersErrMess === null) {
+        if (!users.isLoading && users.usersErrMess === null) {
             setUserDailogOpen(true);
         }
     };
@@ -527,13 +298,13 @@ export default function Home(props) {
                             id="eventCard"
                             onClick={handleEventCardOpen}
                         >
-                            {props.events.errMess !== null ? (
+                            {events.errMess !== null ? (
                                 <h4>Error fetching events</h4>
                             ) : (
                                 <CardBody>
                                     <Backdrop
                                         className={classes.backdrop}
-                                        open={props.events.isLoading}
+                                        open={events.isLoading}
                                     >
                                         <CircularProgress color="inherit" />
                                     </Backdrop>
@@ -591,10 +362,10 @@ export default function Home(props) {
                                 </Nav>
                                 <TabContent activeTab={activeTab}>
                                     <TabPane tabId="Ongoing">
-                                        {props.events.errMess !== null ? (
+                                        {events.errMess !== null ? (
                                             <div>
                                                 <h4>Failed to fetch Events</h4>
-                                                <h4>{props.events.errMess}</h4>
+                                                <h4>{events.errMess}</h4>
                                             </div>
                                         ) : null}
                                         {
@@ -606,10 +377,10 @@ export default function Home(props) {
                                                             event.end_date
                                                         )
                                                     )
-                                                    .map((event, index) => {
+                                                    .map((event) => {
                                                         return (
                                                             <Fragment
-                                                                key={`${event}~${index}`}
+                                                                key={`${event}`}
                                                             >
                                                                 <ListGroupItem>
                                                                     <Card
@@ -689,10 +460,10 @@ export default function Home(props) {
                                         }
                                     </TabPane>
                                     <TabPane tabId="Upcoming">
-                                        {props.events.errMess !== null ? (
+                                        {events.errMess !== null ? (
                                             <div>
                                                 <h4>Failed to fetch Events</h4>
-                                                <h4>{props.events.errMess}</h4>
+                                                <h4>{events.errMess}</h4>
                                             </div>
                                         ) : null}
                                         {
@@ -703,10 +474,10 @@ export default function Home(props) {
                                                             event.start_date
                                                         )
                                                     )
-                                                    .map((event, index) => {
+                                                    .map((event) => {
                                                         return (
                                                             <Fragment
-                                                                key={`${event}~${index}`}
+                                                                key={`${event}`}
                                                             >
                                                                 <ListGroupItem>
                                                                     <Card
@@ -786,10 +557,10 @@ export default function Home(props) {
                                         }
                                     </TabPane>
                                     <TabPane tabId="Completed">
-                                        {props.events.errMess !== null ? (
+                                        {events.errMess !== null ? (
                                             <div>
                                                 <h4>Failed to fetch Events</h4>
-                                                <h4>{props.events.errMess}</h4>
+                                                <h4>{events.errMess}</h4>
                                             </div>
                                         ) : null}
                                         {
@@ -800,10 +571,10 @@ export default function Home(props) {
                                                             event.end_date
                                                         )
                                                     )
-                                                    .map((event, index) => {
+                                                    .map((event) => {
                                                         return (
                                                             <Fragment
-                                                                key={`${event}~${index}`}
+                                                                key={`${event}`}
                                                             >
                                                                 <ListGroupItem>
                                                                     <Card
@@ -907,9 +678,7 @@ export default function Home(props) {
                                     ) : (
                                         dumEvents.map((event, index) => {
                                             return (
-                                                <Fragment
-                                                    key={`${event}~${index}`}
-                                                >
+                                                <Fragment key={`${event}`}>
                                                     <ListGroupItem>
                                                         <Card body>
                                                             <CardBody>
@@ -961,7 +730,7 @@ export default function Home(props) {
                                                                 'Admin' ? (
                                                                     <EditEventForm
                                                                         deleteEvent={
-                                                                            props.deleteEvent
+                                                                            deleteEvent
                                                                         }
                                                                         dumEvents={
                                                                             dumEvents
@@ -970,15 +739,13 @@ export default function Home(props) {
                                                                             dumUsers
                                                                         }
                                                                         editEvent={
-                                                                            props.editEvent
+                                                                            editEvent
                                                                         }
                                                                         index={
                                                                             index
                                                                         }
                                                                         serverError={
-                                                                            props
-                                                                                .events
-                                                                                .serverError
+                                                                            events.serverError
                                                                         }
                                                                     />
                                                                 ) : null}
@@ -1001,13 +768,13 @@ export default function Home(props) {
                             id="projectCard"
                             onClick={handleProjectCardOpen}
                         >
-                            {props.projects.errMess !== null ? (
+                            {projects.errMess !== null ? (
                                 <h4>Error fetching projects</h4>
                             ) : (
                                 <CardBody>
                                     <Backdrop
                                         className={classes.backdrop}
-                                        open={props.projects.isLoading}
+                                        open={projects.isLoading}
                                     >
                                         <CircularProgress color="inherit" />
                                     </Backdrop>
@@ -1065,14 +832,12 @@ export default function Home(props) {
                                 </Nav>
                                 <TabContent activeTab={activeTab}>
                                     <TabPane tabId="Ongoing">
-                                        {props.projects.errMess !== null ? (
+                                        {projects.errMess !== null ? (
                                             <div>
                                                 <h4>
                                                     Failed to fetch Projects
                                                 </h4>
-                                                <h4>
-                                                    {props.projects.errMess}
-                                                </h4>
+                                                <h4>{projects.errMess}</h4>
                                             </div>
                                         ) : null}
                                         {
@@ -1083,10 +848,10 @@ export default function Home(props) {
                                                             project.status ===
                                                             'ONGOING'
                                                     )
-                                                    .map((project, index) => {
+                                                    .map((project) => {
                                                         return (
                                                             <Fragment
-                                                                key={`${project}~${index}`}
+                                                                key={`${project}`}
                                                             >
                                                                 <ListGroupItem>
                                                                     <Card
@@ -1165,14 +930,12 @@ export default function Home(props) {
                                         }
                                     </TabPane>
                                     <TabPane tabId="Upcoming">
-                                        {props.projects.errMess !== null ? (
+                                        {projects.errMess !== null ? (
                                             <div>
                                                 <h4>
                                                     Failed to fetch Projects
                                                 </h4>
-                                                <h4>
-                                                    {props.projects.errMess}
-                                                </h4>
+                                                <h4>{projects.errMess}</h4>
                                             </div>
                                         ) : null}
                                         {
@@ -1183,10 +946,10 @@ export default function Home(props) {
                                                             project.status ===
                                                             'IDEA'
                                                     )
-                                                    .map((project, index) => {
+                                                    .map((project) => {
                                                         return (
                                                             <Fragment
-                                                                key={`${project}~${index}`}
+                                                                key={`${project}`}
                                                             >
                                                                 <ListGroupItem>
                                                                     <Card
@@ -1265,14 +1028,12 @@ export default function Home(props) {
                                         }
                                     </TabPane>
                                     <TabPane tabId="Completed">
-                                        {props.projects.errMess !== null ? (
+                                        {projects.errMess !== null ? (
                                             <div>
                                                 <h4>
                                                     Failed to fetch Projects
                                                 </h4>
-                                                <h4>
-                                                    {props.projects.errMess}
-                                                </h4>
+                                                <h4>{projects.errMess}</h4>
                                             </div>
                                         ) : null}
                                         {
@@ -1283,10 +1044,10 @@ export default function Home(props) {
                                                             project.status ===
                                                             'COMPLETED'
                                                     )
-                                                    .map((project, index) => {
+                                                    .map((project) => {
                                                         return (
                                                             <Fragment
-                                                                key={`${project}~${index}`}
+                                                                key={`${project}`}
                                                             >
                                                                 <ListGroupItem>
                                                                     <Card
@@ -1386,9 +1147,7 @@ export default function Home(props) {
                                     ) : (
                                         dumProjects.map((project, index) => {
                                             return (
-                                                <Fragment
-                                                    key={`${project}~${index}`}
-                                                >
+                                                <Fragment key={`${project}`}>
                                                     <ListGroupItem>
                                                         <Card body>
                                                             <CardBody>
@@ -1443,7 +1202,7 @@ export default function Home(props) {
                                                                 'Admin' ? (
                                                                     <EditProjectForm
                                                                         deleteProject={
-                                                                            props.deleteProject
+                                                                            deleteProject
                                                                         }
                                                                         dumProjects={
                                                                             dumProjects
@@ -1452,15 +1211,13 @@ export default function Home(props) {
                                                                             dumUsers
                                                                         }
                                                                         editProject={
-                                                                            props.editProject
+                                                                            editProject
                                                                         }
                                                                         index={
                                                                             index
                                                                         }
                                                                         serverError={
-                                                                            props
-                                                                                .projects
-                                                                                .serverError
+                                                                            projects.serverError
                                                                         }
                                                                     />
                                                                 ) : null}
@@ -1483,13 +1240,13 @@ export default function Home(props) {
                             style={{ borderColor: '#00c853' }}
                             onClick={handleResourceCardOpen}
                         >
-                            {props.resources.errMess !== null ? (
+                            {resources.errMess !== null ? (
                                 <h4>Error fetching resources</h4>
                             ) : (
                                 <CardBody>
                                     <Backdrop
                                         className={classes.backdrop}
-                                        open={props.resources.isLoading}
+                                        open={resources.isLoading}
                                     >
                                         <CircularProgress color="inherit" />
                                     </Backdrop>
@@ -1536,14 +1293,12 @@ export default function Home(props) {
                                 </Nav>
                                 <TabContent activeTab={activeTab}>
                                     <TabPane tabId="Completed">
-                                        {props.resources.errMess !== null ? (
+                                        {resources.errMess !== null ? (
                                             <div>
                                                 <h4>
                                                     Failed to fetch Resources
                                                 </h4>
-                                                <h4>
-                                                    {props.resources.errMess}
-                                                </h4>
+                                                <h4>{resources.errMess}</h4>
                                             </div>
                                         ) : null}
                                         {
@@ -1552,10 +1307,10 @@ export default function Home(props) {
                                                     .filter(
                                                         (res) => res.archive
                                                     )
-                                                    .map((res, index) => {
+                                                    .map((res) => {
                                                         return (
                                                             <Fragment
-                                                                key={`${res}~${index}`}
+                                                                key={`${res}`}
                                                             >
                                                                 <ListGroupItem>
                                                                     <Card
@@ -1618,14 +1373,12 @@ export default function Home(props) {
                                         }
                                     </TabPane>
                                     <TabPane tabId="Ongoing">
-                                        {props.resources.errMess !== null ? (
+                                        {resources.errMess !== null ? (
                                             <div>
                                                 <h4>
                                                     Failed to fetch Resources
                                                 </h4>
-                                                <h4>
-                                                    {props.resources.errMess}
-                                                </h4>
+                                                <h4>{resources.errMess}</h4>
                                             </div>
                                         ) : null}
                                         {
@@ -1634,10 +1387,10 @@ export default function Home(props) {
                                                     .filter(
                                                         (res) => !res.archive
                                                     )
-                                                    .map((res, index) => {
+                                                    .map((res) => {
                                                         return (
                                                             <Fragment
-                                                                key={`${res}~${index}`}
+                                                                key={`${res}`}
                                                             >
                                                                 <ListGroupItem>
                                                                     <Card
@@ -1721,9 +1474,7 @@ export default function Home(props) {
                                     ) : (
                                         dumResources.map((res, index) => {
                                             return (
-                                                <Fragment
-                                                    key={`${res}~${index}`}
-                                                >
+                                                <Fragment key={`${res}`}>
                                                     <ListGroupItem>
                                                         <Card body>
                                                             <CardBody>
@@ -1759,7 +1510,7 @@ export default function Home(props) {
                                                                 'Admin' ? (
                                                                     <EditResourceForm
                                                                         deleteResource={
-                                                                            props.deleteResource
+                                                                            deleteResource
                                                                         }
                                                                         dumResources={
                                                                             dumResources
@@ -1768,15 +1519,13 @@ export default function Home(props) {
                                                                             dumUsers
                                                                         }
                                                                         editResource={
-                                                                            props.editResource
+                                                                            editResource
                                                                         }
                                                                         index={
                                                                             index
                                                                         }
                                                                         serverError={
-                                                                            props
-                                                                                .resources
-                                                                                .serverError
+                                                                            resources.serverError
                                                                         }
                                                                     />
                                                                 ) : null}
@@ -1799,13 +1548,13 @@ export default function Home(props) {
                             style={{ borderColor: '#00c853' }}
                             onClick={handleUserCardOpen}
                         >
-                            {props.users.usersErrMess !== null ? (
+                            {users.usersErrMess !== null ? (
                                 <h4>Error fetching members</h4>
                             ) : (
                                 <CardBody>
                                     <Backdrop
                                         className={classes.backdrop}
-                                        open={props.users.usersLoading}
+                                        open={users.usersLoading}
                                     >
                                         <CircularProgress color="inherit" />
                                     </Backdrop>
@@ -1863,10 +1612,10 @@ export default function Home(props) {
                                 </Nav>
                                 <TabContent activeTab={activeTab}>
                                     <TabPane tabId="Ongoing">
-                                        {props.users.userErrMess !== null ? (
+                                        {users.userErrMess !== null ? (
                                             <div>
                                                 <h4>Failed to fetch Members</h4>
-                                                <h4>{props.users.errMess}</h4>
+                                                <h4>{users.errMess}</h4>
                                             </div>
                                         ) : null}
                                         {
@@ -1877,10 +1626,10 @@ export default function Home(props) {
                                                             user.privelege_level ===
                                                             'Admin'
                                                     )
-                                                    .map((user, index) => {
+                                                    .map((user) => {
                                                         return (
                                                             <Fragment
-                                                                key={`${user}~${index}`}
+                                                                key={`${user}`}
                                                             >
                                                                 <ListGroupItem>
                                                                     <Card
@@ -1992,10 +1741,10 @@ export default function Home(props) {
                                         }
                                     </TabPane>
                                     <TabPane tabId="Upcoming">
-                                        {props.users.userErrMess !== null ? (
+                                        {users.userErrMess !== null ? (
                                             <div>
                                                 <h4>Failed to fetch Members</h4>
-                                                <h4>{props.users.errMess}</h4>
+                                                <h4>{users.errMess}</h4>
                                             </div>
                                         ) : null}
                                         {
@@ -2006,10 +1755,10 @@ export default function Home(props) {
                                                             user.privelege_level ===
                                                             'Approved_User'
                                                     )
-                                                    .map((user, index) => {
+                                                    .map((user) => {
                                                         return (
                                                             <Fragment
-                                                                key={`${user}~${index}`}
+                                                                key={`${user}`}
                                                             >
                                                                 <ListGroupItem>
                                                                     <Card
@@ -2118,10 +1867,10 @@ export default function Home(props) {
                                         }
                                     </TabPane>
                                     <TabPane tabId="Completed">
-                                        {props.users.userErrMess !== null ? (
+                                        {users.userErrMess !== null ? (
                                             <div>
                                                 <h4>Failed to fetch Members</h4>
-                                                <h4>{props.users.errMess}</h4>
+                                                <h4>{users.errMess}</h4>
                                             </div>
                                         ) : null}
                                         {
@@ -2132,10 +1881,10 @@ export default function Home(props) {
                                                             user.privelege_level ===
                                                             'Unapproved_User'
                                                     )
-                                                    .map((user, index) => {
+                                                    .map((user) => {
                                                         return (
                                                             <Fragment
-                                                                key={`${user}~${index}`}
+                                                                key={`${user}`}
                                                             >
                                                                 <ListGroupItem>
                                                                     <Card
@@ -2234,9 +1983,7 @@ export default function Home(props) {
                                     ) : (
                                         dumUsers.map((user, index) => {
                                             return (
-                                                <Fragment
-                                                    key={`${user}~${index}`}
-                                                >
+                                                <Fragment key={`${user}`}>
                                                     <ListGroupItem>
                                                         <Card body>
                                                             <CardBody>
@@ -2284,21 +2031,19 @@ export default function Home(props) {
                                                                     'Admin' ? (
                                                                     <EditOtherUserForm
                                                                         removeUser={
-                                                                            props.removeUser
+                                                                            removeUser
                                                                         }
                                                                         dumUsers={
                                                                             dumUsers
                                                                         }
                                                                         editUser={
-                                                                            props.editOtherUser
+                                                                            editOtherUser
                                                                         }
                                                                         index={
                                                                             index
                                                                         }
                                                                         serverError={
-                                                                            props
-                                                                                .users
-                                                                                .serverError
+                                                                            users.serverError
                                                                         }
                                                                     />
                                                                 ) : null}
@@ -2325,7 +2070,7 @@ export default function Home(props) {
                         <Button
                             fullWidth
                             onClick={() => {
-                                props.history.push('/dashboard/myTasks');
+                                history.push('/dashboard/myTasks');
                             }}
                         >
                             <Typography
@@ -2379,11 +2124,9 @@ export default function Home(props) {
                                                     curUser._id
                                                 )
                                             )
-                                            .map((event, index) => {
+                                            .map((event) => {
                                                 return (
-                                                    <Fragment
-                                                        key={`${event}~${index}`}
-                                                    >
+                                                    <Fragment key={`${event}`}>
                                                         <ListGroupItem>
                                                             <Card
                                                                 body
@@ -2465,10 +2208,10 @@ export default function Home(props) {
                                                         curUser._id
                                                     ) !== -1
                                             )
-                                            .map((project, index) => {
+                                            .map((project) => {
                                                 return (
                                                     <Fragment
-                                                        key={`${project}~${index}`}
+                                                        key={`${project}`}
                                                     >
                                                         <ListGroupItem>
                                                             <Card
@@ -2557,3 +2300,19 @@ export default function Home(props) {
         </div>
     );
 }
+
+Home.propTypes = {
+    users: PropTypes.object.isRequired,
+    events: PropTypes.object.isRequired,
+    projects: PropTypes.object.isRequired,
+    resources: PropTypes.object.isRequired,
+    removeUser: PropTypes.func.isRequired,
+    editOtherUser: PropTypes.func.isRequired,
+    deleteEvent: PropTypes.func.isRequired,
+    editEvent: PropTypes.func.isRequired,
+    deleteProject: PropTypes.func.isRequired,
+    editProject: PropTypes.func.isRequired,
+    deleteResource: PropTypes.func.isRequired,
+    editResource: PropTypes.func.isRequired,
+    history: PropTypes.any.isRequired,
+};

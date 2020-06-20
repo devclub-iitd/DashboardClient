@@ -15,12 +15,11 @@ import {
     Button,
     CssBaseline,
     TextField,
-    Link,
     Grid,
     Typography,
     Container,
 } from '@material-ui/core';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Link } from 'react-router-dom';
 import { registerUser } from '../actions/userActions';
 
 const styles = (theme) => ({
@@ -69,30 +68,30 @@ class SignUp extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleFailureClose = this.handleFailureClose.bind(this);
         this.handleSuccessClose = this.handleSuccessClose.bind(this);
-        this.objToStrMap = this.objToStrMap.bind(this);
+        // this.objToStrMap = this.objToStrMap.bind(this);
     }
 
     handleSuccessClose = () => {
-        this.setState({
-            ...this.state,
+        this.setState((prevState) => ({
+            ...prevState,
             success: false,
-        });
+        }));
     };
 
     handleFailureClose = () => {
-        this.setState({
-            ...this.state,
+        this.setState((prevState) => ({
+            ...prevState,
             failure: false,
-        });
+        }));
     };
 
-    objToStrMap = (obj) => {
-        const strMap = new Map();
-        Object.keys(obj).map((k) => strMap.set(k, obj[k]));
-        return strMap;
-    };
+    // objToStrMap = (obj) => {
+    //     const strMap = new Map();
+    //     Object.keys(obj).map((k) => strMap.set(k, obj[k]));
+    //     return strMap;
+    // };
 
-    handleSubmit(e) {
+    handleSubmit = (e) => {
         e.preventDefault();
 
         const { confirmPassError } = this.state;
@@ -103,13 +102,10 @@ class SignUp extends React.Component {
 
         const { target } = e;
 
-        const urlMap = new Map([['', '']]);
-
         const body = {
             name: target.name.value,
             entry_no: target.entrynumber.value,
             category: target.category.value,
-            url: this.objToStrMap(urlMap),
             email: target.email.value,
             password: target.password.value,
         };
@@ -118,34 +114,35 @@ class SignUp extends React.Component {
 
         // const { register } = this.props;
         // window.location.reload(false);
+        const { register } = this.props;
 
-        this.props.registerUser(body);
-        if (this.props.register.errMess === null) {
-            this.setState({
-                ...this.state,
+        registerUser(body);
+        if (register.errMess === null) {
+            this.setState((prevState) => ({
+                ...prevState,
                 success: true,
-            });
+            }));
         } else {
-            this.setState({
-                ...this.state,
+            this.setState((prevState) => ({
+                ...prevState,
                 failure: true,
-            });
+            }));
         }
-    }
+    };
 
-    handleChange(e, type) {
+    handleChange = (e, type) => {
         const { value } = e.target;
         this.setState({ [type]: value });
         if (type === 'confirmPassword') {
             const { password } = this.state;
             this.setState({ confirmPassError: value !== password });
         }
-    }
+    };
 
     render() {
         const { classes, register } = this.props;
 
-        const { confirmPassError } = this.state;
+        const { confirmPassError, success, failure } = this.state;
 
         return (
             <Container component="main" maxWidth="xs">
@@ -154,7 +151,7 @@ class SignUp extends React.Component {
                         vertical: 'top',
                         horizontal: 'center',
                     }}
-                    open={this.state.success}
+                    open={success}
                     autoHideDuration={2000}
                     onClose={this.handleSuccessClose}
                     message="Registration Successful! Request for approval sent to Administrator. Wait before login."
@@ -164,7 +161,7 @@ class SignUp extends React.Component {
                         vertical: 'top',
                         horizontal: 'center',
                     }}
-                    open={this.state.failure}
+                    open={failure}
                     autoHideDuration={2000}
                     onClose={this.handleFailureClose}
                     message="Registration Failed !! Please try again."
@@ -293,7 +290,7 @@ class SignUp extends React.Component {
                         </Button>
                         <Grid container justify="flex-end">
                             <Grid item>
-                                <Link href="/login" variant="body2">
+                                <Link to="/login" variant="body2">
                                     Already have an account? Sign in
                                 </Link>
                             </Grid>
@@ -316,7 +313,7 @@ const mapDispatchToProps = (dispatch) => ({
 SignUp.propTypes = {
     classes: PropTypes.objectOf(PropTypes.string).isRequired,
     register: PropTypes.func.isRequired,
-    registerUser: PropTypes.func.isRequired,
+    // registerUser: PropTypes.func.isRequired,
 };
 
 export default withRouter(

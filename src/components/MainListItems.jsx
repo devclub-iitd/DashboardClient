@@ -1,3 +1,4 @@
+/* eslint-disable react/forbid-prop-types */
 import React from 'react';
 import {
     ListItem,
@@ -7,7 +8,6 @@ import {
 } from '@material-ui/core';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import PersonIcon from '@material-ui/icons/Person';
-import VpnKeyIcon from '@material-ui/icons/VpnKey';
 import AddBoxIcon from '@material-ui/icons/AddBox';
 import ExitToAppOutlinedIcon from '@material-ui/icons/ExitToAppOutlined';
 import EventIcon from '@material-ui/icons/Event';
@@ -16,25 +16,27 @@ import DeveloperModeIcon from '@material-ui/icons/DeveloperMode';
 import PublishIcon from '@material-ui/icons/Publish';
 import GroupIcon from '@material-ui/icons/Group';
 import AssignmentIcon from '@material-ui/icons/Assignment';
+import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 
 function MainListItems(props) {
-    const redirectFunc = (subPath, closeDrawer) => () => {
+    const { history, isAdmin, closeDrawer, logout } = props;
+    const redirectFunc = (subPath) => () => {
         closeDrawer();
         if (subPath === 'users' || subPath === 'deploy') {
-            if (!props.isAdmin) {
-                props.history.push('/dashboard/home');
+            if (!isAdmin) {
+                history.push('/dashboard/home');
             } else {
-                props.history.push(`/dashboard/${subPath}`);
+                history.push(`/dashboard/${subPath}`);
             }
         } else {
-            props.history.push(`/dashboard/${subPath}`);
+            history.push(`/dashboard/${subPath}`);
         }
     };
 
     return (
         <div>
-            <ListItem button onClick={redirectFunc('home', props.closeDrawer)}>
+            <ListItem button onClick={redirectFunc('home')}>
                 <ListItemIcon>
                     <DashboardIcon />
                 </ListItemIcon>
@@ -42,10 +44,7 @@ function MainListItems(props) {
                     <ListItemText primary="Home" />
                 </Tooltip>
             </ListItem>
-            <ListItem
-                button
-                onClick={redirectFunc('profile', props.closeDrawer)}
-            >
+            <ListItem button onClick={redirectFunc('profile')}>
                 <ListItemIcon>
                     <PersonIcon />
                 </ListItemIcon>
@@ -53,7 +52,7 @@ function MainListItems(props) {
                     <ListItemText primary="Profile" />
                 </Tooltip>
             </ListItem>
-            {/* <ListItem button onClick={redirectFunc('changePassword', props.closeDrawer)}>
+            {/* <ListItem button onClick={redirectFunc('changePassword')}>
         <ListItemIcon>
           <VpnKeyIcon />
         </ListItemIcon>
@@ -61,10 +60,7 @@ function MainListItems(props) {
           <ListItemText primary="Change Password" />
         </Tooltip>
       </ListItem> */}
-            <ListItem
-                button
-                onClick={redirectFunc('events', props.closeDrawer)}
-            >
+            <ListItem button onClick={redirectFunc('events')}>
                 <ListItemIcon>
                     <EventIcon />
                 </ListItemIcon>
@@ -72,10 +68,7 @@ function MainListItems(props) {
                     <ListItemText primary="Events" />
                 </Tooltip>
             </ListItem>
-            <ListItem
-                button
-                onClick={redirectFunc('projects', props.closeDrawer)}
-            >
+            <ListItem button onClick={redirectFunc('projects')}>
                 <ListItemIcon>
                     <DeveloperModeIcon />
                 </ListItemIcon>
@@ -83,10 +76,7 @@ function MainListItems(props) {
                     <ListItemText primary="Projects" />
                 </Tooltip>
             </ListItem>
-            <ListItem
-                button
-                onClick={redirectFunc('resources', props.closeDrawer)}
-            >
+            <ListItem button onClick={redirectFunc('resources')}>
                 <ListItemIcon>
                     <AllInboxIcon />
                 </ListItemIcon>
@@ -96,8 +86,8 @@ function MainListItems(props) {
             </ListItem>
             <ListItem
                 button
-                disabled={!props.isAdmin}
-                onClick={redirectFunc('users', props.closeDrawer)}
+                disabled={!isAdmin}
+                onClick={redirectFunc('users')}
             >
                 <ListItemIcon>
                     <GroupIcon />
@@ -106,10 +96,7 @@ function MainListItems(props) {
                     <ListItemText primary="Manage Users" />
                 </Tooltip>
             </ListItem>
-            <ListItem
-                button
-                onClick={redirectFunc('myTasks', props.closeDrawer)}
-            >
+            <ListItem button onClick={redirectFunc('myTasks')}>
                 <ListItemIcon>
                     <AssignmentIcon />
                 </ListItemIcon>
@@ -119,8 +106,8 @@ function MainListItems(props) {
             </ListItem>
             <ListItem
                 button
-                disabled={!props.isAdmin}
-                onClick={redirectFunc('deploy', props.closeDrawer)}
+                disabled={!isAdmin}
+                onClick={redirectFunc('deploy')}
             >
                 <ListItemIcon>
                     <PublishIcon />
@@ -135,10 +122,7 @@ function MainListItems(props) {
         </ListItemIcon>
         <ListItemText primary="Approve Users" />
       </ListItem> */}
-            <ListItem
-                button
-                onClick={redirectFunc('createTasks', props.closeDrawer)}
-            >
+            <ListItem button onClick={redirectFunc('createTasks')}>
                 <ListItemIcon>
                     <AddBoxIcon />
                 </ListItemIcon>
@@ -146,7 +130,7 @@ function MainListItems(props) {
                     <ListItemText primary="Create Tasks" />
                 </Tooltip>
             </ListItem>
-            <ListItem button onClick={() => props.logout()}>
+            <ListItem button onClick={() => logout()}>
                 <ListItemIcon>
                     <ExitToAppOutlinedIcon />
                 </ListItemIcon>
@@ -163,5 +147,12 @@ function MainListItems(props) {
         </div>
     );
 }
+
+MainListItems.propTypes = {
+    history: PropTypes.any.isRequired,
+    isAdmin: PropTypes.bool.isRequired,
+    closeDrawer: PropTypes.func.isRequired,
+    logout: PropTypes.func.isRequired,
+};
 
 export default withRouter(MainListItems);

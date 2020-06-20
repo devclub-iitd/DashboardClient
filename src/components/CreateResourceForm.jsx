@@ -1,106 +1,92 @@
-/* eslint-disable react/no-array-index-key */
-/* eslint-disable no-console */
-import React, { Fragment } from 'react';
-import { emphasize, makeStyles, useTheme } from '@material-ui/core/styles';
+import React from 'react';
+// import { emphasize, makeStyles } from '@material-ui/core/styles';
 import {
     Grid,
     FormControlLabel,
     Button,
     Switch,
-    Fab,
     Snackbar,
-    Typography,
-    TextField,
-    Paper,
 } from '@material-ui/core';
-import { Card, CardBody, CardTitle, Row, Col, Label } from 'reactstrap';
-import { Control, Form, Errors, LocalForm } from 'react-redux-form';
-import DateFnsUtils from '@date-io/date-fns';
-import AddIcon from '@material-ui/icons/Add';
-import {
-    MuiPickersUtilsProvider,
-    KeyboardDatePicker,
-} from '@material-ui/pickers';
-import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutline';
+import PropTypes from 'prop-types';
+import { Row, Col, Label } from 'reactstrap';
+import { Control, Errors, LocalForm } from 'react-redux-form';
 
-const useStyles = makeStyles((theme) => ({
-    root: {
-        flexGrow: 1,
-        height: 250,
-        minWidth: 290,
-    },
-    input: {
-        display: 'flex',
-        padding: 0,
-        height: 'auto',
-    },
-    valueContainer: {
-        display: 'flex',
-        flexWrap: 'wrap',
-        flex: 1,
-        alignItems: 'center',
-        overflow: 'hidden',
-    },
-    chip: {
-        margin: theme.spacing(0.5, 0.25),
-    },
-    chipFocused: {
-        backgroundColor: emphasize(
-            theme.palette.type === 'light'
-                ? theme.palette.grey[300]
-                : theme.palette.grey[700],
-            0.08
-        ),
-    },
-    noOptionsMessage: {
-        padding: theme.spacing(1, 2),
-    },
-    singleValue: {
-        fontSize: 16,
-    },
-    placeholder: {
-        position: 'absolute',
-        left: 2,
-        bottom: 6,
-        fontSize: 16,
-    },
-    paper: {
-        position: 'absolute',
-        zIndex: 1,
-        marginTop: theme.spacing(1),
-        left: 0,
-        right: 0,
-    },
-    divider: {
-        height: theme.spacing(2),
-    },
-    form: {
-        width: '100%', // Fix IE 11 issue.
-        marginTop: theme.spacing(1),
-    },
-    formControl: {
-        margin: theme.spacing(1),
-        minWidth: 120,
-    },
-    margin: {
-        // margin: theme.spacing(1),
-        marginTop: '1em',
-        marginBottom: '2em',
-        width: '100%',
-    },
-    head: {
-        marginBottom: '0.5em',
-        marginTop: '1em',
-        textAlign: 'center',
-    },
-    urlField: {
-        marginBottom: 10,
-    },
-}));
+// const useStyles = makeStyles((theme) => ({
+//     root: {
+//         flexGrow: 1,
+//         height: 250,
+//         minWidth: 290,
+//     },
+//     input: {
+//         display: 'flex',
+//         padding: 0,
+//         height: 'auto',
+//     },
+//     valueContainer: {
+//         display: 'flex',
+//         flexWrap: 'wrap',
+//         flex: 1,
+//         alignItems: 'center',
+//         overflow: 'hidden',
+//     },
+//     chip: {
+//         margin: theme.spacing(0.5, 0.25),
+//     },
+//     chipFocused: {
+//         backgroundColor: emphasize(
+//             theme.palette.type === 'light'
+//                 ? theme.palette.grey[300]
+//                 : theme.palette.grey[700],
+//             0.08
+//         ),
+//     },
+//     noOptionsMessage: {
+//         padding: theme.spacing(1, 2),
+//     },
+//     singleValue: {
+//         fontSize: 16,
+//     },
+//     placeholder: {
+//         position: 'absolute',
+//         left: 2,
+//         bottom: 6,
+//         fontSize: 16,
+//     },
+//     paper: {
+//         position: 'absolute',
+//         zIndex: 1,
+//         marginTop: theme.spacing(1),
+//         left: 0,
+//         right: 0,
+//     },
+//     divider: {
+//         height: theme.spacing(2),
+//     },
+//     form: {
+//         width: '100%', // Fix IE 11 issue.
+//         marginTop: theme.spacing(1),
+//     },
+//     formControl: {
+//         margin: theme.spacing(1),
+//         minWidth: 120,
+//     },
+//     margin: {
+//         // margin: theme.spacing(1),
+//         marginTop: '1em',
+//         marginBottom: '2em',
+//         width: '100%',
+//     },
+//     head: {
+//         marginBottom: '0.5em',
+//         marginTop: '1em',
+//         textAlign: 'center',
+//     },
+//     urlField: {
+//         marginBottom: 10,
+//     },
+// }));
 
 export default function CreateTasks(props) {
-    const classes = useStyles();
-
     const [state, setState] = React.useState({
         newRes: {
             internal_name: '',
@@ -182,18 +168,7 @@ export default function CreateTasks(props) {
         });
     };
 
-    const strMapToObj = (strMap) => {
-        const obj = Object.create(null);
-        Array.from(strMap).map(([k, v]) => {
-            obj[k] = v;
-        });
-        return obj;
-    };
-
     const submitResourceForm = () => {
-        const newResource = {
-            ...state.newRes,
-        };
         // console.log('resource: ', newResource);
         props.createResource(state.newRes);
         if (props.resourceError === null) {
@@ -499,3 +474,8 @@ export default function CreateTasks(props) {
         </div>
     );
 }
+
+CreateTasks.propTypes = {
+    createResource: PropTypes.func.isRequired,
+    resourceError: PropTypes.string.isRequired,
+};

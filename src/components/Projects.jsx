@@ -1,3 +1,5 @@
+/* eslint-disable react/forbid-prop-types */
+/* eslint-disable no-underscore-dangle */
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
@@ -27,6 +29,7 @@ import {
     CardHeader,
     CardLink,
 } from 'reactstrap';
+import PropTypes from 'prop-types';
 import EditProjectForm from './EditProjectForm';
 import CreateProjectForm from './CreateProjectForm';
 
@@ -152,7 +155,7 @@ const ProjectsPage = ({
             <Paper elevation={3} variant="outlined" className={classes.paper}>
                 {/* <GridList spacing={1} className={classes.gridList}> */}
                 {/* <Typography variant='h4' color="primary" className={classes.head}>Ideated</Typography> */}
-                <Grid container justify="flex-start">
+                <Grid container justify="flthis.this.ex-start">
                     <Grid item xs={12} sm={4}>
                         <Typography
                             variant="h4"
@@ -204,13 +207,7 @@ const ProjectsPage = ({
                     ) : (
                         ideas.map((project, index) => (
                             // <GridListTile key={`${project}~${index}`} cols={2} rows={2}>
-                            <Grid
-                                key={`${project}~${index}`}
-                                item
-                                xs={12}
-                                md={6}
-                                lg={4}
-                            >
+                            <Grid key={`${project}`} item xs={12} md={6} lg={4}>
                                 <Card body style={{ borderColor: '#00c853' }}>
                                     <CardHeader>
                                         <Typography variant="h4">
@@ -331,13 +328,7 @@ const ProjectsPage = ({
                     ) : (
                         ongoing.map((project, index) => (
                             // <GridListTile key={`${project}~${index}`} cols={2} rows={2}>
-                            <Grid
-                                key={`${project}~${index}`}
-                                item
-                                xs={12}
-                                md={6}
-                                lg={4}
-                            >
+                            <Grid key={`${project}`} item xs={12} md={6} lg={4}>
                                 <Card body style={{ borderColor: '#00c853' }}>
                                     <CardHeader>
                                         <Typography variant="h4">
@@ -457,13 +448,7 @@ const ProjectsPage = ({
                     ) : (
                         completed.map((project, index) => (
                             // <GridListTile key={`${project}~${index}`} cols={2} rows={2}>
-                            <Grid
-                                key={`${project}~${index}`}
-                                item
-                                xs={12}
-                                md={6}
-                                lg={4}
-                            >
+                            <Grid key={`${project}`} item xs={12} md={6} lg={4}>
                                 <Card body style={{ borderColor: '#00c853' }}>
                                     <CardHeader>
                                         <Typography variant="h4">
@@ -550,6 +535,15 @@ const ProjectsPage = ({
             </Dialog>
         </>
     );
+};
+
+ProjectsPage.propTypes = {
+    projects: PropTypes.object.isRequired,
+    editProject: PropTypes.func.isRequired,
+    deleteProject: PropTypes.func.isRequired,
+    users: PropTypes.object.isRequired,
+    createProject: PropTypes.func.isRequired,
+    projectError: PropTypes.string.isRequired,
 };
 
 export default ProjectsPage;

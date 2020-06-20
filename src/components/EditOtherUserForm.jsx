@@ -1,3 +1,5 @@
+/* eslint-disable react/forbid-prop-types */
+/* eslint-disable no-underscore-dangle */
 import React, { Component } from 'react';
 import {
     Typography,
@@ -24,6 +26,7 @@ import {
     CardSubtitle,
     Label,
 } from 'reactstrap';
+import PropTypes from 'prop-types';
 import { LocalForm } from 'react-redux-form';
 
 class EditOtherUserForm extends Component {
@@ -31,8 +34,8 @@ class EditOtherUserForm extends Component {
         super(props);
 
         this.state = {
-            orgUser: this.props.dumUsers[this.props.index],
-            user: this.props.dumUsers[this.props.index],
+            orgUser: props.dumUsers[props.index],
+            user: props.dumUsers[props.index],
             isDailogOpen: false,
             isDeleteDailogOpen: false,
             success: false,
@@ -53,113 +56,127 @@ class EditOtherUserForm extends Component {
     }
 
     componentWillReceiveProps(props) {
-        this.setState({
-            ...this.state,
+        this.setState((prevState) => ({
+            ...prevState,
             orgUser: props.dumUsers[props.index],
             user: props.dumUsers[props.index],
-        });
+        }));
     }
 
     handleSuccessClose = () => {
-        this.setState({
-            ...this.state,
+        this.setState((prevState) => ({
+            ...prevState,
             success: false,
-        });
+        }));
     };
 
     changeDisplayState = (event) => {
-        this.setState({
-            ...this.state,
+        const { checked } = event.target;
+        this.setState((prevState) => ({
+            ...prevState,
             user: {
-                ...this.state.user,
-                display_on_website: event.target.checked,
+                ...prevState.user,
+                display_on_website: checked,
             },
-        });
+        }));
     };
 
     changePrivLevel = (event) => {
-        this.setState({
-            ...this.state,
+        const { value } = event.target;
+        this.setState((prevState) => ({
+            ...prevState,
             user: {
-                ...this.state.user,
-                privelege_level: event.target.value,
+                ...prevState.user,
+                privelege_level: value,
             },
-        });
+        }));
     };
 
     handleFormOpen = () => {
-        this.setState({
-            ...this.state,
+        this.setState((prevState) => ({
+            ...prevState,
             isDailogOpen: true,
-        });
+        }));
     };
 
     handleFormClose = () => {
-        this.setState({
-            ...this.state,
+        this.setState((prevState) => ({
+            ...prevState,
             isDailogOpen: false,
-        });
+        }));
     };
 
     cancelUserEdit = () => {
-        this.setState({
-            ...this.state,
+        this.setState((prevState) => ({
+            ...prevState,
             user: {
-                ...this.state.user,
-                ...this.state.orgUser,
+                ...prevState.user,
+                ...prevState.orgUser,
             },
-        });
+        }));
         this.handleFormClose();
     };
 
     confirmDeleteOpen = () => {
-        this.setState({
-            ...this.state,
+        this.setState((prevState) => ({
+            ...prevState,
             isDeleteDailogOpen: true,
-        });
+        }));
     };
 
     confirmDeleteClose = () => {
-        this.setState({
-            ...this.state,
+        this.setState((prevState) => ({
+            ...prevState,
             isDeleteDailogOpen: false,
-        });
+        }));
     };
 
     handleDelete = () => {
         // Call delete thunk here,
-        this.props.removeUser(this.state.user._id);
+        const { removeUser } = this.props;
+        const { user } = this.state;
+        removeUser(user._id);
         // console.log('Deleting: ', this.state.user.name);
         this.confirmDeleteClose();
     };
 
     handleApprove = () => {
+        const { user } = this.state;
+        const { editUser, serverError } = this.props;
         const newUser = {
-            ...this.state.user,
+            ...user,
             privelege_level: 'Approved_User',
         };
-        this.props.editUser(newUser);
-        if (this.props.serverError === null) {
-            this.setState({
-                ...this.state,
+        editUser(newUser);
+        if (serverError === null) {
+            this.setState((prevState) => ({
+                ...prevState,
                 success: true,
-            });
+            }));
         }
     };
 
     handleSubmit = () => {
         // console.log('Editing user: ', this.state.user);
-        this.props.editUser(this.state.user);
-        if (this.props.serverError === null) {
-            this.setState({
-                ...this.state,
+        const { editUser, serverError } = this.props;
+        const { user } = this.state;
+        editUser(user);
+        if (serverError === null) {
+            this.setState((prevState) => ({
+                ...prevState,
                 success: true,
-            });
+            }));
         }
         this.handleFormClose();
     };
 
     render() {
+        const {
+            success,
+            orgUser,
+            isDeleteDailogOpen,
+            isDailogOpen,
+        } = this.state;
         return (
             <div>
                 <Snackbar
@@ -167,12 +184,12 @@ class EditOtherUserForm extends Component {
                         vertical: 'top',
                         horizontal: 'center',
                     }}
-                    open={this.state.success}
+                    open={success}
                     autoHideDuration={2000}
                     onClose={this.handleSuccessClose}
                     message="User edited successfully !"
                 />
-                {this.state.orgUser.privelege_level === 'Unapproved_User' ? (
+                {orgUser.privelege_level === 'Unapproved_User' ? (
                     <div>
                         <Button
                             onClick={() => {
@@ -201,8 +218,7 @@ class EditOtherUserForm extends Component {
                         }}
                         color="secondary"
                         variant={
-                            this.state.orgUser.privelege_level ===
-                            'Unapproved_User'
+                            orgUser.privelege_level === 'Unapproved_User'
                                 ? 'outlined'
                                 : 'contained'
                         }
@@ -211,14 +227,14 @@ class EditOtherUserForm extends Component {
                     </Button>
                 )}
                 <Dialog
-                    open={this.state.isDeleteDailogOpen}
+                    open={isDeleteDailogOpen}
                     maxWidth="md"
                     onClose={this.confirmDeleteClose}
                 >
                     <DialogContent>
                         <Typography variant="h5">
                             Are you sure you want to remove the user{' '}
-                            {this.state.orgUser.name}
+                            {orgUser.name}
                         </Typography>
                         <Row className="form-group">
                             <Col
@@ -246,7 +262,7 @@ class EditOtherUserForm extends Component {
                     </DialogContent>
                 </Dialog>
                 <Dialog
-                    open={this.state.isDailogOpen}
+                    open={isDailogOpen}
                     maxWidth="sm"
                     fullWidth
                     onClose={this.handleFormClose}
@@ -259,30 +275,30 @@ class EditOtherUserForm extends Component {
                         <Card>
                             <CardHeader>
                                 <Typography variant="h2">
-                                    {this.state.orgUser.name}
+                                    {orgUser.name}
                                 </Typography>
                             </CardHeader>
                             <CardBody>
                                 <CardTitle>
                                     <Typography variant="h5">
-                                        {this.state.orgUser.entry_no}
+                                        {orgUser.entry_no}
                                     </Typography>
                                 </CardTitle>
                                 <CardSubtitle>
                                     <Typography variant="h6">
-                                        {this.state.orgUser.category}
+                                        {orgUser.category}
                                     </Typography>
                                 </CardSubtitle>
                                 <CardText>
                                     <Typography variant="body1">
-                                        {this.state.orgUser.intro}
+                                        {orgUser.intro}
                                     </Typography>
-                                    <Typography variant="body1">{`Interests: ${this.state.orgUser.interests}`}</Typography>
-                                    <Typography variant="body1">{`Specializations: ${this.state.orgUser.specializations}`}</Typography>
-                                    <Typography variant="body1">{`Hostel: ${this.state.orgUser.hostel}`}</Typography>
-                                    <Typography variant="caption">{`Email: ${this.state.orgUser.email}`}</Typography>
-                                    <Typography variant="body1">{`Mobile: ${this.state.orgUser.mobile_number}`}</Typography>
-                                    {Array.from(this.state.orgUser.url).map(
+                                    <Typography variant="body1">{`Interests: ${orgUser.interests}`}</Typography>
+                                    <Typography variant="body1">{`Specializations: ${orgUser.specializations}`}</Typography>
+                                    <Typography variant="body1">{`Hostel: ${orgUser.hostel}`}</Typography>
+                                    <Typography variant="caption">{`Email: ${orgUser.email}`}</Typography>
+                                    <Typography variant="body1">{`Mobile: ${orgUser.mobile_number}`}</Typography>
+                                    {Array.from(orgUser.url).map(
                                         ([key, value]) => {
                                             return (
                                                 <Typography variant="body1">
@@ -311,8 +327,7 @@ class EditOtherUserForm extends Component {
                                                 aria-label="privelege_level"
                                                 name="privelege_level"
                                                 defaultValue={
-                                                    this.state.orgUser
-                                                        .privelege_level
+                                                    orgUser.privelege_level
                                                 }
                                                 onChange={this.changePrivLevel}
                                             >
@@ -358,8 +373,7 @@ class EditOtherUserForm extends Component {
                                                 control={
                                                     <Switch
                                                         defaultChecked={
-                                                            this.state.orgUser
-                                                                .display_on_website
+                                                            orgUser.display_on_website
                                                         }
                                                         onChange={
                                                             this
@@ -386,14 +400,14 @@ class EditOtherUserForm extends Component {
                                 </Button>
                             </Col>
                             <Dialog
-                                open={this.state.isDeleteDailogOpen}
+                                open={isDeleteDailogOpen}
                                 fullWidth
                                 onClose={this.confirmDeleteClose}
                             >
                                 <DialogContent>
                                     <Typography variant="h5">
                                         Are you sure you want to remove the user{' '}
-                                        {this.state.orgUser.name}
+                                        {orgUser.name}
                                     </Typography>
                                     <Row
                                         style={{ marginTop: '2em' }}
@@ -460,5 +474,13 @@ class EditOtherUserForm extends Component {
         );
     }
 }
+
+EditOtherUserForm.propTypes = {
+    dumUsers: PropTypes.object.isRequired,
+    index: PropTypes.number.isRequired,
+    removeUser: PropTypes.func.isRequired,
+    editUser: PropTypes.func.isRequired,
+    serverError: PropTypes.string.isRequired,
+};
 
 export default EditOtherUserForm;

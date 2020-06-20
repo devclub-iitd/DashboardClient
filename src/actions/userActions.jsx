@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable import/prefer-default-export */
 // import { userConstants } from '../_constants';
 // import { userService } from '../_services';
@@ -98,6 +99,15 @@ function objToStrMap(obj) {
     Object.keys(obj).map((k) => strMap.set(k, obj[k]));
     return strMap;
 }
+
+// Logs the user out
+export const logoutUser = (type) => (dispatch) => {
+    dispatch(requestLogout());
+    localStorage.removeItem('dcIITDDashboardToken');
+    localStorage.removeItem('userId');
+    // dispatch(userFailed('Error 401: Unauthorized'));
+    dispatch(receiveLogout(type));
+};
 
 export const fetchUser = (id) => (dispatch) => {
     dispatch(userLoading(true));
@@ -321,9 +331,9 @@ export const registerUser = (registerCreds) => (dispatch) => {
                 if (response.ok || response.status === 304) {
                     return response;
                 }
-                response.json().then((res) => {
-                    // // console.log('Server response: ', res);
-                });
+                // response.json().then(() => {
+                //     // // console.log('Server response: ', res);
+                // });
                 const error = new Error(
                     `Error ${response.status}: ${response.statusText}`
                 );
@@ -335,20 +345,11 @@ export const registerUser = (registerCreds) => (dispatch) => {
             }
         )
         .then((response) => response.json())
-        .then((response) => {
+        .then(() => {
             // // console.log('Response: ', response);
             dispatch(receiveRegister());
         })
         .catch((error) => dispatch(registerError(error.message)));
-};
-
-// Logs the user out
-export const logoutUser = (type) => (dispatch) => {
-    dispatch(requestLogout());
-    localStorage.removeItem('dcIITDDashboardToken');
-    localStorage.removeItem('userId');
-    // dispatch(userFailed('Error 401: Unauthorized'));
-    dispatch(receiveLogout(type));
 };
 
 // update user profile data, only the user can update profile, not even the admin
@@ -387,7 +388,7 @@ export const updateUser = (updatedUser) => (dispatch) => {
             }
         )
         .then((response) => response.json())
-        .then((userData) => {
+        .then(() => {
             // // console.log('User data updated: ', userData);
             dispatch(fetchUser(updatedUser._id));
         })
@@ -428,7 +429,7 @@ export const removeOtherUser = (uId) => (dispatch) => {
             }
         )
         .then((response) => response.json())
-        .then((res) => {
+        .then(() => {
             // // // console.log('User data updated', user);
             // // console.log(res);
             dispatch(fetchAllUsers());
@@ -469,7 +470,7 @@ export const deleteAllUsers = () => (dispatch) => {
             }
         )
         .then((response) => response.json())
-        .then((res) => {
+        .then(() => {
             // // // console.log('User data updated', user);
             // // console.log(res);
             dispatch(fetchAllUsers());
@@ -509,7 +510,7 @@ export const rejectAllUnapproved = () => (dispatch) => {
                 throw error;
             }
         )
-        .then((res) => {
+        .then(() => {
             // // console.log('Rejection response', res);
             // // console.log(res);
             dispatch(fetchAllUsers());
@@ -553,7 +554,7 @@ export const changePassword = (newPass) => (dispatch) => {
             }
         )
         .then((response) => response.json())
-        .then((user) => {
+        .then(() => {
             // // console.log('User password changed', user);
             // dispatch(addUser(user));
         })
@@ -594,7 +595,7 @@ export const editOtherUser = (otherUser) => (dispatch) => {
             }
         )
         .then((response) => response.json())
-        .then((allUsers) => {
+        .then(() => {
             // // // console.log('All users: \n', allUsers);
             // dispatch(addAllUsers(allUsers));
             dispatch(fetchAllUsers());

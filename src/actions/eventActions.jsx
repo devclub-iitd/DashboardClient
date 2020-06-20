@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import * as ActionTypes from './ActionTypes';
 import * as API from '../data/api_links';
 import { logoutUser } from './userActions';
@@ -134,7 +135,7 @@ export const createEvent = (event) => (dispatch) => {
             }
         )
         .then((response) => response.json())
-        .then((cEvent) => {
+        .then(() => {
             // console.log('New Event: ', cEvent);
             dispatch(fetchAllEvents());
         })
@@ -175,7 +176,7 @@ export const editEvent = (event) => (dispatch) => {
             }
         )
         .then((response) => response.json())
-        .then((cEvent) => {
+        .then(() => {
             // console.log('Updated Event: ', cEvent);
             dispatch(fetchAllEvents());
         })
@@ -216,7 +217,7 @@ export const deleteEvent = (eventId) => (dispatch) => {
             }
         )
         .then((response) => response.json())
-        .then((res) => {
+        .then(() => {
             // console.log('User data updated', user);
             // console.log(res);
             dispatch(fetchAllEvents());
