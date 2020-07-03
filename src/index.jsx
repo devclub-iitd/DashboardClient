@@ -3,35 +3,12 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Provider } from 'react-redux';
-import { createMuiTheme, MuiThemeProvider } from '@material-ui/core';
+import { MuiThemeProvider, CssBaseline } from '@material-ui/core';
 import App from './App';
+import theme from './theme';
 // import Health from './pages/Health';
 import * as serviceWorker from './serviceWorker';
 import ConfigureStore from './store';
-
-const theme = createMuiTheme({
-    palette: {
-        primary: {
-            main: '#0288d1',
-            light: '#5eb8ff',
-            dark: '#005b9f',
-            contrastText: '#fff',
-        },
-        secondary: {
-            main: '#00c853',
-            light: '#5efc82',
-            dark: '#009624',
-            contrastText: '#000',
-        },
-    },
-    overrides: {
-        MuiAvatar: {
-            fallback: {
-                color: '#fff',
-            },
-        },
-    },
-});
 
 // ------------------- May be used for /healthz---------------------------------------------------
 
@@ -76,6 +53,7 @@ ReactDOM.render(
     <Provider store={ConfigureStore()}>
         {/* <BrowserRouter> */}
         <MuiThemeProvider theme={theme}>
+            <CssBaseline />
             <App />
         </MuiThemeProvider>
         {/* </BrowserRouter> */}

@@ -1,30 +1,26 @@
 /* eslint-disable react/forbid-prop-types */
 import React from 'react';
 import {
-    Avatar,
     Button,
-    CssBaseline,
     TextField,
     Paper,
-    Box,
     Grid,
     Backdrop,
     Snackbar,
     CircularProgress,
     Typography,
-    FormLabel,
 } from '@material-ui/core';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Redirect, withRouter, Link } from 'react-router-dom';
 import { loginUser, loginErrorFin } from '../actions/userActions';
-import logo from '../images/LogoSquare.svg';
+import logo from '../images/LogoSVG.svg';
 
 const styles = (theme) => ({
     root: {
         height: '100vh',
+        backgroundColor: theme.palette.background.default,
     },
     image: {
         backgroundImage: `url(${logo})`,
@@ -32,22 +28,52 @@ const styles = (theme) => ({
         backgroundSize: 'cover',
         backgroundPosition: 'center',
     },
+    imagePaper: {
+        // height: document.documentElement.clientHeight * 0.5,
+        backgroundColor: '#8e8e93',
+        margin: theme.spacing(5, 5, 0),
+        paddingBottom: '1.5em',
+    },
     paper: {
-        margin: theme.spacing(8, 4),
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
+        margin: theme.spacing(4),
+    },
+    logo: {
+        height: 'auto',
+        width: '82%',
+        marginLeft: '9%',
+        marginRight: '9%',
+        marginTop: theme.spacing(4),
+        marginBottom: theme.spacing(4),
+    },
+    name: {
+        color: '#d5d3d3',
+        fontWeight: '600',
+    },
+    inputs: {
+        color: '#8e8e93',
     },
     avatar: {
         margin: theme.spacing(1),
         backgroundColor: theme.palette.secondary.main,
     },
     form: {
-        width: '100%', // Fix IE 11 issue.
+        marginLeft: theme.spacing(5),
+        marginRight: theme.spacing(5),
         marginTop: theme.spacing(1),
     },
     submit: {
-        margin: theme.spacing(3, 0, 2),
+        width: '56%',
+        paddingTop: theme.spacing(0.05),
+        paddingBottom: theme.spacing(0.05),
+        marginTop: theme.spacing(2),
+        marginBottom: theme.spacing(2),
+        fontSize: '1.5rem',
+        fontWeight: 600,
+        marginLeft: '22%',
+        marginRight: '22%',
+    },
+    errSnack: {
+        backgroundColor: 'black',
     },
     backdrop: {
         zIndex: theme.zIndex.drawer + 1,
@@ -69,7 +95,6 @@ function SignInSide(props) {
     };
 
     const handleClose = () => {
-        // setErrMess(false);
         props.finishError();
     };
 
@@ -78,14 +103,8 @@ function SignInSide(props) {
             entry_no: uname,
             password: pass,
         };
-        // console.log(creds);
-        // console.log(JSON.stringify(creds));
         login(creds);
     };
-
-    // if (auth.isAuthenticated) {
-    //   return <Redirect to="/dashboard/home" />;
-    // }
 
     if (auth.isLoading) {
         return (
@@ -100,14 +119,20 @@ function SignInSide(props) {
     }
 
     return (
-        <Grid container component="main" className={classes.root}>
+        <Grid
+            className={classes.root}
+            container
+            direction="row"
+            justify="center"
+            alignItems="center"
+        >
             <Snackbar
                 anchorOrigin={{
                     vertical: 'top',
                     horizontal: 'center',
                 }}
                 open={auth.errMess !== null}
-                autoHideDuration={4000}
+                autoHideDuration={3000}
                 onClose={handleClose}
                 message={
                     auth.errMess === 'Unapproved'
@@ -125,64 +150,67 @@ function SignInSide(props) {
                 onClose={handleClose}
                 message="Your session has timed out!! Login again"
             />
-            <CssBaseline />
-            <Grid item sm={false} md={7} className={classes.image} />
-            <Grid item xs={12} md={5} component={Paper} elevation={6} square>
-                <div className={classes.paper}>
-                    <Typography align="center" className="h1" variant="h3">
-                        Club DashBoard
+            <Grid item xs={10} sm={8} md={6} lg={4} component={Paper}>
+                <Paper className={classes.imagePaper}>
+                    <img className={classes.logo} src={logo} alt="Logo" />
+                    <Typography
+                        className={classes.name}
+                        align="center"
+                        variant="h2"
+                    >
+                        Dashboard
                     </Typography>
-                    <Avatar className={classes.avatar}>
-                        <LockOutlinedIcon />
-                    </Avatar>
-                    <Typography component="h2" variant="h5">
-                        Sign in
-                    </Typography>
-                    <form className={classes.form} onSubmit={handleSubmit}>
-                        <TextField
-                            variant="outlined"
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="username"
-                            label="Entry Number"
-                            value={uname}
-                            onChange={changeUsername}
-                            name="username"
-                            autoFocus
-                        />
-                        <TextField
-                            variant="outlined"
-                            margin="normal"
-                            required
-                            fullWidth
-                            name="password"
-                            label="Password"
-                            value={pass}
-                            onChange={changePassword}
-                            type="password"
-                            id="password"
-                        />
-                        <Button
-                            type="submit"
-                            fullWidth
-                            variant="contained"
-                            color="primary"
-                            className={classes.submit}
-                        >
-                            Sign In
-                        </Button>
-                        <Grid container>
-                            <Grid item>
-                                <Link to="/register" variant="body2">
+                </Paper>
+                <form className={classes.form} onSubmit={handleSubmit}>
+                    <TextField
+                        variant="outlined"
+                        size="small"
+                        margin="normal"
+                        required
+                        fullWidth
+                        id="username"
+                        label="Entry Number"
+                        value={uname}
+                        onChange={changeUsername}
+                        name="username"
+                        autoFocus
+                    />
+                    <TextField
+                        variant="outlined"
+                        size="small"
+                        margin="normal"
+                        required
+                        fullWidth
+                        name="password"
+                        label="Password"
+                        value={pass}
+                        onChange={changePassword}
+                        type="password"
+                        id="password"
+                    />
+                    <Button
+                        type="submit"
+                        variant="contained"
+                        color="primary"
+                        className={classes.submit}
+                    >
+                        Sign In
+                    </Button>
+                    <Grid container justify="center">
+                        <Grid item>
+                            <Link to="/register" variant="body2">
+                                <p
+                                    style={{
+                                        color: '#00e5ff',
+                                        fontWeight: 500,
+                                    }}
+                                >
                                     Don&#39;t have an account? Sign Up
-                                </Link>
-                            </Grid>
+                                </p>
+                            </Link>
                         </Grid>
-                        <FormLabel error>{/* {errorMsg} */}</FormLabel>
-                        <Box mt={5}>{/* <MadeWithLove /> */}</Box>
-                    </form>
-                </div>
+                    </Grid>
+                </form>
             </Grid>
         </Grid>
     );
