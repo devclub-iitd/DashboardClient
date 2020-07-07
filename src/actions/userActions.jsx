@@ -78,6 +78,10 @@ export const receiveLogout = (logoutType) => ({
     payload: logoutType,
 });
 
+export const regErrorFin = () => ({
+    type: ActionTypes.REGISTER_FIN,
+});
+
 export const requestRegister = () => ({
     type: ActionTypes.REGISTER_REQUEST,
 });
@@ -329,8 +333,9 @@ export const registerUser = (registerCreds) => (dispatch) => {
         .then(
             (response) => {
                 if (response.ok || response.status === 304) {
-                    return response;
+                    return response.json();
                 }
+
                 // response.json().then(() => {
                 //     // // console.log('Server response: ', res);
                 // });
@@ -344,7 +349,7 @@ export const registerUser = (registerCreds) => (dispatch) => {
                 throw error;
             }
         )
-        .then((response) => response.json())
+        // .then((response) => response.json())
         .then(() => {
             // // console.log('Response: ', response);
             dispatch(receiveRegister());

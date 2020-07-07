@@ -1,12 +1,7 @@
 /* eslint-disable react/forbid-prop-types */
 import React from 'react';
-import {
-    ListItem,
-    ListItemText,
-    ListItemIcon,
-    Tooltip,
-} from '@material-ui/core';
-import DashboardIcon from '@material-ui/icons/Dashboard';
+import { ListItem, ListItemIcon, Tooltip, Typography } from '@material-ui/core';
+import HomeRoundedIcon from '@material-ui/icons/HomeRounded';
 import PersonIcon from '@material-ui/icons/Person';
 import AddBoxIcon from '@material-ui/icons/AddBox';
 import ExitToAppOutlinedIcon from '@material-ui/icons/ExitToAppOutlined';
@@ -20,36 +15,59 @@ import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 
 function MainListItems(props) {
-    const { history, isAdmin, closeDrawer, logout } = props;
-    const redirectFunc = (subPath) => () => {
-        closeDrawer();
+    const { history, isAdmin, logout } = props;
+    const [selectedItem, setSelected] = React.useState(0);
+    const redirectFunc = (subPath, index) => () => {
         if (subPath === 'users' || subPath === 'deploy') {
             if (!isAdmin) {
                 history.push('/dashboard/home');
+                setSelected(0);
             } else {
                 history.push(`/dashboard/${subPath}`);
             }
         } else {
             history.push(`/dashboard/${subPath}`);
+            setSelected(index);
         }
     };
 
     return (
         <div>
-            <ListItem button onClick={redirectFunc('home')}>
+            <ListItem button onClick={redirectFunc('home', 0)}>
                 <ListItemIcon>
-                    <DashboardIcon />
+                    <HomeRoundedIcon
+                        fontSize="large"
+                        style={{
+                            color: selectedItem === 0 ? '#61cdff' : 'white',
+                        }}
+                    />
                 </ListItemIcon>
                 <Tooltip title="Home">
-                    <ListItemText primary="Home" />
+                    {/* <ListItemText primary="Home" /> */}
+                    <Typography
+                        color={selectedItem === 0 ? 'secondary' : '#fff'}
+                        variant="h5"
+                    >
+                        Home
+                    </Typography>
                 </Tooltip>
             </ListItem>
-            <ListItem button onClick={redirectFunc('profile')}>
+            <ListItem button onClick={redirectFunc('profile', 1)}>
                 <ListItemIcon>
-                    <PersonIcon />
+                    <PersonIcon
+                        style={{
+                            color: selectedItem === 1 ? '#61cdff' : 'white',
+                        }}
+                    />
                 </ListItemIcon>
                 <Tooltip title="Profile">
-                    <ListItemText primary="Profile" />
+                    {/* <ListItemText primary="Profile" /> */}
+                    <Typography
+                        color={selectedItem === 1 ? 'secondary' : '#fff'}
+                        variant="h5"
+                    >
+                        Profile
+                    </Typography>
                 </Tooltip>
             </ListItem>
             {/* <ListItem button onClick={redirectFunc('changePassword')}>
@@ -60,60 +78,120 @@ function MainListItems(props) {
           <ListItemText primary="Change Password" />
         </Tooltip>
       </ListItem> */}
-            <ListItem button onClick={redirectFunc('events')}>
+            <ListItem button onClick={redirectFunc('events', 2)}>
                 <ListItemIcon>
-                    <EventIcon />
+                    <EventIcon
+                        style={{
+                            color: selectedItem === 2 ? '#61cdff' : 'white',
+                        }}
+                    />
                 </ListItemIcon>
                 <Tooltip title="View club events">
-                    <ListItemText primary="Events" />
+                    {/* <ListItemText primary="Events" /> */}
+                    <Typography
+                        color={selectedItem === 2 ? 'secondary' : '#fff'}
+                        variant="h5"
+                    >
+                        Events
+                    </Typography>
                 </Tooltip>
             </ListItem>
-            <ListItem button onClick={redirectFunc('projects')}>
+            <ListItem button onClick={redirectFunc('projects', 3)}>
                 <ListItemIcon>
-                    <DeveloperModeIcon />
+                    <DeveloperModeIcon
+                        style={{
+                            color: selectedItem === 3 ? '#61cdff' : 'white',
+                        }}
+                    />
                 </ListItemIcon>
                 <Tooltip title="View club projects">
-                    <ListItemText primary="Projects" />
+                    {/* <ListItemText primary="Projects" /> */}
+                    <Typography
+                        color={selectedItem === 3 ? 'secondary' : '#fff'}
+                        variant="h5"
+                    >
+                        Projects
+                    </Typography>
                 </Tooltip>
             </ListItem>
-            <ListItem button onClick={redirectFunc('resources')}>
+            <ListItem button onClick={redirectFunc('resources', 4)}>
                 <ListItemIcon>
-                    <AllInboxIcon />
+                    <AllInboxIcon
+                        style={{
+                            color: selectedItem === 4 ? '#61cdff' : 'white',
+                        }}
+                    />
                 </ListItemIcon>
                 <Tooltip title="View club resources">
-                    <ListItemText primary="Resources" />
+                    {/* <ListItemText primary="Resources" /> */}
+                    <Typography
+                        color={selectedItem === 4 ? 'secondary' : '#fff'}
+                        variant="h5"
+                    >
+                        Resources
+                    </Typography>
                 </Tooltip>
             </ListItem>
             <ListItem
                 button
                 disabled={!isAdmin}
-                onClick={redirectFunc('users')}
+                onClick={redirectFunc('users', 5)}
             >
                 <ListItemIcon>
-                    <GroupIcon />
+                    <GroupIcon
+                        style={{
+                            color: selectedItem === 5 ? '#61cdff' : 'white',
+                        }}
+                    />
                 </ListItemIcon>
                 <Tooltip title="Manage club users (Only for Admins)">
-                    <ListItemText primary="Manage Users" />
+                    {/* <ListItemText primary="Manage Users" /> */}
+                    <Typography
+                        color={selectedItem === 5 ? 'secondary' : '#fff'}
+                        variant="h5"
+                    >
+                        Manage Users
+                    </Typography>
                 </Tooltip>
             </ListItem>
-            <ListItem button onClick={redirectFunc('myTasks')}>
+            <ListItem button onClick={redirectFunc('myTasks', 6)}>
                 <ListItemIcon>
-                    <AssignmentIcon />
+                    <AssignmentIcon
+                        style={{
+                            color: selectedItem === 6 ? '#61cdff' : 'white',
+                        }}
+                    />
                 </ListItemIcon>
                 <Tooltip title="View your tasks">
-                    <ListItemText primary="My Tasks" />
+                    {/* <ListItemText primary="My Tasks" /> */}
+                    <Typography
+                        color={selectedItem === 6 ? 'secondary' : '#fff'}
+                        variant="h5"
+                    >
+                        My Tasks
+                    </Typography>
                 </Tooltip>
             </ListItem>
             <ListItem
                 button
                 disabled={!isAdmin}
-                onClick={redirectFunc('deploy')}
+                onClick={redirectFunc('deploy', 7)}
             >
                 <ListItemIcon>
-                    <PublishIcon />
+                    <PublishIcon
+                        style={{
+                            color: selectedItem === 7 ? '#61cdff' : 'white',
+                        }}
+                    />
                 </ListItemIcon>
                 <Tooltip title="Manage project deployments (Only for Admins)">
-                    <ListItemText primary="Deploy" />
+                    {/* <ListItemText primary="Deploy" /> */}
+                    <Typography
+                        color={selectedItem === 7 ? 'secondary' : '#fff'}
+                        variant="h5"
+                    >
+                        Deploy
+                    </Typography>
                 </Tooltip>
             </ListItem>
             {/* <ListItem button onClick={redirectFunc('approveUsers')}>
@@ -122,20 +200,35 @@ function MainListItems(props) {
         </ListItemIcon>
         <ListItemText primary="Approve Users" />
       </ListItem> */}
-            <ListItem button onClick={redirectFunc('createTasks')}>
+            <ListItem button onClick={redirectFunc('createTasks', 8)}>
                 <ListItemIcon>
-                    <AddBoxIcon />
+                    <AddBoxIcon
+                        style={{
+                            color: selectedItem === 8 ? '#61cdff' : 'white',
+                        }}
+                    />
                 </ListItemIcon>
                 <Tooltip title="Create new Events, Resources or Projects">
-                    <ListItemText primary="Create Tasks" />
+                    {/* <ListItemText primary="Create Tasks" /> */}
+                    <Typography
+                        color={selectedItem === 8 ? 'secondary' : '#fff'}
+                        variant="h5"
+                    >
+                        Create Tasks
+                    </Typography>
                 </Tooltip>
             </ListItem>
-            <ListItem button onClick={() => logout()}>
+            <ListItem button onClick={logout}>
                 <ListItemIcon>
-                    <ExitToAppOutlinedIcon />
+                    <ExitToAppOutlinedIcon
+                        style={{
+                            color: 'white',
+                        }}
+                    />
                 </ListItemIcon>
                 <Tooltip title="Logout of dashboard">
-                    <ListItemText primary="Logout" />
+                    {/* <ListItemText primary="Logout" /> */}
+                    <Typography variant="h5">Logout</Typography>
                 </Tooltip>
             </ListItem>
             {/* <ListItem button onClick={redirectFunc('assignTasks')}>

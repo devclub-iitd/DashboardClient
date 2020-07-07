@@ -5,7 +5,7 @@ import { withStyles } from '@material-ui/core/styles';
 import {
     CssBaseline,
     Drawer,
-    AppBar,
+    // AppBar,
     Toolbar,
     List,
     Snackbar,
@@ -32,6 +32,7 @@ import ResourcesPage from '../components/Resources';
 import ManageUsers from '../components/ManageUsers';
 import MyTasks from '../components/MyTasks';
 import DeployManager from '../components/Deploy';
+import AppBar from '../components/AppBar';
 import CreateTasks from '../components/CreateTasks';
 import {
     fetchUser,
@@ -66,8 +67,9 @@ import {
     deleteResource,
     resourceErrorFin,
 } from '../actions/resourceActions';
+import drawerIcon from '../images/drawerImage.png';
 
-const drawerWidth = 240;
+const drawerWidth = 275;
 
 // const useStyles = makeStyles(theme => ({
 //   root: {
@@ -483,14 +485,14 @@ const styles = (theme) => ({
             duration: theme.transitions.duration.leavingScreen,
         }),
     },
-    appBarShift: {
-        marginLeft: drawerWidth,
-        width: `calc(100% - ${drawerWidth}px)`,
-        transition: theme.transitions.create(['width', 'margin'], {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.enteringScreen,
-        }),
-    },
+    // appBarShift: {
+    //     marginLeft: drawerWidth,
+    //     width: `calc(100% - ${drawerWidth}px)`,
+    //     transition: theme.transitions.create(['width', 'margin'], {
+    //         easing: theme.transitions.easing.sharp,
+    //         duration: theme.transitions.duration.enteringScreen,
+    //     }),
+    // },
     menuButton: {
         marginRight: 36,
     },
@@ -539,6 +541,9 @@ const styles = (theme) => ({
     fixedHeight: {
         height: 240,
     },
+    listPadding: {
+        paddingLeft: theme.spacing(3),
+    },
 });
 
 class Dashboard extends Component {
@@ -547,6 +552,7 @@ class Dashboard extends Component {
 
         this.state = {
             open: false,
+            // drawerWidth: document.documentElement.clientWidth * 0.17,
         };
         // props.fetchAllUsers();
         // props.fetchUser(localStorage.getItem('userId'));
@@ -637,6 +643,7 @@ class Dashboard extends Component {
         } = this.props;
 
         const { open } = this.state;
+        // const drawerWidth = document.documentElement.clientWidth * 0.17;
 
         const handleErrorClose = () => {
             // setServerError(false);
@@ -661,7 +668,7 @@ class Dashboard extends Component {
 
         return (
             <div className={classes.root}>
-                <CssBaseline />
+                {/* <CssBaseline /> */}
                 <Snackbar
                     anchorOrigin={{
                         vertical: 'top',
@@ -678,14 +685,20 @@ class Dashboard extends Component {
                     message="Server did not respond!!!"
                 />
                 <AppBar
+                    user={users.user.name}
+                    isAdmin={isAdmin}
+                    page={getPageName(subPage)}
+                    drawerWidth={drawerWidth}
+                />
+                {/* <AppBar
                     position="absolute"
-                    classes={{ paper: clsx(classes.bgimage) }}
+                    // classes={{ paper: clsx(classes.bgimage) }}
                     className={clsx(
                         classes.appBar,
                         open && classes.appBarShift
                     )}
-                >
-                    <Toolbar className={classes.toolbar}>
+                > */}
+                {/* <Toolbar className={classes.toolbar}>
                         <IconButton
                             edge="start"
                             color="inherit"
@@ -723,25 +736,34 @@ class Dashboard extends Component {
                                 <NotificationsIcon />
                             </Badge>
                         </IconButton>
-                    </Toolbar>
-                </AppBar>
+                    </Toolbar> */}
+                {/* </AppBar> */}
+
                 <Drawer
-                    // variant="permanent"
+                    variant="permanent"
                     classes={{
                         paper: clsx(
-                            classes.drawerPaper,
-                            !open && classes.drawerPaperClose
+                            classes.drawerPaper
+                            // !open && classes.drawerPaperClose
                         ),
+                    }}
+                    style={{
+                        width: drawerWidth,
                     }}
                     open={open}
                 >
-                    <div className={classes.toolbarIcon}>
+                    <img
+                        style={{ width: '100%', height: 'auto' }}
+                        src={drawerIcon}
+                        alt=""
+                    />
+                    {/* <div className={classes.toolbarIcon}>
                         <IconButton onClick={this.handleDrawerClose}>
                             <ChevronLeftIcon />
                         </IconButton>
                     </div>
-                    <Divider />
-                    <List>
+                    <Divider /> */}
+                    <List className={classes.listPadding}>
                         <MainListItems
                             closeDrawer={this.handleDrawerClose}
                             isAdmin={isAdmin}

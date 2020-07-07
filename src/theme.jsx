@@ -1,6 +1,6 @@
 import { createMuiTheme, responsiveFontSizes } from '@material-ui/core';
 
-let theme = createMuiTheme({
+const theme = createMuiTheme({
     typography: {
         fontFamily: [
             'Cereal',
@@ -17,11 +17,11 @@ let theme = createMuiTheme({
         ].join(','),
     },
     palette: {
-        type: 'dark',
-        // text: {
-        //     primary: '#fff',
-        //     secondary: '#fff',
-        // },
+        // type: 'dark',
+        text: {
+            primary: '#fff',
+            secondary: '#fff',
+        },
         primary: {
             main: '#36d578',
             // light: '#5eb8ff',
@@ -101,6 +101,11 @@ let theme = createMuiTheme({
             //     },
             // },
         },
+        MuiSelect: {
+            icon: {
+                color: '#3a3a3c',
+            },
+        },
         // MuiInputBase: {
         //     input: {
         //         color: '#8e8e93',
@@ -179,6 +184,7 @@ let theme = createMuiTheme({
     },
 });
 
-theme = responsiveFontSizes(theme);
+const responsiveTheme = responsiveFontSizes(theme);
 
-export default theme;
+export default responsiveTheme;
+// export default theme;

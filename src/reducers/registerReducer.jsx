@@ -29,7 +29,7 @@ const Register = (
             return {
                 ...state,
                 isLoading: false,
-                errMess: action.payload,
+                errMess: 'Error',
                 isRegistered: false,
             };
 
@@ -45,8 +45,14 @@ const Register = (
             return {
                 ...state,
                 isLoading: false,
-                errMess: null,
+                errMess: 'Success',
                 isRegistered: true,
+            };
+
+        case ActionTypes.REGISTER_FIN:
+            return {
+                ...state,
+                errMess: null,
             };
 
         default:

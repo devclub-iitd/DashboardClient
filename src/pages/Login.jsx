@@ -201,7 +201,7 @@ function SignInSide(props) {
                             <Link to="/register" variant="body2">
                                 <p
                                     style={{
-                                        color: '#00e5ff',
+                                        color: '#49ceeb',
                                         fontWeight: 500,
                                     }}
                                 >

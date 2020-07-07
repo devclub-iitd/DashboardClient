@@ -7,26 +7,27 @@ import {
     Backdrop,
     CircularProgress,
     Snackbar,
-    FormControl,
     MenuItem,
-    InputLabel,
-    Select,
     Avatar,
     Button,
-    CssBaseline,
     TextField,
     Grid,
     Typography,
-    Container,
+    Paper,
 } from '@material-ui/core';
 import { withRouter, Link } from 'react-router-dom';
-import { registerUser } from '../actions/userActions';
+import { registerUser, regErrorFin } from '../actions/userActions';
+import logo from '../images/LogoSquare.jpg';
 
 const styles = (theme) => ({
-    '@global': {
-        body: {
-            backgroundColor: theme.palette.common.white,
-        },
+    // '@global': {
+    //     body: {
+    //         backgroundColor: theme.palette.background.default,
+    //     },
+    // },
+    root: {
+        height: '100vh',
+        backgroundColor: theme.palette.background.default,
     },
     paper: {
         marginTop: theme.spacing(8),
@@ -35,15 +36,48 @@ const styles = (theme) => ({
         alignItems: 'center',
     },
     avatar: {
-        margin: theme.spacing(1),
-        backgroundColor: theme.palette.secondary.main,
+        margin: theme.spacing(2),
+        width: theme.spacing(15),
+        height: theme.spacing(15),
+        backgroundColor: '#8e8e93',
     },
     form: {
-        width: '100%', // Fix IE 11 issue.
-        marginTop: theme.spacing(3),
+        // width: '100%', // Fix IE 11 issue.
+        // marginTop: theme.spacing(3),
+        marginLeft: theme.spacing(5),
+        marginRight: theme.spacing(5),
+        marginTop: theme.spacing(1),
+    },
+    categoryField: {
+        [theme.breakpoints.down('md')]: {
+            width: '100%',
+        },
+        [theme.breakpoints.up('md')]: {
+            width: '50%',
+        },
     },
     submit: {
-        margin: theme.spacing(3, 0, 2),
+        // margin: theme.spacing(3, 0, 2),
+        width: '56%',
+        paddingTop: theme.spacing(0.05),
+        paddingBottom: theme.spacing(0.05),
+        marginTop: theme.spacing(2),
+        marginBottom: theme.spacing(2),
+        fontSize: '1.5rem',
+        fontWeight: 600,
+        marginLeft: '22%',
+        marginRight: '22%',
+    },
+    buttonDiv: {
+        width: '56%',
+        // paddingTop: theme.spacing(0.05),
+        // paddingBottom: theme.spacing(0.05),
+        marginTop: theme.spacing(2),
+        marginBottom: theme.spacing(2),
+        // fontSize: '1.5rem',
+        // fontWeight: 600,
+        marginLeft: '22%',
+        marginRight: '22%',
     },
     backdrop: {
         zIndex: theme.zIndex.drawer + 1,
@@ -61,35 +95,10 @@ class SignUp extends React.Component {
 
         this.state = {
             confirmPassError: false,
-            success: false,
-            failure: false,
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleFailureClose = this.handleFailureClose.bind(this);
-        this.handleSuccessClose = this.handleSuccessClose.bind(this);
-        // this.objToStrMap = this.objToStrMap.bind(this);
     }
-
-    handleSuccessClose = () => {
-        this.setState((prevState) => ({
-            ...prevState,
-            success: false,
-        }));
-    };
-
-    handleFailureClose = () => {
-        this.setState((prevState) => ({
-            ...prevState,
-            failure: false,
-        }));
-    };
-
-    // objToStrMap = (obj) => {
-    //     const strMap = new Map();
-    //     Object.keys(obj).map((k) => strMap.set(k, obj[k]));
-    //     return strMap;
-    // };
 
     handleSubmit = (e) => {
         e.preventDefault();
@@ -114,9 +123,9 @@ class SignUp extends React.Component {
 
         // const { register } = this.props;
         // window.location.reload(false);
-        const { register } = this.props;
+        const { register, registerUser: registerUserDis } = this.props;
 
-        registerUser(body);
+        registerUserDis(body);
         if (register.errMess === null) {
             this.setState((prevState) => ({
                 ...prevState,
@@ -140,20 +149,34 @@ class SignUp extends React.Component {
     };
 
     render() {
-        const { classes, register } = this.props;
+        const { classes, register, sucErrFin } = this.props;
 
-        const { confirmPassError, success, failure } = this.state;
+        const { confirmPassError } = this.state;
+        const categories = [
+            'Fresher',
+            'Sophomore',
+            'Junior Undergraduate',
+            'Senior Undergraduate',
+            'Alumni',
+        ];
 
         return (
-            <Container component="main" maxWidth="xs">
+            <Grid
+                container
+                component={Paper}
+                direction="row"
+                justify="center"
+                alignItems="center"
+                className={classes.root}
+            >
                 <Snackbar
                     anchorOrigin={{
                         vertical: 'top',
                         horizontal: 'center',
                     }}
-                    open={success}
-                    autoHideDuration={2000}
-                    onClose={this.handleSuccessClose}
+                    open={register.errMess === 'Success'}
+                    autoHideDuration={4000}
+                    onClose={sucErrFin}
                     message="Registration Successful! Request for approval sent to Administrator. Wait before login."
                 />
                 <Snackbar
@@ -161,9 +184,9 @@ class SignUp extends React.Component {
                         vertical: 'top',
                         horizontal: 'center',
                     }}
-                    open={failure}
+                    open={register.errMess === 'Error'}
                     autoHideDuration={2000}
-                    onClose={this.handleFailureClose}
+                    onClose={sucErrFin}
                     message="Registration Failed !! Please try again."
                 />
                 <Backdrop
@@ -172,132 +195,129 @@ class SignUp extends React.Component {
                 >
                     <CircularProgress color="inherit" />
                 </Backdrop>
-                <CssBaseline />
-                <div className={classes.paper}>
-                    <Avatar className={classes.avatar}>
-                        <LockOutlinedIcon />
-                    </Avatar>
-                    <Typography component="h1" variant="h5">
-                        Sign up
-                    </Typography>
+                {/* <CssBaseline /> */}
+                <Grid
+                    justify="center"
+                    alignContent="center"
+                    item
+                    container
+                    xs={10}
+                    sm={8}
+                    md={6}
+                    lg={4}
+                    component={Paper}
+                >
+                    <Grid item>
+                        <Avatar
+                            alt="Logo"
+                            src={logo}
+                            className={classes.avatar}
+                        >
+                            <LockOutlinedIcon />
+                        </Avatar>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Typography align="center" component="h1" variant="h2">
+                            Register
+                        </Typography>
+                    </Grid>
                     <form className={classes.form} onSubmit={this.handleSubmit}>
-                        <Grid container spacing={2}>
-                            <Grid item xs={12}>
-                                <TextField
-                                    name="name"
-                                    variant="outlined"
-                                    required
-                                    fullWidth
-                                    id="name"
-                                    label="Name"
-                                    autoFocus
-                                />
-                            </Grid>
-
-                            <Grid item xs={12}>
-                                <TextField
-                                    name="entryNumber"
-                                    variant="outlined"
-                                    required
-                                    fullWidth
-                                    id="entrynumber"
-                                    label="Entry Number"
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <FormControl
-                                    variant="filled"
-                                    className={classes.formControl}
-                                >
-                                    <InputLabel id="category">
-                                        Category
-                                    </InputLabel>
-                                    <Select
-                                        labelId="category"
-                                        id="category"
-                                        name="category"
-                                        label="category"
-                                    >
-                                        <MenuItem value="">
-                                            <em>None</em>
-                                        </MenuItem>
-                                        <MenuItem value="Fresher">
-                                            Fresher
-                                        </MenuItem>
-                                        <MenuItem value="Sophomore">
-                                            Sophomore
-                                        </MenuItem>
-                                        <MenuItem value="Junior Undergraduate">
-                                            Junior Undergraduate
-                                        </MenuItem>
-                                        <MenuItem value="Senior Undergraduate">
-                                            Senior Undergraduate
-                                        </MenuItem>
-                                        <MenuItem value="Alumni">
-                                            Alumni
-                                        </MenuItem>
-                                    </Select>
-                                </FormControl>
-                            </Grid>
-                            <Grid item xs={12}>
-                                <TextField
-                                    variant="outlined"
-                                    required
-                                    fullWidth
-                                    id="email"
-                                    label="Email Address"
-                                    name="email"
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <TextField
-                                    variant="outlined"
-                                    required
-                                    fullWidth
-                                    name="password"
-                                    label="Password"
-                                    type="password"
-                                    id="password"
-                                    onChange={(e) =>
-                                        this.handleChange(e, 'password')
-                                    }
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <TextField
-                                    variant="outlined"
-                                    required
-                                    fullWidth
-                                    name="confirmPassword"
-                                    label="Confirm Password"
-                                    type="password"
-                                    id="confirmPassword"
-                                    error={confirmPassError}
-                                    onChange={(e) =>
-                                        this.handleChange(e, 'confirmPassword')
-                                    }
-                                />
-                            </Grid>
-                        </Grid>
+                        <TextField
+                            name="name"
+                            variant="outlined"
+                            margin="normal"
+                            required
+                            fullWidth
+                            id="name"
+                            label="Name"
+                            autoFocus
+                        />
+                        <TextField
+                            name="entryNumber"
+                            variant="outlined"
+                            margin="normal"
+                            required
+                            fullWidth
+                            id="entrynumber"
+                            label="Entry Number"
+                        />
+                        <TextField
+                            id="category"
+                            select
+                            name="category"
+                            label="Category"
+                            variant="outlined"
+                            defaultValue="Fresher"
+                            className={classes.categoryField}
+                            margin="normal"
+                            required
+                        >
+                            {categories.map((option) => (
+                                <MenuItem key={option} value={option}>
+                                    {option}
+                                </MenuItem>
+                            ))}
+                        </TextField>
+                        <TextField
+                            variant="outlined"
+                            margin="normal"
+                            required
+                            fullWidth
+                            id="email"
+                            label="Email Address"
+                            name="email"
+                        />
+                        <TextField
+                            variant="outlined"
+                            required
+                            margin="normal"
+                            fullWidth
+                            name="password"
+                            label="Password"
+                            type="password"
+                            id="password"
+                            onChange={(e) => this.handleChange(e, 'password')}
+                        />
+                        <TextField
+                            variant="outlined"
+                            required
+                            margin="normal"
+                            fullWidth
+                            name="confirmPassword"
+                            label="Confirm Password"
+                            type="password"
+                            id="confirmPassword"
+                            error={confirmPassError}
+                            onChange={(e) =>
+                                this.handleChange(e, 'confirmPassword')
+                            }
+                        />
                         <Button
                             type="submit"
-                            fullWidth
                             variant="contained"
                             color="primary"
+                            fullWidth
                             className={classes.submit}
                         >
                             Sign Up
                         </Button>
-                        <Grid container justify="flex-end">
+                        <Grid container justify="center">
                             <Grid item>
                                 <Link to="/login" variant="body2">
-                                    Already have an account? Sign in
+                                    <p
+                                        style={{
+                                            color: '#49ceeb',
+                                            fontWeight: 500,
+                                        }}
+                                    >
+                                        Already have an account? Sign in
+                                    </p>
                                 </Link>
                             </Grid>
                         </Grid>
                     </form>
-                </div>
-            </Container>
+                </Grid>
+            </Grid>
         );
     }
 }
@@ -308,12 +328,14 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
     registerUser: (registerCreds) => dispatch(registerUser(registerCreds)),
+    sucErrFin: () => dispatch(regErrorFin()),
 });
 
 SignUp.propTypes = {
     classes: PropTypes.objectOf(PropTypes.string).isRequired,
-    register: PropTypes.func.isRequired,
-    // registerUser: PropTypes.func.isRequired,
+    register: PropTypes.objectOf(PropTypes.any).isRequired,
+    registerUser: PropTypes.func.isRequired,
+    sucErrFin: PropTypes.func.isRequired,
 };
 
 export default withRouter(
