@@ -14,7 +14,10 @@ import {
     IconButton,
     Badge,
     Container,
+    Hidden,
+    Tooltip,
 } from '@material-ui/core';
+
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import NotificationsIcon from '@material-ui/icons/Notifications';
@@ -23,7 +26,8 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { actions } from 'react-redux-form';
 import MainListItems from '../components/MainListItems';
-import Home from '../components/Home';
+// import Home from '../components/Home';
+import Home from '../components/HomeUp';
 import Profile from '../components/Profile';
 import ChangePassword from '../components/ChangePassword';
 import EventsPage from '../components/Events';
@@ -296,29 +300,30 @@ function renderPage(subPage, props, isAdmin, redirect, closeDrawer) {
         // default: return (<div><Home fixedHeightPaper={classProp} paperClass={classPaper} /></div>);
         default:
             return (
-                <div>
-                    <Home
-                        events={props.events}
-                        projects={props.projects}
-                        resources={props.resources}
-                        fetchUser={props.fetchUser}
-                        fetchAllUsers={props.fetchAllUsers}
-                        fetchAllEvents={props.fetchAllEvents}
-                        fetchAllProjects={props.fetchAllProjects}
-                        fetchAllResources={props.fetchAllResources}
-                        history={props.history}
-                        // user={props.users.user}
-                        users={props.users}
-                        editEvent={props.editEvent}
-                        editProject={props.editProject}
-                        editResource={props.editResource}
-                        editOtherUser={props.editOtherUser}
-                        removeUser={props.removeUser}
-                        deleteEvent={props.deleteEvent}
-                        deleteProject={props.deleteProject}
-                        deleteResource={props.deleteResource}
-                    />
-                </div>
+                // <div>
+                <Home
+                    events={props.events}
+                    projects={props.projects}
+                    resources={props.resources}
+                    fetchUser={props.fetchUser}
+                    fetchAllUsers={props.fetchAllUsers}
+                    fetchAllEvents={props.fetchAllEvents}
+                    fetchAllProjects={props.fetchAllProjects}
+                    fetchAllResources={props.fetchAllResources}
+                    history={props.history}
+                    // user={props.users.user}
+                    users={props.users}
+                    editEvent={props.editEvent}
+                    editProject={props.editProject}
+                    editResource={props.editResource}
+                    editOtherUser={props.editOtherUser}
+                    removeUser={props.removeUser}
+                    deleteEvent={props.deleteEvent}
+                    deleteProject={props.deleteProject}
+                    deleteResource={props.deleteResource}
+                    redirect={redirect}
+                />
+                // </div>
             );
     }
 }
@@ -479,20 +484,26 @@ const styles = (theme) => ({
         ...theme.mixins.toolbar,
     },
     appBar: {
+        position: 'absolute',
         zIndex: theme.zIndex.drawer + 1,
         transition: theme.transitions.create(['width', 'margin'], {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen,
         }),
+        width: '100%',
+        [theme.breakpoints.up('drawerMin')]: {
+            marginLeft: drawerWidth,
+            width: `calc(100% - ${drawerWidth}px)`,
+        },
     },
-    // appBarShift: {
-    //     marginLeft: drawerWidth,
-    //     width: `calc(100% - ${drawerWidth}px)`,
-    //     transition: theme.transitions.create(['width', 'margin'], {
-    //         easing: theme.transitions.easing.sharp,
-    //         duration: theme.transitions.duration.enteringScreen,
-    //     }),
-    // },
+    appBarShift: {
+        marginLeft: drawerWidth,
+        width: `calc(100% - ${drawerWidth}px)`,
+        transition: theme.transitions.create(['width', 'margin'], {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.enteringScreen,
+        }),
+    },
     menuButton: {
         marginRight: 36,
     },
@@ -512,25 +523,27 @@ const styles = (theme) => ({
         }),
     },
     drawerPaperClose: {
-        overflowX: 'hidden',
+        // overflowX: 'hidden',
         transition: theme.transitions.create('width', {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen,
         }),
-        width: theme.spacing(7),
-        [theme.breakpoints.up('sm')]: {
-            width: theme.spacing(9),
-        },
+        width: drawerWidth,
+        // width: theme.spacing(7),
+        // [theme.breakpoints.up('sm')]: {
+        //     width: theme.spacing(9),
+        // },
     },
     appBarSpacer: theme.mixins.toolbar,
     content: {
         flexGrow: 1,
         height: '100vh',
-        overflow: 'auto',
     },
     container: {
         paddingTop: theme.spacing(4),
-        paddingBottom: theme.spacing(4),
+        marginTop: theme.spacing(10),
+        height: '95vh',
+        overflow: 'auto',
     },
     paper: {
         padding: theme.spacing(2),
@@ -543,6 +556,9 @@ const styles = (theme) => ({
     },
     listPadding: {
         paddingLeft: theme.spacing(3),
+    },
+    drawerImg: {
+        marginBottom: theme.spacing(2),
     },
 });
 
@@ -684,12 +700,17 @@ class Dashboard extends Component {
                     onClose={handleErrorClose}
                     message="Server did not respond!!!"
                 />
-                <AppBar
-                    user={users.user.name}
-                    isAdmin={isAdmin}
-                    page={getPageName(subPage)}
-                    drawerWidth={drawerWidth}
-                />
+                <div className={classes.appBar}>
+                    <AppBar
+                        user={users.user.name}
+                        isAdmin={isAdmin}
+                        page={getPageName(subPage)}
+                        closeDrawer={this.handleDrawerClose}
+                        openDrawer={this.handleDrawerOpen}
+                        logout={logoutUserT}
+                    />
+                </div>
+
                 {/* <AppBar
                     position="absolute"
                     // classes={{ paper: clsx(classes.bgimage) }}
@@ -738,42 +759,113 @@ class Dashboard extends Component {
                         </IconButton>
                     </Toolbar> */}
                 {/* </AppBar> */}
-
-                <Drawer
-                    variant="permanent"
-                    classes={{
-                        paper: clsx(
-                            classes.drawerPaper
-                            // !open && classes.drawerPaperClose
-                        ),
-                    }}
-                    style={{
-                        width: drawerWidth,
-                    }}
-                    open={open}
-                >
-                    <img
-                        style={{ width: '100%', height: 'auto' }}
-                        src={drawerIcon}
-                        alt=""
-                    />
-                    {/* <div className={classes.toolbarIcon}>
+                <Hidden only={['xs', 'sm', 'md', 'lg']}>
+                    <Drawer
+                        variant="permanent"
+                        classes={{
+                            paper: clsx(
+                                classes.drawerPaper
+                                // !open && classes.drawerPaperClose
+                            ),
+                        }}
+                        // style={{
+                        //     width: drawerWidth,
+                        // }}
+                        open
+                    >
+                        <img
+                            style={{ width: '100%', height: 'auto' }}
+                            src={drawerIcon}
+                            alt=""
+                            className={classes.drawerImg}
+                        />
+                        {/* <div className={classes.toolbarIcon}>
                         <IconButton onClick={this.handleDrawerClose}>
                             <ChevronLeftIcon />
                         </IconButton>
                     </div>
                     <Divider /> */}
-                    <List className={classes.listPadding}>
-                        <MainListItems
-                            closeDrawer={this.handleDrawerClose}
-                            isAdmin={isAdmin}
-                            logout={logoutUserT}
+                        <List className={classes.listPadding}>
+                            <MainListItems
+                                closeDrawer={this.handleDrawerClose}
+                                isAdmin={isAdmin}
+                                logout={logoutUserT}
+                                page={subPage}
+                            />
+                        </List>
+                    </Drawer>
+                </Hidden>
+                <Hidden only={['drawerMin']}>
+                    <Drawer
+                        // variant="permanent"
+                        onClose={this.handleDrawerClose}
+                        classes={{
+                            paper: clsx(
+                                classes.drawerPaper,
+                                !open && classes.drawerPaperClose
+                            ),
+                        }}
+                        // style={{
+                        //     width: drawerWidth,
+                        // }}
+                        open={open}
+                    >
+                        <img
+                            style={{ width: '100%', height: 'auto' }}
+                            src={drawerIcon}
+                            alt=""
+                            className={classes.drawerImg}
                         />
-                    </List>
-                </Drawer>
+                        <div className={classes.toolbarIcon}>
+                            <Tooltip title="Slide it in">
+                                <IconButton onClick={this.handleDrawerClose}>
+                                    <ChevronLeftIcon
+                                        style={{
+                                            color: '#fff',
+                                        }}
+                                        fontSize="large"
+                                    />
+                                </IconButton>
+                            </Tooltip>
+                        </div>
+                        <Divider />
+                        <List className={classes.listPadding}>
+                            <MainListItems
+                                closeDrawer={this.handleDrawerClose}
+                                isAdmin={isAdmin}
+                                logout={logoutUserT}
+                                page={subPage}
+                            />
+                        </List>
+                    </Drawer>
+                    {/* <Drawer
+                        // variant="permanent"
+                        classes={{
+                            paper: clsx(
+                                classes.drawerPaper,
+                                !open && classes.drawerPaperClose
+                            ),
+                        }}
+                        open
+                    >
+                        <div className={classes.toolbarIcon}>
+                            <IconButton onClick={this.handleDrawerClose}>
+                                <ChevronLeftIcon />
+                            </IconButton>
+                        </div>
+                        <Divider />
+                        <List>
+                            <MainListItems
+                                closeDrawer={this.handleDrawerClose}
+                                isAdmin={isAdmin}
+                                logout={logoutUserT}
+                            />
+                        </List>
+                    </Drawer> */}
+                </Hidden>
                 <main className={classes.content}>
-                    <div className={classes.appBarSpacer} />
-                    <Container maxWidth="lg" className={classes.container}>
+                    {/* <div className={classes.appBarSpacer} /> */}
+                    <Container maxWidth="xl" className={classes.container}>
                         {renderPage(
                             subPage,
                             this.props,

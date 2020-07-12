@@ -1,6 +1,24 @@
 import { createMuiTheme, responsiveFontSizes } from '@material-ui/core';
 
 const theme = createMuiTheme({
+    // typography: {
+    //     h3: {
+    //         [theme.breakpoints.up('md')]: {
+    //             fontSize: '2.7849rem',
+    //         },
+    //     },
+    // },
+    breakpoints: {
+        keys: ['xs', 'sm', 'md', 'lg', 'drawerMin', 'xl'],
+        values: {
+            xs: 0,
+            sm: 600,
+            md: 960,
+            lg: 1280,
+            drawerMin: 1580,
+            xl: 1920,
+        },
+    },
     typography: {
         fontFamily: [
             'Cereal',
@@ -164,6 +182,15 @@ const theme = createMuiTheme({
                 width: '100%',
             },
         },
+        MuiLink: {
+            root: {
+                color: '#49ceeb',
+                fontWeight: 500,
+                '&:hover': {
+                    color: '#49ceeb',
+                },
+            },
+        },
         // MuiInput: {
         //     input: {
         //         // '&::placeholder': {
@@ -185,6 +212,14 @@ const theme = createMuiTheme({
 });
 
 const responsiveTheme = responsiveFontSizes(theme);
+
+// correction done to responsiveness of h3 size at 1280px width
+// responsiveTheme.typography.h3 = {
+//     ...responsiveTheme.typography.h3,
+//     '@media (min-width:1280px)': {
+//         fontSize: '2.7849rem',
+//     },
+// };
 
 export default responsiveTheme;
 // export default theme;
