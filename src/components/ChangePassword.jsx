@@ -48,6 +48,7 @@ export default function ChangePassword(props) {
             // confirmPassError: null,
             changeSuccess: false,
         });
+        props.closeDialog();
     };
 
     const handleSubmit = (e) => {
@@ -84,9 +85,11 @@ export default function ChangePassword(props) {
                 changePassError: true,
             });
         }
-        // closeDialog();
+        // props.closeDialog();
         // window.location.reload(false);
     };
+
+    const { closeDialog } = props;
 
     return (
         <div>
@@ -120,12 +123,18 @@ export default function ChangePassword(props) {
                     horizontal: 'center',
                 }}
                 open={state.changeSuccess}
-                autoHideDuration={3000}
+                autoHideDuration={1500}
                 onClose={handleSuccessClose}
                 message="Password changed succesfully !"
             />
             <Grid container justify="center">
-                <Grid item xs={8} md={7} lg={5}>
+                <Grid
+                    container
+                    justify="center"
+                    alignItems="center"
+                    item
+                    xs={12}
+                >
                     <form onSubmit={handleSubmit}>
                         {/* <TextField
               variant="outlined"
@@ -134,7 +143,7 @@ export default function ChangePassword(props) {
               fullWidth
               name="c_password"
               label="Current Password"
-              type="password"
+              type="password"sm
               id="password"
             /> */}
                         <TextField
@@ -167,14 +176,33 @@ export default function ChangePassword(props) {
                             }
                             id="confirmPassword"
                         />
-                        <Button
-                            type="submit"
-                            fullWidth
-                            variant="contained"
-                            color="primary"
+                        <Grid
+                            container
+                            justify="space-evenly"
+                            alignItems="center"
+                            style={{ marginTop: '16px' }}
                         >
-                            Change
-                        </Button>
+                            <Grid item xs={5}>
+                                <Button
+                                    type="submit"
+                                    fullWidth
+                                    variant="contained"
+                                    color="primary"
+                                >
+                                    Change
+                                </Button>
+                            </Grid>
+                            <Grid item xs={5}>
+                                <Button
+                                    fullWidth
+                                    variant="outlined"
+                                    color="primary"
+                                    onClick={closeDialog}
+                                >
+                                    Cancel
+                                </Button>
+                            </Grid>
+                        </Grid>
                     </form>
                 </Grid>
             </Grid>
@@ -185,5 +213,5 @@ export default function ChangePassword(props) {
 ChangePassword.propTypes = {
     changePass: PropTypes.func.isRequired,
     users: PropTypes.object.isRequired,
-    // closeDialog: PropTypes.func.isRequired,
+    closeDialog: PropTypes.func.isRequired,
 };

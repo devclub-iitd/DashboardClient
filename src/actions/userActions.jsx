@@ -6,6 +6,7 @@
 // import { history } from '../_helpers';
 import * as ActionTypes from './ActionTypes';
 import * as API from '../data/api_links';
+import * as UserUtils from '../utils/userUtils';
 
 export const userLoading = () => ({
     type: ActionTypes.USER_LOADING,
@@ -25,18 +26,10 @@ export const usersFailed = (errmess) => ({
     payload: errmess,
 });
 
-export const addUser = (upUser) =>
-    // const upUser = {
-    //   ...user,
-    //   url: objToStrMap(user.url),
-    //   join_year: user.join_year === null ? new Date() : new Date(user.join_year),
-    //   grad_year: user.grad_year === null ? new Date() : new Date(user.grad_year),
-    //   birth_date: user.birth_date === null ? new Date() : new Date(user.birth_date),
-    // };
-    ({
-        type: ActionTypes.ADD_USER,
-        payload: upUser,
-    });
+export const addUser = (upUser) => ({
+    type: ActionTypes.ADD_USER,
+    payload: upUser,
+});
 export const addAllUsers = (users) => ({
     type: ActionTypes.ADD_ALL_USERS,
     payload: users,
@@ -100,7 +93,9 @@ function objToStrMap(obj) {
     // for (const k of Object.keys(obj)) {
     //   strMap.set(k, obj[k]);
     // }
+    // console.log('url object: ', obj);
     Object.keys(obj).map((k) => strMap.set(k, obj[k]));
+    // console.log('mapped url: ', strMap);
     return strMap;
 }
 
@@ -123,77 +118,86 @@ export const fetchUser = (id) => (dispatch) => {
             _id: id,
         },
     };
-    return fetch(API.userQueryAPI, {
-        method: 'POST',
-        body: JSON.stringify(query),
-        headers: {
-            'Content-Type': 'application/json',
-            // Origin: 'localhost:3001/',
-            Authorization: bearer,
-        },
-        credentials: 'same-origin',
-    })
-        .then(
-            (response) => {
-                if (response.ok || response.status === 304) {
-                    return response;
-                }
-                response.json().then((res) => {
-                    // // console.log('Server response: ', res);
-                    if (res.name === 'Unauthorized') {
-                        dispatch(logoutUser('timeout'));
-                    }
-                });
-                const error = new Error(
-                    `Error ${response.status}: ${response.statusText}`
-                );
-                error.response = response;
-                // // console.log(error);
-                throw error;
+    return (
+        fetch(API.userQueryAPI, {
+            method: 'POST',
+            body: JSON.stringify(query),
+            headers: {
+                'Content-Type': 'application/json',
+                // Origin: 'localhost:3001/',
+                Authorization: bearer,
             },
-            (error) => {
-                const errmess = new Error(error.message);
-                throw errmess;
-            }
-        )
-        .then((response) => response.json())
-        .then(({ data }) => {
-            // // console.log('fetched user data: ', data);
-            // const acUser = {
-            //   ...data[0],
-            //   url: objToStrMap(data[0].url),
-            //   join_year: new Date(data[0].join_year),
-            //   grad_year: new Date(data[0].grad_year),
-            //   birth_date: new Date(data[0].birth_date),
-            // };
-            const upUser = {
-                ...data[0],
-                url: objToStrMap(data[0].url),
-                join_year:
-                    data[0].join_year === null
-                        ? new Date()
-                        : new Date(data[0].join_year),
-                grad_year:
-                    data[0].grad_year === null
-                        ? new Date()
-                        : new Date(data[0].grad_year),
-                birth_date:
-                    data[0].birth_date === null
-                        ? new Date()
-                        : new Date(data[0].birth_date),
-            };
-            if (!upUser.url.has('facebook_url')) {
-                upUser.url.set('facebook_url', '');
-            }
-            if (!upUser.url.has('github_url')) {
-                upUser.url.set('github_url', '');
-            }
-            if (!upUser.url.has('picture_url')) {
-                upUser.url.set('picture_url', '');
-            }
-            dispatch(addUser(upUser));
+            credentials: 'same-origin',
         })
-        .catch((error) => dispatch(userFailed(error.message)));
+            .then(
+                (response) => {
+                    if (response.ok || response.status === 304) {
+                        return response;
+                    }
+                    response.json().then((res) => {
+                        // // console.log('Server response: ', res);
+                        if (res.name === 'Unauthorized') {
+                            dispatch(logoutUser('timeout'));
+                        }
+                    });
+                    const error = new Error(
+                        `Error ${response.status}: ${response.statusText}`
+                    );
+                    error.response = response;
+                    // // console.log(error);
+                    throw error;
+                },
+                (error) => {
+                    const errmess = new Error(error.message);
+                    throw errmess;
+                }
+            )
+            .then((response) => response.json())
+            .then(({ data }) => {
+                // console.log('fetched user data: ', data);
+                // const acUser = {
+                //   ...data[0],
+                //   url: objToStrMap(data[0].url),
+                //   join_year: new Date(data[0].join_year),
+                //   grad_year: new Date(data[0].grad_year),
+                //   birth_date: new Date(data[0].birth_date),
+                // };
+                // const upUser = {
+                //     ...data[0],
+                //     url: objToStrMap(data[0].url),
+                //     join_year:
+                //         data[0].join_year === null
+                //             ? new Date()
+                //             : new Date(data[0].join_year),
+                //     grad_year:
+                //         data[0].grad_year === null
+                //             ? new Date()
+                //             : new Date(data[0].grad_year),
+                //     birth_date:
+                //         data[0].birth_date === null
+                //             ? new Date()
+                //             : new Date(data[0].birth_date),
+                // };
+                // // console.log('fetched user: ', upUser);
+                // if (!upUser.url.has('fb_url')) {
+                //     upUser.url.set('fb_url', '#');
+                // }
+                // if (!upUser.url.has('github_url')) {
+                //     upUser.url.set('github_url', '#');
+                // }
+                // if (!upUser.url.has('picture_url')) {
+                //     upUser.url.set('picture_url', '#');
+                // }
+                localStorage.setItem('currentUser', JSON.stringify(data[0]));
+                const upUser = UserUtils.getProperUser(data[0]);
+                // return upUser;
+                // console.log('urled fetched user: ', upUser);
+                // localStorage.setItem('currentUser', JSON.stringify(upUser));
+                dispatch(addUser(upUser));
+            })
+            // .then((upUser) => dispatch(addUser(upUser)))
+            .catch((error) => dispatch(userFailed(error.message)))
+    );
 };
 
 export const fetchAllUsers = () => (dispatch) => {
@@ -362,6 +366,7 @@ export const updateUser = (updatedUser) => (dispatch) => {
     const bearer = `Bearer ${localStorage.getItem('dcIITDDashboardToken')}`;
     // const api = new String(API.userAPI + updatedUser._id);
     // `${API.userAPI}${updatedUser._id}`
+    dispatch(userLoading);
     return fetch(`${API.userAPI}${updatedUser._id}`, {
         method: 'PUT',
         body: JSON.stringify(updatedUser),
@@ -396,6 +401,8 @@ export const updateUser = (updatedUser) => (dispatch) => {
         .then(() => {
             // // console.log('User data updated: ', userData);
             dispatch(fetchUser(updatedUser._id));
+            // localStorage.setItem('currentUser', JSON.stringify(updatedUser));
+            // dispatch(addUser(updatedUser));
         })
         .catch((error) => dispatch(userServerError(error.message)));
 };

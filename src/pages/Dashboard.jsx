@@ -1,3 +1,4 @@
+/* eslint-disable react/no-deprecated */
 /* eslint-disable react/forbid-prop-types */
 import React, { Component } from 'react';
 import clsx from 'clsx';
@@ -16,6 +17,9 @@ import {
     Container,
     Hidden,
     Tooltip,
+    Backdrop,
+    CircularProgress,
+    SwipeableDrawer,
 } from '@material-ui/core';
 
 import MenuIcon from '@material-ui/icons/Menu';
@@ -25,16 +29,17 @@ import { Redirect, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { actions } from 'react-redux-form';
+import { isMobile } from 'react-device-detect';
 import MainListItems from '../components/MainListItems';
 // import Home from '../components/Home';
 import Home from '../components/HomeUp';
-import Profile from '../components/Profile';
+import Profile from '../components/ProfileUp';
 import ChangePassword from '../components/ChangePassword';
 import EventsPage from '../components/Events';
 import ProjectsPage from '../components/Projects';
 import ResourcesPage from '../components/Resources';
 import ManageUsers from '../components/ManageUsers';
-import MyTasks from '../components/MyTasks';
+import MyTasks from '../components/MyTasksUp';
 import DeployManager from '../components/Deploy';
 import AppBar from '../components/AppBar';
 import CreateTasks from '../components/CreateTasks';
@@ -169,28 +174,18 @@ function renderPage(subPage, props, isAdmin, redirect, closeDrawer) {
     if (subPage === 'users' || subPage === 'deploy') {
         if (!isAdmin) {
             redirect('home', closeDrawer);
-            // return;
             validSubPage = '';
         }
     }
     switch (validSubPage) {
         case 'profile':
             return (
-                <div>
-                    <Profile
-                        // user={props.users.user}
-                        // error={props.users.errMess}
-                        // fetchUser={props.fetchUser}
-                        user={props.users.user}
-                        users={props.users}
-                        isLoading={props.users.userLoading}
-                        // events={props.events}
-                        // editEvent={props.editEvent}
-                        changePassword={props.changePass}
-                        serverError={props.users.serverError}
-                        updateUser={props.updateUser}
-                    />
-                </div>
+                <Profile
+                    users={props.users}
+                    changePassword={props.changePass}
+                    serverError={props.users.serverError}
+                    updateUser={props.updateUser}
+                />
             );
 
         case 'changePassword':
@@ -281,13 +276,13 @@ function renderPage(subPage, props, isAdmin, redirect, closeDrawer) {
 
         case 'myTasks':
             return (
-                <div>
-                    <MyTasks
-                        users={props.users}
-                        events={props.events}
-                        projects={props.projects}
-                    />
-                </div>
+                // <div>
+                <MyTasks
+                    users={props.users}
+                    events={props.events}
+                    projects={props.projects}
+                />
+                // </div>
             );
 
         case 'deploy':
@@ -516,6 +511,7 @@ const styles = (theme) => ({
     drawerPaper: {
         position: 'relative',
         whiteSpace: 'nowrap',
+        overflowY: 'hidden',
         width: drawerWidth,
         transition: theme.transitions.create('width', {
             easing: theme.transitions.easing.sharp,
@@ -538,12 +534,19 @@ const styles = (theme) => ({
     content: {
         flexGrow: 1,
         height: '100vh',
+        // maxWidth: '100vw',
     },
     container: {
         paddingTop: theme.spacing(4),
+        paddingLeft: 0,
+        paddingRight: 0,
         marginTop: theme.spacing(10),
+        // width: 'auto',
         height: '95vh',
-        overflow: 'auto',
+        overflowY: 'auto',
+        scrollbarWidth: 'none',
+        maxWidth: '100vw',
+        // border: '1px solid white',
     },
     paper: {
         padding: theme.spacing(2),
@@ -556,9 +559,15 @@ const styles = (theme) => ({
     },
     listPadding: {
         paddingLeft: theme.spacing(3),
+        overflowY: 'auto',
+        scrollbarWidth: 'none',
     },
     drawerImg: {
         marginBottom: theme.spacing(2),
+    },
+    backdrop: {
+        zIndex: theme.zIndex.drawer + 1,
+        color: '#fff',
     },
 });
 
@@ -588,6 +597,7 @@ class Dashboard extends Component {
             fetchAllProjects: fetchAllProjectsT,
             fetchAllEvents: fetchAllEventsT,
             fetchAllResources: fetchAllResourcesT,
+            users,
         } = this.props;
         // this.props.fetchAllUsers();
         // this.props.fetchUser(localStorage.getItem('userId'));
@@ -599,6 +609,7 @@ class Dashboard extends Component {
         fetchAllProjectsT();
         fetchAllEventsT();
         fetchAllResourcesT();
+        // localStorage.setItem('currentUser', JSON.stringify(users.user));
     }
 
     // shouldComponentUpdate(nextProps) {
@@ -700,6 +711,19 @@ class Dashboard extends Component {
                     onClose={handleErrorClose}
                     message="Server did not respond!!!"
                 />
+                <Backdrop
+                    className={classes.backdrop}
+                    open={
+                        events.isLoading ||
+                        projects.isLoading ||
+                        users.userLoading ||
+                        users.usersLoading ||
+                        resources.isLoading ||
+                        auth.isLoading
+                    }
+                >
+                    <CircularProgress color="inherit" />
+                </Backdrop>
                 <div className={classes.appBar}>
                     <AppBar
                         user={users.user.name}
@@ -796,48 +820,99 @@ class Dashboard extends Component {
                     </Drawer>
                 </Hidden>
                 <Hidden only={['drawerMin']}>
-                    <Drawer
-                        // variant="permanent"
-                        onClose={this.handleDrawerClose}
-                        classes={{
-                            paper: clsx(
-                                classes.drawerPaper,
-                                !open && classes.drawerPaperClose
-                            ),
-                        }}
-                        // style={{
-                        //     width: drawerWidth,
-                        // }}
-                        open={open}
-                    >
-                        <img
-                            style={{ width: '100%', height: 'auto' }}
-                            src={drawerIcon}
-                            alt=""
-                            className={classes.drawerImg}
-                        />
-                        <div className={classes.toolbarIcon}>
-                            <Tooltip title="Slide it in">
-                                <IconButton onClick={this.handleDrawerClose}>
-                                    <ChevronLeftIcon
-                                        style={{
-                                            color: '#fff',
-                                        }}
-                                        fontSize="large"
-                                    />
-                                </IconButton>
-                            </Tooltip>
-                        </div>
-                        <Divider />
-                        <List className={classes.listPadding}>
-                            <MainListItems
-                                closeDrawer={this.handleDrawerClose}
-                                isAdmin={isAdmin}
-                                logout={logoutUserT}
-                                page={subPage}
+                    {isMobile ? (
+                        <SwipeableDrawer
+                            onClose={this.handleDrawerClose}
+                            classes={{
+                                paper: clsx(
+                                    classes.drawerPaper,
+                                    !open && classes.drawerPaperClose
+                                ),
+                            }}
+                            anchor="left"
+                            onOpen={this.handleDrawerOpen}
+                            // style={{
+                            //     width: drawerWidth,
+                            // }}
+                            open={open}
+                        >
+                            <img
+                                style={{ width: '100%', height: 'auto' }}
+                                src={drawerIcon}
+                                alt=""
+                                className={classes.drawerImg}
                             />
-                        </List>
-                    </Drawer>
+                            <div className={classes.toolbarIcon}>
+                                <Tooltip title="Slide it in">
+                                    <IconButton
+                                        onClick={this.handleDrawerClose}
+                                    >
+                                        <ChevronLeftIcon
+                                            style={{
+                                                color: '#fff',
+                                            }}
+                                            fontSize="large"
+                                        />
+                                    </IconButton>
+                                </Tooltip>
+                            </div>
+                            <Divider />
+                            <List className={classes.listPadding}>
+                                <MainListItems
+                                    closeDrawer={this.handleDrawerClose}
+                                    isAdmin={isAdmin}
+                                    logout={logoutUserT}
+                                    page={subPage}
+                                />
+                            </List>
+                        </SwipeableDrawer>
+                    ) : (
+                        <Drawer
+                            // variant="permanent"
+                            onClose={this.handleDrawerClose}
+                            classes={{
+                                paper: clsx(
+                                    classes.drawerPaper,
+                                    !open && classes.drawerPaperClose
+                                ),
+                            }}
+                            // style={{
+                            //     width: drawerWidth,
+                            // }}
+                            open={open}
+                        >
+                            <img
+                                style={{ width: '100%', height: 'auto' }}
+                                src={drawerIcon}
+                                alt=""
+                                className={classes.drawerImg}
+                            />
+                            <div className={classes.toolbarIcon}>
+                                <Tooltip title="Slide it in">
+                                    <IconButton
+                                        onClick={this.handleDrawerClose}
+                                    >
+                                        <ChevronLeftIcon
+                                            style={{
+                                                color: '#fff',
+                                            }}
+                                            fontSize="large"
+                                        />
+                                    </IconButton>
+                                </Tooltip>
+                            </div>
+                            <Divider />
+                            <List className={classes.listPadding}>
+                                <MainListItems
+                                    closeDrawer={this.handleDrawerClose}
+                                    isAdmin={isAdmin}
+                                    logout={logoutUserT}
+                                    page={subPage}
+                                />
+                            </List>
+                        </Drawer>
+                    )}
+
                     {/* <Drawer
                         // variant="permanent"
                         classes={{

@@ -3,27 +3,31 @@
     ----------------------------------------------------------------------------------
 */
 
-// export const loginAPI = 'http://localhost:3001/api/user/login';
-// export const registerAPI = 'http://localhost:3001/api/user/register';
+// export const loginAPI = 'http://192.168.43.152:3001/api/user/login';
+// export const registerAPI = 'http://192.168.43.152:3001/api/user/register';
 
-// export const userAPI = 'http://localhost:3001/api/user/';
-// export const userGetAllDBAPI = 'http://localhost:3001/api/user/getAllDB/';
+// export const userAPI = 'http://192.168.43.152:3001/api/user/';
+// export const userGetAllDBAPI = 'http://192.168.43.152:3001/api/user/getAllDB/';
 // export const userChangePassAPI =
-//     'http://localhost:3001/api/user/changePassword/';
-// export const userQueryAPI = 'http://localhost:3001/api/user/query/';
+//     'http://192.168.43.152:3001/api/user/changePassword/';
+// export const userQueryAPI = 'http://192.168.43.152:3001/api/user/query/';
 
-// export const eventAPI = 'http://localhost:3001/api/event/';
-// export const eventGetAllDBAPI = 'http://localhost:3001/api/event/getAllDB/';
-// export const eventDeleteAPI = 'http://localhost:3001/api/event/delete/';
+// export const eventAPI = 'http://192.168.43.152:3001/api/event/';
+// export const eventGetAllDBAPI =
+//     'http://192.168.43.152:3001/api/event/getAllDB/';
+// export const eventDeleteAPI = 'http://192.168.43.152:3001/api/event/delete/';
 
-// export const projectAPI = 'http://localhost:3001/api/project/';
-// export const projectGetAllDBAPI = 'http://localhost:3001/api/project/getAllDB/';
-// export const projectDeleteAPI = 'http://localhost:3001/api/project/delete/';
+// export const projectAPI = 'http://192.168.43.152:3001/api/project/';
+// export const projectGetAllDBAPI =
+//     'http://192.168.43.152:3001/api/project/getAllDB/';
+// export const projectDeleteAPI =
+//     'http://192.168.43.152:3001/api/project/delete/';
 
-// export const resourceAPI = 'http://localhost:3001/api/resource/';
+// export const resourceAPI = 'http://192.168.43.152:3001/api/resource/';
 // export const resourceGetAllDBAPI =
-//     'http://localhost:3001/api/resource/getAllDB/';
-// export const resourceDeleteAPI = 'http://localhost:3001/api/resource/delete/';
+//     'http://192.168.43.152:3001/api/resource/getAllDB/';
+// export const resourceDeleteAPI =
+//     'http://192.168.43.152:3001/api/resource/delete/';
 
 /*
     ----------------------------------------------------------------------------------

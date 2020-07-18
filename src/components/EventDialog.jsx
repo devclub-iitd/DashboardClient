@@ -16,6 +16,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import EventIcon from '@material-ui/icons/Event';
 import StatusChip from './StatusChip';
+import * as EventUtils from '../utils/eventUtils';
 
 const useStyles = makeStyles((theme) => ({
     divider: {
@@ -31,43 +32,6 @@ const useStyles = makeStyles((theme) => ({
         height: theme.spacing(7),
     },
 }));
-
-function isOngoing(startDate, endDate) {
-    const today = new Date();
-    if (today >= startDate && today <= endDate) {
-        return true;
-    }
-    return false;
-}
-
-function isCompleted(endDate) {
-    const today = new Date();
-    if (today > endDate) {
-        return true;
-    }
-    return false;
-}
-
-function isUpcoming(startDate) {
-    const today = new Date();
-    if (today < startDate) {
-        return true;
-    }
-    return false;
-}
-
-function getStatus(event) {
-    if (isOngoing(event.start_date, event.end_date)) {
-        return 'ongoing';
-    }
-    if (isCompleted(event.end_date)) {
-        return 'completed';
-    }
-    if (isUpcoming(event.start_date)) {
-        return 'upcoming';
-    }
-    return '';
-}
 
 export default function EventDialog({ event, close, users }) {
     const classes = useStyles();
@@ -92,7 +56,9 @@ export default function EventDialog({ event, close, users }) {
                                 style={{ fontWeight: 500 }}
                                 variant="h3"
                             >
-                                {event !== undefined ? event.name : 'jbkbkb'}
+                                {event !== undefined
+                                    ? event.name
+                                    : 'Some Event'}
                             </Typography>
                             <Divider
                                 variant="fullwidth"
@@ -110,7 +76,9 @@ export default function EventDialog({ event, close, users }) {
                                     <Typography variant="h6">{`${event.start_date.toDateString()} - ${event.end_date.toDateString()}`}</Typography>
                                 </Grid>
                                 <Grid item xs={5} sm={3}>
-                                    <StatusChip status={getStatus(event)} />
+                                    <StatusChip
+                                        status={EventUtils.getStatus(event)}
+                                    />
                                 </Grid>
                             </Grid>
                             <Typography
@@ -123,7 +91,7 @@ export default function EventDialog({ event, close, users }) {
                                 return (
                                     <Typography
                                         className={classes.info}
-                                        variant="body1"
+                                        variant="h6"
                                     >
                                         {`${key}: `}
                                         <Link
@@ -141,7 +109,7 @@ export default function EventDialog({ event, close, users }) {
                                 className={classes.info}
                             >
                                 <Grid item xs={12} sm={3}>
-                                    <Typography variant="body1">
+                                    <Typography variant="h6">
                                         Managers:
                                     </Typography>
                                 </Grid>

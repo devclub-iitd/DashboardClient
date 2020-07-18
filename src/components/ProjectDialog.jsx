@@ -90,14 +90,18 @@ export default function ProjectDialog({ project, close, users }) {
                                 return (
                                     <Typography
                                         className={classes.info}
-                                        variant="body1"
+                                        variant="h6"
                                     >
                                         {`${key}: `}
                                         <Link
                                             target="_blank"
                                             href={value}
                                             underline="none"
-                                        >{`${value.substr(0, 30)}...`}</Link>
+                                        >
+                                            {value.length < 30
+                                                ? value
+                                                : `${value.substr(0, 30)}...`}
+                                        </Link>
                                     </Typography>
                                 );
                             })}
@@ -108,7 +112,7 @@ export default function ProjectDialog({ project, close, users }) {
                                 className={classes.info}
                             >
                                 <Grid item xs={12} sm={3}>
-                                    <Typography variant="body1">
+                                    <Typography variant="h6">
                                         Members:
                                     </Typography>
                                 </Grid>

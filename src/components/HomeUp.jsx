@@ -4,7 +4,6 @@ import React, { Fragment } from 'react';
 import {
     Grid,
     Typography,
-    Avatar,
     Backdrop,
     CircularProgress,
     Paper,
@@ -12,9 +11,9 @@ import {
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
-import EventDialog from './EventDialog';
-import ProjectDialog from './ProjectDialog';
-import StatusChip from './StatusChip';
+import EventCard from './EventCard';
+import ProjectCard from './ProjectCard';
+import * as Utils from '../utils';
 
 const useStyles = makeStyles((theme) => ({
     backdrop: {
@@ -31,25 +30,9 @@ const useStyles = makeStyles((theme) => ({
         marginTop: theme.spacing(3),
         cursor: 'pointer',
     },
-    eventCard: {
-        borderWidth: '3px',
-        borderColor: '#979797',
-        borderRadius: '15px',
-        backgroundColor: '#323234',
-        margin: theme.spacing(2, 3, 1, 3),
-        padding: theme.spacing(2),
-        cursor: 'pointer',
-    },
-    projectCard: {
-        borderWidth: '3px',
-        borderColor: '#979797',
-        borderRadius: '15px',
-        backgroundColor: '#323234',
-        margin: theme.spacing(2, 3, 1, 3),
-        padding: theme.spacing(2),
-        cursor: 'pointer',
-    },
     container: {
+        // marginLeft: theme.spacing(2),
+        // marginRight: theme.spacing(2),
         [theme.breakpoints.down('sm')]: {
             height: '85vh',
             overflowY: 'scroll',
@@ -57,185 +40,6 @@ const useStyles = makeStyles((theme) => ({
         },
     },
 }));
-
-function isOngoing(startDate, endDate) {
-    const today = new Date();
-    if (today >= startDate && today <= endDate) {
-        return true;
-    }
-    return false;
-}
-
-function isCompleted(endDate) {
-    const today = new Date();
-    if (today > endDate) {
-        return true;
-    }
-    return false;
-}
-
-function isUpcoming(startDate) {
-    const today = new Date();
-    if (today < startDate) {
-        return true;
-    }
-    return false;
-}
-
-const EventCard = ({ className, event, users }) => {
-    let status;
-    if (isOngoing(event.start_date, event.end_date)) {
-        status = 'ongoing';
-    } else if (isCompleted(event.end_date)) {
-        status = 'completed';
-    } else if (isUpcoming(event.start_date)) {
-        status = 'upcoming';
-    }
-
-    const [open, setOpen] = React.useState(false);
-
-    const openEventDialog = () => {
-        setOpen(true);
-    };
-    const closeEventDialog = () => {
-        setOpen(false);
-    };
-    return (
-        <Paper
-            onClick={openEventDialog}
-            variant="outlined"
-            className={className}
-        >
-            <Typography
-                align="center"
-                variant="h4"
-                style={{ fontWeight: 500, width: '100%' }}
-            >
-                {event.name}
-            </Typography>
-            <Grid
-                style={{ marginTop: '8px' }}
-                container
-                justify="center"
-                alignItems="center"
-            >
-                <Grid item xs={6}>
-                    <Typography
-                        variant="h5"
-                        align="center"
-                        style={{
-                            fontWeight: 300,
-                        }}
-                    >
-                        {event.start_date.toDateString()}
-                    </Typography>
-                </Grid>
-                <Grid container justify="center" item xs={6}>
-                    <StatusChip status={status} />
-                </Grid>
-            </Grid>
-            {open ? (
-                <EventDialog
-                    open={open}
-                    event={event}
-                    close={closeEventDialog}
-                    users={users}
-                />
-            ) : null}
-        </Paper>
-    );
-};
-
-EventCard.propTypes = {
-    className: PropTypes.objectOf(PropTypes.string).isRequired,
-    event: PropTypes.object.isRequired,
-    users: PropTypes.array.isRequired,
-};
-
-const ProjectCard = ({ className, project, users }) => {
-    const mems = users.filter((user) => project.members.includes(user._id));
-    const dis = mems.length <= 3 ? mems : mems.slice(3);
-    const [open, setOpen] = React.useState(false);
-
-    const openProjectDialog = () => {
-        setOpen(true);
-    };
-    const closeProjectDialog = () => {
-        setOpen(false);
-    };
-    return (
-        <Paper
-            onClick={openProjectDialog}
-            variant="outlined"
-            className={className}
-        >
-            <Typography
-                align="center"
-                variant="h4"
-                style={{ width: '100%', fontWeight: 500 }}
-            >
-                {project.name}
-            </Typography>
-            <Grid
-                style={{ marginTop: '8px' }}
-                container
-                justify="center"
-                alignItems="center"
-            >
-                <Grid
-                    container
-                    justify="center"
-                    alignItems="center"
-                    item
-                    xs={6}
-                >
-                    {dis.length === 0 ? (
-                        <Grid item xs={12}>
-                            <Typography
-                                variant="subtitle2"
-                                align="center"
-                                style={{
-                                    fontFamily: 'Monospace',
-                                    fontWeight: 'bold',
-                                }}
-                            >
-                                No members assigned
-                            </Typography>
-                        </Grid>
-                    ) : (
-                        dis.map((mem) => (
-                            <Grid item xs={4}>
-                                <Tooltip title={mem.name}>
-                                    <Avatar
-                                        alt=""
-                                        src={mem.url.get('picture_url')}
-                                    />
-                                </Tooltip>
-                            </Grid>
-                        ))
-                    )}
-                </Grid>
-                <Grid container justify="center" item xs={6}>
-                    <StatusChip status={project.status.toLowerCase()} />
-                </Grid>
-            </Grid>
-            {open ? (
-                <ProjectDialog
-                    open={open}
-                    project={project}
-                    close={closeProjectDialog}
-                    users={users}
-                />
-            ) : null}
-        </Paper>
-    );
-};
-
-ProjectCard.propTypes = {
-    className: PropTypes.objectOf(PropTypes.string).isRequired,
-    project: PropTypes.object.isRequired,
-    users: PropTypes.arrayOf(PropTypes.object).isRequired,
-};
 
 const ActCard = ({ className, name, num, redirect }) => {
     return (
@@ -276,32 +80,28 @@ export default function Home({ users, events, projects, resources, redirect }) {
     const dumProjects = projects.allProjects;
     const dumResources = resources.allResources;
 
-    const myEvents =
-        dumEvents !== null && dumEvents !== undefined
-            ? dumEvents.filter((event) => event.assignee.includes(curUser._id))
-            : [];
+    const myEvents = Utils.EventUtils.sortEventsByStatus(
+        Utils.EventUtils.getUserEvents(curUser, dumEvents)
+    );
 
-    const myProjects =
-        dumProjects !== null && dumProjects !== undefined
-            ? dumProjects.filter((project) =>
-                  project.members.includes(curUser._id)
-              )
-            : [];
+    const myProjects = Utils.ProjectUtils.sortProjectsByStatus(
+        Utils.ProjectUtils.getUserProjects(curUser, dumProjects)
+    );
 
     return (
         <Grid
             id="pageContainer"
             container
-            spacing={3}
-            justify="space-evenly"
+            // spacing={3}
+            justify="center"
             className={classes.container}
         >
-            <Backdrop
+            {/* <Backdrop
                 className={classes.backdrop}
                 open={events.isLoading || projects.isLoading || users.isLoading}
             >
                 <CircularProgress color="inherit" />
-            </Backdrop>
+            </Backdrop> */}
             <Grid item md={4} sm={5} xs={11}>
                 <Typography
                     align="center"
@@ -346,7 +146,7 @@ export default function Home({ users, events, projects, resources, redirect }) {
                 alignContent="flex-start"
                 item
                 md={8}
-                sm={7}
+                sm={6}
                 xs={11}
                 className={classes.taskContainer}
             >
@@ -390,9 +190,9 @@ export default function Home({ users, events, projects, resources, redirect }) {
                                 return (
                                     <Fragment key={event._id}>
                                         <EventCard
-                                            className={classes.eventCard}
                                             event={event}
                                             users={dumUsers}
+                                            dialog
                                         />
                                     </Fragment>
                                 );
@@ -430,11 +230,13 @@ export default function Home({ users, events, projects, resources, redirect }) {
                             myProjects.map((project) => {
                                 return (
                                     <Fragment key={project._id}>
-                                        <ProjectCard
-                                            className={classes.projectCard}
-                                            project={project}
-                                            users={dumUsers}
-                                        />
+                                        <Tooltip title="View details">
+                                            <ProjectCard
+                                                project={project}
+                                                users={dumUsers}
+                                                dialog
+                                            />
+                                        </Tooltip>
                                     </Fragment>
                                 );
                             })
