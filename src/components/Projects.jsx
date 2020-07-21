@@ -369,7 +369,12 @@ const ProjectsPage = ({
                 filter: false,
                 customBodyRender: (url) => (
                     <Tooltip title="Go to project website">
-                        <Fab size="small" color="secondary" href={url}>
+                        <Fab
+                            size="small"
+                            color="secondary"
+                            target="_blank"
+                            href={url}
+                        >
                             <CallMadeRounded
                                 style={{ color: '#636366', fontWeight: 'bold' }}
                             />

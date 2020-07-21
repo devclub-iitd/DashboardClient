@@ -10,7 +10,7 @@ export default function ChangePassword(props) {
     const [state, setState] = React.useState({
         password: '',
         ChangePassword: '',
-        confirmPassError: null,
+        confirmPassError: false,
         changePassError: false,
         changeSuccess: false,
     });
@@ -65,7 +65,7 @@ export default function ChangePassword(props) {
             ...state,
             password: '',
             confirmPassword: '',
-            confirmPassError: null,
+            confirmPassError: false,
         });
 
         if (props.users.serverError === null) {
@@ -73,7 +73,7 @@ export default function ChangePassword(props) {
                 ...state,
                 password: '',
                 ChangePassword: '',
-                confirmPassError: null,
+                confirmPassError: false,
                 changeSuccess: true,
             });
         } else {

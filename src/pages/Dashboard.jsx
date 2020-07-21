@@ -217,46 +217,41 @@ function renderPage(subPage, props, isAdmin, redirect, closeDrawer) {
 
         case 'events':
             return (
-                <div>
-                    <EventsPage
-                        events={props.events}
-                        fetchAllEvents={props.fetchAllEvents}
-                        createEvent={props.createEvent}
-                        editEvent={props.editEvent}
-                        eventError={props.events.serverError}
-                        deleteEvent={props.deleteEvent}
-                        users={props.users}
-                    />
-                </div>
+                <EventsPage
+                    events={props.events}
+                    fetchAllEvents={props.fetchAllEvents}
+                    createEvent={props.createEvent}
+                    editEvent={props.editEvent}
+                    eventError={props.events.serverError}
+                    deleteEvent={props.deleteEvent}
+                    users={props.users}
+                />
             );
 
         case 'projects':
             return (
-                <div>
-                    <ProjectsPage
-                        projects={props.projects}
-                        createProject={props.createProject}
-                        projectError={props.projects.serverError}
-                        fetchAllProjects={props.fetchAllProjects}
-                        editProject={props.editProject}
-                        deleteProject={props.deleteProject}
-                        users={props.users}
-                    />
-                </div>
+                <ProjectsPage
+                    projects={props.projects}
+                    createProject={props.createProject}
+                    projectError={props.projects.serverError}
+                    fetchAllProjects={props.fetchAllProjects}
+                    editProject={props.editProject}
+                    deleteProject={props.deleteProject}
+                    users={props.users}
+                />
             );
 
         case 'resources':
             return (
-                <div>
-                    <ResourcesPage
-                        resources={props.resources}
-                        fetchAllResources={props.fetchAllResources}
-                        editResource={props.editResource}
-                        resourceError={props.resources.serverError}
-                        deleteResource={props.deleteResource}
-                        users={props.users}
-                    />
-                </div>
+                <ResourcesPage
+                    resources={props.resources}
+                    createResource={props.createResource}
+                    fetchAllResources={props.fetchAllResources}
+                    editResource={props.editResource}
+                    resourceError={props.resources.serverError}
+                    deleteResource={props.deleteResource}
+                    users={props.users}
+                />
             );
 
         case 'users':
@@ -266,7 +261,6 @@ function renderPage(subPage, props, isAdmin, redirect, closeDrawer) {
                         users={props.users}
                         fetchAllUsers={props.fetchAllUsers}
                         removeUser={props.removeUser}
-                        createResource={props.createResource}
                         deleteAllUsers={props.deleteAllUsers}
                         rejectAllUnapproved={props.rejectAllUnapproved}
                         editOtherUser={props.editOtherUser}
