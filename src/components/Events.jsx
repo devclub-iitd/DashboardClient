@@ -13,6 +13,7 @@ import {
     DialogContent,
     Switch,
     Avatar,
+    Grow,
 } from '@material-ui/core';
 import MUIDataTable from 'mui-datatables';
 import CloseIcon from '@material-ui/icons/Close';
@@ -69,7 +70,6 @@ const EventsPage = ({
                     .map((user) => user.name),
             ],
             event.url.get('url'),
-            event,
         ];
     };
 
@@ -308,22 +308,24 @@ const EventsPage = ({
         </Typography>
     ) : (
         <>
-            <Grid container justify="center" alignItems="center">
-                <Grid item xs={11}>
-                    <MUIDataTable
-                        title={
-                            <TableTitle
-                                title="Add Event"
-                                addAction={handleCreateOpen}
-                            />
-                        }
-                        data={data}
-                        columns={columns}
-                        options={options}
-                        className={classes.tablePaper}
-                    />
+            <Grow in style={{ transformOrigin: 'center top' }} timeout={750}>
+                <Grid container justify="center" alignItems="center">
+                    <Grid item xs={11}>
+                        <MUIDataTable
+                            title={
+                                <TableTitle
+                                    title="Add Event"
+                                    addAction={handleCreateOpen}
+                                />
+                            }
+                            data={data}
+                            columns={columns}
+                            options={options}
+                            className={classes.tablePaper}
+                        />
+                    </Grid>
                 </Grid>
-            </Grid>
+            </Grow>
             <Dialog open={createOpen} maxWidth="sm" onClose={handleCreateClose}>
                 <DialogTitle>
                     <Typography variant="h5" align="center" fullWidth>

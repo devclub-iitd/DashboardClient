@@ -91,8 +91,8 @@ export const fetchAllProjects = () => (dispatch) => {
                             ? new Date()
                             : new Date(pro.end_date),
                 };
-                if (!upPro.url.has('photo_url')) {
-                    upPro.url.set('photo_url', '');
+                if (!upPro.url.has('web_url')) {
+                    upPro.url.set('web_url', '');
                 }
                 return upPro;
             });
