@@ -19,6 +19,7 @@ import {
     KeyboardDatePicker,
 } from '@material-ui/pickers';
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutline';
+import * as Utils from '../utils';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -219,7 +220,7 @@ export default function CreateTasks(props) {
         );
         const newEvent = {
             ...state.newEvent,
-            url: urlMap,
+            url: Utils.strMapToObj(urlMap),
         };
         // console.log('event: ', newEvent);
         props.createEvent(newEvent);

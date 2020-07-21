@@ -341,16 +341,16 @@ function getPageName(subPage, isAdmin) {
             return 'Create New Items';
 
         case 'events':
-            return 'Club Events';
+            return 'Events';
 
         case 'projects':
-            return 'Club Projects';
+            return 'Projects';
 
         case 'resources':
-            return 'Club Resources';
+            return 'Resources';
 
         case 'users':
-            return 'Manage Club Members';
+            return 'Members';
 
         case 'myTasks':
             return 'My Tasks';

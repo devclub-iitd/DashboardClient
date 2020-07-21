@@ -68,7 +68,7 @@ const PageNamePart = ({ className, name, openDrawer, logout }) => (
                 </Grid>
             </Hidden>
             <Grid item xs={8} sm={7} md={10}>
-                <Typography style={{ fontWeight: 500 }} variant="h3">
+                <Typography style={{ fontWeight: 600 }} variant="h3">
                     {name}
                 </Typography>
             </Grid>

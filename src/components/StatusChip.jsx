@@ -13,7 +13,8 @@ const chipColors = {
         background: '#7d7656',
     },
     completed: {
-        main: '#ff410a', // for red text
+        main: '#ff453a', // red
+        background: '#7d5e5e',
     },
 };
 
@@ -32,11 +33,11 @@ const useStyles = makeStyles((theme) => ({
         color: chipColors.ongoing.main,
     },
     completedOutlined: {
-        backgroundColor: chipColors.upcoming.background,
+        backgroundColor: chipColors.completed.background,
     },
     completedOutlinedPrimary: {
-        color: chipColors.upcoming.main,
-        borderColor: chipColors.upcoming.main,
+        color: chipColors.completed.main,
+        borderColor: chipColors.completed.main,
     },
     completedAvatar: {
         color: chipColors.completed.main,
@@ -78,6 +79,7 @@ export default function StatusChip({ status }) {
                 variant="outlined"
                 color="primary"
                 size="small"
+                style={{ borderWidth: '2px' }}
                 avatar={
                     <Avatar
                         style={{ backgroundColor: chipColors.ongoing.main }}
@@ -107,6 +109,7 @@ export default function StatusChip({ status }) {
                 variant="outlined"
                 color="primary"
                 size="small"
+                style={{ borderWidth: '2px' }}
                 avatar={
                     <Avatar
                         style={{ backgroundColor: chipColors.upcoming.main }}
@@ -136,6 +139,7 @@ export default function StatusChip({ status }) {
             variant="outlined"
             color="primary"
             size="small"
+            style={{ borderWidth: '2px' }}
             avatar={
                 <Avatar
                     style={{ backgroundColor: chipColors.completed.main }}

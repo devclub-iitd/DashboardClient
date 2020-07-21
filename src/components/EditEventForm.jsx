@@ -32,6 +32,7 @@ import PropTypes from 'prop-types';
 import EditIcon from '@material-ui/icons/Edit';
 import DateFnsUtils from '@date-io/date-fns';
 import { LocalForm, Control, Errors } from 'react-redux-form';
+import * as Utils from '../utils';
 
 class EditEventForm extends Component {
     constructor(props) {
@@ -314,11 +315,18 @@ class EditEventForm extends Component {
         const urlMap = new Map();
         const { dumUsers, serverError, editEvent } = this.props;
         const { event, urlFields, selectedMembers } = this.state;
-        urlFields.map((urlField) => urlMap.set(urlField.type, urlField.url));
+        urlFields.for((urlField) => {
+            const fixedUrl =
+                urlField.url.startsWith('https://') ||
+                urlField.url.startsWith('http://')
+                    ? urlField.url
+                    : ['https://', urlField.url].join('');
+            urlMap.set(urlField.type, fixedUrl);
+        });
 
         const updatedEvent = {
             ...event,
-            url: urlMap,
+            url: Utils.strMapToObj(urlMap),
             assignee: selectedMembers.map(
                 (name) => dumUsers.filter((user) => user.name === name)[0]._id
             ),

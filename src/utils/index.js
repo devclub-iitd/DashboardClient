@@ -1,3 +1,4 @@
+import { createMuiTheme } from '@material-ui/core';
 import * as EventUtils from './eventUtils';
 import * as ProjectUtils from './projectUtils';
 import * as UserUtils from './userUtils';
@@ -5,6 +6,27 @@ import * as UserUtils from './userUtils';
 export { EventUtils };
 export { ProjectUtils };
 export { UserUtils };
+
+export const defaultTheme = createMuiTheme();
+
+export const strMapToObj = (strMap) => {
+    const obj = Object.create(null);
+    strMap.forEach((value, key) => {
+        obj[key] = value;
+    });
+    return obj;
+};
+
+export const objToStrMap = (obj) => {
+    const strMap = new Map();
+    // for (const k of Object.keys(obj)) {
+    //   strMap.set(k, obj[k]);
+    // }
+    // console.log('url object: ', obj);
+    Object.keys(obj).map((k) => strMap.set(k, obj[k]));
+    // console.log('mapped url: ', strMap);
+    return strMap;
+};
 
 export const capitalizeString = (str) => {
     // console.log(str);

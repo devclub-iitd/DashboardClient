@@ -1,4 +1,7 @@
 import { createMuiTheme, responsiveFontSizes } from '@material-ui/core';
+import * as Utils from './utils';
+
+const { defaultTheme } = Utils;
 
 const theme = createMuiTheme({
     // typography: {
@@ -122,6 +125,164 @@ const theme = createMuiTheme({
         MuiSelect: {
             icon: {
                 color: '#3a3a3c',
+                position: 'relative',
+            },
+            select: {
+                '&$select': {
+                    // paddingRight: '1px',
+                    fontSize: defaultTheme.typography.h6.fontSize,
+                    fontWeight: 500,
+                    marginRight: '-30px',
+                    marginTop: '10px',
+                },
+            },
+        },
+        MuiAutocomplete: {
+            clearIndicator: {
+                color: '#3a3a3c',
+            },
+            popupIndicator: {
+                color: '#3a3a3c',
+            },
+            paper: {
+                borderRadius: '10px',
+                backgroundColor: '#636366',
+            },
+            tag: {
+                fontWeight: 600,
+                borderWidth: '2px',
+            },
+        },
+        MuiInputAdornment: {
+            root: {
+                color: '#3a3a3c',
+            },
+        },
+        // MUIDataTableHeadRow: {
+        //     root: {
+        //         // '68': {
+        //         //     backgroundColor: '#48484a',
+        //         // },
+        //         // background: '#fff',
+        //         marginBottom: '16px',
+        //     },
+        //     // marginBottom: '16px',
+        // },
+        // MuiToolbar: {
+        //     root: {
+        //         backgroundColor: '#f00',
+        //     },
+        // },
+        // MuiTableHead: {
+        //     // ro
+        //     root: {
+        //         marginBottom: '16px',
+        //     },
+        //     // row,
+        // },
+        // MuiTableRow: {
+        //     root: {
+        //         '&:hover': { backgroundColor: '#48484a' },
+        //     },
+        //     hover: {
+        //         '&:hover': { backgroundColor: '#48484a' },
+        //     },
+        // },
+        MUIDataTableToolbar: {
+            root: {
+                paddingLeft: defaultTheme.spacing(1),
+                paddingRight: 0,
+            },
+            icon: {
+                // fontSize: '2.1875rem',
+                color: '#fff',
+            },
+        },
+        MUIDataTableToolbarSelect: {
+            root: {
+                borderRadius: '5px',
+                paddingTop: 0,
+                paddingBottom: 0,
+                marginBottom: '5px',
+            },
+            title: {
+                fontWeight: 500,
+            },
+            iconButton: {
+                color: '#fff',
+            },
+        },
+        MuiSvgIcon: {
+            root: {
+                fontSize: '2.1875rem',
+            },
+        },
+        MUIDataTableHead: {
+            main: {
+                background: '#48484a',
+                borderBottom: `${defaultTheme.spacing(4)}px solid transparent`,
+            },
+        },
+        MUIDataTableHeadCell: {
+            fixedHeader: {
+                backgroundColor: 'transparent',
+                paddingBottom: 0,
+            },
+            data: {
+                fontSize: defaultTheme.typography.h5.fontSize,
+                fontWeight: 500,
+            },
+        },
+        MUIDataTableBodyRow: {
+            root: {
+                backgroundColor: '#636366',
+                borderBottom: `${defaultTheme.spacing(0.5)}px solid #3a3a3c`,
+                // '&:hover': { backgroundColor: '#48484a' },
+            },
+        },
+        MUIDataTableBodyCell: {
+            root: {
+                // backgroundColor: 'transparent',
+                // paddingBottom: defaultTheme.spacing(1),
+                // marginTop: defaultTheme.spacing(1),
+                // marginBottom: defaultTheme.spacing(1),
+            },
+        },
+        MuiTableCell: {
+            root: {
+                borderBottomColor: 'transparent',
+                borderBottomWidth: 0,
+            },
+        },
+        MuiTableRow: {
+            root: {
+                '&$hover': {
+                    '&:hover': {
+                        backgroundColor: '#48484a',
+                    },
+                },
+            },
+            // hover: {
+            //     '&$hover': { backgroundColor: '#48484a' },
+            //     // backgroundColor: '#48484a',
+            // },
+            // '&$hover': { backgroundColor: '#48484a' },
+        },
+        MuiIconButton: {
+            root: {
+                color: '#3a3a3c',
+                '&$disabled': {
+                    color: '#636366',
+                },
+            },
+        },
+        MuiTablePagination: {
+            caption: {
+                fontSize: defaultTheme.typography.h6.fontSize,
+                fontWeight: 500,
+            },
+            selectIcon: {
+                color: '#fff',
             },
         },
         // MuiInputBase: {

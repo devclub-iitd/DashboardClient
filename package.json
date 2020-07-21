@@ -17,7 +17,7 @@
         "framer-motion": "^1.11.1",
         "history": "^4.9.0",
         "material-table": "^1.40.1",
-        "mui-datatables": "^2.14.0",
+        "mui-datatables": "^3.2.0",
         "prop-types": "^15.7.2",
         "react": "^16.8.6",
         "react-device-detect": "^1.13.1",
