@@ -9,6 +9,7 @@
         "@material-ui/lab": "^4.0.0-alpha.51",
         "@material-ui/pickers": "^3.2.8",
         "clsx": "^1.0.4",
+        "date-fns": "^2.15.0",
         "history": "^4.9.0",
         "mui-datatables": "^3.2.0",
         "prop-types": "^15.7.2",
@@ -16,10 +17,8 @@
         "react-device-detect": "^1.13.1",
         "react-dom": "^16.8.6",
         "react-redux": "^7.1.0",
-        "react-redux-form": "^1.16.14",
         "react-router-dom": "^5.0.1",
         "react-scripts": "^3.3.0",
-        "reactstrap": "^8.4.1",
         "redux": "^4.0.4",
         "redux-logger": "^3.0.6",
         "redux-thunk": "^2.3.0"

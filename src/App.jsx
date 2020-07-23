@@ -5,7 +5,6 @@ import { createHashHistory } from 'history';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
-import Health from './pages/Health';
 import './App.css';
 // import ConfigureStore from './store';
 
@@ -17,7 +16,6 @@ function App() {
         <HashRouter>
             <Router history={hist}>
                 <Switch>
-                    <Route exact path="/healthz" component={Health} />
                     <Route exact path="/login" component={Login} />
                     <Route exact path="/register" component={Register} />
                     <Route path="/dashboard/:subPage" component={Dashboard} />

@@ -28,7 +28,6 @@ import NotificationsIcon from '@material-ui/icons/Notifications';
 import { Redirect, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { actions } from 'react-redux-form';
 import { isMobile } from 'react-device-detect';
 import MainListItems from '../components/MainListItems';
 // import Home from '../components/Home';
@@ -369,15 +368,6 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => ({
-    resetEventForm: () => {
-        dispatch(actions.reset('eventForm'));
-    },
-    resetProjectForm: () => {
-        dispatch(actions.reset('projectForm'));
-    },
-    resetResourceForm: () => {
-        dispatch(actions.reset('resourceForm'));
-    },
     fetchUser: (id) => {
         dispatch(fetchUser(id));
     },
@@ -594,7 +584,6 @@ class Dashboard extends Component {
             fetchAllProjects: fetchAllProjectsT,
             fetchAllEvents: fetchAllEventsT,
             fetchAllResources: fetchAllResourcesT,
-            users,
         } = this.props;
         // this.props.fetchAllUsers();
         // this.props.fetchUser(localStorage.getItem('userId'));

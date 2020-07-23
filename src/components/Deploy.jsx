@@ -1,731 +1,410 @@
 /* eslint-disable react/destructuring-assignment */
 /* eslint-disable no-unused-vars */
-import React, { Component } from 'react';
-import {
-    Grid,
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    InputLabel,
-    Select,
-    MenuItem,
-    FormControl,
-    Fab,
-    Button,
-    IconButton,
-    Tooltip,
-} from '@material-ui/core';
-import { Row, Col, Label } from 'reactstrap';
-import AddIcon from '@material-ui/icons/Add';
-import { LocalForm, Control } from 'react-redux-form';
+import React from 'react';
+import { Grid, Fab, Grow, Typography } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 import MUIDataTable from 'mui-datatables';
-import EditIcon from '@material-ui/icons/Edit';
-import GetAppIcon from '@material-ui/icons/GetApp';
-import RestoreIcon from '@material-ui/icons/Restore';
-import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
+import {
+    EditRounded,
+    GetAppRounded,
+    ReplayRounded,
+    PowerSettingsNewRounded,
+} from '@material-ui/icons';
+import CustomSearchRender from './CustomTableSearchBox';
+import TableTitle from './CustomTableTitle';
 
-class DeployManager extends Component {
-    constructor(props) {
-        super(props);
+const useStyles = makeStyles((theme) => ({
+    tablePaper: {
+        borderRadius: '4px',
+        padding: theme.spacing(0, 2),
+    },
+    redeploy: {
+        backgroundColor: theme.palette.warning.main,
+    },
+    stop: {
+        backgroundColor: theme.palette.error.main,
+    },
+}));
 
-        this.state = {
-            columns: [
-                'S.No.',
-                'Repo',
-                'Build',
-                {
-                    name: 'Uptime',
-                    options: {
-                        filter: false,
-                    },
-                },
-                'Subdomain',
-                'Access',
-                {
-                    name: 'Edit Env',
-                    options: {
-                        filter: false,
-                        sort: false,
-                        customBodyRender: () => (
-                            <IconButton
-                                variant="outlined"
-                                color="secondary"
-                                component="span"
-                            >
-                                <EditIcon fontSize="small" color="secondary" />
-                            </IconButton>
-                        ),
-                    },
-                },
-                {
-                    name: 'Get Logs',
-                    options: {
-                        filter: false,
-                        sort: false,
-                        customBodyRender: () => (
-                            <IconButton
-                                variant="outlined"
-                                color="secondary"
-                                component="span"
-                            >
-                                <GetAppIcon
-                                    fontSize="small"
-                                    color="secondary"
-                                />
-                            </IconButton>
-                        ),
-                    },
-                },
-                {
-                    name: 'Redeploy',
-                    options: {
-                        filter: false,
-                        sort: false,
-                        customBodyRender: () => (
-                            <IconButton
-                                variant="outlined"
-                                color="primary"
-                                component="span"
-                            >
-                                <RestoreIcon fontSize="small" color="primary" />
-                            </IconButton>
-                        ),
-                    },
-                },
-                {
-                    name: 'Stop',
-                    options: {
-                        filter: false,
-                        sort: false,
-                        customBodyRender: () => (
-                            <IconButton
-                                variant="outlined"
-                                color="error"
-                                component="span"
-                            >
-                                <PowerSettingsNewIcon
-                                    fontSize="small"
-                                    color="error"
-                                />
-                            </IconButton>
-                        ),
-                    },
-                },
-            ],
-            data: [
-                [1, 'Yearbook', 'Dev', '25:06:02', 'yearbook', 'External'],
-                [2, 'Yearbook', 'prod', '46:34:34', 'yearbook', 'External'],
-                [3, 'Main web', 'prod', '25:42:34', 'web', 'External'],
-                [4, 'dashboard', 'Dev', '76:34:33', 'dboard', 'External'],
-                [5, 'main web', 'Dev', '65:25:13', 'web-dev', 'External'],
-            ],
+export default function DeployManager(props) {
+    const classes = useStyles();
+
+    const columns = [
+        {
+            name: 'repo',
+            label: 'Repo',
             options: {
-                filterType: 'checkbox',
-                rowsPerPage: 5,
+                filter: false,
+                sort: true,
+                customBodyRender: (value) => {
+                    return (
+                        <Typography variant="body1" style={{ fontWeight: 500 }}>
+                            {value}
+                        </Typography>
+                    );
+                },
             },
-            access: 'Internal',
-            build: 'Development',
-            isNewDeploymentOpen: false,
-        };
+        },
+        {
+            name: 'build',
+            label: 'Build',
+            options: {
+                filter: false,
+                sort: true,
+                customBodyRender: (value) => {
+                    return (
+                        <Typography variant="body1" style={{ fontWeight: 500 }}>
+                            {value}
+                        </Typography>
+                    );
+                },
+            },
+        },
+        {
+            name: 'uptime',
+            label: 'Uptime',
+            options: {
+                filter: false,
+                customBodyRender: (value) => {
+                    return (
+                        <Typography variant="body1" style={{ fontWeight: 500 }}>
+                            {value}
+                        </Typography>
+                    );
+                },
+            },
+        },
+        {
+            name: 'subdomain',
+            label: 'Subdomain',
+            options: {
+                filter: false,
+                sort: true,
+                customBodyRender: (value) => {
+                    return (
+                        <Typography variant="body1" style={{ fontWeight: 500 }}>
+                            {value}
+                        </Typography>
+                    );
+                },
+            },
+        },
+        {
+            name: 'access',
+            label: 'Access',
+            options: {
+                filter: false,
+                sort: true,
+                customBodyRender: (value) => {
+                    return (
+                        <Typography variant="body1" style={{ fontWeight: 500 }}>
+                            {value}
+                        </Typography>
+                    );
+                },
+            },
+        },
+        {
+            name: 'Edit Env',
+            options: {
+                filter: false,
+                customBodyRender: () => (
+                    <Fab size="small" color="primary">
+                        <EditRounded
+                            fontSize="small"
+                            style={{ color: '#636366' }}
+                        />
+                    </Fab>
+                ),
+            },
+        },
+        {
+            name: 'Get Logs',
+            options: {
+                filter: false,
+                customBodyRender: () => (
+                    <Fab size="small" color="secondary">
+                        <GetAppRounded
+                            fontSize="small"
+                            style={{ color: '#636366' }}
+                        />
+                    </Fab>
+                ),
+            },
+        },
+        {
+            name: 'Redeploy',
+            options: {
+                filter: false,
+                customBodyRender: () => (
+                    <Fab size="small" className={classes.redeploy}>
+                        <ReplayRounded
+                            fontSize="small"
+                            style={{ color: '#636366' }}
+                        />
+                    </Fab>
+                ),
+            },
+        },
+        {
+            name: 'Stop',
+            options: {
+                filter: false,
+                customBodyRender: () => (
+                    <Fab size="small" className={classes.stop}>
+                        <PowerSettingsNewRounded
+                            fontSize="small"
+                            style={{ color: '#636366' }}
+                        />
+                    </Fab>
+                ),
+            },
+        },
+    ];
 
-        this.handleNewDeploymentClose = this.handleNewDeploymentClose.bind(
-            this
-        );
-        this.handleNewDeploymentOpen = this.handleNewDeploymentOpen.bind(this);
-        this.handleNewDeploymentSubmit = this.handleNewDeploymentSubmit.bind(
-            this
-        );
-        this.handleAccessChange = this.handleAccessChange.bind(this);
-        this.handleBuildChange = this.handleBuildChange.bind(this);
-    }
+    const data = [
+        ['Yearbook', 'Dev', '25:06:02', 'yearbook', 'External'],
+        ['Yearbook', 'prod', '46:34:34', 'yearbook', 'External'],
+        ['Main web', 'prod', '25:42:34', 'web', 'External'],
+        ['dashboard', 'Dev', '76:34:33', 'dboard', 'External'],
+        ['main web', 'Dev', '65:25:13', 'web-dev', 'External'],
+    ];
 
-    handleNewDeploymentOpen = () => {
-        this.setState((prevState) => ({
-            ...prevState,
-            isNewDeploymentOpen: true,
-        }));
+    const handleCreateOpen = () => {
+        // console.log('new deployment created');
     };
 
-    handleNewDeploymentClose = () => {
-        this.setState((prevState) => ({
-            ...prevState,
-            isNewDeploymentOpen: false,
-        }));
+    const options = {
+        filterType: 'checkbox',
+        responsive: 'standard',
+        rowsPerPage: 7,
+        selectableRows: 'none',
+        fixedHeader: false,
+        fixedSelectColumn: false,
+        rowsPerPageOptions: [5, 7, 10, 15, 25, 50, 100],
+        customSearchRender: (searchText, handleSearch, hideSearch, opt) => {
+            return (
+                <CustomSearchRender
+                    searchText={searchText}
+                    onSearch={handleSearch}
+                    onHide={hideSearch}
+                    options={opt}
+                />
+            );
+        },
+        searchPlaceholder: 'Search Event',
     };
 
-    handleAccessChange = (event) => {
-        this.setState((prevState) => ({
-            ...prevState,
-            access: event.target.value,
-        }));
-    };
-
-    handleBuildChange = (event) => {
-        this.setState((prevState) => ({
-            ...prevState,
-            build: event.target.value,
-        }));
-    };
-
-    handleNewDeploymentSubmit = (values) => {
-        // const newValues = { ...values };
-        // const newDeploy = {
-        //     ...values,
-        //     access: this.state.access,
-        //     build: this.state.build,
-        // };
-        // console.log('Creating new deployment: ', newDeploy);
-        this.handleNewDeploymentClose();
-    };
-
-    handleClick = () => {
-        // console.log('clicked on icon!');
-    };
-
-    render() {
-        const columns = [
-            {
-                name: 'Name',
-                options: {
-                    filter: true,
-                    display: 'excluded',
-                    setCellHeaderProps: (value) => ({
-                        style: { textDecoration: 'underline' },
-                    }),
-                },
-            },
-            {
-                name: 'Title',
-                options: {
-                    filter: true,
-                    setCellHeaderProps: (value) => ({
-                        style: { fontWeight: 'bold' },
-                    }),
-                },
-            },
-            {
-                name: 'Location',
-                options: {
-                    filter: false,
-                },
-            },
-            {
-                name: 'Age',
-                options: {
-                    filter: true,
-                },
-            },
-            {
-                name: 'Salary',
-                options: {
-                    filter: true,
-                    sort: false,
-                },
-            },
-            {
-                name: 'Salary1',
-                options: {
-                    filter: true,
-                    sort: false,
-                },
-            },
-            {
-                name: 'Salary2',
-                options: {
-                    filter: true,
-                    sort: false,
-                },
-            },
-        ];
-
-        const data = [
-            [
-                'Gabby George',
-                'Business Analyst',
-                'Minneapolis',
-                30,
-                '$100,000',
-                '$100,000',
-                '$100,000',
-            ],
-            [
-                'Aiden Lloyd',
-                'Business Consultant',
-                'Dallas',
-                55,
-                '$200,000',
-                '$200,000',
-                '$200,000',
-            ],
-            [
-                'Jaden Collins',
-                'Attorney',
-                'Santa Ana',
-                27,
-                '$500,000',
-                '$500,000',
-                '$500,000',
-            ],
-            [
-                'Franky Rees',
-                'Business Analyst',
-                'St. Petersburg',
-                22,
-                '$50,000',
-                '$50,000',
-                '$50,000',
-            ],
-            [
-                'Aaren Rose',
-                'Business Consultant',
-                'Toledo',
-                28,
-                '$75,000',
-                '$75,000',
-                '$75,000',
-            ],
-            [
-                'Blake Duncan',
-                'Business Management Analyst',
-                'San Diego',
-                65,
-                '$94,000',
-                '$94,000',
-                '$94,000',
-            ],
-            [
-                'Frankie Parry',
-                'Agency Legal Counsel',
-                'Jacksonville',
-                71,
-                '$210,000',
-                '$210,000',
-                '$210,000',
-            ],
-            [
-                'Lane Wilson',
-                'Commercial Specialist',
-                'Omaha',
-                19,
-                '$65,000',
-                '$65,000',
-                '$65,000',
-            ],
-            [
-                'Robin Duncan',
-                'Business Analyst',
-                'Los Angeles',
-                20,
-                '$77,000',
-                '$77,000',
-                '$77,000',
-            ],
-            [
-                'Mel Brooks',
-                'Business Consultant',
-                'Oklahoma City',
-                37,
-                '$135,000',
-                '$135,000',
-                '$135,000',
-            ],
-            [
-                'Harper White',
-                'Attorney',
-                'Pittsburgh',
-                52,
-                '$420,000',
-                '$420,000',
-                '$420,000',
-            ],
-            [
-                'Kris Humphrey',
-                'Agency Legal Counsel',
-                'Laredo',
-                30,
-                '$150,000',
-                '$150,000',
-                '$150,000',
-            ],
-            [
-                'Frankie Long',
-                'Industrial Analyst',
-                'Austin',
-                31,
-                '$170,000',
-                '$170,000',
-                '$170,000',
-            ],
-            [
-                'Brynn Robbins',
-                'Business Analyst',
-                'Norfolk',
-                22,
-                '$90,000',
-                '$90,000',
-                '$90,000',
-            ],
-            [
-                'Justice Mann',
-                'Business Consultant',
-                'Chicago',
-                24,
-                '$133,000',
-                '$133,000',
-                '$133,000',
-            ],
-            [
-                'Addison Navarro',
-                'Business Management Analyst',
-                'New York',
-                50,
-                '$295,000',
-                '$295,000',
-                '$295,000',
-            ],
-            [
-                'Jesse Welch',
-                'Agency Legal Counsel',
-                'Seattle',
-                28,
-                '$200,000',
-                '$200,000',
-                '$200,000',
-            ],
-            [
-                'Eli Mejia',
-                'Commercial Specialist',
-                'Long Beach',
-                65,
-                '$400,000',
-                '$400,000',
-                '$400,000',
-            ],
-            [
-                'Gene Leblanc',
-                'Industrial Analyst',
-                'Hartford',
-                34,
-                '$110,000',
-                '$110,000',
-                '$110,000',
-            ],
-            [
-                'Danny Leon',
-                'Computer Scientist',
-                'Newark',
-                60,
-                '$220,000',
-                '$220,000',
-                '$220,000',
-            ],
-            [
-                'Lane Lee',
-                'Corporate Counselor',
-                'Cincinnati',
-                52,
-                '$180,000',
-                '$180,000',
-                '$180,000',
-            ],
-            [
-                'Jesse Hall',
-                'Business Analyst',
-                'Baltimore',
-                44,
-                '$99,000',
-                '$99,000',
-                '$99,000',
-            ],
-            [
-                'Danni Hudson',
-                'Agency Legal Counsel',
-                'Tampa',
-                37,
-                '$90,000',
-                '$90,000',
-                '$90,000',
-            ],
-            [
-                'Terry Macdonald',
-                'Commercial Specialist',
-                'Miami',
-                39,
-                '$140,000',
-                '$140,000',
-                '$140,000',
-            ],
-            [
-                'Justice Mccarthy',
-                'Attorney',
-                'Tucson',
-                26,
-                '$330,000',
-                '$330,000',
-                '$330,000',
-            ],
-            [
-                'Silver Carey',
-                'Computer Scientist',
-                'Memphis',
-                47,
-                '$250,000',
-                '$250,000',
-                '$250,000',
-            ],
-            [
-                'Franky Miles',
-                'Industrial Analyst',
-                'Buffalo',
-                49,
-                '$190,000',
-                '$190,000',
-                '$190,000',
-            ],
-            [
-                'Glen Nixon',
-                'Corporate Counselor',
-                'Arlington',
-                44,
-                '$80,000',
-                '$80,000',
-                '$80,000',
-            ],
-            [
-                'Gabby Strickland',
-                'Business Process Consultant',
-                'Scottsdale',
-                26,
-                '$45,000',
-                '$45,000',
-                '$45,000',
-            ],
-            [
-                'Mason Ray',
-                'Computer Scientist',
-                'San Francisco',
-                39,
-                '$142,000',
-                '$142,000',
-                '$142,000',
-            ],
-        ];
-
-        const options = {
-            filter: true,
-            filterType: 'dropdown',
-            responsive: 'scrollMaxHeight',
-            rowsPerPage: 5,
-            rowsPerPageOptions: [5, 7, 10, 15, 25, 50, 100],
-            fixedHeaderOptions: {
-                xAxis: false,
-                yAxis: true,
-            },
-            // search: false,
-            // print: false,
-            // download: false,
-            // viewColumns: false,
-            customToolbar: () => (
-                <Tooltip title="custom icon">
-                    <IconButton onClick={this.handleClick}>
-                        <AddIcon />
-                    </IconButton>
-                </Tooltip>
-            ),
-            // customSearchRender: (searchText, handleSearch, hideSearch, options) => (<TextField label="Hi" />),
-        };
-        return (
-            <>
-                <Grid container spacing={1}>
-                    <Grid item xs={12}>
-                        <Tooltip title="Add deployment" aria-label="add">
-                            <Fab
-                                color="secondary"
-                                onClick={this.handleNewDeploymentOpen}
-                            >
-                                <AddIcon />
-                            </Fab>
-                        </Tooltip>
-                    </Grid>
-                    {/* <Grid item xs={12}>
-            <MUIDataTable
-              title="ACME Employee list"
-              data={data}
-              columns={columns}
-              options={options}
-            />
-          </Grid> */}
-                    <Grid item xs={12}>
+    return (
+        <>
+            <Grow in style={{ transformOrigin: 'center top' }} timeout={750}>
+                <Grid container justify="center" alignItems="center">
+                    <Grid
+                        item
+                        style={{
+                            maxHeight: '85vh',
+                            overflowY: 'auto',
+                            scrollbarWidth: 'none',
+                        }}
+                        xs={11}
+                    >
                         <MUIDataTable
-                            title="Deploy Log"
-                            data={this.state.data}
-                            columns={this.state.columns}
-                            options={this.state.options}
+                            title={
+                                <TableTitle
+                                    title="Add Deployment"
+                                    addAction={handleCreateOpen}
+                                />
+                            }
+                            data={data}
+                            columns={columns}
+                            options={options}
+                            className={classes.tablePaper}
                         />
                     </Grid>
-                    {/* <Grid item xs={12}> */}
-                    <Dialog
-                        open={this.state.isNewDeploymentOpen}
-                        maxWidth="sm"
-                        onClose={this.handleNewDeploymentClose}
-                        scroll="paper"
-                    >
-                        <DialogTitle>
-                            {/* <Typography variant="h4" align="center">New Deployment</Typography> */}
-                            <b>New Deployment</b>
-                        </DialogTitle>
-                        <DialogContent>
-                            <LocalForm
-                                onSubmit={(values) =>
-                                    this.handleNewDeploymentSubmit(values)
-                                }
-                            >
-                                <Row className="form-group">
-                                    <Label htmlFor="gitRepo" md={4}>
-                                        <h6>GitHub Repository:</h6>
-                                    </Label>
-                                    <Col md={8}>
-                                        <Control.text
-                                            model=".gitRepo"
-                                            id="gitRepo"
-                                            name="gitRepo"
-                                            placeholder="github repository*"
-                                            className="form-control"
-                                        />
-                                    </Col>
-                                </Row>
-                                <Row className="form-group">
-                                    <Label htmlFor="serverName" md={4}>
-                                        <h6>Server Name:</h6>
-                                    </Label>
-                                    <Col md={8}>
-                                        <Control.text
-                                            model=".serverName"
-                                            id="serverName"
-                                            name="serverName"
-                                            placeholder="server name*"
-                                            className="form-control"
-                                        />
-                                    </Col>
-                                </Row>
-                                <Row className="form-group">
-                                    <Label htmlFor="subdomain" md={4}>
-                                        <h6>Subdomain:</h6>
-                                    </Label>
-                                    <Col md={8}>
-                                        <Control.text
-                                            model=".subdomain"
-                                            id="subdomain"
-                                            name="subdomain"
-                                            placeholder="subdomain*"
-                                            className="form-control"
-                                        />
-                                    </Col>
-                                </Row>
-                                <Row className="form-group">
-                                    <Col md={8}>
-                                        <FormControl variant="outlined">
-                                            <InputLabel id="access">
-                                                Access
-                                            </InputLabel>
-                                            <Select
-                                                labelId="access"
-                                                id="access"
-                                                value={this.state.access}
-                                                onChange={
-                                                    this.handleAccessChange
-                                                }
-                                            >
-                                                {/* <MenuItem value="">
-                          <em>None</em>
-                        </MenuItem> */}
-                                                <MenuItem value="Internal">
-                                                    Internal
-                                                </MenuItem>
-                                                <MenuItem value="External">
-                                                    External
-                                                </MenuItem>
-                                            </Select>
-                                        </FormControl>
-                                    </Col>
-                                </Row>
-                                <Row className="form-group">
-                                    <Col md={8}>
-                                        <FormControl variant="outlined">
-                                            <InputLabel id="build">
-                                                Build
-                                            </InputLabel>
-                                            <Select
-                                                labelId="build"
-                                                id="build"
-                                                value={this.state.build}
-                                                onChange={
-                                                    this.handleBuildChange
-                                                }
-                                            >
-                                                {/* <MenuItem value="">
-                          <em>None</em>
-                        </MenuItem> */}
-                                                <MenuItem value="Production">
-                                                    Production
-                                                </MenuItem>
-                                                <MenuItem value="Development">
-                                                    Development
-                                                </MenuItem>
-                                            </Select>
-                                        </FormControl>
-                                    </Col>
-                                </Row>
-                                <Row className="form-group">
-                                    <Label htmlFor="env" md={12}>
-                                        <h6>Environment Parameters:</h6>
-                                    </Label>
-                                    <Col md={{ size: 8, offset: 2 }}>
-                                        <Control.textarea
-                                            model=".env"
-                                            id="env"
-                                            name="env"
-                                            placeholder="#Specify .env params here"
-                                            rows="4"
-                                            className="form-control"
-                                        />
-                                    </Col>
-                                </Row>
-                                <Row className="form-group">
-                                    {/* md={{ size: 4, offset: 3 }} */}
-                                    <Col
-                                        xs={{ size: 7, offset: 1 }}
-                                        md={{ size: 4, offset: 3 }}
-                                    >
-                                        <Button
-                                            type="submit"
-                                            variant="outlined"
-                                            color="primary"
-                                        >
-                                            Deploy
-                                        </Button>
-                                    </Col>
-                                    {/* md={{ size: 2 }} */}
-                                    <Col xs={3} md={{ size: 2 }}>
-                                        <Button
-                                            color="primary"
-                                            variant="outlined"
-                                            onClick={
-                                                this.handleNewDeploymentClose
-                                            }
-                                        >
-                                            Cancel
-                                        </Button>
-                                    </Col>
-                                </Row>
-                            </LocalForm>
-                        </DialogContent>
-                    </Dialog>
-                    {/* </Grid> */}
                 </Grid>
-            </>
-        );
-    }
-}
+            </Grow>
+        </>
+    );
 
-export default DeployManager;
+    // events.errMess !== null ? (
+    //     <Typography variant="h4" color="textSecondary">
+    //         Failed to fetch Events!
+    //     </Typography>
+    // ) : (
+
+    // return (
+    //     <>
+    //         <Grid container spacing={}>
+    //             {/* <Grid item xs={12}>
+    //         <MUIDataTable
+    //           title="ACME Employee list"
+    //           data={data}
+    //           columns={columns}
+    //           options={options}
+    //         />
+    //       </Grid> */}
+    //             <Grid item xs={12}>
+    //                 <MUIDataTable
+    //                     title="Deploy Log"
+    //                     data={state.data}
+    //                     columns={state.columns}
+    //                     options={state.options}
+    //                 />
+    //             </Grid>
+    //             {/* <Grid item xs={12}> */}
+    //             <Dialog
+    //                 open={state.isNewDeploymentOpen}
+    //                 maxWidth="sm"
+    //                 onClose={handleNewDeploymentClose}
+    //                 scroll="paper"
+    //             >
+    //                 <DialogTitle>
+    //                     {/* <Typography variant="h4" align="center">New Deployment</Typography> */}
+    //                     <b>New Deployment</b>
+    //                 </DialogTitle>
+    //                 <DialogContent>
+    //                     <LocalForm
+    //                         onSubmit={(values) =>
+    //                             handleNewDeploymentSubmit(values)
+    //                         }
+    //                     >
+    //                         <Row className="form-group">
+    //                             <Label htmlFor="gitRepo" md={4}>
+    //                                 <h6>GitHub Repository:</h6>
+    //                             </Label>
+    //                             <Col md={8}>
+    //                                 <Control.text
+    //                                     model=".gitRepo"
+    //                                     id="gitRepo"
+    //                                     name="gitRepo"
+    //                                     placeholder="github repository*"
+    //                                     className="form-control"
+    //                                 />
+    //                             </Col>
+    //                         </Row>
+    //                         <Row className="form-group">
+    //                             <Label htmlFor="serverName" md={4}>
+    //                                 <h6>Server Name:</h6>
+    //                             </Label>
+    //                             <Col md={8}>
+    //                                 <Control.text
+    //                                     model=".serverName"
+    //                                     id="serverName"
+    //                                     name="serverName"
+    //                                     placeholder="server name*"
+    //                                     className="form-control"
+    //                                 />
+    //                             </Col>
+    //                         </Row>
+    //                         <Row className="form-group">
+    //                             <Label htmlFor="subdomain" md={4}>
+    //                                 <h6>Subdomain:</h6>
+    //                             </Label>
+    //                             <Col md={8}>
+    //                                 <Control.text
+    //                                     model=".subdomain"
+    //                                     id="subdomain"
+    //                                     name="subdomain"
+    //                                     placeholder="subdomain*"
+    //                                     className="form-control"
+    //                                 />
+    //                             </Col>
+    //                         </Row>
+    //                         <Row className="form-group">
+    //                             <Col md={8}>
+    //                                 <FormControl variant="outlined">
+    //                                     <InputLabel id="access">
+    //                                         Access
+    //                                     </InputLabel>
+    //                                     <Select
+    //                                         labelId="access"
+    //                                         id="access"
+    //                                         value={state.access}
+    //                                         onChange={handleAccessChange}
+    //                                     >
+    //                                         {/* <MenuItem value="">
+    //                       <em>None</em>
+    //                     </MenuItem> */}
+    //                                         <MenuItem value="Internal">
+    //                                             Internal
+    //                                         </MenuItem>
+    //                                         <MenuItem value="External">
+    //                                             External
+    //                                         </MenuItem>
+    //                                     </Select>
+    //                                 </FormControl>
+    //                             </Col>
+    //                         </Row>
+    //                         <Row className="form-group">
+    //                             <Col md={8}>
+    //                                 <FormControl variant="outlined">
+    //                                     <InputLabel id="build">
+    //                                         Build
+    //                                     </InputLabel>
+    //                                     <Select
+    //                                         labelId="build"
+    //                                         id="build"
+    //                                         value={state.build}
+    //                                         onChange={handleBuildChange}
+    //                                     >
+    //                                         {/* <MenuItem value="">
+    //                       <em>None</em>
+    //                     </MenuItem> */}
+    //                                         <MenuItem value="Production">
+    //                                             Production
+    //                                         </MenuItem>
+    //                                         <MenuItem value="Development">
+    //                                             Development
+    //                                         </MenuItem>
+    //                                     </Select>
+    //                                 </FormControl>
+    //                             </Col>
+    //                         </Row>
+    //                         <Row className="form-group">
+    //                             <Label htmlFor="env" md={12}>
+    //                                 <h6>Environment Parameters:</h6>
+    //                             </Label>
+    //                             <Col md={{ size: 8, offset: 2 }}>
+    //                                 <Control.textarea
+    //                                     model=".env"
+    //                                     id="env"
+    //                                     name="env"
+    //                                     placeholder="#Specify .env params here"
+    //                                     rows="4"
+    //                                     className="form-control"
+    //                                 />
+    //                             </Col>
+    //                         </Row>
+    //                         <Row className="form-group">
+    //                             {/* md={{ size: 4, offset: 3 }} */}
+    //                             <Col
+    //                                 xs={{ size: 7, offset: 1 }}
+    //                                 md={{ size: 4, offset: 3 }}
+    //                             >
+    //                                 <Button
+    //                                     type="submit"
+    //                                     variant="outlined"
+    //                                     color="primary"
+    //                                 >
+    //                                     Deploy
+    //                                 </Button>
+    //                             </Col>
+    //                             {/* md={{ size: 2 }} */}
+    //                             <Col xs={3} md={{ size: 2 }}>
+    //                                 <Button
+    //                                     color="primary"
+    //                                     variant="outlined"
+    //                                     onClick={handleNewDeploymentClose}
+    //                                 >
+    //                                     Cancel
+    //                                 </Button>
+    //                             </Col>
+    //                         </Row>
+    //                     </LocalForm>
+    //                 </DialogContent>
+    //             </Dialog>
+    //             {/* </Grid> */}
+    //         </Grid>
+    //     </>
+    // );
+}
