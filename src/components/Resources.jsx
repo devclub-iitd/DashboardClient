@@ -17,8 +17,8 @@ import CloseIcon from '@material-ui/icons/Close';
 import PropTypes from 'prop-types';
 import { CallMadeRounded } from '@material-ui/icons';
 import MUIDataTable from 'mui-datatables';
-import EditResourceForm from './EditResourceFormUp';
-import CreateResourceForm from './CreateResourceFormUp';
+import EditResourceForm from './EditResourceForm';
+import CreateResourceForm from './CreateResourceForm';
 import CustomSearchRender from './CustomTableSearchBox';
 import TableTitle from './CustomTableTitle';
 
@@ -190,20 +190,33 @@ const ResourcesPage = ({
             label: 'URL',
             options: {
                 filter: false,
-                customBodyRender: (url) => (
-                    <Tooltip title="Go to event url">
-                        <Fab
-                            size="small"
-                            color="secondary"
-                            target="_blank"
-                            href={url}
+                customBodyRender: (url) =>
+                    /^https?:\/\/[a-z.+*&%$#@!]+\.[a-z]{2,5}\/?[a-z.+*&%$#@!/]*/i.test(
+                        url
+                    ) ? (
+                        <Tooltip title="Go to resource url">
+                            <Fab
+                                size="small"
+                                color="secondary"
+                                target="_blank"
+                                href={url}
+                            >
+                                <CallMadeRounded
+                                    style={{
+                                        color: '#636366',
+                                        fontWeight: 'bold',
+                                    }}
+                                />
+                            </Fab>
+                        </Tooltip>
+                    ) : (
+                        <Typography
+                            variant="body1"
+                            style={{ fontFamily: 'Monospace' }}
                         >
-                            <CallMadeRounded
-                                style={{ color: '#636366', fontWeight: 'bold' }}
-                            />
-                        </Fab>
-                    </Tooltip>
-                ),
+                            Invalid url
+                        </Typography>
+                    ),
             },
         },
         {
@@ -214,19 +227,19 @@ const ResourcesPage = ({
                 download: false,
                 print: false,
                 display: curUser.privelege_level === 'Admin',
-                viewColumn: curUser.privelege_level === 'Admin',
+                viewColumn:
+                    curUser.privelege_level === 'Admin' ||
+                    curUser.privelege_level === 'Approved_User',
                 customBodyRender: (_value, tableMeta) => (
                     <>
-                        {curUser.privelege_level === 'Admin' ? (
-                            <EditResourceForm
-                                deleteResource={deleteResource}
-                                dumResources={allResources}
-                                dumUsers={users.allUsers}
-                                editResource={editResource}
-                                index={tableMeta.rowIndex}
-                                serverError={resources.serverError}
-                            />
-                        ) : null}
+                        <EditResourceForm
+                            deleteResource={deleteResource}
+                            dumResources={allResources}
+                            dumUsers={users.allUsers}
+                            editResource={editResource}
+                            index={tableMeta.rowIndex}
+                            serverError={resources.serverError}
+                        />
                     </>
                 ),
             },
@@ -237,10 +250,11 @@ const ResourcesPage = ({
 
     const options = {
         filterType: 'checkbox',
-        responsive: 'scrollMaxHeight',
+        // responsive: 'scrollMaxHeight',
+        responsive: 'standard',
         rowsPerPage: 7,
         selectableRows: 'none',
-        fixedHeader: true,
+        fixedHeader: false,
         fixedSelectColumn: false,
         rowsPerPageOptions: [5, 7, 10, 15, 25, 50, 100],
         customSearchRender: (searchText, handleSearch, hideSearch, opt) => {
@@ -264,7 +278,15 @@ const ResourcesPage = ({
         <>
             <Grow in style={{ transformOrigin: 'center top' }} timeout={750}>
                 <Grid container justify="center" alignItems="center">
-                    <Grid item xs={11}>
+                    <Grid
+                        item
+                        style={{
+                            height: '85vh',
+                            overflowY: 'auto',
+                            scrollbarWidth: 'none',
+                        }}
+                        xs={11}
+                    >
                         <MUIDataTable
                             title={
                                 <TableTitle

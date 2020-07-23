@@ -1,9 +1,4 @@
 /* eslint-disable no-underscore-dangle */
-/* eslint-disable import/prefer-default-export */
-// import { userConstants } from '../_constants';
-// import { userService } from '../_services';
-// import { alertActions } from '.';
-// import { history } from '../_helpers';
 import * as ActionTypes from './ActionTypes';
 import * as API from '../data/api_links';
 import * as UserUtils from '../utils/userUtils';
@@ -241,24 +236,11 @@ export const fetchAllUsers = () => (dispatch) => {
         )
         .then((response) => response.json())
         .then((users) => {
-            // // console.log('got users: ', users);
+            console.log('got users: ', users);
             const gotUsers = users.data;
-            const allUsers = gotUsers.map((cUser) => ({
-                ...cUser,
-                url: objToStrMap(cUser.url),
-                join_year:
-                    cUser.join_year === null
-                        ? new Date()
-                        : new Date(cUser.join_year),
-                grad_year:
-                    cUser.grad_year === null
-                        ? new Date()
-                        : new Date(cUser.grad_year),
-                birth_date:
-                    cUser.birth_date === null
-                        ? new Date()
-                        : new Date(cUser.birth_date),
-            }));
+            const allUsers = gotUsers.map((cUser) =>
+                UserUtils.getProperUser(cUser)
+            );
             dispatch(addAllUsers(allUsers));
         })
         .catch((error) => dispatch(usersFailed(error.message)));
@@ -529,7 +511,6 @@ export const rejectAllUnapproved = () => (dispatch) => {
         })
         .catch((error) => dispatch(userServerError(error)));
 };
-
 // change password
 export const changePassword = (newPass) => (dispatch) => {
     const bearer = `Bearer ${localStorage.getItem('dcIITDDashboardToken')}`;
@@ -613,4 +594,16 @@ export const editOtherUser = (otherUser) => (dispatch) => {
             dispatch(fetchAllUsers());
         })
         .catch((error) => dispatch(userServerError(error.message)));
+};
+
+export const approveAllUnapproved = (unapprovedIds) => (dispatch) => {
+    // dispatch(usersLoading);
+    unapprovedIds.forEach((id) => {
+        const user = {
+            _id: id,
+            privelege_level: 'Approved_User',
+        };
+        dispatch(editOtherUser(user));
+    });
+    // dispatch(fetchAllUsers);
 };

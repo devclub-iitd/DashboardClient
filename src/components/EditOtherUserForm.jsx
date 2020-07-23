@@ -1,6 +1,6 @@
 /* eslint-disable react/forbid-prop-types */
 /* eslint-disable no-underscore-dangle */
-import React, { Component } from 'react';
+import React from 'react';
 import {
     Typography,
     Dialog,
@@ -12,467 +12,786 @@ import {
     Switch,
     Button,
     Snackbar,
+    Fab,
+    Grid,
+    TextField,
+    MenuItem,
+    Tooltip,
+    IconButton,
 } from '@material-ui/core';
-import {
-    Card,
-    CardText,
-    CardBody,
-    CardTitle,
-    CardFooter,
-    CardLink,
-    Row,
-    Col,
-    CardHeader,
-    CardSubtitle,
-    Label,
-} from 'reactstrap';
+import DateFnsUtils from '@date-io/date-fns';
 import PropTypes from 'prop-types';
-import { LocalForm } from 'react-redux-form';
+import { EditRounded, Delete, AddCircleRounded } from '@material-ui/icons';
+import {
+    MuiPickersUtilsProvider,
+    KeyboardDatePicker,
+} from '@material-ui/pickers';
+import * as Utils from '../utils';
 
-class EditOtherUserForm extends Component {
-    constructor(props) {
-        super(props);
+export default function EditOtherUserForm(props) {
+    const { dumUsers, index, serverError } = props;
+    const User = dumUsers[index];
 
-        this.state = {
-            orgUser: props.dumUsers[props.index],
-            user: props.dumUsers[props.index],
+    const [state, setState] = React.useState({
+        orgUser: { ...User },
+        editUser: { ...User },
+        urlFields:
+            User.url === undefined
+                ? []
+                : Array.from(User.url).map(([idx, value]) => ({
+                      type: idx,
+                      url: value,
+                  })),
+        isDailogOpen: false,
+        isDeleteDailogOpen: false,
+        success: false,
+    });
+
+    React.useEffect(() => {
+        setState({
+            orgUser: { ...User },
+            editUser: { ...User },
+            urlFields:
+                User.url === undefined
+                    ? []
+                    : Array.from(User.url).map(([idx, value]) => ({
+                          type: idx,
+                          url: value,
+                      })),
             isDailogOpen: false,
             isDeleteDailogOpen: false,
             success: false,
-            // privelege_level: this.state.dumUsers[this.props.index].privelege_level,
-            // display_on_website: this.state.dumUsers[this.props.index].display_on_website,
-        };
+        });
+    }, [User]);
 
-        this.changeDisplayState = this.changeDisplayState.bind(this);
-        this.changePrivLevel = this.changePrivLevel.bind(this);
-        this.handleFormOpen = this.handleFormOpen.bind(this);
-        this.handleFormClose = this.handleFormClose.bind(this);
-        this.cancelUserEdit = this.cancelUserEdit.bind(this);
-        this.confirmDeleteClose = this.confirmDeleteClose.bind(this);
-        this.confirmDeleteOpen = this.confirmDeleteOpen.bind(this);
-        this.handleDelete = this.handleDelete.bind(this);
-        this.handleSuccessClose = this.handleSuccessClose.bind(this);
-        this.handleApprove = this.handleApprove.bind(this);
-    }
-
-    componentWillReceiveProps(props) {
-        this.setState((prevState) => ({
-            ...prevState,
-            orgUser: props.dumUsers[props.index],
-            user: props.dumUsers[props.index],
-        }));
-    }
-
-    handleSuccessClose = () => {
-        this.setState((prevState) => ({
-            ...prevState,
-            success: false,
-        }));
+    const handleFormValuesChange = (event, name) => {
+        if (name === 'birth_date') {
+            setState({
+                ...state,
+                editUser: {
+                    ...state.editUser,
+                    birth_date: event,
+                },
+            });
+        } else if (name === 'join_year') {
+            setState({
+                ...state,
+                editUser: {
+                    ...state.editUser,
+                    join_year: event,
+                },
+            });
+        } else if (name === 'grad_year') {
+            setState({
+                ...state,
+                editUser: {
+                    ...state.editUser,
+                    grad_year: event,
+                },
+            });
+        } else if (name === 'display_on_website') {
+            setState({
+                ...state,
+                editUser: {
+                    ...state.editUser,
+                    display_on_website: event.target.checked,
+                },
+            });
+        } else {
+            setState({
+                ...state,
+                editUser: {
+                    ...state.editUser,
+                    [event.target.name]: event.target.value,
+                },
+            });
+        }
     };
 
-    changeDisplayState = (event) => {
-        const { checked } = event.target;
-        this.setState((prevState) => ({
-            ...prevState,
-            user: {
-                ...prevState.user,
-                display_on_website: checked,
-            },
-        }));
+    const handleAddUrlFields = () => {
+        const values = [...state.urlFields];
+        values.push({ type: '', url: '' });
+        setState({
+            ...state,
+            urlFields: values,
+        });
     };
 
-    changePrivLevel = (event) => {
-        const { value } = event.target;
-        this.setState((prevState) => ({
-            ...prevState,
-            user: {
-                ...prevState.user,
-                privelege_level: value,
-            },
-        }));
+    const handleRemoveUrlFields = (idx) => {
+        const values = [...state.urlFields];
+        values.splice(idx, 1);
+        setState({
+            ...state,
+            urlFields: values,
+        });
     };
 
-    handleFormOpen = () => {
-        this.setState((prevState) => ({
+    const handleUrlFieldChange = (idx, event) => {
+        const values = [...state.urlFields];
+        if (event.target.name === 'type') {
+            if (
+                values[idx].type === 'picture_url' ||
+                values[idx].type === 'fb_url' ||
+                values[idx].type === 'github_url'
+            ) {
+                return;
+            }
+            values[idx].type = event.target.value;
+        } else {
+            values[idx].url = event.target.value;
+        }
+        setState({
+            ...state,
+            urlFields: values,
+        });
+    };
+
+    const handleFormOpen = () => {
+        setState((prevState) => ({
             ...prevState,
             isDailogOpen: true,
         }));
     };
 
-    handleFormClose = () => {
-        this.setState((prevState) => ({
+    const handleFormClose = () => {
+        setState((prevState) => ({
             ...prevState,
             isDailogOpen: false,
         }));
     };
 
-    cancelUserEdit = () => {
-        this.setState((prevState) => ({
+    const cancelEdit = () => {
+        setState((prevState) => ({
             ...prevState,
-            user: {
-                ...prevState.user,
+            editUser: {
                 ...prevState.orgUser,
             },
+            urlFields:
+                User.url === undefined
+                    ? []
+                    : Array.from(User.url).map(([idx, value]) => ({
+                          type: idx,
+                          url: value,
+                      })),
         }));
-        this.handleFormClose();
+        handleFormClose();
     };
 
-    confirmDeleteOpen = () => {
-        this.setState((prevState) => ({
+    const handleSuccessClose = () => {
+        setState((prevState) => ({
+            ...prevState,
+            success: false,
+        }));
+    };
+
+    const confirmDeleteOpen = () => {
+        setState((prevState) => ({
             ...prevState,
             isDeleteDailogOpen: true,
         }));
     };
 
-    confirmDeleteClose = () => {
-        this.setState((prevState) => ({
+    const confirmDeleteClose = () => {
+        setState((prevState) => ({
             ...prevState,
             isDeleteDailogOpen: false,
         }));
     };
 
-    handleDelete = () => {
-        // Call delete thunk here,
-        const { removeUser } = this.props;
-        const { user } = this.state;
-        removeUser(user._id);
-        // console.log('Deleting: ', this.state.user.name);
-        this.confirmDeleteClose();
+    const handleDelete = () => {
+        const { removeUser } = props;
+        const { orgUser } = state;
+        removeUser(orgUser._id);
+        confirmDeleteClose();
     };
 
-    handleApprove = () => {
-        const { user } = this.state;
-        const { editUser, serverError } = this.props;
+    const handleSubmit = () => {
+        const urlMap = new Map();
+        const { editUser } = props;
+        state.urlFields.forEach((urlField) => {
+            const fixedUrl =
+                urlField.url.startsWith('https://') ||
+                urlField.url.startsWith('http://')
+                    ? urlField.url
+                    : ['https://', urlField.url].join('');
+            urlMap.set(urlField.type, fixedUrl);
+        });
         const newUser = {
-            ...user,
-            privelege_level: 'Approved_User',
+            ...state.editUser,
+            url: Utils.UserUtils.strMapToObj(urlMap),
         };
+
         editUser(newUser);
+
         if (serverError === null) {
-            this.setState((prevState) => ({
-                ...prevState,
+            setState({
+                ...state,
                 success: true,
-            }));
+                orgUser: {
+                    ...state.editUser,
+                    url: urlMap,
+                },
+                urlFields:
+                    urlMap === undefined
+                        ? []
+                        : Array.from(urlMap).map(([idx, value]) => ({
+                              type: idx,
+                              url: value,
+                          })),
+            });
         }
+        handleFormClose();
     };
 
-    handleSubmit = () => {
-        // console.log('Editing user: ', this.state.user);
-        const { editUser, serverError } = this.props;
-        const { user } = this.state;
-        editUser(user);
-        if (serverError === null) {
-            this.setState((prevState) => ({
-                ...prevState,
-                success: true,
-            }));
-        }
-        this.handleFormClose();
+    const FieldSep = () => {
+        return <Grid item xs={12} style={{ height: '8px' }} />;
     };
 
-    render() {
-        const {
-            success,
-            orgUser,
-            isDeleteDailogOpen,
-            isDailogOpen,
-        } = this.state;
-        return (
-            <div>
-                <Snackbar
-                    anchorOrigin={{
-                        vertical: 'top',
-                        horizontal: 'center',
-                    }}
-                    open={success}
-                    autoHideDuration={2000}
-                    onClose={this.handleSuccessClose}
-                    message="User edited successfully !"
-                />
-                {orgUser.privelege_level === 'Unapproved_User' ? (
-                    <div>
-                        <Button
-                            onClick={() => {
-                                this.confirmDeleteOpen();
-                            }}
-                            color="secondary"
-                            variant="outlined"
-                        >
-                            Reject User
-                        </Button>
-                        <Button
-                            onClick={() => {
-                                this.handleApprove();
-                            }}
-                            style={{ marginLeft: '1em' }}
-                            variant="contained"
-                            color="secondary"
-                        >
-                            Approve User
-                        </Button>
-                    </div>
-                ) : (
-                    <Button
-                        onClick={() => {
-                            this.handleFormOpen();
-                        }}
-                        color="secondary"
-                        variant={
-                            orgUser.privelege_level === 'Unapproved_User'
-                                ? 'outlined'
-                                : 'contained'
-                        }
-                    >
-                        Edit User
-                    </Button>
-                )}
-                <Dialog
-                    open={isDeleteDailogOpen}
-                    maxWidth="md"
-                    onClose={this.confirmDeleteClose}
-                >
-                    <DialogContent>
-                        <Typography variant="h5">
-                            Are you sure you want to remove the user{' '}
-                            {orgUser.name}
-                        </Typography>
-                        <Row className="form-group">
-                            <Col
-                                xs={{ size: 7, offset: 1 }}
-                                md={{ size: 4, offset: 3 }}
+    const hostels = Utils.UserUtils.userHostels;
+
+    const categories = Utils.UserUtils.userCategories;
+
+    const {
+        success,
+        isDailogOpen,
+        editUser,
+        urlFields,
+        isDeleteDailogOpen,
+    } = state;
+
+    return (
+        <div>
+            <Snackbar
+                anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'center',
+                }}
+                open={success}
+                autoHideDuration={2000}
+                onClose={handleSuccessClose}
+                message="User updated Successfully !"
+            />
+            <Fab onClick={() => handleFormOpen()} size="small" color="primary">
+                <EditRounded fontSize="small" style={{ color: '#636366' }} />
+            </Fab>
+            <Dialog
+                open={isDailogOpen}
+                maxWidth="sm"
+                fullWidth
+                onClose={handleFormClose}
+                scroll="paper"
+            >
+                <DialogTitle>
+                    <Typography variant="h4">Edit User</Typography>
+                </DialogTitle>
+                <DialogContent>
+                    <Grid container justify="center" alignItems="center">
+                        <Grid item xs={4}>
+                            <Typography variant="h6">Name: </Typography>
+                        </Grid>
+                        <Grid item xs={8}>
+                            <TextField
+                                name="name"
+                                variant="outlined"
+                                required
+                                value={editUser.name}
+                                onChange={(e) =>
+                                    handleFormValuesChange(e, 'name')
+                                }
+                                id="name"
+                                label="Name"
+                            />
+                        </Grid>
+                        <FieldSep />
+                        <FieldSep />
+                        <Grid item xs={12}>
+                            <Typography variant="h6">Status: </Typography>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <RadioGroup
+                                row
+                                aria-label="privelege_level"
+                                name="privelege_level"
+                                defaultValue={editUser.privelege_level}
+                                onChange={(e) =>
+                                    handleFormValuesChange(e, 'privelege_level')
+                                }
                             >
-                                <Button
-                                    variant="contained"
-                                    onClick={this.handleDelete}
-                                    color="primary"
-                                >
-                                    Confirm Delete
-                                </Button>
-                            </Col>
-                            <Col xs={3} md={{ size: 2 }}>
-                                <Button
-                                    variant="outlined"
-                                    color="primary"
-                                    onClick={this.confirmDeleteClose}
-                                >
-                                    Cancel
-                                </Button>
-                            </Col>
-                        </Row>
-                    </DialogContent>
-                </Dialog>
-                <Dialog
-                    open={isDailogOpen}
-                    maxWidth="sm"
-                    fullWidth
-                    onClose={this.handleFormClose}
-                    scroll="paper"
-                >
-                    <DialogTitle>
-                        <Typography variant="h4">Manage User</Typography>
-                    </DialogTitle>
-                    <DialogContent>
-                        <Card>
-                            <CardHeader>
-                                <Typography variant="h2">
-                                    {orgUser.name}
-                                </Typography>
-                            </CardHeader>
-                            <CardBody>
-                                <CardTitle>
-                                    <Typography variant="h5">
-                                        {orgUser.entry_no}
-                                    </Typography>
-                                </CardTitle>
-                                <CardSubtitle>
-                                    <Typography variant="h6">
-                                        {orgUser.category}
-                                    </Typography>
-                                </CardSubtitle>
-                                <CardText>
-                                    <Typography variant="body1">
-                                        {orgUser.intro}
-                                    </Typography>
-                                    <Typography variant="body1">{`Interests: ${orgUser.interests}`}</Typography>
-                                    <Typography variant="body1">{`Specializations: ${orgUser.specializations}`}</Typography>
-                                    <Typography variant="body1">{`Hostel: ${orgUser.hostel}`}</Typography>
-                                    <Typography variant="caption">{`Email: ${orgUser.email}`}</Typography>
-                                    <Typography variant="body1">{`Mobile: ${orgUser.mobile_number}`}</Typography>
-                                    {Array.from(orgUser.url).map(
-                                        ([key, value]) => {
-                                            return (
-                                                <Typography variant="body1">
-                                                    {`${key}: `}
-                                                    <CardLink href={value}>
-                                                        {value}
-                                                    </CardLink>
-                                                </Typography>
-                                            );
-                                        }
-                                    )}
-                                </CardText>
-                            </CardBody>
-                            <CardFooter>
-                                <LocalForm>
-                                    <Row className="form-group">
-                                        <Label
-                                            htmlFor="privelege_level"
-                                            md={12}
-                                        >
-                                            <h6>Set privelege level:</h6>
-                                        </Label>
-                                        <Col sm={12}>
-                                            <RadioGroup
-                                                row
-                                                aria-label="privelege_level"
-                                                name="privelege_level"
-                                                defaultValue={
-                                                    orgUser.privelege_level
-                                                }
-                                                onChange={this.changePrivLevel}
-                                            >
-                                                <FormControlLabel
-                                                    value="Unapproved_User"
-                                                    control={
-                                                        <Radio color="secondary" />
-                                                    }
-                                                    label="Unapprove User"
-                                                    labelPlacement="end"
-                                                />
-                                                <FormControlLabel
-                                                    value="Approved_User"
-                                                    control={
-                                                        <Radio color="secondary" />
-                                                    }
-                                                    label="Approve User"
-                                                    labelPlacement="end"
-                                                />
-                                                <FormControlLabel
-                                                    value="Admin"
-                                                    control={
-                                                        <Radio color="primary" />
-                                                    }
-                                                    label="Make Admin"
-                                                    labelPlacement="end"
-                                                />
-                                                {/* <FormControlLabel value="end" control={<Radio color="primary" />} label="End" /> */}
-                                            </RadioGroup>
-                                        </Col>
-                                    </Row>
-                                    <Row className="form-group">
-                                        <Col>
-                                            <Label
-                                                htmlFor="display_on_website"
-                                                sm={5}
-                                            >
-                                                <h6>Display on website: </h6>
-                                            </Label>
-                                            <FormControlLabel
-                                                sm={2}
-                                                // label="Display on Website"
-                                                control={
-                                                    <Switch
-                                                        defaultChecked={
-                                                            orgUser.display_on_website
-                                                        }
-                                                        onChange={
-                                                            this
-                                                                .changeDisplayState
-                                                        }
-                                                    />
-                                                }
-                                            />
-                                        </Col>
-                                    </Row>
-                                </LocalForm>
-                            </CardFooter>
-                        </Card>
-                        <Row className="form-group">
-                            {/* md={{ size: 2 }} */}
-                            <Col sm={{ size: 6, offset: 3 }}>
-                                <Button
-                                    fullWidth
-                                    variant="outlined"
-                                    color="primary"
-                                    onClick={this.confirmDeleteOpen}
-                                >
-                                    Remove User
-                                </Button>
-                            </Col>
-                            <Dialog
-                                open={isDeleteDailogOpen}
-                                fullWidth
-                                onClose={this.confirmDeleteClose}
+                                <FormControlLabel
+                                    value="Unapproved_User"
+                                    control={<Radio color="secondary" />}
+                                    label="Unapprove User"
+                                    labelPlacement="end"
+                                />
+                                <FormControlLabel
+                                    value="Approved_User"
+                                    control={<Radio color="secondary" />}
+                                    label="Approve User"
+                                    labelPlacement="end"
+                                />
+                                <FormControlLabel
+                                    value="Admin"
+                                    control={<Radio color="primary" />}
+                                    label="Make Admin"
+                                    labelPlacement="end"
+                                />
+                            </RadioGroup>
+                        </Grid>
+                        <FieldSep />
+                        <FieldSep />
+                        <Grid item xs={4}>
+                            <Typography variant="h6">Hostel: </Typography>
+                        </Grid>
+                        <Grid item xs={8}>
+                            <TextField
+                                id="hostel"
+                                select
+                                margin="dense"
+                                name="hostel"
+                                label="Hostel"
+                                variant="outlined"
+                                value={editUser.hostel}
+                                onChange={(e) =>
+                                    handleFormValuesChange(e, 'hostel')
+                                }
+                                style={{ width: '90%' }}
+                                required
                             >
-                                <DialogContent>
-                                    <Typography variant="h5">
-                                        Are you sure you want to remove the user{' '}
-                                        {orgUser.name}
-                                    </Typography>
-                                    <Row
-                                        style={{ marginTop: '2em' }}
-                                        className="form-group"
+                                {hostels.map((option) => (
+                                    <MenuItem
+                                        key={option}
+                                        value={option.toUpperCase()}
                                     >
-                                        <Col
-                                            xs={{ size: 7, offset: 1 }}
-                                            md={{ size: 4, offset: 3 }}
-                                        >
-                                            <Button
-                                                fullWidth
-                                                variant="contained"
-                                                onClick={this.handleDelete}
-                                                color="primary"
-                                            >
-                                                Confirm Delete
-                                            </Button>
-                                        </Col>
-                                        <Col xs={3} md={{ size: 2 }}>
-                                            <Button
-                                                fullWidth
-                                                variant="outlined"
-                                                color="primary"
-                                                onClick={
-                                                    this.confirmDeleteClose
-                                                }
-                                            >
-                                                Cancel
-                                            </Button>
-                                        </Col>
-                                    </Row>
-                                </DialogContent>
-                            </Dialog>
-                        </Row>
-                        <Row className="form-group">
-                            <Col
-                                xs={{ size: 7, offset: 1 }}
-                                md={{ size: 4, offset: 3 }}
+                                        {option}
+                                    </MenuItem>
+                                ))}
+                            </TextField>
+                        </Grid>
+                        <FieldSep />
+                        <FieldSep />
+                        <Grid item xs={4}>
+                            <Typography variant="h6">Category: </Typography>
+                        </Grid>
+                        <Grid item xs={8}>
+                            <TextField
+                                id="category"
+                                select
+                                margin="dense"
+                                name="category"
+                                label="Category"
+                                variant="outlined"
+                                value={editUser.category}
+                                onChange={(e) =>
+                                    handleFormValuesChange(e, 'category')
+                                }
+                                style={{ width: '90%' }}
+                                required
                             >
+                                {categories.map((option) => (
+                                    <MenuItem key={option} value={option}>
+                                        {option}
+                                    </MenuItem>
+                                ))}
+                            </TextField>
+                        </Grid>
+                        <FieldSep />
+                        <FieldSep />
+                        <Grid item xs={12}>
+                            <Typography variant="h6">Intro: </Typography>
+                        </Grid>
+                        <FieldSep />
+                        <Grid item xs={10} sm={8}>
+                            <TextField
+                                required
+                                variant="outlined"
+                                fullWidth
+                                multiline
+                                rowsMax={5}
+                                id="intro"
+                                name="intro"
+                                label="Introduction"
+                                value={editUser.intro}
+                                onChange={(e) =>
+                                    handleFormValuesChange(e, 'intro')
+                                }
+                            />
+                        </Grid>
+                        <FieldSep />
+                        <FieldSep />
+                        <Grid item xs={4}>
+                            <Typography variant="h6">Gender: </Typography>
+                        </Grid>
+                        <Grid item xs={8}>
+                            <TextField
+                                id="gender"
+                                select
+                                style={{ width: '90%' }}
+                                margin="dense"
+                                name="gender"
+                                label="Gender"
+                                variant="outlined"
+                                value={editUser.gender}
+                                onChange={(e) =>
+                                    handleFormValuesChange(e, 'gender')
+                                }
+                                required
+                            >
+                                {['female', 'male', 'other'].map((option) => (
+                                    <MenuItem key={option} value={option}>
+                                        {option}
+                                    </MenuItem>
+                                ))}
+                            </TextField>
+                        </Grid>
+                        <FieldSep />
+                        <FieldSep />
+                        <Grid item xs={4}>
+                            <Typography variant="h6">
+                                Date of Birth:{' '}
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={8}>
+                            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                <KeyboardDatePicker
+                                    margin="normal"
+                                    id="birth_date"
+                                    label="Date of Birth"
+                                    format="MM/dd/yyyy"
+                                    value={editUser.birth_date}
+                                    name="birth_date"
+                                    onChange={(date) =>
+                                        handleFormValuesChange(
+                                            date,
+                                            'birth_date'
+                                        )
+                                    }
+                                    maxDate={Date.now()}
+                                    KeyboardButtonProps={{
+                                        'aria-label': 'change date',
+                                    }}
+                                    required
+                                    inputVariant="outlined"
+                                />
+                            </MuiPickersUtilsProvider>
+                        </Grid>
+                        <FieldSep />
+                        <FieldSep />
+                        <Grid item xs={12}>
+                            <Typography variant="h6">
+                                Date of Joining DevClub:{' '}
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={10}>
+                            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                <KeyboardDatePicker
+                                    margin="normal"
+                                    id="join_year"
+                                    label="Date of Joining DevClub"
+                                    format="MM/dd/yyyy"
+                                    value={editUser.join_year}
+                                    name="join_year"
+                                    onChange={(date) =>
+                                        handleFormValuesChange(
+                                            date,
+                                            'join_year'
+                                        )
+                                    }
+                                    maxDate={Date.now()}
+                                    KeyboardButtonProps={{
+                                        'aria-label': 'change date',
+                                    }}
+                                    required
+                                    style={{ width: '90%' }}
+                                    inputVariant="outlined"
+                                />
+                            </MuiPickersUtilsProvider>
+                        </Grid>
+                        <FieldSep />
+                        <FieldSep />
+                        <Grid item xs={12}>
+                            <Typography variant="h6">
+                                Date of Graduating:{' '}
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={10}>
+                            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                <KeyboardDatePicker
+                                    margin="normal"
+                                    id="grad_year"
+                                    label="Date of Graduating"
+                                    format="MM/dd/yyyy"
+                                    value={editUser.grad_year}
+                                    name="grad_year"
+                                    onChange={(date) =>
+                                        handleFormValuesChange(
+                                            date,
+                                            'grad_year'
+                                        )
+                                    }
+                                    minDate={editUser.join_year}
+                                    KeyboardButtonProps={{
+                                        'aria-label': 'change date',
+                                    }}
+                                    required
+                                    style={{ width: '90%' }}
+                                    inputVariant="outlined"
+                                />
+                            </MuiPickersUtilsProvider>
+                        </Grid>
+                        <FieldSep />
+                        <FieldSep />
+                        <Grid item xs={4}>
+                            <Typography variant="h6">Mobile: </Typography>
+                        </Grid>
+                        <Grid item xs={8}>
+                            <TextField
+                                name="mobile_number"
+                                variant="outlined"
+                                required
+                                value={editUser.mobile_number}
+                                onChange={(e) =>
+                                    handleFormValuesChange(e, 'mobile_number')
+                                }
+                                id="mobile_number"
+                                label="Mobile"
+                            />
+                        </Grid>
+                        <FieldSep />
+                        <FieldSep />
+                        <Grid item xs={12}>
+                            <Typography variant="h6">Interests: </Typography>
+                        </Grid>
+                        <FieldSep />
+                        <Grid item xs={10} sm={8}>
+                            <TextField
+                                required
+                                fullWidth
+                                variant="outlined"
+                                multiline
+                                rowsMax={5}
+                                id="interests"
+                                name="interests"
+                                label="Interests"
+                                value={editUser.interests}
+                                onChange={(e) =>
+                                    handleFormValuesChange(e, 'interests')
+                                }
+                            />
+                        </Grid>
+                        <FieldSep />
+                        <FieldSep />
+                        <Grid item xs={12}>
+                            <Typography variant="h6">
+                                Specializations:{' '}
+                            </Typography>
+                        </Grid>
+                        <FieldSep />
+                        <Grid item xs={10} sm={8}>
+                            <TextField
+                                required
+                                fullWidth
+                                variant="outlined"
+                                multiline
+                                rowsMax={5}
+                                id="specialization"
+                                name="specialization"
+                                label="Specialization"
+                                value={editUser.specialization}
+                                onChange={(e) =>
+                                    handleFormValuesChange(e, 'specialization')
+                                }
+                            />
+                        </Grid>
+                        <FieldSep />
+                        <FieldSep />
+                        <Grid container item xs={12} alignItems="center">
+                            <Grid item xs={5}>
+                                <Typography variant="h6">
+                                    Display on website:{' '}
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={2}>
+                                <Switch
+                                    checked={editUser.display_on_website}
+                                    onChange={(e) =>
+                                        handleFormValuesChange(
+                                            e,
+                                            'display_on_website'
+                                        )
+                                    }
+                                />
+                            </Grid>
+                        </Grid>
+                        <FieldSep />
+                        <FieldSep />
+                        <Grid item xs={12}>
+                            <Typography variant="h6">Urls:</Typography>
+                        </Grid>
+                        <Grid item container alignItems="center" xs={12}>
+                            {urlFields.map(({ type, url }, idx) => (
+                                <>
+                                    <Grid item xs={8} sm={5}>
+                                        <TextField
+                                            style={{ width: '90%' }}
+                                            required
+                                            small
+                                            margin="normal"
+                                            label="type"
+                                            id="type"
+                                            name="type"
+                                            variant="outlined"
+                                            value={type}
+                                            onChange={(e) =>
+                                                handleUrlFieldChange(idx, e)
+                                            }
+                                        />
+                                    </Grid>
+                                    <Grid item xs={10} sm={5}>
+                                        <TextField
+                                            style={{ width: '90%' }}
+                                            required
+                                            small
+                                            margin="normal"
+                                            label="url"
+                                            id="url"
+                                            name="url"
+                                            variant="outlined"
+                                            value={url}
+                                            onChange={(e) =>
+                                                handleUrlFieldChange(idx, e)
+                                            }
+                                        />
+                                    </Grid>
+                                    {type === 'picture_url' ||
+                                    type === 'fb_url' ||
+                                    type === 'github_url' ? null : (
+                                        <Grid item xs={2}>
+                                            <Tooltip title="Delete this url field">
+                                                <IconButton
+                                                    edge="start"
+                                                    style={{
+                                                        color: '#fff',
+                                                    }}
+                                                    onClick={() =>
+                                                        handleRemoveUrlFields(
+                                                            idx
+                                                        )
+                                                    }
+                                                >
+                                                    <Delete />
+                                                </IconButton>
+                                            </Tooltip>
+                                        </Grid>
+                                    )}
+                                </>
+                            ))}
+                            <Grid alignItems="center" item xs={2}>
+                                <Tooltip title="Add new url field">
+                                    <IconButton
+                                        style={{
+                                            color: '#fff',
+                                        }}
+                                        onClick={() => handleAddUrlFields()}
+                                    >
+                                        <AddCircleRounded />
+                                    </IconButton>
+                                </Tooltip>
+                            </Grid>
+                        </Grid>
+                        <FieldSep />
+                        <FieldSep />
+                        <Grid
+                            container
+                            justify="center"
+                            alignItems="center"
+                            item
+                            xs={12}
+                        >
+                            <Grid item xs={6}>
                                 <Button
                                     fullWidth
                                     variant="contained"
                                     color="primary"
-                                    onClick={this.handleSubmit}
+                                    onClick={confirmDeleteOpen}
                                 >
-                                    Save Changes
+                                    Delete User
                                 </Button>
-                            </Col>
-                            <Col xs={3} md={2}>
+                            </Grid>
+                        </Grid>
+                        <FieldSep />
+                        <Dialog
+                            open={isDeleteDailogOpen}
+                            onClose={confirmDeleteClose}
+                        >
+                            <DialogContent>
+                                <Typography variant="h5">
+                                    Are you sure you want to delete the user{' '}
+                                    {editUser.name}
+                                </Typography>
+                                <Grid
+                                    container
+                                    justify="center"
+                                    alignItems="center"
+                                    spacing={3}
+                                    style={{ marginTop: '1em', width: '100%' }}
+                                >
+                                    <Grid item xs={8} sm={6}>
+                                        <Button
+                                            fullWidth
+                                            onClick={handleDelete}
+                                            variant="contained"
+                                            color="primary"
+                                        >
+                                            Confirm Delete
+                                        </Button>
+                                    </Grid>
+                                    <Grid item xs={4}>
+                                        <Button
+                                            fullWidth
+                                            variant="outlined"
+                                            color="primary"
+                                            onClick={confirmDeleteClose}
+                                        >
+                                            Cancel
+                                        </Button>
+                                    </Grid>
+                                </Grid>
+                            </DialogContent>
+                        </Dialog>
+                        <Grid
+                            container
+                            justify="center"
+                            alignItems="center"
+                            item
+                            spacing={3}
+                            xs={12}
+                        >
+                            <Grid item xs={6} sm={4}>
                                 <Button
                                     fullWidth
+                                    onClick={handleSubmit}
                                     variant="contained"
                                     color="primary"
-                                    onClick={this.cancelUserEdit}
+                                >
+                                    Save changes
+                                </Button>
+                            </Grid>
+                            <Grid item xs={4}>
+                                <Button
+                                    fullWidth
+                                    variant="outlined"
+                                    color="primary"
+                                    onClick={cancelEdit}
                                 >
                                     Cancel
                                 </Button>
-                            </Col>
-                        </Row>
-                    </DialogContent>
-                    {/* </ModalBody> */}
-                </Dialog>
-            </div>
-        );
-    }
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </DialogContent>
+            </Dialog>
+        </div>
+    );
 }
 
 EditOtherUserForm.propTypes = {
@@ -482,5 +801,3 @@ EditOtherUserForm.propTypes = {
     editUser: PropTypes.func.isRequired,
     serverError: PropTypes.string.isRequired,
 };
-
-export default EditOtherUserForm;

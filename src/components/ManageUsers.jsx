@@ -1,72 +1,39 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable react/forbid-prop-types */
-import React, { Fragment } from 'react';
+import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
     Grid,
     Typography,
+    Switch,
+    Tooltip,
+    Fab,
+    Grow,
+    Snackbar,
     Dialog,
     DialogContent,
-    TextField,
-    Paper,
-    Backdrop,
-    CircularProgress,
-    InputAdornment,
-    IconButton,
-    Avatar,
-} from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
-import SearchIcon from '@material-ui/icons/Search';
-import {
-    Card,
-    CardText,
-    CardBody,
-    CardTitle,
-    CardFooter,
-    CardLink,
     Button,
-    ListGroup,
-    ListGroupItem,
-    Row,
-    Col,
-    CardHeader,
-    CardSubtitle,
-} from 'reactstrap';
+} from '@material-ui/core';
 import PropTypes from 'prop-types';
+import { CallMadeRounded } from '@material-ui/icons';
+import MUIDataTable from 'mui-datatables';
 import EditOtherUserForm from './EditOtherUserForm';
+import * as Utils from '../utils';
+import StatusChip from './StatusChip';
+import CustomSearchRender from './CustomTableSearchBox';
+import CustomToolbarSelect from './UserToolbarSelect';
 
 const useStyles = makeStyles((theme) => ({
-    root: {
-        width: '100%',
-        marginTop: theme.spacing(3),
-        border: `1px solid ${theme.palette.divider}`,
-        overflowX: 'auto',
-    },
-    paper: {
-        margin: '2em',
-        height: document.documentElement.clientHeight * 0.9,
-        overflowY: 'scroll',
-    },
-    search: {
-        marginTop: '0.5em',
-        marginLeft: '2em',
-        // marginRight: 'auto',
-        width: '60%',
-    },
-    large: {
-        width: theme.spacing(7),
-        height: theme.spacing(7),
-        marginLeft: '1em',
-    },
-    backdrop: {
-        zIndex: theme.zIndex.drawer + 1,
-        color: '#fff',
+    tablePaper: {
+        borderRadius: '4px',
+        padding: theme.spacing(0, 2),
     },
 }));
 
 export default function ManageUsers({
     users,
-    // deleteAllUsers,
     rejectAllUnapproved,
+    approveAll,
     removeUser,
     editOtherUser,
 }) {
@@ -74,31 +41,19 @@ export default function ManageUsers({
     const curUser = users.user;
     const dumUsers = users.allUsers;
 
-    const [search, setSearch] = React.useState({
-        admins: '',
-        approved: '',
-        unapproved: '',
-    });
+    const [approveSuccess, setApproveSuccess] = React.useState(false);
 
-    // const [deleteAll, setDeleteState] = React.useState(false);
-    const [rejectAll, setRejectState] = React.useState(false);
-
-    const searchChange = (event) => {
-        event.preventDefault();
-
-        setSearch({
-            ...search,
-            [event.target.name]: event.target.value,
-        });
+    const closeApproveSuccess = () => {
+        setApproveSuccess(false);
     };
 
-    // const confirmDeleteOpen = () => {
-    //     setDeleteState(true);
-    // };
+    const [rejectSuccess, setRejectSuccess] = React.useState(false);
 
-    // const confirmDeleteClose = () => {
-    //     setDeleteState(false);
-    // };
+    const closeRejectSuccess = () => {
+        setRejectSuccess(false);
+    };
+
+    const [rejectAll, setRejectState] = React.useState(false);
 
     const confirmRejectOpen = () => {
         setRejectState(true);
@@ -108,589 +63,459 @@ export default function ManageUsers({
         setRejectState(false);
     };
 
-    const admins = dumUsers
-        .filter((user) => user.privelege_level === 'Admin')
-        .filter((user) =>
-            user.name.toLowerCase().startsWith(search.admins.toLowerCase())
-        );
-    const approved = dumUsers
-        .filter((user) => user.privelege_level === 'Approved_User')
-        .filter((user) =>
-            user.name.toLowerCase().startsWith(search.approved.toLowerCase())
-        );
-    const unapproved = dumUsers
+    const unapprovedIds = dumUsers
         .filter((user) => user.privelege_level === 'Unapproved_User')
-        .filter((user) =>
-            user.name.toLowerCase().startsWith(search.unapproved.toLowerCase())
-        );
+        .map((user) => user._id);
 
-    return (
-        <Grid container justify="space-evenly">
-            {users.usersErrMess !== null ? (
-                <Typography variant="h4" color="textSecondary">
-                    Failed to fetch Users
-                </Typography>
-            ) : null}
-            <Backdrop className={classes.backdrop} open={users.usersLoading}>
-                <CircularProgress color="inherit" />
-            </Backdrop>
-            <Dialog open={rejectAll} maxWidth="md" onClose={confirmRejectClose}>
-                <DialogContent>
-                    {unapproved.length === 0 ? (
-                        <Typography variant="h5">
-                            No Approved Users !
+    const approveAllUsers = () => {
+        approveAll(unapprovedIds);
+        if (users.usersErrMess === null && users.userErrMess === null) {
+            setApproveSuccess(true);
+        }
+    };
+
+    const rejectAllUsers = () => {
+        rejectAllUnapproved();
+        if (users.usersErrMess === null && users.userErrMess === null) {
+            setRejectSuccess(true);
+            confirmRejectClose();
+        }
+    };
+
+    const getUserRow = (user) => {
+        return [
+            user.name,
+            Utils.UserUtils.getStatus(user),
+            user.hostel,
+            user.category,
+            user.intro,
+            user.gender,
+            user.birth_date.toDateString(),
+            user.join_year.toDateString(),
+            user.grad_year.toDateString(),
+            user.mobile_number,
+            user.hometown,
+            user.interests,
+            user.specialization,
+            user.display_on_website ? 'True' : 'False',
+            user.url.get('github_url'),
+        ];
+    };
+
+    const columns = [
+        {
+            name: 'name',
+            label: 'Name',
+            options: {
+                filter: false,
+                sort: true,
+                customBodyRender: (value) => {
+                    return (
+                        <Typography variant="body1" style={{ fontWeight: 500 }}>
+                            {value}
                         </Typography>
+                    );
+                },
+            },
+        },
+        {
+            name: 'status',
+            label: 'Status',
+            options: {
+                filter: true,
+                customBodyRender: (value) => {
+                    return <StatusChip status={value} />;
+                },
+            },
+        },
+        {
+            name: 'hostel',
+            label: 'Hostel',
+            options: {
+                filter: true,
+                sort: true,
+                customBodyRender: (value) => {
+                    return (
+                        <Typography variant="body1" style={{ fontWeight: 500 }}>
+                            {value}
+                        </Typography>
+                    );
+                },
+            },
+        },
+        {
+            name: 'category',
+            label: 'Category',
+            options: {
+                filter: true,
+                customBodyRender: (value) => {
+                    return (
+                        <Typography variant="body1" style={{ fontWeight: 500 }}>
+                            {value}
+                        </Typography>
+                    );
+                },
+            },
+        },
+        {
+            name: 'intro',
+            label: 'Intro',
+            options: {
+                filter: false,
+                display: false,
+                customBodyRender: (value) => {
+                    return (
+                        <Typography variant="body1" style={{ fontWeight: 500 }}>
+                            {value}
+                        </Typography>
+                    );
+                },
+            },
+        },
+        {
+            name: 'gender',
+            label: 'Gender',
+            options: {
+                filter: true,
+                display: false,
+                customBodyRender: (value) => {
+                    return (
+                        <Typography variant="body1" style={{ fontWeight: 500 }}>
+                            {value}
+                        </Typography>
+                    );
+                },
+            },
+        },
+        {
+            name: 'birth date',
+            label: 'DOB',
+            options: {
+                filter: false,
+                display: false,
+                customBodyRender: (value) => {
+                    return (
+                        <Typography variant="body1" style={{ fontWeight: 500 }}>
+                            {value}
+                        </Typography>
+                    );
+                },
+            },
+        },
+        {
+            name: 'joining date',
+            label: 'Joined DevC',
+            options: {
+                filter: false,
+                display: false,
+                customBodyRender: (value) => {
+                    return (
+                        <Typography variant="body1" style={{ fontWeight: 500 }}>
+                            {value}
+                        </Typography>
+                    );
+                },
+            },
+        },
+        {
+            name: 'graduating date',
+            label: 'Graduates',
+            options: {
+                filter: false,
+                display: false,
+                customBodyRender: (value) => {
+                    return (
+                        <Typography variant="body1" style={{ fontWeight: 500 }}>
+                            {value}
+                        </Typography>
+                    );
+                },
+            },
+        },
+        {
+            name: 'mobile',
+            label: 'Mobile',
+            options: {
+                filter: false,
+                customBodyRender: (value) => {
+                    return (
+                        <Typography variant="body1" style={{ fontWeight: 500 }}>
+                            {value}
+                        </Typography>
+                    );
+                },
+            },
+        },
+        {
+            name: 'hometown',
+            label: 'Hometown',
+            options: {
+                filter: false,
+                display: false,
+                customBodyRender: (value) => {
+                    return (
+                        <Typography variant="body1" style={{ fontWeight: 500 }}>
+                            {value}
+                        </Typography>
+                    );
+                },
+            },
+        },
+        {
+            name: 'interests',
+            label: 'Interests',
+            options: {
+                filter: false,
+                customBodyRender: (value) => {
+                    return (
+                        <Typography variant="body1" style={{ fontWeight: 500 }}>
+                            {value}
+                        </Typography>
+                    );
+                },
+            },
+        },
+        {
+            name: 'spec',
+            label: 'Specializations',
+            options: {
+                filter: false,
+                customBodyRender: (value) => {
+                    return (
+                        <Typography variant="body1" style={{ fontWeight: 500 }}>
+                            {value}
+                        </Typography>
+                    );
+                },
+            },
+        },
+        {
+            name: 'display',
+            label: 'On Main Website',
+            options: {
+                filter: true,
+                customBodyRender: (value) => (
+                    <Tooltip
+                        title={
+                            curUser.privelege_level === 'Admin'
+                                ? 'Go to Edit to change this'
+                                : 'Only Admins can edit this'
+                        }
+                    >
+                        <Switch checked={value === 'True'} />
+                    </Tooltip>
+                ),
+            },
+        },
+        {
+            name: 'url',
+            label: 'URL',
+            options: {
+                filter: false,
+                customBodyRender: (url) =>
+                    /^https?:\/\/github.com\/[a-z.+*&%$#@!]+/i.test(url) ? (
+                        <Tooltip title="Go to github url">
+                            <Fab
+                                size="small"
+                                color="secondary"
+                                target="_blank"
+                                href={url}
+                            >
+                                <CallMadeRounded
+                                    style={{
+                                        color: '#636366',
+                                        fontWeight: 'bold',
+                                    }}
+                                />
+                            </Fab>
+                        </Tooltip>
                     ) : (
-                        <Typography variant="h5">
-                            This is a highly sensitive operation. Do you Really
-                            want to <b>REJECT ALL</b> unapproved users ?
-                        </Typography>
-                    )}
-                    <Row style={{ marginTop: '1em' }} className="form-group">
-                        {unapproved.length !== 0 ? (
-                            <Col
-                                xs={{ size: 7, offset: 1 }}
-                                md={{ size: 4, offset: 3 }}
-                            >
-                                <Button
-                                    variant="contained"
-                                    onClick={rejectAllUnapproved}
-                                    color="primary"
-                                >
-                                    Reject All
-                                </Button>
-                            </Col>
-                        ) : null}
-                        <Col xs={3} md={{ size: 2 }}>
-                            <Button
-                                variant="outlined"
-                                color="primary"
-                                onClick={confirmRejectClose}
-                            >
-                                {unapproved.length === 0 ? `Close` : `Cancel`}
-                            </Button>
-                        </Col>
-                    </Row>
-                </DialogContent>
-            </Dialog>
-            {/* <Dialog open={deleteAll} maxWidth="md" onClose={confirmDeleteClose}>
-                <DialogContent>
-                    <Typography variant="h5">
-                        This is a highly sensitive operation. Do you Really want
-                        to <b>DELETE ALL</b> users ?
-                    </Typography>
-                    <Row style={{ marginTop: '1em' }} className="form-group">
-                        <Col
-                            xs={{ size: 7, offset: 1 }}
-                            md={{ size: 4, offset: 3 }}
+                        <Typography
+                            variant="body1"
+                            style={{ fontFamily: 'Monospace' }}
                         >
-                            <Button
-                                variant="contained"
-                                onClick={deleteAllUsers}
-                                color="primary"
-                            >
-                                Delete All
-                            </Button>
-                        </Col>
-                        <Col xs={3} md={{ size: 2 }}>
-                            <Button
-                                variant="outlined"
-                                color="primary"
-                                onClick={confirmDeleteClose}
-                            >
-                                Cancel
-                            </Button>
-                        </Col>
-                    </Row>
-                </DialogContent>
-            </Dialog> */}
-            <Grid item xs={12} md={6}>
-                <Typography
-                    variant="h4"
-                    align="center"
-                    className={{ width: '100%' }}
-                >
-                    Admins
-                </Typography>
-                <TextField
-                    className={classes.search}
-                    label="Search"
-                    name="admins"
-                    fullWidth
-                    value={search.admins}
-                    onChange={searchChange}
-                    InputProps={{
-                        endAdornment: (
-                            <InputAdornment>
-                                {search.admins === '' ? (
-                                    <IconButton>
-                                        <SearchIcon />
-                                    </IconButton>
-                                ) : (
-                                    <IconButton
-                                        onClick={() => {
-                                            setSearch({
-                                                ...search,
-                                                admins: '',
-                                            });
-                                        }}
-                                    >
-                                        <CloseIcon />
-                                    </IconButton>
-                                )}
-                            </InputAdornment>
-                        ),
-                    }}
-                />
-                <Paper
-                    elevation={3}
-                    variant="outlined"
-                    className={classes.paper}
-                >
-                    <ListGroup>
-                        {admins.length === 0 ? (
-                            <Typography variant="h4" color="textSecondary">
-                                No admins of the club!! SHIT!!
-                            </Typography>
-                        ) : (
-                            admins.map((user) => {
-                                return (
-                                    <Fragment key={`${user}`}>
-                                        <ListGroupItem>
-                                            <Card
-                                                body
-                                                style={{
-                                                    borderColor: '#0288d1',
-                                                }}
-                                            >
-                                                <CardHeader>
-                                                    <Grid container>
-                                                        <Grid
-                                                            item
-                                                            xs={9}
-                                                            md={9}
-                                                        >
-                                                            <Typography variant="h3">
-                                                                {user.name}
-                                                            </Typography>
-                                                        </Grid>
-                                                        <Grid
-                                                            item
-                                                            xs={3}
-                                                            md={3}
-                                                        >
-                                                            <Avatar
-                                                                alt=""
-                                                                src={user.url.get(
-                                                                    'picture_url'
-                                                                )}
-                                                                className={
-                                                                    classes.large
-                                                                }
-                                                            />
-                                                        </Grid>
-                                                    </Grid>
-                                                </CardHeader>
-                                                <CardBody>
-                                                    <CardTitle>
-                                                        <Typography variant="h5">
-                                                            {user.entry_no}
-                                                        </Typography>
-                                                    </CardTitle>
-                                                    <CardSubtitle>
-                                                        <Typography variant="h6">
-                                                            {user.category}
-                                                        </Typography>
-                                                    </CardSubtitle>
-                                                    <CardText>
-                                                        <Typography variant="body1">
-                                                            {user.intro}
-                                                        </Typography>
-                                                        <Typography variant="body1">{`Interests: ${user.interests}`}</Typography>
-                                                        <Typography variant="body1">{`Specializations: ${user.specialization}`}</Typography>
-                                                        <Typography variant="body1">{`Hostel: ${user.hostel}`}</Typography>
-                                                        <Typography variant="caption">{`Email: ${user.email}`}</Typography>
-                                                        <Typography variant="body1">{`Mobile: ${user.mobile_number}`}</Typography>
-                                                        {Array.from(
-                                                            user.url
-                                                        ).map(
-                                                            ([key, value]) => {
-                                                                return (
-                                                                    <Typography variant="body1">
-                                                                        {`${key}: `}
-                                                                        <CardLink
-                                                                            href={
-                                                                                value
-                                                                            }
-                                                                        >{`${value.substr(
-                                                                            0,
-                                                                            30
-                                                                        )}...`}</CardLink>
-                                                                    </Typography>
-                                                                );
-                                                            }
-                                                        )}
-                                                    </CardText>
-                                                </CardBody>
-                                                {/* For admin to give up admin priveleges */}
-                                                {/* <CardFooter>
-                          {
-                            curUser._id === user._id
-                            ?
+                            Invalid url
+                        </Typography>
+                    ),
+            },
+        },
+        {
+            name: 'edit',
+            label: 'Edit',
+            options: {
+                filter: false,
+                download: false,
+                print: false,
+                display: curUser.privelege_level === 'Admin',
+                viewColumns: curUser.privelege_level === 'Admin',
+                customBodyRender: (value, tableMeta) => (
+                    <>
+                        {curUser.privelege_level === 'Admin' ? (
                             <EditOtherUserForm
-                              thisUser={true}
-                              removeUser={props.removeUser}
-                              dumUsers={approved}
-                              editUser={props.editOtherUser} 
-                              index={index}
-                              serverError={props.users.serverError} />
-                            : null
-                          }
-                        </CardFooter> */}
-                                            </Card>
-                                        </ListGroupItem>
-                                    </Fragment>
-                                );
-                            })
-                        )}
-                    </ListGroup>
-                </Paper>
-            </Grid>
-            <Grid item xs={12} md={6}>
-                <Typography
-                    variant="h4"
-                    align="center"
-                    className={{ width: '100%' }}
-                >
-                    Approved Users
-                </Typography>
-                <Grid container alignItems="center">
-                    {/* <Grid item xs={7}> */}
-                    <TextField
-                        className={classes.search}
-                        label="Search"
-                        name="approved"
-                        fullWidth
-                        value={search.approved}
-                        onChange={searchChange}
-                        InputProps={{
-                            endAdornment: (
-                                <InputAdornment>
-                                    {search.approved === '' ? (
-                                        <IconButton>
-                                            <SearchIcon />
-                                        </IconButton>
-                                    ) : (
-                                        <IconButton
-                                            onClick={() => {
-                                                setSearch({
-                                                    ...search,
-                                                    approved: '',
-                                                });
-                                            }}
-                                        >
-                                            <CloseIcon />
-                                        </IconButton>
-                                    )}
-                                </InputAdornment>
-                            ),
+                                thisUser
+                                removeUser={removeUser}
+                                dumUsers={dumUsers}
+                                editUser={editOtherUser}
+                                index={tableMeta.rowIndex}
+                                serverError={users.serverError}
+                            />
+                        ) : null}
+                    </>
+                ),
+            },
+        },
+    ];
+
+    const data = [...dumUsers.map((user) => getUserRow(user))];
+    const options = {
+        filterType: 'checkbox',
+        responsive: 'standard',
+        rowsPerPage: 7,
+        selectableRows:
+            curUser.privelege_level === 'Admin' &&
+            dumUsers.filter(
+                (user) => user.privelege_level === 'Unapproved_User'
+            ).length === 0
+                ? 'none'
+                : 'multiple',
+        isRowSelectable: (dataIndex) =>
+            dumUsers.length !== 0 &&
+            dumUsers[dataIndex].privelege_level === 'Unapproved_User',
+        fixedHeader: false,
+        fixedSelectColumn: false,
+        rowsPerPageOptions: [5, 7, 10, 15, 25, 50, 100],
+        customSearchRender: (searchText, handleSearch, hideSearch, opt) => {
+            return (
+                <CustomSearchRender
+                    searchText={searchText}
+                    onSearch={handleSearch}
+                    onHide={hideSearch}
+                    options={opt}
+                />
+            );
+        },
+        searchPlaceholder: 'Search Event',
+    };
+
+    return users.usersErrMess !== null ? (
+        <Typography
+            style={{ width: '100%' }}
+            align="center"
+            variant="h4"
+            color="textSecondary"
+        >
+            Failed to fetch Users!
+        </Typography>
+    ) : (
+        <>
+            <Snackbar
+                anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'center',
+                }}
+                open={approveSuccess}
+                autoHideDuration={2000}
+                onClose={closeApproveSuccess}
+                message="Users approved Successfully !"
+            />
+            <Snackbar
+                anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'center',
+                }}
+                open={rejectSuccess}
+                autoHideDuration={2000}
+                onClose={closeRejectSuccess}
+                message="All Unapproved users REJECTED!"
+            />
+            <Grow in style={{ transformOrigin: 'center top' }} timeout={750}>
+                <Grid container justify="center" alignItems="center">
+                    <Grid
+                        item
+                        style={{
+                            maxHeight: '85vh',
+                            overflowY: 'auto',
+                            scrollbarWidth: 'none',
                         }}
-                    />
-                    {/* </Grid> */}
-                    {/* <Grid item xs={5}>
-            { 
-              curUser.privelege_level === 'Admin'
-              ? 
-              <Button onClick={() => { 
-                confirmDeleteOpen(); 
-              }} 
-                style={{ marginTop: '1em', marginLeft: 'auto', marginRight: 'auto' }}
-                color="primary"
-                variant="contained"
-              >
-                Delete All
-              </Button>
-              : null
-            }
-          </Grid> */}
-                </Grid>
-                <Paper
-                    elevation={3}
-                    variant="outlined"
-                    className={classes.paper}
-                >
-                    <ListGroup>
-                        {approved.length === 0 ? (
-                            <Typography variant="h4" color="textSecondary">
-                                No approved Users
-                            </Typography>
-                        ) : (
-                            approved.map((user, index) => {
-                                return (
-                                    <Fragment key={`${user}`}>
-                                        <ListGroupItem>
-                                            <Card
-                                                body
-                                                style={{
-                                                    borderColor: '#00c853',
-                                                }}
-                                            >
-                                                <CardHeader>
-                                                    <Grid container>
-                                                        <Grid
-                                                            item
-                                                            xs={9}
-                                                            md={9}
-                                                        >
-                                                            <Typography variant="h3">
-                                                                {user.name}
-                                                            </Typography>
-                                                        </Grid>
-                                                        <Grid
-                                                            item
-                                                            xs={3}
-                                                            md={3}
-                                                        >
-                                                            <Avatar
-                                                                alt=""
-                                                                src={user.url.get(
-                                                                    'picture_url'
-                                                                )}
-                                                                className={
-                                                                    classes.large
-                                                                }
-                                                            />
-                                                        </Grid>
-                                                    </Grid>
-                                                </CardHeader>
-                                                <CardBody>
-                                                    <CardTitle>
-                                                        <Typography variant="h5">
-                                                            {user.entry_no}
-                                                        </Typography>
-                                                    </CardTitle>
-                                                    <CardSubtitle>
-                                                        <Typography variant="h6">
-                                                            {user.category}
-                                                        </Typography>
-                                                    </CardSubtitle>
-                                                    <CardText>
-                                                        <Typography variant="body1">
-                                                            {user.intro}
-                                                        </Typography>
-                                                        <Typography variant="body1">{`Interests: ${user.interests}`}</Typography>
-                                                        <Typography variant="body1">{`Specializations: ${user.specialization}`}</Typography>
-                                                        <Typography variant="body1">{`Hostel: ${user.hostel}`}</Typography>
-                                                        <Typography variant="caption">{`Email: ${user.email}`}</Typography>
-                                                        <Typography variant="body1">{`Mobile: ${user.mobile_number}`}</Typography>
-                                                        {Array.from(
-                                                            user.url
-                                                        ).map(
-                                                            ([key, value]) => {
-                                                                return (
-                                                                    <Typography variant="body1">
-                                                                        {`${key}: `}
-                                                                        <CardLink
-                                                                            href={
-                                                                                value
-                                                                            }
-                                                                        >{`${value.substr(
-                                                                            0,
-                                                                            30
-                                                                        )}...`}</CardLink>
-                                                                    </Typography>
-                                                                );
-                                                            }
-                                                        )}
-                                                    </CardText>
-                                                </CardBody>
-                                                <CardFooter>
-                                                    {curUser.privelege_level ===
-                                                    'Admin' ? (
-                                                        <EditOtherUserForm
-                                                            removeUser={
-                                                                removeUser
-                                                            }
-                                                            dumUsers={approved}
-                                                            editUser={
-                                                                editOtherUser
-                                                            }
-                                                            index={index}
-                                                            serverError={
-                                                                users.serverError
-                                                            }
-                                                        />
-                                                    ) : null}
-                                                </CardFooter>
-                                            </Card>
-                                        </ListGroupItem>
-                                    </Fragment>
-                                );
-                            })
-                        )}
-                    </ListGroup>
-                </Paper>
-            </Grid>
-            <Grid item xs={12} md={6}>
-                <Typography
-                    variant="h4"
-                    align="center"
-                    className={{ width: '100%' }}
-                >
-                    Unapproved Users
-                </Typography>
-                <Grid container alignItems="center">
-                    <Grid item xs={7}>
-                        <TextField
-                            className={classes.search}
-                            label="Search"
-                            name="unapproved"
-                            fullWidth
-                            value={search.unapproved}
-                            onChange={searchChange}
-                            InputProps={{
-                                endAdornment: (
-                                    <InputAdornment>
-                                        {search.unapproved === '' ? (
-                                            <IconButton>
-                                                <SearchIcon />
-                                            </IconButton>
-                                        ) : (
-                                            <IconButton
-                                                onClick={() => {
-                                                    setSearch({
-                                                        ...search,
-                                                        unapproved: '',
-                                                    });
-                                                }}
-                                            >
-                                                <CloseIcon />
-                                            </IconButton>
-                                        )}
-                                    </InputAdornment>
+                        xs={11}
+                    >
+                        <MUIDataTable
+                            title={
+                                <Typography
+                                    variant="h6"
+                                    style={{ fontWeight: 500 }}
+                                >
+                                    Club Members
+                                </Typography>
+                            }
+                            data={data}
+                            columns={columns}
+                            options={options}
+                            className={classes.tablePaper}
+                            components={{
+                                TableToolbarSelect: (
+                                    selectedRows,
+                                    displayData,
+                                    handleCustomSelectedRows
+                                ) => (
+                                    <CustomToolbarSelect
+                                        selectedRows={selectedRows}
+                                        displayData={displayData}
+                                        approveAll={approveAllUsers}
+                                        rejectAll={confirmRejectOpen}
+                                        handleCustomSelectedRows={
+                                            handleCustomSelectedRows
+                                        }
+                                    />
                                 ),
                             }}
                         />
                     </Grid>
-                    <Grid item xs={5}>
-                        {curUser.privelege_level === 'Admin' ? (
-                            <Button
-                                onClick={() => {
-                                    confirmRejectOpen();
-                                }}
-                                style={{
-                                    marginTop: '1em',
-                                    marginLeft: 'auto',
-                                    marginRight: 'auto',
-                                }}
-                                color="primary"
-                                variant="contained"
-                            >
-                                Reject All
-                            </Button>
-                        ) : null}
-                    </Grid>
                 </Grid>
-                <Paper
-                    elevation={3}
-                    variant="outlined"
-                    className={classes.paper}
-                >
-                    <ListGroup>
-                        {unapproved.length === 0 ? (
-                            <Typography variant="h4" color="textSecondary">
-                                No unappproved Users
-                            </Typography>
-                        ) : (
-                            unapproved.map((user, index) => {
-                                return (
-                                    <Fragment key={`${user}`}>
-                                        <ListGroupItem>
-                                            <Card
-                                                body
-                                                style={{
-                                                    borderColor: '#00c853',
-                                                }}
-                                            >
-                                                <CardHeader>
-                                                    <Grid container>
-                                                        <Grid
-                                                            item
-                                                            xs={9}
-                                                            md={9}
-                                                        >
-                                                            <Typography variant="h3">
-                                                                {user.name}
-                                                            </Typography>
-                                                        </Grid>
-                                                        <Grid
-                                                            item
-                                                            xs={3}
-                                                            md={3}
-                                                        >
-                                                            <Avatar
-                                                                alt=""
-                                                                src={user.url.get(
-                                                                    'picture_url'
-                                                                )}
-                                                                className={
-                                                                    classes.large
-                                                                }
-                                                            />
-                                                        </Grid>
-                                                    </Grid>
-                                                </CardHeader>
-                                                <CardBody>
-                                                    <CardTitle>
-                                                        <Typography variant="h5">
-                                                            {user.entry_no}
-                                                        </Typography>
-                                                    </CardTitle>
-                                                    <CardSubtitle>
-                                                        <Typography variant="h6">
-                                                            {user.category}
-                                                        </Typography>
-                                                    </CardSubtitle>
-                                                    <CardText>
-                                                        <Typography variant="caption">{`Email: ${user.email}`}</Typography>
-                                                    </CardText>
-                                                </CardBody>
-                                                <CardFooter>
-                                                    {curUser.privelege_level ===
-                                                    'Admin' ? (
-                                                        <EditOtherUserForm
-                                                            removeUser={
-                                                                removeUser
-                                                            }
-                                                            dumUsers={
-                                                                unapproved
-                                                            }
-                                                            editUser={
-                                                                editOtherUser
-                                                            }
-                                                            index={index}
-                                                            serverError={
-                                                                users.serverError
-                                                            }
-                                                        />
-                                                    ) : null}
-                                                </CardFooter>
-                                            </Card>
-                                        </ListGroupItem>
-                                    </Fragment>
-                                );
-                            })
-                        )}
-                    </ListGroup>
-                </Paper>
-            </Grid>
-        </Grid>
+            </Grow>
+            <Dialog open={rejectAll} maxWidth="sm" onClose={confirmRejectClose}>
+                <DialogContent>
+                    <Typography variant="h5">
+                        Do you really want to REJECT all UNAPPROVED users ?
+                    </Typography>
+                    <Grid
+                        container
+                        justify="center"
+                        alignItems="center"
+                        spacing={3}
+                        style={{ marginTop: '1em', width: '100%' }}
+                    >
+                        <Grid item xs={8} sm={6}>
+                            <Button
+                                fullWidth
+                                onClick={rejectAllUsers}
+                                variant="contained"
+                                color="primary"
+                            >
+                                Confirm Reject
+                            </Button>
+                        </Grid>
+                        <Grid item xs={4}>
+                            <Button
+                                fullWidth
+                                variant="outlined"
+                                color="primary"
+                                onClick={confirmRejectClose}
+                            >
+                                Cancel
+                            </Button>
+                        </Grid>
+                    </Grid>
+                </DialogContent>
+            </Dialog>
+        </>
     );
 }
 
 ManageUsers.propTypes = {
     users: PropTypes.object.isRequired,
     rejectAllUnapproved: PropTypes.func.isRequired,
+    approveAll: PropTypes.func.isRequired,
     removeUser: PropTypes.func.isRequired,
     editOtherUser: PropTypes.func.isRequired,
 };

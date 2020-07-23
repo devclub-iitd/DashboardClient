@@ -43,6 +43,7 @@ const CustomSearchRender = (props) => {
         <Grow appear in timeout={300}>
             <div className={classes.main}>
                 <TextField
+                    autoFocus
                     name="search"
                     variant="outlined"
                     value={searchText || ''}

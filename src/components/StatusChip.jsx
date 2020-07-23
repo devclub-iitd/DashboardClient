@@ -58,13 +58,13 @@ const useStyles = makeStyles((theme) => ({
         fontWeight: 800,
     },
     span: {
-        width: '103px',
+        width: '110px',
     },
 }));
 
 export default function StatusChip({ status }) {
     const classes = useStyles();
-    if (status === 'ongoing') {
+    if (status === 'ongoing' || status === 'admin') {
         return (
             <Chip
                 label={
@@ -94,7 +94,7 @@ export default function StatusChip({ status }) {
             />
         );
     }
-    if (status === 'upcoming' || status === 'idea') {
+    if (status === 'upcoming' || status === 'idea' || status === 'approved') {
         return (
             <Chip
                 label={

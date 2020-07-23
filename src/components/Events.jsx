@@ -19,8 +19,8 @@ import MUIDataTable from 'mui-datatables';
 import CloseIcon from '@material-ui/icons/Close';
 import PropTypes from 'prop-types';
 import { CallMadeRounded } from '@material-ui/icons';
-import EditEventForm from './EditEventFormUp';
-import CreateEventForm from './CreateEventFormUp';
+import EditEventForm from './EditEventForm';
+import CreateEventForm from './CreateEventForm';
 import TableTitle from './CustomTableTitle';
 import CustomSearchRender from './CustomTableSearchBox';
 import StatusChip from './StatusChip';
@@ -78,7 +78,7 @@ const EventsPage = ({
             name: 'name',
             label: 'Name',
             options: {
-                filter: true,
+                filter: false,
                 sort: true,
                 customBodyRender: (value) => {
                     return (
@@ -217,7 +217,14 @@ const EventsPage = ({
                                     <Tooltip title={mem.name}>
                                         <Avatar
                                             className={classes.memAvatar}
-                                            src={mem.url.get('picture_url')}
+                                            src={
+                                                mem.url.get('picture_url') !==
+                                                    'https://' &&
+                                                mem.url.get('picture_url') !==
+                                                    'http://'
+                                                    ? mem.url.get('picture_url')
+                                                    : ''
+                                            }
                                             alt=""
                                         />
                                     </Tooltip>
@@ -233,20 +240,33 @@ const EventsPage = ({
             label: 'URL',
             options: {
                 filter: false,
-                customBodyRender: (url) => (
-                    <Tooltip title="Go to event url">
-                        <Fab
-                            size="small"
-                            color="secondary"
-                            target="_blank"
-                            href={url}
+                customBodyRender: (url) =>
+                    /^https?:\/\/[a-z.+*&%$#@!]+\.[a-z]{2,5}\/?[a-z.+*&%$#@!/]*/i.test(
+                        url
+                    ) ? (
+                        <Tooltip title="Go to event url">
+                            <Fab
+                                size="small"
+                                color="secondary"
+                                target="_blank"
+                                href={url}
+                            >
+                                <CallMadeRounded
+                                    style={{
+                                        color: '#636366',
+                                        fontWeight: 'bold',
+                                    }}
+                                />
+                            </Fab>
+                        </Tooltip>
+                    ) : (
+                        <Typography
+                            variant="body1"
+                            style={{ fontFamily: 'Monospace' }}
                         >
-                            <CallMadeRounded
-                                style={{ color: '#636366', fontWeight: 'bold' }}
-                            />
-                        </Fab>
-                    </Tooltip>
-                ),
+                            Invalid url
+                        </Typography>
+                    ),
             },
         },
         {
@@ -257,19 +277,19 @@ const EventsPage = ({
                 download: false,
                 print: false,
                 display: curUser.privelege_level === 'Admin',
-                viewColumn: curUser.privelege_level === 'Admin',
+                viewColumns:
+                    curUser.privelege_level === 'Admin' ||
+                    curUser.privelege_level === 'Approved_User',
                 customBodyRender: (value, tableMeta) => (
                     <>
-                        {curUser.privelege_level === 'Admin' ? (
-                            <EditEventForm
-                                deleteEvent={deleteEvent}
-                                dumEvents={allEvents}
-                                dumUsers={users.allUsers}
-                                editEvent={editEvent}
-                                index={tableMeta.rowIndex}
-                                serverError={events.serverError}
-                            />
-                        ) : null}
+                        <EditEventForm
+                            deleteEvent={deleteEvent}
+                            dumEvents={allEvents}
+                            dumUsers={users.allUsers}
+                            editEvent={editEvent}
+                            index={tableMeta.rowIndex}
+                            serverError={events.serverError}
+                        />
                     </>
                 ),
             },
@@ -278,10 +298,11 @@ const EventsPage = ({
     const data = [...allEvents.map((event) => getEventRow(event))];
     const options = {
         filterType: 'checkbox',
-        responsive: 'scrollMaxHeight',
+        // responsive: 'scrollMaxHeight',
+        responsive: 'standard',
         rowsPerPage: 7,
         selectableRows: 'none',
-        fixedHeader: true,
+        fixedHeader: false,
         fixedSelectColumn: false,
         rowsPerPageOptions: [5, 7, 10, 15, 25, 50, 100],
         customSearchRender: (searchText, handleSearch, hideSearch, opt) => {
@@ -315,7 +336,15 @@ const EventsPage = ({
         <>
             <Grow in style={{ transformOrigin: 'center top' }} timeout={750}>
                 <Grid container justify="center" alignItems="center">
-                    <Grid item xs={11}>
+                    <Grid
+                        item
+                        style={{
+                            maxHeight: '85vh',
+                            overflowY: 'auto',
+                            scrollbarWidth: 'none',
+                        }}
+                        xs={11}
+                    >
                         <MUIDataTable
                             title={
                                 <TableTitle

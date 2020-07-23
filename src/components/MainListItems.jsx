@@ -25,7 +25,7 @@ function MainListItems(props) {
     const { history, isAdmin, closeDrawer, page: selectedItem } = props;
     const redirectFunc = (subPath) => () => {
         closeDrawer();
-        if (subPath === 'users' || subPath === 'deploy') {
+        if (subPath === 'deploy') {
             if (!isAdmin) {
                 history.push('/dashboard/home');
             } else {
@@ -168,11 +168,7 @@ function MainListItems(props) {
                     </Typography>
                 </Tooltip>
             </ListItem>
-            <ListItem
-                button
-                disabled={!isAdmin}
-                onClick={redirectFunc('users')}
-            >
+            <ListItem button onClick={redirectFunc('users')}>
                 <ListItemIcon>
                     <PeopleRoundedIcon
                         fontSize="large"
@@ -182,7 +178,7 @@ function MainListItems(props) {
                         }}
                     />
                 </ListItemIcon>
-                <Tooltip title="Manage club users (Only for Admins)">
+                <Tooltip title="Club Members">
                     <Typography
                         color={selectedItem === 'users' ? 'secondary' : '#fff'}
                         variant="h5"

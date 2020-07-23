@@ -188,10 +188,19 @@ const theme = createMuiTheme({
         //         '&:hover': { backgroundColor: '#48484a' },
         //     },
         // },
+        MUIDataTable: {
+            responsiveScrollMaxHeight: {
+                maxHeight: 'auto',
+            },
+            // tableRoot: {
+            //     maxheight: '499px',
+            // },
+        },
         MUIDataTableToolbar: {
             root: {
                 paddingLeft: defaultTheme.spacing(1),
                 paddingRight: 0,
+                paddingTop: defaultTheme.spacing(1),
             },
             icon: {
                 // fontSize: '2.1875rem',
@@ -224,9 +233,12 @@ const theme = createMuiTheme({
             },
         },
         MUIDataTableHeadCell: {
+            root: {
+                paddingBottom: 0,
+            },
             fixedHeader: {
                 backgroundColor: 'transparent',
-                paddingBottom: 0,
+                // paddingBottom: 0,
             },
             data: {
                 fontSize: defaultTheme.typography.h5.fontSize,
@@ -246,6 +258,16 @@ const theme = createMuiTheme({
                 // paddingBottom: defaultTheme.spacing(1),
                 // marginTop: defaultTheme.spacing(1),
                 // marginBottom: defaultTheme.spacing(1),
+            },
+        },
+        MUIDataTableFilterList: {
+            root: {
+                marginBottom: defaultTheme.spacing(1),
+            },
+            chip: {
+                backgroundColor: '#636366',
+                fontWeight: 500,
+                color: '#fff',
             },
         },
         MuiTableCell: {

@@ -1,749 +1,155 @@
 /* eslint-disable react/forbid-prop-types */
 /* eslint-disable no-underscore-dangle */
 import React, { Fragment } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import {
-    Grid,
-    Typography,
-    Paper,
-    Backdrop,
-    CircularProgress,
-} from '@material-ui/core';
-import {
-    Card,
-    CardText,
-    CardBody,
-    CardTitle,
-    CardFooter,
-    CardLink,
-    ListGroup,
-    ListGroupItem,
-    CardHeader,
-    TabContent,
-    TabPane,
-    Nav,
-    NavItem,
-    NavLink,
-} from 'reactstrap';
+import { Grid, Typography } from '@material-ui/core';
 import PropTypes from 'prop-types';
-import classnames from 'classnames';
-
-const useStyles = makeStyles((theme) => ({
-    root: {
-        width: '100%',
-        marginTop: theme.spacing(3),
-        border: `1px solid ${theme.palette.divider}`,
-        overflowX: 'auto',
-    },
-    paper: {
-        margin: '2em',
-        height: document.documentElement.clientHeight * 0.7,
-        overflowY: 'scroll',
-    },
-    backdrop: {
-        zIndex: theme.zIndex.drawer + 1,
-        color: '#fff',
-    },
-}));
+import * as Utils from '../utils';
+import EventCard from './EventCard';
+import ProjectCard from './ProjectCard';
+import ToDoBox from './ToDo';
 
 export default function MyTasks({ users, events, projects }) {
     const curUser = users.user;
     const dumUsers = users.allUsers;
     const dumEvents = events.allEvents;
     const dumProjects = projects.allProjects;
-    const classes = useStyles();
 
-    const [activeEventTab, setActiveEventTab] = React.useState('Ongoing');
-    const toggleEventTab = (tab) => {
-        if (activeEventTab !== tab) {
-            setActiveEventTab(tab);
-        }
-    };
+    const myEvents = Utils.EventUtils.sortEventsByStatus(
+        Utils.EventUtils.getUserEvents(curUser, dumEvents)
+    );
+    const myProjects = Utils.ProjectUtils.sortProjectsByStatus(
+        Utils.ProjectUtils.getUserProjects(curUser, dumProjects)
+    );
 
-    const [activeProjectTab, setActiveProjectTab] = React.useState('Idea');
-    const toggleProjectTab = (tab) => {
-        if (activeProjectTab !== tab) {
-            setActiveProjectTab(tab);
-        }
-    };
-
-    function isOngoing(startDate, endDate) {
-        const today = new Date();
-        if (today > startDate && today < endDate) {
-            return true;
-        }
-        return false;
-    }
-
-    function isCompleted(endDate) {
-        const today = new Date();
-        if (today > endDate) {
-            return true;
-        }
-        return false;
-    }
-
-    function isUpcoming(startDate) {
-        const today = new Date();
-        if (today < startDate) {
-            return true;
-        }
-        return false;
-    }
-
-    const ongoingEvents = dumEvents
-        .filter((event) => event.assignee.includes(curUser._id))
-        .filter((event) => isOngoing(event.start_date, event.end_date));
-    const upcomingEvents = dumEvents
-        .filter((event) => event.assignee.includes(curUser._id))
-        .filter((event) => isUpcoming(event.start_date));
-    const completedEvents = dumEvents
-        .filter((event) => event.assignee.includes(curUser._id))
-        .filter((event) => isCompleted(event.end_date));
-
-    const ideaProjects = dumProjects
-        .filter((project) => project.members.includes(curUser._id))
-        .filter((project) => project.status === 'IDEA');
-    const ongoingProjects = dumProjects
-        .filter((project) => project.members.includes(curUser._id))
-        .filter((project) => project.status === 'ONGOING');
-    const completedProjects = dumProjects
-        .filter((project) => project.members.includes(curUser._id))
-        .filter((project) => project.status === 'COMPLETED');
+    const todos = [
+        {
+            title: 'To Do',
+            desc: 'Have to complete this todo you fool ! Coming SOON !',
+        },
+    ];
 
     // console.log('Ongoing Events: ', ongoingEvents.length);
     // console.log('Upcoming Events: ', upcomingEvents.length);
     // console.log('Completed Events: ', completedEvents.length);
-
     return (
-        <Grid container justify="space-evenly">
-            <Grid item xs={12} md={6}>
+        <Grid container justify="space-evenly" alignItems="flex-start">
+            <Grid item lg={3} md={4} xs={12}>
                 <Typography
-                    variant="h4"
                     align="center"
-                    className={{ width: '100%' }}
+                    variant="h4"
+                    style={{ fontWeight: 500, marginBottom: '16px' }}
                 >
-                    My Events
+                    Events
                 </Typography>
-                <Paper
-                    elevation={3}
-                    variant="outlined"
-                    className={classes.paper}
+                <div
+                    style={{
+                        maxHeight: '75vh',
+                        overflowY: 'scroll',
+                        scrollbarWidth: 'none',
+                    }}
                 >
-                    {/* <Typography variant='h4' align='center' className={{ width: '100%' }}>My Events</Typography> */}
-                    <Backdrop
-                        className={classes.backdrop}
-                        open={events.isLoading}
-                    >
-                        <CircularProgress color="inherit" />
-                    </Backdrop>
-                    <Nav tabs>
-                        <NavItem className="btn">
-                            <NavLink
-                                className={classnames({
-                                    active: activeEventTab === 'Ongoing',
-                                })}
-                                onClick={() => toggleEventTab('Ongoing')}
-                            >
-                                Ongoing
-                            </NavLink>
-                        </NavItem>
-                        <NavItem className="btn">
-                            <NavLink
-                                className={classnames({
-                                    active: activeEventTab === 'Upcoming',
-                                })}
-                                onClick={() => toggleEventTab('Upcoming')}
-                            >
-                                Upcoming
-                            </NavLink>
-                        </NavItem>
-                        <NavItem className="btn">
-                            <NavLink
-                                className={classnames({
-                                    active: activeEventTab === 'Completed',
-                                })}
-                                onClick={() => toggleEventTab('Completed')}
-                            >
-                                Completed
-                            </NavLink>
-                        </NavItem>
-                    </Nav>
-                    <TabContent activeTab={activeEventTab}>
-                        <TabPane tabId="Ongoing">
-                            {events.errMess !== null ? (
-                                <div>
-                                    <h4>Failed to fetch Events</h4>
-                                    <h4>{events.errMess}</h4>
-                                </div>
-                            ) : null}
-                            {ongoingEvents.length === 0 ? (
-                                <Typography variant="h4" color="textSecondary">
-                                    No ongoing events for you
-                                </Typography>
-                            ) : (
-                                <ListGroup>
-                                    {ongoingEvents.map((event) => {
-                                        return (
-                                            <Fragment key={`${event}`}>
-                                                <ListGroupItem>
-                                                    <Card
-                                                        body
-                                                        style={{
-                                                            borderColor:
-                                                                '#00c853',
-                                                        }}
-                                                    >
-                                                        <CardHeader>
-                                                            <Typography variant="h4">
-                                                                {event.name}
-                                                            </Typography>
-                                                        </CardHeader>
-                                                        <CardBody>
-                                                            <CardTitle>
-                                                                <Typography variant="h6">{`${event.start_date.toDateString()} - ${event.end_date.toDateString()}`}</Typography>
-                                                            </CardTitle>
-                                                            <CardText>
-                                                                <Typography variant="body1">
-                                                                    {
-                                                                        event.description
-                                                                    }
-                                                                </Typography>
-                                                                {Array.from(
-                                                                    event.url
-                                                                ).map(
-                                                                    ([
-                                                                        key,
-                                                                        value,
-                                                                    ]) => {
-                                                                        return (
-                                                                            <Typography variant="body1">
-                                                                                {`${key}: `}
-                                                                                <CardLink
-                                                                                    href={
-                                                                                        value
-                                                                                    }
-                                                                                >
-                                                                                    {
-                                                                                        value
-                                                                                    }
-                                                                                </CardLink>
-                                                                            </Typography>
-                                                                        );
-                                                                    }
-                                                                )}
-                                                            </CardText>
-                                                        </CardBody>
-                                                        <CardFooter>
-                                                            Assigned to:
-                                                            {dumUsers
-                                                                .filter(
-                                                                    (user) =>
-                                                                        event.assignee.includes(
-                                                                            user._id
-                                                                        )
-                                                                )
-                                                                .map(
-                                                                    (user) =>
-                                                                        `${user.name}, `
-                                                                )}
-                                                        </CardFooter>
-                                                    </Card>
-                                                </ListGroupItem>
-                                            </Fragment>
-                                        );
-                                    })}
-                                </ListGroup>
-                            )}
-                        </TabPane>
-                        <TabPane tabId="Upcoming">
-                            {events.errMess !== null ? (
-                                <div>
-                                    <h4>Failed to fetch Events</h4>
-                                    <h4>{events.errMess}</h4>
-                                </div>
-                            ) : null}
-                            {upcomingEvents.length === 0 ? (
-                                <Typography variant="h4" color="textSecondary">
-                                    No upcoming events for you
-                                </Typography>
-                            ) : (
-                                <ListGroup>
-                                    {upcomingEvents.map((event) => {
-                                        return (
-                                            <Fragment key={`${event}`}>
-                                                <ListGroupItem>
-                                                    <Card
-                                                        body
-                                                        style={{
-                                                            borderColor:
-                                                                '#00c853',
-                                                        }}
-                                                    >
-                                                        <CardHeader>
-                                                            <Typography variant="h4">
-                                                                {event.name}
-                                                            </Typography>
-                                                        </CardHeader>
-                                                        <CardBody>
-                                                            <CardTitle>
-                                                                <Typography variant="h6">{`${event.start_date.toDateString()} - ${event.end_date.toDateString()}`}</Typography>
-                                                            </CardTitle>
-                                                            <CardText>
-                                                                <Typography variant="body1">
-                                                                    {
-                                                                        event.description
-                                                                    }
-                                                                </Typography>
-                                                                {Array.from(
-                                                                    event.url
-                                                                ).map(
-                                                                    ([
-                                                                        key,
-                                                                        value,
-                                                                    ]) => {
-                                                                        return (
-                                                                            <Typography variant="body1">
-                                                                                {`${key}: `}
-                                                                                <CardLink
-                                                                                    href={
-                                                                                        value
-                                                                                    }
-                                                                                >
-                                                                                    {
-                                                                                        value
-                                                                                    }
-                                                                                </CardLink>
-                                                                            </Typography>
-                                                                        );
-                                                                    }
-                                                                )}
-                                                            </CardText>
-                                                        </CardBody>
-                                                        <CardFooter>
-                                                            Assigned to:
-                                                            {dumUsers
-                                                                .filter(
-                                                                    (user) =>
-                                                                        event.assignee.includes(
-                                                                            user._id
-                                                                        )
-                                                                )
-                                                                .map(
-                                                                    (user) =>
-                                                                        `${user.name}, `
-                                                                )}
-                                                        </CardFooter>
-                                                    </Card>
-                                                </ListGroupItem>
-                                            </Fragment>
-                                        );
-                                    })}
-                                </ListGroup>
-                            )}
-                        </TabPane>
-                        <TabPane tabId="Completed">
-                            {events.errMess !== null ? (
-                                <div>
-                                    <h4>Failed to fetch Events</h4>
-                                    <h4>{events.errMess}</h4>
-                                </div>
-                            ) : null}
-                            {completedEvents.length === 0 ? (
-                                <Typography variant="h4" color="textSecondary">
-                                    No completed events for you
-                                </Typography>
-                            ) : (
-                                <ListGroup>
-                                    {completedEvents.map((event) => {
-                                        return (
-                                            <Fragment key={`${event}`}>
-                                                <ListGroupItem>
-                                                    <Card
-                                                        body
-                                                        style={{
-                                                            borderColor:
-                                                                '#00c853',
-                                                        }}
-                                                    >
-                                                        <CardHeader>
-                                                            <Typography variant="h4">
-                                                                {event.name}
-                                                            </Typography>
-                                                        </CardHeader>
-                                                        <CardBody>
-                                                            <CardTitle>
-                                                                <Typography variant="h6">{`${event.start_date.toDateString()} - ${event.end_date.toDateString()}`}</Typography>
-                                                            </CardTitle>
-                                                            <CardText>
-                                                                <Typography variant="body1">
-                                                                    {
-                                                                        event.description
-                                                                    }
-                                                                </Typography>
-                                                                {Array.from(
-                                                                    event.url
-                                                                ).map(
-                                                                    ([
-                                                                        key,
-                                                                        value,
-                                                                    ]) => {
-                                                                        return (
-                                                                            <Typography variant="body1">
-                                                                                {`${key}: `}
-                                                                                <CardLink
-                                                                                    href={
-                                                                                        value
-                                                                                    }
-                                                                                >
-                                                                                    {
-                                                                                        value
-                                                                                    }
-                                                                                </CardLink>
-                                                                            </Typography>
-                                                                        );
-                                                                    }
-                                                                )}
-                                                            </CardText>
-                                                        </CardBody>
-                                                        <CardFooter>
-                                                            Assigned to:
-                                                            {dumUsers
-                                                                .filter(
-                                                                    (user) =>
-                                                                        event.assignee.includes(
-                                                                            user._id
-                                                                        )
-                                                                )
-                                                                .map(
-                                                                    (user) =>
-                                                                        `${user.name}, `
-                                                                )}
-                                                        </CardFooter>
-                                                    </Card>
-                                                </ListGroupItem>
-                                            </Fragment>
-                                        );
-                                    })}
-                                </ListGroup>
-                            )}
-                        </TabPane>
-                    </TabContent>
-                </Paper>
+                    {myEvents.length === 0 ? (
+                        <Typography
+                            variant="subtitle2"
+                            align="center"
+                            style={{
+                                fontFamily: 'Monospace',
+                                fontWeight: 'bold',
+                                wordWrap: 'break-word',
+                            }}
+                        >
+                            No events for you :(
+                        </Typography>
+                    ) : (
+                        <Grid
+                            container
+                            justify="flex-start"
+                            alignItems="center"
+                        >
+                            {myEvents.map((event) => {
+                                return (
+                                    <Grid item xs={12} sm={6} md={12}>
+                                        <Fragment key={event._id}>
+                                            <EventCard
+                                                event={event}
+                                                users={dumUsers}
+                                                dialog
+                                            />
+                                        </Fragment>
+                                    </Grid>
+                                );
+                            })}
+                        </Grid>
+                    )}
+                </div>
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid item lg={3} md={4} xs={12}>
                 <Typography
-                    variant="h4"
                     align="center"
-                    className={{ width: '100%' }}
+                    variant="h4"
+                    style={{ fontWeight: 500, marginBottom: '16px' }}
                 >
-                    My Projects
+                    Projects
                 </Typography>
-                <Paper
-                    elevation={3}
-                    variant="outlined"
-                    className={classes.paper}
+                <div
+                    style={{
+                        maxHeight: '75vh',
+                        overflowY: 'scroll',
+                        scrollbarWidth: 'none',
+                    }}
                 >
-                    {/* <Typography variant='h4' align='center' className={{ width: '100%' }}>My Projects</Typography> */}
-                    <Backdrop
-                        className={classes.backdrop}
-                        open={projects.isLoading}
-                    >
-                        <CircularProgress color="inherit" />
-                    </Backdrop>
-                    <Nav tabs>
-                        <NavItem className="btn">
-                            <NavLink
-                                className={classnames({
-                                    active: activeProjectTab === 'Idea',
-                                })}
-                                onClick={() => toggleProjectTab('Idea')}
-                            >
-                                Idea
-                            </NavLink>
-                        </NavItem>
-                        <NavItem className="btn">
-                            <NavLink
-                                className={classnames({
-                                    active: activeProjectTab === 'Ongoing',
-                                })}
-                                onClick={() => toggleProjectTab('Ongoing')}
-                            >
-                                Ongoing
-                            </NavLink>
-                        </NavItem>
-                        <NavItem className="btn">
-                            <NavLink
-                                className={classnames({
-                                    active: activeProjectTab === 'Completed',
-                                })}
-                                onClick={() => toggleProjectTab('Completed')}
-                            >
-                                Completed
-                            </NavLink>
-                        </NavItem>
-                    </Nav>
-                    <TabContent activeTab={activeProjectTab}>
-                        <TabPane tabId="Idea">
-                            {projects.errMess !== null ? (
-                                <div>
-                                    <h4>Failed to fetch Projects</h4>
-                                    <h4>{projects.errMess}</h4>
-                                </div>
-                            ) : null}
-                            {ideaProjects.length === 0 ? (
-                                <Typography variant="h4" color="textSecondary">
-                                    No ideated projects for you
-                                </Typography>
-                            ) : (
-                                <ListGroup>
-                                    {ideaProjects.map((project) => {
-                                        return (
-                                            <Fragment key={`${project}`}>
-                                                <ListGroupItem>
-                                                    <Card
-                                                        body
-                                                        style={{
-                                                            borderColor:
-                                                                '#00c853',
-                                                        }}
-                                                    >
-                                                        <CardHeader>
-                                                            <Typography variant="h4">
-                                                                {project.name}
-                                                            </Typography>
-                                                        </CardHeader>
-                                                        <CardBody>
-                                                            <CardTitle>
-                                                                <Typography variant="h6">{`${project.start_date.toDateString()} - ${project.end_date.toDateString()}`}</Typography>
-                                                            </CardTitle>
-                                                            <CardText>
-                                                                <Typography variant="body1">
-                                                                    {
-                                                                        project.description
-                                                                    }
-                                                                </Typography>
-                                                                {Array.from(
-                                                                    project.url
-                                                                ).map(
-                                                                    ([
-                                                                        key,
-                                                                        value,
-                                                                    ]) => {
-                                                                        return (
-                                                                            <Typography variant="body1">
-                                                                                {`${key}: `}
-                                                                                <CardLink
-                                                                                    href={
-                                                                                        value
-                                                                                    }
-                                                                                >
-                                                                                    {
-                                                                                        value
-                                                                                    }
-                                                                                </CardLink>
-                                                                            </Typography>
-                                                                        );
-                                                                    }
-                                                                )}
-                                                            </CardText>
-                                                        </CardBody>
-                                                        <CardFooter>
-                                                            Assigned to:
-                                                            {dumUsers
-                                                                .filter(
-                                                                    (user) =>
-                                                                        project.members.includes(
-                                                                            user._id
-                                                                        )
-                                                                )
-                                                                .map(
-                                                                    (user) =>
-                                                                        ` ${user.name},`
-                                                                )}
-                                                        </CardFooter>
-                                                    </Card>
-                                                </ListGroupItem>
-                                            </Fragment>
-                                        );
-                                    })}
-                                </ListGroup>
-                            )}
-                        </TabPane>
-                        <TabPane tabId="Ongoing">
-                            {projects.errMess !== null ? (
-                                <div>
-                                    <h4>Failed to fetch Projects</h4>
-                                    <h4>{projects.errMess}</h4>
-                                </div>
-                            ) : null}
-                            {ongoingProjects.length === 0 ? (
-                                <Typography variant="h4" color="textSecondary">
-                                    No ongoing Projects for you
-                                </Typography>
-                            ) : (
-                                <ListGroup>
-                                    {ongoingProjects.map((project) => {
-                                        return (
-                                            <Fragment key={`${project}`}>
-                                                <ListGroupItem>
-                                                    <Card
-                                                        body
-                                                        style={{
-                                                            borderColor:
-                                                                '#00c853',
-                                                        }}
-                                                    >
-                                                        <CardHeader>
-                                                            <Typography variant="h4">
-                                                                {project.name}
-                                                            </Typography>
-                                                        </CardHeader>
-                                                        <CardBody>
-                                                            <CardTitle>
-                                                                <Typography variant="h6">{`${project.start_date.toDateString()} - ${project.end_date.toDateString()}`}</Typography>
-                                                            </CardTitle>
-                                                            <CardText>
-                                                                <Typography variant="body1">
-                                                                    {
-                                                                        project.description
-                                                                    }
-                                                                </Typography>
-                                                                {Array.from(
-                                                                    project.url
-                                                                ).map(
-                                                                    ([
-                                                                        key,
-                                                                        value,
-                                                                    ]) => {
-                                                                        return (
-                                                                            <Typography variant="body1">
-                                                                                {`${key}: `}
-                                                                                <CardLink
-                                                                                    href={
-                                                                                        value
-                                                                                    }
-                                                                                >
-                                                                                    {
-                                                                                        value
-                                                                                    }
-                                                                                </CardLink>
-                                                                            </Typography>
-                                                                        );
-                                                                    }
-                                                                )}
-                                                            </CardText>
-                                                        </CardBody>
-                                                        <CardFooter>
-                                                            Assigned to:
-                                                            {dumUsers
-                                                                .filter(
-                                                                    (user) =>
-                                                                        project.members.includes(
-                                                                            user._id
-                                                                        )
-                                                                )
-                                                                .map(
-                                                                    (user) =>
-                                                                        ` ${user.name},`
-                                                                )}
-                                                        </CardFooter>
-                                                    </Card>
-                                                </ListGroupItem>
-                                            </Fragment>
-                                        );
-                                    })}
-                                </ListGroup>
-                            )}
-                        </TabPane>
-                        <TabPane tabId="Completed">
-                            {projects.errMess !== null ? (
-                                <div>
-                                    <h4>Failed to fetch Projects</h4>
-                                    <h4>{projects.errMess}</h4>
-                                </div>
-                            ) : null}
-                            {completedProjects.length === 0 ? (
-                                <Typography variant="h4" color="textSecondary">
-                                    No completed projects for you
-                                </Typography>
-                            ) : (
-                                <ListGroup>
-                                    {completedProjects.map((project) => {
-                                        return (
-                                            <Fragment key={`${project}`}>
-                                                <ListGroupItem>
-                                                    <Card
-                                                        body
-                                                        style={{
-                                                            borderColor:
-                                                                '#00c853',
-                                                        }}
-                                                    >
-                                                        <CardHeader>
-                                                            <Typography variant="h4">
-                                                                {project.name}
-                                                            </Typography>
-                                                        </CardHeader>
-                                                        <CardBody>
-                                                            <CardTitle>
-                                                                <Typography variant="h6">{`${project.start_date.toDateString()} - ${project.end_date.toDateString()}`}</Typography>
-                                                            </CardTitle>
-                                                            <CardText>
-                                                                <Typography variant="body1">
-                                                                    {
-                                                                        project.description
-                                                                    }
-                                                                </Typography>
-                                                                {Array.from(
-                                                                    project.url
-                                                                ).map(
-                                                                    ([
-                                                                        key,
-                                                                        value,
-                                                                    ]) => {
-                                                                        return (
-                                                                            <Typography variant="body1">
-                                                                                {`${key}: `}
-                                                                                <CardLink
-                                                                                    href={
-                                                                                        value
-                                                                                    }
-                                                                                >
-                                                                                    {
-                                                                                        value
-                                                                                    }
-                                                                                </CardLink>
-                                                                            </Typography>
-                                                                        );
-                                                                    }
-                                                                )}
-                                                            </CardText>
-                                                        </CardBody>
-                                                        <CardFooter>
-                                                            Assigned to:
-                                                            {dumUsers
-                                                                .filter(
-                                                                    (user) =>
-                                                                        project.members.includes(
-                                                                            user._id
-                                                                        )
-                                                                )
-                                                                .map(
-                                                                    (user) =>
-                                                                        ` ${user.name},`
-                                                                )}
-                                                        </CardFooter>
-                                                    </Card>
-                                                </ListGroupItem>
-                                            </Fragment>
-                                        );
-                                    })}
-                                </ListGroup>
-                            )}
-                        </TabPane>
-                    </TabContent>
-                </Paper>
+                    {myProjects.length === 0 ? (
+                        <Typography
+                            variant="subtitle2"
+                            align="center"
+                            style={{
+                                fontFamily: 'Monospace',
+                                fontWeight: 'bold',
+                                wordWrap: 'break-word',
+                            }}
+                        >
+                            No projects for you :(
+                        </Typography>
+                    ) : (
+                        <Grid
+                            container
+                            justify="flex-start"
+                            alignItems="center"
+                        >
+                            {myProjects.map((project) => {
+                                return (
+                                    <Grid item xs={12} sm={6} md={12}>
+                                        <Fragment key={project._id}>
+                                            <ProjectCard
+                                                project={project}
+                                                users={dumUsers}
+                                                dialog
+                                            />
+                                        </Fragment>
+                                    </Grid>
+                                );
+                            })}
+                        </Grid>
+                    )}
+                </div>
+            </Grid>
+            <Grid item lg={3} md={4} xs={11}>
+                <Typography
+                    align="center"
+                    variant="h4"
+                    style={{ fontWeight: 500, marginBottom: '16px' }}
+                >
+                    To Do
+                </Typography>
+                <div
+                    style={{
+                        maxHeight: '75vh',
+                        overflowY: 'scroll',
+                        scrollbarWidth: 'none',
+                    }}
+                >
+                    <ToDoBox todos={todos} />
+                </div>
             </Grid>
         </Grid>
     );

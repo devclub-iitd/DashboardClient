@@ -32,17 +32,16 @@ import { actions } from 'react-redux-form';
 import { isMobile } from 'react-device-detect';
 import MainListItems from '../components/MainListItems';
 // import Home from '../components/Home';
-import Home from '../components/HomeUp';
-import Profile from '../components/ProfileUp';
+import Home from '../components/Home';
+import Profile from '../components/Profile';
 import ChangePassword from '../components/ChangePassword';
 import EventsPage from '../components/Events';
 import ProjectsPage from '../components/Projects';
 import ResourcesPage from '../components/Resources';
 import ManageUsers from '../components/ManageUsers';
-import MyTasks from '../components/MyTasksUp';
+import MyTasks from '../components/MyTasks';
 import DeployManager from '../components/Deploy';
 import AppBar from '../components/AppBar';
-import CreateTasks from '../components/CreateTasks';
 import {
     fetchUser,
     fetchAllUsers,
@@ -54,6 +53,7 @@ import {
     userErrorFin,
     deleteAllUsers,
     rejectAllUnapproved,
+    approveAllUnapproved,
 } from '../actions/userActions';
 import {
     fetchAllEvents,
@@ -170,14 +170,14 @@ const drawerWidth = 275;
 // };
 
 function renderPage(subPage, props, isAdmin, redirect, closeDrawer) {
-    let validSubPage = subPage;
-    if (subPage === 'users' || subPage === 'deploy') {
+    // let validSubPage = subPage;
+    if (subPage === 'deploy') {
         if (!isAdmin) {
             redirect('home', closeDrawer);
-            validSubPage = '';
+            // validSubPage = '';
         }
     }
-    switch (validSubPage) {
+    switch (subPage) {
         case 'profile':
             return (
                 <Profile
@@ -188,32 +188,32 @@ function renderPage(subPage, props, isAdmin, redirect, closeDrawer) {
                 />
             );
 
-        case 'changePassword':
-            return (
-                <div>
-                    <ChangePassword
-                        changePass={props.changePass}
-                        users={props.users}
-                    />
-                </div>
-            );
+        // case 'changePassword':
+        //     return (
+        //         <div>
+        //             <ChangePassword
+        //                 changePass={props.changePass}
+        //                 users={props.users}
+        //             />
+        //         </div>
+        //     );
         // case 'approveUsers': return (<div><ApproveUsers /></div>);
-        case 'createTasks':
-            return (
-                <div>
-                    <CreateTasks
-                        // resetEventForm={props.resetEventForm}
-                        // resetProjectForm={props.resetProjectForm}
-                        // resetResourceForm={props.resetResourceForm}
-                        createEvent={props.createEvent}
-                        createProject={props.createProject}
-                        createResource={props.createResource}
-                        eventError={props.events.serverError}
-                        projectError={props.projects.serverError}
-                        resourceError={props.resources.serverError}
-                    />
-                </div>
-            );
+        // case 'createTasks':
+        //     return (
+        //         <div>
+        //             <CreateTasks
+        //                 // resetEventForm={props.resetEventForm}
+        //                 // resetProjectForm={props.resetProjectForm}
+        //                 // resetResourceForm={props.resetResourceForm}
+        //                 createEvent={props.createEvent}
+        //                 createProject={props.createProject}
+        //                 createResource={props.createResource}
+        //                 eventError={props.events.serverError}
+        //                 projectError={props.projects.serverError}
+        //                 resourceError={props.resources.serverError}
+        //             />
+        //         </div>
+        //     );
 
         case 'events':
             return (
@@ -256,16 +256,15 @@ function renderPage(subPage, props, isAdmin, redirect, closeDrawer) {
 
         case 'users':
             return (
-                <div>
-                    <ManageUsers
-                        users={props.users}
-                        fetchAllUsers={props.fetchAllUsers}
-                        removeUser={props.removeUser}
-                        deleteAllUsers={props.deleteAllUsers}
-                        rejectAllUnapproved={props.rejectAllUnapproved}
-                        editOtherUser={props.editOtherUser}
-                    />
-                </div>
+                <ManageUsers
+                    users={props.users}
+                    fetchAllUsers={props.fetchAllUsers}
+                    removeUser={props.removeUser}
+                    deleteAllUsers={props.deleteAllUsers}
+                    rejectAllUnapproved={props.rejectAllUnapproved}
+                    approveAll={props.approveAll}
+                    editOtherUser={props.editOtherUser}
+                />
             );
 
         case 'myTasks':
@@ -318,14 +317,15 @@ function renderPage(subPage, props, isAdmin, redirect, closeDrawer) {
 }
 
 function getPageName(subPage, isAdmin) {
-    let validSubPage = subPage;
+    // let validSubPage = subPage;
     if (!isAdmin) {
-        if (subPage === 'users' || subPage === 'deploy') {
-            validSubPage = '';
+        if (subPage === 'deploy') {
+            // validSubPage = '';
+            return 'Home';
         }
     }
 
-    switch (validSubPage) {
+    switch (subPage) {
         case 'profile':
             return 'Profile';
         case 'changePassword':
@@ -404,6 +404,9 @@ const mapDispatchToProps = (dispatch) => ({
     },
     rejectAllUnapproved: () => {
         dispatch(rejectAllUnapproved());
+    },
+    approveAll: (ids) => {
+        dispatch(approveAllUnapproved(ids));
     },
     userErrorFin: () => {
         dispatch(userErrorFin());
@@ -687,6 +690,21 @@ class Dashboard extends Component {
         const { params } = match;
         const { subPage } = params;
 
+        // if (
+        //     events.isLoading ||
+        //     projects.isLoading ||
+        //     users.userLoading ||
+        //     users.usersLoading ||
+        //     resources.isLoading ||
+        //     auth.isLoading
+        // ) {
+        //     return (
+        //         <Backdrop className={classes.backdrop} open>
+        //             <CircularProgress color="inherit" />
+        //         </Backdrop>
+        //     );
+        // }
+
         return (
             <div className={classes.root}>
                 {/* <CssBaseline /> */}
@@ -722,7 +740,7 @@ class Dashboard extends Component {
                     <AppBar
                         user={users.user.name}
                         isAdmin={isAdmin}
-                        page={getPageName(subPage)}
+                        page={getPageName(subPage, isAdmin)}
                         closeDrawer={this.handleDrawerClose}
                         openDrawer={this.handleDrawerOpen}
                         logout={logoutUserT}
@@ -965,6 +983,7 @@ renderPage.propTypes = {
     removeUser: PropTypes.func.isRequired,
     deleteAllUsers: PropTypes.func.isRequired,
     rejectAllUnapproved: PropTypes.func.isRequired,
+    approveAll: PropTypes.func.isRequired,
     editOtherUser: PropTypes.func.isRequired,
     fetchAllEvents: PropTypes.func.isRequired,
     createEvent: PropTypes.func.isRequired,

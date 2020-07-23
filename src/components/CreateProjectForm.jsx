@@ -1,102 +1,25 @@
-import React, { Fragment } from 'react';
-import { emphasize, makeStyles } from '@material-ui/core/styles';
+import React from 'react';
 import {
     Grid,
-    FormControlLabel,
     Button,
     Switch,
-    Fab,
     Snackbar,
     TextField,
+    Typography,
+    Hidden,
+    Tooltip,
+    IconButton,
 } from '@material-ui/core';
-import { Row, Col, Label } from 'reactstrap';
-import { Control, Errors, LocalForm } from 'react-redux-form';
 import DateFnsUtils from '@date-io/date-fns';
 import PropTypes from 'prop-types';
-import AddIcon from '@material-ui/icons/Add';
 import {
     MuiPickersUtilsProvider,
     KeyboardDatePicker,
 } from '@material-ui/pickers';
-import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutline';
-
-const useStyles = makeStyles((theme) => ({
-    root: {
-        flexGrow: 1,
-        height: 250,
-        minWidth: 290,
-    },
-    input: {
-        display: 'flex',
-        padding: 0,
-        height: 'auto',
-    },
-    valueContainer: {
-        display: 'flex',
-        flexWrap: 'wrap',
-        flex: 1,
-        alignItems: 'center',
-        overflow: 'hidden',
-    },
-    chip: {
-        margin: theme.spacing(0.5, 0.25),
-    },
-    chipFocused: {
-        backgroundColor: emphasize(
-            theme.palette.type === 'light'
-                ? theme.palette.grey[300]
-                : theme.palette.grey[700],
-            0.08
-        ),
-    },
-    noOptionsMessage: {
-        padding: theme.spacing(1, 2),
-    },
-    singleValue: {
-        fontSize: 16,
-    },
-    placeholder: {
-        position: 'absolute',
-        left: 2,
-        bottom: 6,
-        fontSize: 16,
-    },
-    paper: {
-        position: 'absolute',
-        zIndex: 1,
-        marginTop: theme.spacing(1),
-        left: 0,
-        right: 0,
-    },
-    divider: {
-        height: theme.spacing(2),
-    },
-    form: {
-        width: '100%', // Fix IE 11 issue.
-        marginTop: theme.spacing(1),
-    },
-    formControl: {
-        margin: theme.spacing(1),
-        minWidth: 120,
-    },
-    margin: {
-        // margin: theme.spacing(1),
-        marginTop: '1em',
-        marginBottom: '2em',
-        width: '100%',
-    },
-    head: {
-        marginBottom: '0.5em',
-        marginTop: '1em',
-        textAlign: 'center',
-    },
-    urlField: {
-        marginBottom: 10,
-    },
-}));
+import { AddCircleRounded, Delete } from '@material-ui/icons';
+import * as Utils from '../utils';
 
 export default function CreateTasks(props) {
-    const classes = useStyles();
     const [state, setState] = React.useState({
         newProject: {
             name: '',
@@ -112,10 +35,10 @@ export default function CreateTasks(props) {
             is_internal: true,
             showcase: false,
             labels: [],
-            url: new Map([['photo_url', '']]),
+            url: new Map([['web_url', '']]),
             members: [],
         },
-        urlFields: [{ type: 'photo_url', url: '' }],
+        urlFields: [{ type: 'web_url', url: '' }],
         success: false,
     });
 
@@ -136,7 +59,7 @@ export default function CreateTasks(props) {
                     end_date: event,
                 },
             });
-        } else if (name === 'display') {
+        } else if (name === 'display_on_website') {
             setState({
                 ...state,
                 newProject: {
@@ -144,7 +67,7 @@ export default function CreateTasks(props) {
                     display_on_website: event.target.checked,
                 },
             });
-        } else if (name === 'internal') {
+        } else if (name === 'is_internal') {
             setState({
                 ...state,
                 newProject: {
@@ -171,10 +94,6 @@ export default function CreateTasks(props) {
         }
     };
 
-    const required = (val) => val && val.length;
-    const maxLength = (len) => (val) => !val || val.length <= len;
-    const minLength = (len) => (val) => val && val.length >= len;
-
     const handleAddUrlFields = () => {
         const values = [...state.urlFields];
         values.push({ type: '', url: '' });
@@ -196,7 +115,7 @@ export default function CreateTasks(props) {
     const handleUrlFieldChange = (index, event) => {
         const values = [...state.urlFields];
         if (event.target.name === 'type') {
-            if (values[index].type === 'photo_url') {
+            if (values[index].type === 'web_url') {
                 return;
             }
             values[index].type = event.target.value;
@@ -270,23 +189,27 @@ export default function CreateTasks(props) {
                 is_internal: true,
                 showcase: false,
                 labels: [],
-                url: new Map([['photo_url', '']]),
+                url: new Map([['web_url', '']]),
                 members: [],
             },
-            urlFields: [{ type: 'photo_url', url: '' }],
+            urlFields: [{ type: 'web_url', url: '' }],
         });
     };
 
     const submitProjectForm = () => {
         const urlMap = new Map();
-        state.urlFields.map((urlField) =>
-            urlMap.set(urlField.type, urlField.url)
-        );
+        state.urlFields.forEach((urlField) => {
+            const fixedUrl =
+                urlField.url.startsWith('https://') ||
+                urlField.url.startsWith('http://')
+                    ? urlField.url
+                    : ['https://', urlField.url].join('');
+            urlMap.set(urlField.type, fixedUrl);
+        });
         const newProject = {
             ...state.newProject,
-            url: urlMap,
+            url: Utils.strMapToObj(urlMap),
         };
-        // console.log('event: ', newProject);
         props.createProject(newProject);
         if (props.projectError === null) {
             setState({
@@ -306,426 +229,387 @@ export default function CreateTasks(props) {
                     is_internal: true,
                     showcase: false,
                     labels: [],
-                    url: new Map([['photo_url', '']]),
+                    url: new Map([['web_url', '']]),
                     members: [],
                 },
-                urlFields: [{ type: 'photo_url', url: '' }],
+                urlFields: [{ type: 'web_url', url: '' }],
                 success: true,
             });
         }
     };
 
+    const FieldSep = () => {
+        return <Grid item xs={12} style={{ height: '8px' }} />;
+    };
+
     return (
         <div>
-            {/* {'Change type of field (date/checkbox/text) accordingly'}
-      <br /> */}
-            <Grid container direction="row" justify="center">
-                <Snackbar
-                    anchorOrigin={{
-                        vertical: 'top',
-                        horizontal: 'center',
-                    }}
-                    open={state.success}
-                    autoHideDuration={2000}
-                    onClose={handleSuccessClose}
-                    message="Project created successfully !"
-                />
-                <LocalForm onSubmit={submitProjectForm}>
-                    <Row className="form-group">
-                        <Label htmlFor="name" md={4}>
-                            <h6>Name of Project:</h6>
-                        </Label>
-                        <Col md={8}>
-                            <Control.text
-                                model=".name"
-                                id="name"
-                                name="name"
-                                placeholder="Project Name*"
-                                value={state.newProject.name}
-                                onChange={handleFormValuesChange}
-                                className="form-control"
-                                validators={{
-                                    required,
-                                    minLength: minLength(1),
-                                    maxLength: maxLength(20),
-                                }}
-                            />
-                            <Errors
-                                className="text-danger"
-                                model=".name"
-                                show="touched"
-                                messages={{
-                                    required: 'Required ',
-                                    minLength:
-                                        'Must be greater than 2 characters',
-                                    maxLength: 'Must be 25 characters or less',
-                                }}
-                            />
-                        </Col>
-                    </Row>
-                    <Row className="form-group">
-                        <Label htmlFor="description" md={12}>
-                            <h6>Description:</h6>
-                        </Label>
-                        <Col md={12}>
-                            <Control.textarea
-                                model=".description"
-                                id="description"
-                                name="description"
-                                placeholder="Project Description*"
-                                rows="8"
-                                value={state.newProject.description}
-                                onChange={handleFormValuesChange}
-                                className="form-control"
-                                validators={{
-                                    required,
-                                }}
-                            />
-                            <Errors
-                                className="text-danger"
-                                model=".description"
-                                show="touched"
-                                messages={{
-                                    required: 'Required',
-                                }}
-                            />
-                        </Col>
-                    </Row>
-                    <Row className="form-group">
-                        <Col>
-                            <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                                <KeyboardDatePicker
+            <Snackbar
+                anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'center',
+                }}
+                open={state.success}
+                autoHideDuration={2000}
+                onClose={handleSuccessClose}
+                message="Project created successfully !"
+            />
+            <Grid container justify="center" alignItems="center">
+                <Grid item xs={4}>
+                    <Typography variant="h6">Name of Project:</Typography>
+                </Grid>
+                <Grid item xs={8}>
+                    <TextField
+                        name="name"
+                        variant="outlined"
+                        required
+                        value={state.newProject.name}
+                        onChange={(e) => handleFormValuesChange(e, 'name')}
+                        id="name"
+                        label="Name"
+                    />
+                </Grid>
+                <FieldSep />
+                <Grid item xs={12}>
+                    <Typography variant="h6">Description:</Typography>
+                </Grid>
+                <Grid item xs={10} sm={8}>
+                    <TextField
+                        required
+                        variant="outlined"
+                        fullWidth
+                        margin="normal"
+                        multiline
+                        rowsMax={5}
+                        id="description"
+                        name="description"
+                        label="Description"
+                        value={state.newProject.description}
+                        onChange={(e) =>
+                            handleFormValuesChange(e, 'description')
+                        }
+                    />
+                </Grid>
+                <FieldSep />
+                <Grid xs={6}>
+                    <Typography variant="h6">Starting Date:</Typography>
+                </Grid>
+                <Hidden xsDown>
+                    <Grid xs={6}>
+                        <Typography variant="h6">Ending Date:</Typography>
+                    </Grid>
+                </Hidden>
+                <Grid item xs={10} sm={6}>
+                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                        <KeyboardDatePicker
+                            margin="normal"
+                            id="start_date"
+                            label="Starting Date of Event"
+                            format="MM/dd/yyyy"
+                            value={state.newProject.start_date}
+                            name="start_date"
+                            onChange={(date) =>
+                                handleFormValuesChange(date, 'start_date')
+                            }
+                            KeyboardButtonProps={{
+                                'aria-label': 'change date',
+                            }}
+                            required
+                            style={{ width: '90%' }}
+                            inputVariant="outlined"
+                        />
+                    </MuiPickersUtilsProvider>
+                </Grid>
+                <Hidden only={['sm', 'md', 'lg', 'drawerMin', 'xl']}>
+                    <Grid xs={6}>
+                        <Typography variant="h6">Ending Date:</Typography>
+                    </Grid>
+                </Hidden>
+                <Grid item xs={10} sm={6}>
+                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                        <KeyboardDatePicker
+                            margin="normal"
+                            id="end_date"
+                            label="Ending Date of Event"
+                            format="MM/dd/yyyy"
+                            value={state.newProject.start_date}
+                            name="end_date"
+                            onChange={(date) =>
+                                handleFormValuesChange(date, 'end_date')
+                            }
+                            minDate={state.newProject.start_date}
+                            KeyboardButtonProps={{
+                                'aria-label': 'change date',
+                            }}
+                            required
+                            style={{ width: '90%' }}
+                            inputVariant="outlined"
+                        />
+                    </MuiPickersUtilsProvider>
+                </Grid>
+                <FieldSep />
+                <Grid item xs={4}>
+                    <Typography variant="h6">Origin of Project:</Typography>
+                </Grid>
+                <Grid item xs={8}>
+                    <TextField
+                        name="origin"
+                        variant="outlined"
+                        required
+                        value={state.newProject.origin}
+                        onChange={(e) => handleFormValuesChange(e, 'origin')}
+                        id="origin"
+                        label="Origin"
+                    />
+                </Grid>
+                <FieldSep />
+                <Grid item xs={4}>
+                    <Typography variant="h6">Contact of Origin:</Typography>
+                </Grid>
+                <Grid item xs={8}>
+                    <TextField
+                        name="origin_contact"
+                        variant="outlined"
+                        required
+                        value={state.newProject.origin_contact}
+                        onChange={(e) =>
+                            handleFormValuesChange(e, 'origin_contact')
+                        }
+                        id="origin_contact"
+                        label="Origin Contact"
+                    />
+                </Grid>
+                <FieldSep />
+                <Grid item xs={4}>
+                    <Typography variant="h6">Perks:</Typography>
+                </Grid>
+                <Grid item xs={8}>
+                    <TextField
+                        name="perks"
+                        variant="outlined"
+                        required
+                        value={state.newProject.perks}
+                        onChange={(e) => handleFormValuesChange(e, 'perks')}
+                        id="perks"
+                        label="Perks"
+                    />
+                </Grid>
+                <FieldSep />
+                <Grid item xs={4}>
+                    <Typography variant="h6">Requirements:</Typography>
+                </Grid>
+                <Grid item xs={8}>
+                    <TextField
+                        name="requirements"
+                        variant="outlined"
+                        required
+                        value={state.newProject.requirements}
+                        onChange={(e) =>
+                            handleFormValuesChange(e, 'requirements')
+                        }
+                        id="requirements"
+                        label="Requirements"
+                    />
+                </Grid>
+                <FieldSep />
+                <Grid container item xs={12} alignItems="center">
+                    <Grid item xs={5}>
+                        <Typography variant="h6">
+                            Display on website:{' '}
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={2}>
+                        <Switch
+                            checked={state.newProject.display_on_website}
+                            onChange={(e) =>
+                                handleFormValuesChange(e, 'display_on_website')
+                            }
+                        />
+                    </Grid>
+                </Grid>
+                <FieldSep />
+                <Grid container item xs={12} alignItems="center">
+                    <Grid item xs={5}>
+                        <Typography variant="h6">Internal Project: </Typography>
+                    </Grid>
+                    <Grid item xs={2}>
+                        <Switch
+                            checked={state.newProject.is_internal}
+                            onChange={(e) =>
+                                handleFormValuesChange(e, 'is_internal')
+                            }
+                        />
+                    </Grid>
+                </Grid>
+                <FieldSep />
+                <Grid container item xs={12} alignItems="center">
+                    <Grid item xs={5}>
+                        <Typography variant="h6">Showcase Project: </Typography>
+                    </Grid>
+                    <Grid item xs={2}>
+                        <Switch
+                            checked={state.newProject.showcase}
+                            onChange={(e) =>
+                                handleFormValuesChange(e, 'showcase')
+                            }
+                        />
+                    </Grid>
+                </Grid>
+                <FieldSep />
+                <Grid item xs={12}>
+                    <Typography variant="h6">Add Labels:</Typography>
+                </Grid>
+                <Grid container item alignItems="center" xs={12}>
+                    {state.newProject.labels.map((labelField, index) => (
+                        <>
+                            <Grid item xs={8} sm={7}>
+                                <TextField
+                                    style={{ width: '90%' }}
+                                    small
                                     margin="normal"
-                                    id="date-picker-dialog"
-                                    label="Select proposed Start Date of Project"
-                                    format="MM/dd/yyyy"
-                                    value={state.newProject.start_date}
+                                    label="Label"
+                                    id="label"
+                                    name="label"
+                                    variant="outlined"
+                                    value={labelField}
                                     onChange={(e) =>
-                                        handleFormValuesChange(e, 'start_date')
+                                        handleLabelFieldChange(index, e)
                                     }
-                                    minDate={Date.now()}
-                                    KeyboardButtonProps={{
-                                        'aria-label': 'change date',
-                                    }}
                                 />
-                            </MuiPickersUtilsProvider>
-                        </Col>
-                    </Row>
-                    <Row className="form-group">
-                        <Col>
-                            <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                                <KeyboardDatePicker
-                                    margin="normal"
-                                    id="date-picker-dialog"
-                                    label="Select proposed End Date of Project"
-                                    format="MM/dd/yyyy"
-                                    value={state.newProject.end_date}
-                                    onChange={(e) =>
-                                        handleFormValuesChange(e, 'end_date')
-                                    }
-                                    minDate={state.newProject.start_date}
-                                    KeyboardButtonProps={{
-                                        'aria-label': 'change date',
-                                    }}
-                                />
-                            </MuiPickersUtilsProvider>
-                        </Col>
-                    </Row>
-                    <Row className="form-group">
-                        <Label htmlFor="origin" md={4}>
-                            <h6>Origin of Project:</h6>
-                        </Label>
-                        <Col md={8}>
-                            <Control.text
-                                model=".origin"
-                                id="origin"
-                                name="origin"
-                                placeholder="Origin*"
-                                value={state.newProject.origin}
-                                onChange={handleFormValuesChange}
-                                className="form-control"
-                                validators={{
-                                    required,
-                                }}
-                            />
-                            <Errors
-                                className="text-danger"
-                                model=".origin"
-                                show="touched"
-                                messages={{
-                                    required: 'Required ',
-                                }}
-                            />
-                        </Col>
-                    </Row>
-                    <Row className="form-group">
-                        <Label htmlFor="origin_contact" md={4}>
-                            <h6>Contact of Origin:</h6>
-                        </Label>
-                        <Col md={8}>
-                            <Control.text
-                                model=".origin_contact"
-                                id="origin_contact"
-                                name="origin_contact"
-                                placeholder="Origin Contact*"
-                                value={state.newProject.origin_contact}
-                                onChange={handleFormValuesChange}
-                                className="form-control"
-                                validators={{
-                                    required,
-                                }}
-                            />
-                            <Errors
-                                className="text-danger"
-                                model=".origin_contact"
-                                show="touched"
-                                messages={{
-                                    required: 'Required ',
-                                }}
-                            />
-                        </Col>
-                    </Row>
-                    <Row className="form-group">
-                        <Label htmlFor="perks" md={4}>
-                            <h6>Perks:</h6>
-                        </Label>
-                        <Col md={8}>
-                            <Control.text
-                                model=".perks"
-                                id="perks"
-                                name="perks"
-                                placeholder="Perks*"
-                                value={state.newProject.perks}
-                                onChange={handleFormValuesChange}
-                                className="form-control"
-                                validators={{
-                                    required,
-                                }}
-                            />
-                            <Errors
-                                className="text-danger"
-                                model=".perks"
-                                show="touched"
-                                messages={{
-                                    required: 'Required ',
-                                }}
-                            />
-                        </Col>
-                    </Row>
-                    <Row className="form-group">
-                        <Label htmlFor="requirements" md={4}>
-                            <h6>Requirements:</h6>
-                        </Label>
-                        <Col md={8}>
-                            <Control.text
-                                model=".requirements"
-                                id="requirements"
-                                name="requirements"
-                                value={state.newProject.requirements}
-                                onChange={handleFormValuesChange}
-                                placeholder="Requirements*"
-                                className="form-control"
-                                validators={{
-                                    required,
-                                }}
-                            />
-                            <Errors
-                                className="text-danger"
-                                model=".requirements"
-                                show="touched"
-                                messages={{
-                                    required: 'Required ',
-                                }}
-                            />
-                        </Col>
-                    </Row>
-                    <Row className="form-group">
-                        <Col>
-                            <Label htmlFor="embed_code" sm={5}>
-                                <h6>Display on website: </h6>
-                            </Label>
-                            <FormControlLabel
-                                sm={2}
-                                control={
-                                    <Switch
-                                        checked={
-                                            state.newProject.display_on_website
+                            </Grid>
+                            <Grid item xs={2}>
+                                <Tooltip title="Delete this label">
+                                    <IconButton
+                                        edge="start"
+                                        style={{
+                                            color: '#fff',
+                                        }}
+                                        onClick={() =>
+                                            handleRemoveLabelFields(index)
                                         }
-                                        onChange={(e) =>
-                                            handleFormValuesChange(e, 'display')
-                                        }
-                                    />
-                                }
-                            />
-                        </Col>
-                    </Row>
-                    <Row className="form-group">
-                        <Col>
-                            <Label htmlFor="embed_code" sm={5}>
-                                <h6>Internal Project: </h6>
-                            </Label>
-                            <FormControlLabel
-                                sm={2}
-                                control={
-                                    <Switch
-                                        checked={state.newProject.is_internal}
-                                        onChange={(e) =>
-                                            handleFormValuesChange(
-                                                e,
-                                                'internal'
-                                            )
-                                        }
-                                    />
-                                }
-                            />
-                        </Col>
-                    </Row>
-                    <Row className="form-group">
-                        <Label htmlFor="labelFields" md={12}>
-                            <h6>Add Label:</h6>
-                        </Label>
-                        <Col sm={12}>
-                            {state.newProject.labels.map(
-                                (labelField, index) => (
-                                    <Fragment key={`${labelField}`}>
-                                        <Row className="form-group">
-                                            <Col sm={{ size: 4, offset: 4 }}>
-                                                <TextField
-                                                    label="label"
-                                                    className="form-control"
-                                                    id="label"
-                                                    name="label"
-                                                    variant="filled"
-                                                    defaultValue={labelField}
-                                                    onChange={(event) =>
-                                                        handleLabelFieldChange(
-                                                            index,
-                                                            event
-                                                        )
-                                                    }
-                                                />
-                                            </Col>
-                                            <Col sm={2}>
-                                                <Fab
-                                                    size="small"
-                                                    aria-label="delete"
-                                                    onClick={() =>
-                                                        handleRemoveLabelFields(
-                                                            index
-                                                        )
-                                                    }
-                                                >
-                                                    <DeleteOutlinedIcon />
-                                                </Fab>
-                                            </Col>
-                                        </Row>
-                                    </Fragment>
-                                )
-                            )}
-                            <Fab
-                                size="small"
-                                color="secondary"
-                                aria-label="add"
+                                    >
+                                        <Delete />
+                                    </IconButton>
+                                </Tooltip>
+                            </Grid>
+                        </>
+                    ))}
+                    <Grid item xs={2}>
+                        <Tooltip title="Add new url field">
+                            <IconButton
+                                style={{
+                                    color: '#fff',
+                                }}
                                 onClick={() => handleAddLabelFields()}
                             >
-                                <AddIcon />
-                            </Fab>
-                        </Col>
-                    </Row>
-                    <Row className="form-group">
-                        <Label htmlFor="urlFields" md={12}>
-                            <h6>Url:</h6>
-                        </Label>
-                        <Col sm={12}>
-                            {state.urlFields.map((urlField, index) => (
-                                <Fragment key={`${urlField}`}>
-                                    <Row className="form-group">
-                                        <Col sm={{ size: 4, offset: 1 }}>
-                                            <TextField
-                                                sm={5}
-                                                label="type"
-                                                className={classes.urlField}
-                                                id="type"
-                                                name="type"
-                                                variant="filled"
-                                                value={urlField.type}
-                                                onChange={(event) =>
-                                                    handleUrlFieldChange(
-                                                        index,
-                                                        event
-                                                    )
-                                                }
-                                            />
-                                        </Col>
-                                        <Col sm={4}>
-                                            <TextField
-                                                sm={5}
-                                                label="url"
-                                                className={classes.urlField}
-                                                id="url"
-                                                name="url"
-                                                variant="filled"
-                                                value={urlField.url}
-                                                onChange={(event) =>
-                                                    handleUrlFieldChange(
-                                                        index,
-                                                        event
-                                                    )
-                                                }
-                                            />
-                                        </Col>
-                                        {urlField.type ===
-                                        'photo_url' ? null : (
-                                            <Col sm={2}>
-                                                <Fab
-                                                    sm={2}
-                                                    size="small"
-                                                    aria-label="delete"
-                                                    onClick={() =>
-                                                        handleRemoveUrlFields(
-                                                            index
-                                                        )
-                                                    }
-                                                >
-                                                    <DeleteOutlinedIcon />
-                                                </Fab>
-                                            </Col>
-                                        )}
-                                    </Row>
-                                </Fragment>
-                            ))}
-                            <Fab
-                                size="small"
-                                color="secondary"
-                                aria-label="add"
+                                <AddCircleRounded />
+                            </IconButton>
+                        </Tooltip>
+                    </Grid>
+                </Grid>
+                <FieldSep />
+                <FieldSep />
+                <Grid item xs={12}>
+                    <Typography variant="h6">Urls:</Typography>
+                </Grid>
+                <Grid item container alignItems="center" xs={12}>
+                    {state.urlFields.map(({ type, url }, idx) => (
+                        <>
+                            <Grid item xs={8} sm={5}>
+                                <TextField
+                                    style={{ width: '90%' }}
+                                    required
+                                    small
+                                    margin="normal"
+                                    label="type"
+                                    id="type"
+                                    name="type"
+                                    variant="outlined"
+                                    value={type}
+                                    onChange={(e) =>
+                                        handleUrlFieldChange(idx, e)
+                                    }
+                                />
+                            </Grid>
+                            <Grid item xs={8} sm={5}>
+                                <TextField
+                                    style={{ width: '90%' }}
+                                    required
+                                    small
+                                    margin="normal"
+                                    label="url"
+                                    id="url"
+                                    name="url"
+                                    variant="outlined"
+                                    value={url}
+                                    onChange={(e) =>
+                                        handleUrlFieldChange(idx, e)
+                                    }
+                                />
+                            </Grid>
+                            {type === 'web_url' ? null : (
+                                <Grid item xs={2}>
+                                    <Tooltip title="Delete this url field">
+                                        <IconButton
+                                            edge="start"
+                                            style={{
+                                                color: '#fff',
+                                            }}
+                                            onClick={() =>
+                                                handleRemoveUrlFields(idx)
+                                            }
+                                        >
+                                            <Delete />
+                                        </IconButton>
+                                    </Tooltip>
+                                </Grid>
+                            )}
+                        </>
+                    ))}
+                    <Grid item xs={2}>
+                        <Tooltip title="Add new url field">
+                            <IconButton
+                                style={{
+                                    color: '#fff',
+                                }}
                                 onClick={() => handleAddUrlFields()}
                             >
-                                <AddIcon />
-                            </Fab>
-                        </Col>
-                    </Row>
-                    <Row className="form-group">
-                        <Col sm={{ size: 4, offset: 3 }}>
-                            <Button
-                                type="submit"
-                                variant="contained"
-                                color="primary"
-                            >
-                                Create Project
-                            </Button>
-                        </Col>
-                        <Col sm={{ size: 2 }}>
-                            <Button
-                                type="reset"
-                                variant="contained"
-                                color="primary"
-                                onClick={() => resetForm()}
-                            >
-                                Reset
-                            </Button>
-                        </Col>
-                    </Row>
-                </LocalForm>
+                                <AddCircleRounded />
+                            </IconButton>
+                        </Tooltip>
+                    </Grid>
+                </Grid>
+                <FieldSep />
+                <FieldSep />
+                <Grid
+                    container
+                    justify="center"
+                    alignItems="center"
+                    item
+                    spacing={3}
+                    xs={12}
+                >
+                    <Grid item xs={6} sm={4}>
+                        <Button
+                            fullWidth
+                            onClick={submitProjectForm}
+                            variant="contained"
+                            color="primary"
+                        >
+                            Create Project
+                        </Button>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <Button
+                            fullWidth
+                            variant="outlined"
+                            color="primary"
+                            onClick={resetForm}
+                        >
+                            Reset
+                        </Button>
+                    </Grid>
+                </Grid>
             </Grid>
         </div>
     );
