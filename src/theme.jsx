@@ -157,7 +157,7 @@ const theme = createMuiTheme({
         },
         MuiSelect: {
             icon: {
-                color: '#3a3a3c',
+                color: '#8e8e93',
                 position: 'relative',
             },
             select: {
