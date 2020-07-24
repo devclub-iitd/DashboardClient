@@ -43,7 +43,10 @@ const styles = (theme) => ({
         marginLeft: '9%',
         marginRight: '9%',
         marginTop: theme.spacing(4),
-        marginBottom: theme.spacing(4),
+        marginBottom: theme.spacing(2),
+        [theme.breakpoints.down('sm')]: {
+            marginBottom: theme.spacing(0),
+        },
     },
     name: {
         color: '#d5d3d3',
@@ -66,7 +69,7 @@ const styles = (theme) => ({
         paddingTop: theme.spacing(0.05),
         paddingBottom: theme.spacing(0.05),
         marginTop: theme.spacing(2),
-        marginBottom: theme.spacing(2),
+        // marginBottom: theme.spacing(1),
         fontSize: '1.5rem',
         fontWeight: 600,
         marginLeft: '22%',

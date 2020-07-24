@@ -28,6 +28,8 @@ const styles = (theme) => ({
     root: {
         height: '100vh',
         backgroundColor: theme.palette.background.default,
+        overflowY: 'auto',
+        scrollbarWidth: 'none',
     },
     paper: {
         marginTop: theme.spacing(8),
@@ -67,6 +69,11 @@ const styles = (theme) => ({
         fontWeight: 600,
         marginLeft: '22%',
         marginRight: '22%',
+        [theme.breakpoints.down('sm')]: {
+            marginLeft: '10%',
+            marginRight: '10%',
+            width: '80%',
+        },
     },
     buttonDiv: {
         width: '56%',
@@ -249,7 +256,7 @@ class SignUp extends React.Component {
                             variant="outlined"
                             defaultValue="Fresher"
                             className={classes.categoryField}
-                            margin="normal"
+                            margin="dense"
                             required
                         >
                             {categories.map((option) => (
