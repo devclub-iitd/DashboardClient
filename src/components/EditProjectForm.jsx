@@ -207,6 +207,12 @@ export default function EditProjectForm(props) {
         const { urlFields } = state;
         const values = [...urlFields];
         if (event.target.name === 'type') {
+            if (
+                values[index].type === 'web_url' ||
+                values[index].type === 'photo_url'
+            ) {
+                return;
+            }
             values[idx].type = event.target.value;
         } else {
             values[idx].url = event.target.value;
@@ -740,7 +746,8 @@ export default function EditProjectForm(props) {
                                             }
                                         />
                                     </Grid>
-                                    {type === 'web_url' ? null : (
+                                    {type === 'web_url' ||
+                                    type === 'photo_url' ? null : (
                                         <Grid item xs={2}>
                                             <Tooltip title="Delete this url field">
                                                 <IconButton

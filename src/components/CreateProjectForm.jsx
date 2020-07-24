@@ -115,7 +115,10 @@ export default function CreateTasks(props) {
     const handleUrlFieldChange = (index, event) => {
         const values = [...state.urlFields];
         if (event.target.name === 'type') {
-            if (values[index].type === 'web_url') {
+            if (
+                values[index].type === 'web_url' ||
+                values[index].type === 'photo_url'
+            ) {
                 return;
             }
             values[index].type = event.target.value;
@@ -189,10 +192,16 @@ export default function CreateTasks(props) {
                 is_internal: true,
                 showcase: false,
                 labels: [],
-                url: new Map([['web_url', '']]),
+                url: new Map([
+                    ['web_url', ''],
+                    ['photo_url', ''],
+                ]),
                 members: [],
             },
-            urlFields: [{ type: 'web_url', url: '' }],
+            urlFields: [
+                { type: 'web_url', url: '' },
+                { type: 'photo_url', url: '' },
+            ],
         });
     };
 
@@ -227,10 +236,16 @@ export default function CreateTasks(props) {
                     is_internal: true,
                     showcase: false,
                     labels: [],
-                    url: new Map([['web_url', '']]),
+                    url: new Map([
+                        ['web_url', ''],
+                        ['photo_url', ''],
+                    ]),
                     members: [],
                 },
-                urlFields: [{ type: 'web_url', url: '' }],
+                urlFields: [
+                    { type: 'web_url', url: '' },
+                    { type: 'photo_url', url: '' },
+                ],
                 success: true,
             });
         }
@@ -545,7 +560,8 @@ export default function CreateTasks(props) {
                                     }
                                 />
                             </Grid>
-                            {type === 'web_url' ? null : (
+                            {type === 'web_url' ||
+                            type === 'photo_url' ? null : (
                                 <Grid item xs={2}>
                                     <Tooltip title="Delete this url field">
                                         <IconButton

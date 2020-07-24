@@ -319,11 +319,11 @@ const ResourcesPage = ({
         // responsive: 'scrollMaxHeight',
         rowHover: false,
         responsive: 'standard',
-        rowsPerPage: 7,
+        rowsPerPage: 6,
         selectableRows: 'none',
         fixedHeader: false,
         fixedSelectColumn: false,
-        rowsPerPageOptions: [5, 7, 10, 15, 25, 50, 100],
+        rowsPerPageOptions: [5, 6, 10, 15, 25, 50, 100],
         customSearchRender: (searchText, handleSearch, hideSearch, opt) => {
             return (
                 <CustomSearchRender

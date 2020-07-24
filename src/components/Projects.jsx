@@ -264,11 +264,7 @@ const ProjectsPage = ({
                 display: false,
                 customBodyRender: (value) => {
                     return (
-                        <Typography
-                            noWrap
-                            variant="body1"
-                            style={{ fontWeight: 500 }}
-                        >
+                        <Typography variant="body1" style={{ fontWeight: 500 }}>
                             {value}
                         </Typography>
                     );
@@ -283,11 +279,7 @@ const ProjectsPage = ({
                 sort: true,
                 customBodyRender: (value) => {
                     return (
-                        <Typography
-                            noWrap
-                            variant="body1"
-                            style={{ fontWeight: 500 }}
-                        >
+                        <Typography variant="body1" style={{ fontWeight: 500 }}>
                             {value}
                         </Typography>
                     );
@@ -363,11 +355,7 @@ const ProjectsPage = ({
                 display: false,
                 customBodyRender: (value) => {
                     return (
-                        <Typography
-                            noWrap
-                            variant="body1"
-                            style={{ fontWeight: 500 }}
-                        >
+                        <Typography variant="body1" style={{ fontWeight: 500 }}>
                             {value.join(', ')}
                         </Typography>
                     );
@@ -522,7 +510,7 @@ const ProjectsPage = ({
         filterType: 'checkbox',
         // responsive: 'scrollMaxHeight',
         responsive: 'standard',
-        rowsPerPage: 7,
+        rowsPerPage: 6,
         selectableRows: 'none',
         fixedHeader: false,
         fixedSelectColumn: false,
@@ -537,7 +525,7 @@ const ProjectsPage = ({
                 openProjectDialog(cellMeta.dataIndex);
             }
         },
-        rowsPerPageOptions: [5, 7, 10, 15, 25, 50, 100],
+        rowsPerPageOptions: [5, 6, 10, 15, 25, 50, 100],
         customSearchRender: (searchText, handleSearch, hideSearch, opt) => {
             return (
                 <CustomSearchRender

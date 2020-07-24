@@ -94,6 +94,9 @@ export const fetchAllProjects = () => (dispatch) => {
                 if (!upPro.url.has('web_url')) {
                     upPro.url.set('web_url', '');
                 }
+                if (!upPro.url.has('photo_url')) {
+                    upPro.url.set('photo_url', '');
+                }
                 return upPro;
             });
             dispatch(addProjects(allProjects));

@@ -429,7 +429,7 @@ export default function ManageUsers({
     const options = {
         filterType: 'checkbox',
         responsive: 'standard',
-        rowsPerPage: 7,
+        rowsPerPage: 6,
         selectableRows:
             curUser.privelege_level === 'Admin' && unapprovedIds.length !== 0
                 ? 'multiple'
@@ -439,7 +439,7 @@ export default function ManageUsers({
             dumUsers[dataIndex].privelege_level === 'Unapproved_User',
         fixedHeader: false,
         fixedSelectColumn: false,
-        rowsPerPageOptions: [5, 7, 10, 15, 25, 50, 100],
+        rowsPerPageOptions: [5, 6, 10, 15, 25, 50, 100],
         onCellClick: (colData, cellMeta) => {
             if (
                 cellMeta.colIndex !== 14 &&

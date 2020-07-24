@@ -236,7 +236,7 @@ export const fetchAllUsers = () => (dispatch) => {
         )
         .then((response) => response.json())
         .then((users) => {
-            console.log('got users: ', users);
+            // console.log('got users: ', users);
             const gotUsers = users.data;
             const allUsers = gotUsers.map((cUser) =>
                 UserUtils.getProperUser(cUser)

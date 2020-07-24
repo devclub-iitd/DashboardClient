@@ -346,11 +346,11 @@ const EventsPage = ({
         filterType: 'checkbox',
         // responsive: 'scrollMaxHeight',
         responsive: 'standard',
-        rowsPerPage: 7,
+        rowsPerPage: 6,
         selectableRows: 'none',
         fixedHeader: false,
         fixedSelectColumn: false,
-        rowsPerPageOptions: [5, 7, 10, 15, 25, 50, 100],
+        rowsPerPageOptions: [5, 6, 10, 15, 25, 50, 100],
         onCellClick: (colData, cellMeta) => {
             if (
                 cellMeta.colIndex !== 5 &&
