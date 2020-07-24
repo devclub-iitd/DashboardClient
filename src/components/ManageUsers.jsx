@@ -22,6 +22,7 @@ import * as Utils from '../utils';
 import StatusChip from './StatusChip';
 import CustomSearchRender from './CustomTableSearchBox';
 import CustomToolbarSelect from './UserToolbarSelect';
+import UserDialog from './UserDialog';
 
 const useStyles = makeStyles((theme) => ({
     tablePaper: {
@@ -40,6 +41,20 @@ export default function ManageUsers({
     const classes = useStyles();
     const curUser = users.user;
     const dumUsers = users.allUsers;
+
+    const [editSuccess, setEditSuccess] = React.useState(false);
+
+    const toggleUserOnWebsite = (e, id) => {
+        const upUser = {
+            _id: id,
+            display_on_website: e.target.checked,
+        };
+
+        editOtherUser(upUser);
+        if (users.usersErrMess === null) {
+            setEditSuccess(true);
+        }
+    };
 
     const [approveSuccess, setApproveSuccess] = React.useState(false);
 
@@ -61,6 +76,24 @@ export default function ManageUsers({
 
     const confirmRejectClose = () => {
         setRejectState(false);
+    };
+
+    const [userDialog, setUserDialog] = React.useState({
+        open: false,
+        dialogUser: dumUsers[0],
+    });
+
+    const openUserDialog = (index) => {
+        setUserDialog({
+            dialogUser: { ...dumUsers[index] },
+            open: true,
+        });
+    };
+
+    const closeUserDialog = () => {
+        setUserDialog({
+            open: false,
+        });
     };
 
     const unapprovedIds = dumUsers
@@ -86,6 +119,7 @@ export default function ManageUsers({
         return [
             user.name,
             Utils.UserUtils.getStatus(user),
+            user.entry_no,
             user.hostel,
             user.category,
             user.intro,
@@ -99,6 +133,7 @@ export default function ManageUsers({
             user.specialization,
             user.display_on_website ? 'True' : 'False',
             user.url.get('github_url'),
+            user._id,
         ];
     };
 
@@ -125,6 +160,22 @@ export default function ManageUsers({
                 filter: true,
                 customBodyRender: (value) => {
                     return <StatusChip status={value} />;
+                },
+            },
+        },
+        {
+            name: 'entry_no',
+            label: 'Entry No.',
+            options: {
+                filter: false,
+                sort: true,
+                display: false,
+                customBodyRender: (value) => {
+                    return (
+                        <Typography variant="body1" style={{ fontWeight: 500 }}>
+                            {value}
+                        </Typography>
+                    );
                 },
             },
         },
@@ -294,15 +345,19 @@ export default function ManageUsers({
             label: 'On Main Website',
             options: {
                 filter: true,
-                customBodyRender: (value) => (
-                    <Tooltip
-                        title={
-                            curUser.privelege_level === 'Admin'
-                                ? 'Go to Edit to change this'
-                                : 'Only Admins can edit this'
-                        }
-                    >
-                        <Switch checked={value === 'True'} />
+                customBodyRender: (value, tableMeta) => (
+                    <Tooltip title="Only Admins can change this">
+                        <Switch
+                            onChange={(e) => {
+                                if (curUser.privelege_level === 'Admin') {
+                                    toggleUserOnWebsite(
+                                        e,
+                                        [...tableMeta.rowData].pop()
+                                    );
+                                }
+                            }}
+                            checked={value === 'True'}
+                        />
                     </Tooltip>
                 ),
             },
@@ -313,7 +368,7 @@ export default function ManageUsers({
             options: {
                 filter: false,
                 customBodyRender: (url) =>
-                    /^https?:\/\/github.com\/[a-z.+*&%$#@!]+/i.test(url) ? (
+                    Utils.isValidUrl(url) ? (
                         <Tooltip title="Go to github url">
                             <Fab
                                 size="small"
@@ -348,20 +403,24 @@ export default function ManageUsers({
                 print: false,
                 display: curUser.privelege_level === 'Admin',
                 viewColumns: curUser.privelege_level === 'Admin',
-                customBodyRender: (value, tableMeta) => (
-                    <>
-                        {curUser.privelege_level === 'Admin' ? (
-                            <EditOtherUserForm
-                                thisUser
-                                removeUser={removeUser}
-                                dumUsers={dumUsers}
-                                editUser={editOtherUser}
-                                index={tableMeta.rowIndex}
-                                serverError={users.serverError}
-                            />
-                        ) : null}
-                    </>
-                ),
+                customBodyRender: (value) => {
+                    const userIndex = dumUsers.findIndex(
+                        (u) => u._id === value
+                    );
+                    return (
+                        <>
+                            {curUser.privelege_level === 'Admin' ? (
+                                <EditOtherUserForm
+                                    removeUser={removeUser}
+                                    dumUsers={dumUsers}
+                                    editUser={editOtherUser}
+                                    index={userIndex}
+                                    serverError={users.serverError}
+                                />
+                            ) : null}
+                        </>
+                    );
+                },
             },
         },
     ];
@@ -372,18 +431,24 @@ export default function ManageUsers({
         responsive: 'standard',
         rowsPerPage: 7,
         selectableRows:
-            curUser.privelege_level === 'Admin' &&
-            dumUsers.filter(
-                (user) => user.privelege_level === 'Unapproved_User'
-            ).length === 0
-                ? 'none'
-                : 'multiple',
+            curUser.privelege_level === 'Admin' && unapprovedIds.length !== 0
+                ? 'multiple'
+                : 'none',
         isRowSelectable: (dataIndex) =>
             dumUsers.length !== 0 &&
             dumUsers[dataIndex].privelege_level === 'Unapproved_User',
         fixedHeader: false,
         fixedSelectColumn: false,
         rowsPerPageOptions: [5, 7, 10, 15, 25, 50, 100],
+        onCellClick: (colData, cellMeta) => {
+            if (
+                cellMeta.colIndex !== 14 &&
+                cellMeta.colIndex !== 15 &&
+                cellMeta.colIndex !== 16
+            ) {
+                openUserDialog(cellMeta.dataIndex);
+            }
+        },
         customSearchRender: (searchText, handleSearch, hideSearch, opt) => {
             return (
                 <CustomSearchRender
@@ -413,6 +478,16 @@ export default function ManageUsers({
                     vertical: 'top',
                     horizontal: 'center',
                 }}
+                open={editSuccess}
+                autoHideDuration={2000}
+                onClose={() => setEditSuccess(false)}
+                message="User updated Successfully !"
+            />
+            <Snackbar
+                anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'center',
+                }}
                 open={approveSuccess}
                 autoHideDuration={2000}
                 onClose={closeApproveSuccess}
@@ -428,6 +503,12 @@ export default function ManageUsers({
                 onClose={closeRejectSuccess}
                 message="All Unapproved users REJECTED!"
             />
+            {userDialog.open ? (
+                <UserDialog
+                    user={userDialog.dialogUser}
+                    close={closeUserDialog}
+                />
+            ) : null}
             <Grow in style={{ transformOrigin: 'center top' }} timeout={750}>
                 <Grid container justify="center" alignItems="center">
                     <Grid

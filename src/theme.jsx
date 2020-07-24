@@ -86,8 +86,8 @@ const theme = createMuiTheme({
         },
         MuiOutlinedInput: {
             root: {
-                // backgroundColor: '#1c1c1e',
-                backgroundColor: '#e5e3ea',
+                backgroundColor: '#1c1c1e',
+                // backgroundColor: '#e5e3ea',
                 // '& $notchedOutline': {
                 // borderColor: '#d8d8d8',
                 // borderWidth: '2px',
@@ -95,11 +95,13 @@ const theme = createMuiTheme({
                 //     // color: '#8e8e93',
                 // },
                 '&$focused $notchedOutline': {
-                    borderColor: '#e5e3ea',
+                    // borderColor: '#e5e3ea',
+                    borderColor: '#8e8e93',
                     // color: '#1c1c1e',
                 },
                 '&:hover $notchedOutline': {
-                    borderColor: '#e5e3ea',
+                    // borderColor: '#e5e3ea',
+                    borderColor: '#8e8e93',
                 },
                 borderRadius: '10px',
                 // input: {},
@@ -108,7 +110,8 @@ const theme = createMuiTheme({
                 // },
             },
             input: {
-                color: '#1c1c1e',
+                // color: '#1c1c1e',
+                color: '#d5d3d3',
                 fontWeight: 'bold',
             },
             notchedOutline: {
@@ -121,6 +124,36 @@ const theme = createMuiTheme({
             //         borderColor: '#8e8e93',
             //     },
             // },
+        },
+        MuiFormLabel: {
+            root: {
+                '&$focused': {
+                    // color: '#1c1c1e',
+                    color: '#b4b1b9',
+                    fontWeight: 600,
+                    // paddingLeft: '0.2em',
+                    // backgroundColor: '#e5e3ea',
+                    // paddingTop: '0.2em',
+                    // paddingBottom: '0.2em',
+                    // paddingRight: defaultTheme.spacing(5),
+                    // borderRadius: '4px',
+                    marginLeft: '0px',
+                    // textAlign: 'center',
+                },
+                color: '#b4b1b9',
+                fontWeight: 600,
+                // letterSpacing: 1,
+                // paddingRight: defaultTheme.spacing(5),
+                // paddingLeft: '0.2em',
+                // backgroundColor: '#e5e3ea',
+                // borderRadius: '4px',
+                // paddingTop: '0.2em',
+                // paddingBottom: '0.2em',
+                marginLeft: '0px',
+                // textAlign: 'center',
+                // fontSize: '0.875rem',
+                // fontWeight: 'bold',
+            },
         },
         MuiSelect: {
             icon: {
@@ -139,10 +172,10 @@ const theme = createMuiTheme({
         },
         MuiAutocomplete: {
             clearIndicator: {
-                color: '#3a3a3c',
+                color: '#8e8e93',
             },
             popupIndicator: {
-                color: '#3a3a3c',
+                color: '#ffff',
             },
             paper: {
                 borderRadius: '10px',
@@ -281,6 +314,7 @@ const theme = createMuiTheme({
                 '&$hover': {
                     '&:hover': {
                         backgroundColor: '#48484a',
+                        cursor: 'pointer',
                     },
                 },
             },
@@ -292,7 +326,7 @@ const theme = createMuiTheme({
         },
         MuiIconButton: {
             root: {
-                color: '#3a3a3c',
+                color: '#8e8e93',
                 '&$disabled': {
                     color: '#636366',
                 },
@@ -325,33 +359,6 @@ const theme = createMuiTheme({
         //         color: '#8e8e93',
         //     },
         // },
-        MuiFormLabel: {
-            root: {
-                '&$focused': {
-                    color: '#1c1c1e',
-                    fontWeight: 'bold',
-                    paddingLeft: '0.2em',
-                    backgroundColor: '#e5e3ea',
-                    paddingTop: '0.2em',
-                    paddingBottom: '0.2em',
-                    borderRadius: '4px',
-                    // marginLeft: '0',
-                    textAlign: 'center',
-                },
-                color: '#b4b1b9',
-                fontWeight: 600,
-                letterSpacing: 1,
-                paddingLeft: '0.2em',
-                backgroundColor: '#e5e3ea',
-                borderRadius: '4px',
-                paddingTop: '0.2em',
-                paddingBottom: '0.2em',
-                // marginLeft: '0',
-                textAlign: 'center',
-                // fontSize: '0.875rem',
-                // fontWeight: 'bold',
-            },
-        },
         MuiSnackbarContent: {
             root: {
                 backgroundColor: '#e5e3ea',

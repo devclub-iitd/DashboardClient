@@ -35,10 +35,18 @@ const useStyles = makeStyles((theme) => ({
 
 export default function EventDialog({ event, close, users }) {
     const classes = useStyles();
-    const mems = users.filter((user) => event.assignee.includes(user._id));
+    const [dialogEvent, setDialogEvent] = React.useState({ ...event });
+
+    React.useEffect(() => {
+        setDialogEvent({ ...event });
+    }, [event]);
+    const mems = users.filter((user) =>
+        dialogEvent.assignee.includes(user._id)
+    );
     const closeDialog = () => {
         close();
     };
+
     return (
         <Dialog
             open
@@ -57,7 +65,7 @@ export default function EventDialog({ event, close, users }) {
                                 variant="h3"
                             >
                                 {event !== undefined
-                                    ? event.name
+                                    ? dialogEvent.name
                                     : 'Some Event'}
                             </Typography>
                             <Divider
@@ -73,7 +81,7 @@ export default function EventDialog({ event, close, users }) {
                                     <EventIcon />
                                 </Grid>
                                 <Grid item xs={6} sm={8}>
-                                    <Typography variant="h6">{`${event.start_date.toDateString()} - ${event.end_date.toDateString()}`}</Typography>
+                                    <Typography variant="h6">{`${dialogEvent.start_date.toDateString()} - ${dialogEvent.end_date.toDateString()}`}</Typography>
                                 </Grid>
                                 <Grid item xs={5} sm={3}>
                                     <StatusChip
@@ -85,9 +93,9 @@ export default function EventDialog({ event, close, users }) {
                                 className={classes.info}
                                 variant="body1"
                             >
-                                {event.description}
+                                {dialogEvent.description}
                             </Typography>
-                            {Array.from(event.url).map(([key, value]) => {
+                            {Array.from(dialogEvent.url).map(([key, value]) => {
                                 return (
                                     <Typography
                                         className={classes.info}

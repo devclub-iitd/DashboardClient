@@ -14,6 +14,7 @@ import {
     Switch,
     Avatar,
     Grow,
+    Snackbar,
 } from '@material-ui/core';
 import MUIDataTable from 'mui-datatables';
 import CloseIcon from '@material-ui/icons/Close';
@@ -25,6 +26,7 @@ import TableTitle from './CustomTableTitle';
 import CustomSearchRender from './CustomTableSearchBox';
 import StatusChip from './StatusChip';
 import * as Utils from '../utils';
+import EventDialog from './EventDialog';
 
 const useStyles = makeStyles((theme) => ({
     closeButton: {
@@ -56,6 +58,38 @@ const EventsPage = ({
     const curUser = users.user;
     const dumUsers = users.allUsers;
 
+    const [editSuccess, setEditSuccess] = React.useState(false);
+
+    const toggleEventOnWebsite = (e, id) => {
+        const upEvent = {
+            _id: id,
+            display_on_website: e.target.checked,
+        };
+
+        editEvent(upEvent);
+        if (eventError === null) {
+            setEditSuccess(true);
+        }
+    };
+
+    const [eventDialog, setEventDialog] = React.useState({
+        open: false,
+        dialogEvent: allEvents[0],
+    });
+
+    const openEventDialog = (index) => {
+        setEventDialog({
+            dialogEvent: { ...allEvents[index] },
+            open: true,
+        });
+    };
+
+    const closeEventDialog = () => {
+        setEventDialog({
+            open: false,
+        });
+    };
+
     const getEventRow = (event) => {
         return [
             event.name,
@@ -70,6 +104,7 @@ const EventsPage = ({
                     .map((user) => user.name),
             ],
             event.url.get('url'),
+            event._id,
         ];
     };
 
@@ -150,9 +185,17 @@ const EventsPage = ({
             label: 'On Main Website',
             options: {
                 filter: true,
-                customBodyRender: (value) => (
-                    <Tooltip title="Go to Edit to change this">
-                        <Switch checked={value === 'True'} />
+                customBodyRender: (value, tableMeta) => (
+                    <Tooltip title="Click to toggle value">
+                        <Switch
+                            checked={value === 'True'}
+                            onChange={(e) => {
+                                toggleEventOnWebsite(
+                                    e,
+                                    [...tableMeta.rowData].pop()
+                                );
+                            }}
+                        />
                     </Tooltip>
                 ),
             },
@@ -241,9 +284,7 @@ const EventsPage = ({
             options: {
                 filter: false,
                 customBodyRender: (url) =>
-                    /^https?:\/\/[a-z.+*&%$#@!]+\.[a-z]{2,5}\/?[a-z.+*&%$#@!/]*/i.test(
-                        url
-                    ) ? (
+                    Utils.isValidUrl(url) ? (
                         <Tooltip title="Go to event url">
                             <Fab
                                 size="small"
@@ -280,18 +321,23 @@ const EventsPage = ({
                 viewColumns:
                     curUser.privelege_level === 'Admin' ||
                     curUser.privelege_level === 'Approved_User',
-                customBodyRender: (value, tableMeta) => (
-                    <>
-                        <EditEventForm
-                            deleteEvent={deleteEvent}
-                            dumEvents={allEvents}
-                            dumUsers={users.allUsers}
-                            editEvent={editEvent}
-                            index={tableMeta.rowIndex}
-                            serverError={events.serverError}
-                        />
-                    </>
-                ),
+                customBodyRender: (value) => {
+                    const eventIndex = allEvents.findIndex(
+                        (e) => e._id === value
+                    );
+                    return (
+                        <>
+                            <EditEventForm
+                                deleteEvent={deleteEvent}
+                                dumEvents={allEvents}
+                                dumUsers={users.allUsers}
+                                editEvent={editEvent}
+                                index={eventIndex}
+                                serverError={events.serverError}
+                            />
+                        </>
+                    );
+                },
             },
         },
     ];
@@ -305,6 +351,15 @@ const EventsPage = ({
         fixedHeader: false,
         fixedSelectColumn: false,
         rowsPerPageOptions: [5, 7, 10, 15, 25, 50, 100],
+        onCellClick: (colData, cellMeta) => {
+            if (
+                cellMeta.colIndex !== 5 &&
+                cellMeta.colIndex !== 7 &&
+                cellMeta.colIndex !== 8
+            ) {
+                openEventDialog(cellMeta.dataIndex);
+            }
+        },
         customSearchRender: (searchText, handleSearch, hideSearch, opt) => {
             return (
                 <CustomSearchRender
@@ -329,11 +384,34 @@ const EventsPage = ({
     };
 
     return events.errMess !== null ? (
-        <Typography variant="h4" color="textSecondary">
+        <Typography
+            style={{ width: '100%' }}
+            align="center"
+            variant="h4"
+            color="textSecondary"
+        >
             Failed to fetch Events!
         </Typography>
     ) : (
         <>
+            <Snackbar
+                anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'center',
+                }}
+                open={editSuccess}
+                autoHideDuration={2000}
+                onClose={() => setEditSuccess(false)}
+                message="Event updated Successfully !"
+            />
+            {eventDialog.open ? (
+                <EventDialog
+                    // open={open}
+                    event={eventDialog.dialogEvent}
+                    close={closeEventDialog}
+                    users={dumUsers}
+                />
+            ) : null}
             <Grow in style={{ transformOrigin: 'center top' }} timeout={750}>
                 <Grid container justify="center" alignItems="center">
                     <Grid

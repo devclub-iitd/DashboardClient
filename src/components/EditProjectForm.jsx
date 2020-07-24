@@ -288,11 +288,9 @@ export default function EditProjectForm(props) {
         const { urlFields, project, selectedMembers } = state;
         const { editProject, serverError } = props;
         urlFields.forEach((urlField) => {
-            const fixedUrl =
-                urlField.url.startsWith('https://') ||
-                urlField.url.startsWith('http://')
-                    ? urlField.url
-                    : ['https://', urlField.url].join('');
+            const fixedUrl = Utils.isValidUrl(urlField.url)
+                ? urlField.url
+                : ['https://', urlField.url].join('');
             urlMap.set(urlField.type, fixedUrl);
         });
 
@@ -343,9 +341,18 @@ export default function EditProjectForm(props) {
                 onClose={handleSuccessClose}
                 message="Project updated Successfully !"
             />
-            <Fab onClick={() => handleFormOpen()} size="small" color="primary">
-                <EditRounded fontSize="small" style={{ color: '#636366' }} />
-            </Fab>
+            <Tooltip title="Edit Project">
+                <Fab
+                    onClick={() => handleFormOpen()}
+                    size="small"
+                    color="primary"
+                >
+                    <EditRounded
+                        fontSize="small"
+                        style={{ color: '#636366' }}
+                    />
+                </Fab>
+            </Tooltip>
             <Dialog
                 open={isDailogOpen}
                 maxWidth="sm"

@@ -38,6 +38,8 @@ import * as Utils from '../utils';
 export default function EditEventForm(props) {
     const { dumEvents, index, dumUsers } = props;
 
+    // const dumEvents[index] = dumEvents.filter((event) => event._id === eventId);
+
     const [state, setState] = React.useState({
         orgEvent: dumEvents[index],
         event: dumEvents[index],
@@ -227,11 +229,9 @@ export default function EditEventForm(props) {
         const { serverError, editEvent } = props;
         const { event, urlFields, selectedMembers } = state;
         urlFields.forEach((urlField) => {
-            const fixedUrl =
-                urlField.url.startsWith('https://') ||
-                urlField.url.startsWith('http://')
-                    ? urlField.url
-                    : ['https://', urlField.url].join('');
+            const fixedUrl = Utils.isValidUrl(urlField.url)
+                ? urlField.url
+                : ['https://', urlField.url].join('');
             urlMap.set(urlField.type, fixedUrl);
         });
 
@@ -279,9 +279,18 @@ export default function EditEventForm(props) {
                 onClose={handleSuccessClose}
                 message="Event updated Successfully !"
             />
-            <Fab onClick={() => handleFormOpen()} size="small" color="primary">
-                <EditRounded fontSize="small" style={{ color: '#636366' }} />
-            </Fab>
+            <Tooltip title="Edit Event">
+                <Fab
+                    onClick={() => handleFormOpen()}
+                    size="small"
+                    color="primary"
+                >
+                    <EditRounded
+                        fontSize="small"
+                        style={{ color: '#636366' }}
+                    />
+                </Fab>
+            </Tooltip>
             <Dialog
                 open={isDailogOpen}
                 maxWidth="sm"

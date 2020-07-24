@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable react/forbid-prop-types */
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
@@ -12,6 +13,7 @@ import {
     DialogContent,
     Switch,
     Grow,
+    Snackbar,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import PropTypes from 'prop-types';
@@ -21,6 +23,7 @@ import EditResourceForm from './EditResourceForm';
 import CreateResourceForm from './CreateResourceForm';
 import CustomSearchRender from './CustomTableSearchBox';
 import TableTitle from './CustomTableTitle';
+import * as Utils from '../utils';
 
 const useStyles = makeStyles((theme) => ({
     closeButton: {
@@ -47,6 +50,44 @@ const ResourcesPage = ({
     const { allResources } = resources;
     const curUser = users.user;
 
+    const [editSuccess, setEditSuccess] = React.useState(false);
+
+    const toggleResOnWebsite = (e, id) => {
+        const upRes = {
+            _id: id,
+            display_on_website: e.target.checked,
+        };
+
+        editResource(upRes);
+        if (resourceError === null) {
+            setEditSuccess(true);
+        }
+    };
+
+    const toggleResNew = (e, id) => {
+        const upRes = {
+            _id: id,
+            new: e.target.checked,
+        };
+
+        editResource(upRes);
+        if (resourceError === null) {
+            setEditSuccess(true);
+        }
+    };
+
+    const toggleResArchive = (e, id) => {
+        const upRes = {
+            _id: id,
+            archive: e.target.checked,
+        };
+
+        editResource(upRes);
+        if (resourceError === null) {
+            setEditSuccess(true);
+        }
+    };
+
     const [createOpen, setCreateOpen] = React.useState(false);
 
     const handleCreateOpen = () => {
@@ -68,6 +109,7 @@ const ResourcesPage = ({
             res.archive ? 'True' : 'False',
             res.display_on_website ? 'True' : 'False',
             res.url,
+            res._id,
         ];
     };
 
@@ -154,9 +196,14 @@ const ResourcesPage = ({
             label: 'New Resource',
             options: {
                 filter: true,
-                customBodyRender: (value) => (
-                    <Tooltip title="Go to Edit to change this">
-                        <Switch checked={value === 'True'} />
+                customBodyRender: (value, tableMeta) => (
+                    <Tooltip title="Click to toggle value">
+                        <Switch
+                            onChange={(e) =>
+                                toggleResNew(e, [...tableMeta.rowData].pop())
+                            }
+                            checked={value === 'True'}
+                        />
                     </Tooltip>
                 ),
             },
@@ -166,9 +213,17 @@ const ResourcesPage = ({
             label: 'Archived',
             options: {
                 filter: true,
-                customBodyRender: (value) => (
-                    <Tooltip title="Go to Edit to change this">
-                        <Switch checked={value === 'True'} />
+                customBodyRender: (value, tableMeta) => (
+                    <Tooltip title="Click to toggle value">
+                        <Switch
+                            onChange={(e) =>
+                                toggleResArchive(
+                                    e,
+                                    [...tableMeta.rowData].pop()
+                                )
+                            }
+                            checked={value === 'True'}
+                        />
                     </Tooltip>
                 ),
             },
@@ -178,9 +233,17 @@ const ResourcesPage = ({
             label: 'On Main Website',
             options: {
                 filter: true,
-                customBodyRender: (value) => (
-                    <Tooltip title="Go to Edit to change this">
-                        <Switch checked={value === 'True'} />
+                customBodyRender: (value, tableMeta) => (
+                    <Tooltip title="Click to toggle value">
+                        <Switch
+                            onChange={(e) =>
+                                toggleResOnWebsite(
+                                    e,
+                                    [...tableMeta.rowData].pop()
+                                )
+                            }
+                            checked={value === 'True'}
+                        />
                     </Tooltip>
                 ),
             },
@@ -191,9 +254,7 @@ const ResourcesPage = ({
             options: {
                 filter: false,
                 customBodyRender: (url) =>
-                    /^https?:\/\/[a-z.+*&%$#@!]+\.[a-z]{2,5}\/?[a-z.+*&%$#@!/]*/i.test(
-                        url
-                    ) ? (
+                    Utils.isValidUrl(url) ? (
                         <Tooltip title="Go to resource url">
                             <Fab
                                 size="small"
@@ -230,18 +291,23 @@ const ResourcesPage = ({
                 viewColumn:
                     curUser.privelege_level === 'Admin' ||
                     curUser.privelege_level === 'Approved_User',
-                customBodyRender: (_value, tableMeta) => (
-                    <>
-                        <EditResourceForm
-                            deleteResource={deleteResource}
-                            dumResources={allResources}
-                            dumUsers={users.allUsers}
-                            editResource={editResource}
-                            index={tableMeta.rowIndex}
-                            serverError={resources.serverError}
-                        />
-                    </>
-                ),
+                customBodyRender: (value) => {
+                    const resIndex = allResources.findIndex(
+                        (res) => res._id === value
+                    );
+                    return (
+                        <>
+                            <EditResourceForm
+                                deleteResource={deleteResource}
+                                dumResources={allResources}
+                                dumUsers={users.allUsers}
+                                editResource={editResource}
+                                index={resIndex}
+                                serverError={resources.serverError}
+                            />
+                        </>
+                    );
+                },
             },
         },
     ];
@@ -251,6 +317,7 @@ const ResourcesPage = ({
     const options = {
         filterType: 'checkbox',
         // responsive: 'scrollMaxHeight',
+        rowHover: false,
         responsive: 'standard',
         rowsPerPage: 7,
         selectableRows: 'none',
@@ -271,11 +338,26 @@ const ResourcesPage = ({
     };
 
     return resources.errMess !== null ? (
-        <Typography variant="h4" color="textSecondary">
+        <Typography
+            style={{ width: '100%' }}
+            align="center"
+            variant="h4"
+            color="textSecondary"
+        >
             Failed to fetch Resources!
         </Typography>
     ) : (
         <>
+            <Snackbar
+                anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'center',
+                }}
+                open={editSuccess}
+                autoHideDuration={2000}
+                onClose={() => setEditSuccess(false)}
+                message="Resource updated Successfully !"
+            />
             <Grow in style={{ transformOrigin: 'center top' }} timeout={750}>
                 <Grid container justify="center" alignItems="center">
                     <Grid

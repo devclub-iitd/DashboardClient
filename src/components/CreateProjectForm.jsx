@@ -199,11 +199,9 @@ export default function CreateTasks(props) {
     const submitProjectForm = () => {
         const urlMap = new Map();
         state.urlFields.forEach((urlField) => {
-            const fixedUrl =
-                urlField.url.startsWith('https://') ||
-                urlField.url.startsWith('http://')
-                    ? urlField.url
-                    : ['https://', urlField.url].join('');
+            const fixedUrl = Utils.isValidUrl(urlField.url)
+                ? urlField.url
+                : ['https://', urlField.url].join('');
             urlMap.set(urlField.type, fixedUrl);
         });
         const newProject = {

@@ -14,6 +14,7 @@ import {
     Switch,
     Avatar,
     Grow,
+    Snackbar,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import PropTypes from 'prop-types';
@@ -24,6 +25,8 @@ import CreateProjectForm from './CreateProjectForm';
 import StatusChip from './StatusChip';
 import CustomSearchRender from './CustomTableSearchBox';
 import TableTitle from './CustomTableTitle';
+import ProjectDialog from './ProjectDialog';
+import * as Utils from '../utils';
 
 const useStyles = makeStyles((theme) => ({
     closeButton: {
@@ -54,6 +57,62 @@ const ProjectsPage = ({
     const { allProjects } = projects;
     const curUser = users.user;
     const dumUsers = users.allUsers;
+
+    const [editSuccess, setEditSuccess] = React.useState(false);
+
+    const toggleProjectOnWebsite = (e, id) => {
+        const upProject = {
+            _id: id,
+            display_on_website: e.target.checked,
+        };
+
+        editProject(upProject);
+        if (projectError === null) {
+            setEditSuccess(true);
+        }
+    };
+
+    const toggleProjectInternal = (e, id) => {
+        const upProject = {
+            _id: id,
+            is_internal: e.target.checked,
+        };
+
+        editProject(upProject);
+        if (projectError === null) {
+            setEditSuccess(true);
+        }
+    };
+
+    const toggleProjectShowcase = (e, id) => {
+        const upProject = {
+            _id: id,
+            showcase: e.target.checked,
+        };
+
+        editProject(upProject);
+        if (projectError === null) {
+            setEditSuccess(true);
+        }
+    };
+
+    const [projectDialog, setProjectDialog] = React.useState({
+        open: false,
+        dialogProject: allProjects[0],
+    });
+
+    const openProjectDialog = (index) => {
+        setProjectDialog({
+            dialogProject: { ...allProjects[index] },
+            open: true,
+        });
+    };
+
+    const closeProjectDialog = () => {
+        setProjectDialog({
+            open: false,
+        });
+    };
 
     const [createOpen, setCreateOpen] = React.useState(false);
 
@@ -86,6 +145,7 @@ const ProjectsPage = ({
                     .map((user) => user.name),
             ],
             project.url.get('web_url'),
+            project._id,
         ];
     };
 
@@ -239,9 +299,17 @@ const ProjectsPage = ({
             label: 'On Main Website',
             options: {
                 filter: true,
-                customBodyRender: (value) => (
-                    <Tooltip title="Go to Edit to change this">
-                        <Switch checked={value === 'True'} />
+                customBodyRender: (value, tableMeta) => (
+                    <Tooltip title="Click to toggle value">
+                        <Switch
+                            onChange={(e) =>
+                                toggleProjectOnWebsite(
+                                    e,
+                                    [...tableMeta.rowData].pop()
+                                )
+                            }
+                            checked={value === 'True'}
+                        />
                     </Tooltip>
                 ),
             },
@@ -251,10 +319,17 @@ const ProjectsPage = ({
             label: 'Internal',
             options: {
                 filter: true,
-                display: false,
-                customBodyRender: (value) => (
-                    <Tooltip title="Go to Edit to change this">
-                        <Switch checked={value === 'True'} />
+                customBodyRender: (value, tableMeta) => (
+                    <Tooltip title="Click to toggle value">
+                        <Switch
+                            onChange={(e) =>
+                                toggleProjectInternal(
+                                    e,
+                                    [...tableMeta.rowData].pop()
+                                )
+                            }
+                            checked={value === 'True'}
+                        />
                     </Tooltip>
                 ),
             },
@@ -264,9 +339,17 @@ const ProjectsPage = ({
             label: 'Showcase',
             options: {
                 filter: true,
-                customBodyRender: (value) => (
-                    <Tooltip title="Go to Edit to change this">
-                        <Switch checked={value === 'True'} />
+                customBodyRender: (value, tableMeta) => (
+                    <Tooltip title="Click to toggle value">
+                        <Switch
+                            onChange={(e) =>
+                                toggleProjectShowcase(
+                                    e,
+                                    [...tableMeta.rowData].pop()
+                                )
+                            }
+                            checked={value === 'True'}
+                        />
                     </Tooltip>
                 ),
             },
@@ -375,9 +458,7 @@ const ProjectsPage = ({
             options: {
                 filter: false,
                 customBodyRender: (url) =>
-                    /^https?:\/\/[a-z.+*&%$#@!]+\.[a-z]{2,5}\/?[a-z.+*&%$#@!/]*/i.test(
-                        url
-                    ) ? (
+                    Utils.isValidUrl(url) ? (
                         <Tooltip title="Go to project website">
                             <Fab
                                 size="small"
@@ -414,18 +495,23 @@ const ProjectsPage = ({
                 viewColumn:
                     curUser.privelege_level === 'Admin' ||
                     curUser.privelege_level === 'Approved_User',
-                customBodyRender: (value, tableMeta) => (
-                    <>
-                        <EditProjectForm
-                            deleteProject={deleteProject}
-                            dumProjects={allProjects}
-                            dumUsers={users.allUsers}
-                            editProject={editProject}
-                            index={tableMeta.rowIndex}
-                            serverError={projects.serverError}
-                        />
-                    </>
-                ),
+                customBodyRender: (value) => {
+                    const pIndex = allProjects.findIndex(
+                        (pro) => pro._id === value
+                    );
+                    return (
+                        <>
+                            <EditProjectForm
+                                deleteProject={deleteProject}
+                                dumProjects={allProjects}
+                                dumUsers={users.allUsers}
+                                editProject={editProject}
+                                index={pIndex}
+                                serverError={projects.serverError}
+                            />
+                        </>
+                    );
+                },
             },
         },
     ];
@@ -440,6 +526,17 @@ const ProjectsPage = ({
         selectableRows: 'none',
         fixedHeader: false,
         fixedSelectColumn: false,
+        onCellClick: (colData, cellMeta) => {
+            if (
+                cellMeta.colIndex !== 9 &&
+                cellMeta.colIndex !== 10 &&
+                cellMeta.colIndex !== 11 &&
+                cellMeta.colIndex !== 14 &&
+                cellMeta.colIndex !== 15
+            ) {
+                openProjectDialog(cellMeta.dataIndex);
+            }
+        },
         rowsPerPageOptions: [5, 7, 10, 15, 25, 50, 100],
         customSearchRender: (searchText, handleSearch, hideSearch, opt) => {
             return (
@@ -455,11 +552,33 @@ const ProjectsPage = ({
     };
 
     return projects.errMess !== null ? (
-        <Typography variant="h4" color="textSecondary">
+        <Typography
+            style={{ width: '100%' }}
+            align="center"
+            variant="h4"
+            color="textSecondary"
+        >
             Failed to fetch Projects
         </Typography>
     ) : (
         <>
+            <Snackbar
+                anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'center',
+                }}
+                open={editSuccess}
+                autoHideDuration={2000}
+                onClose={() => setEditSuccess(false)}
+                message="Project updated Successfully !"
+            />
+            {projectDialog.open ? (
+                <ProjectDialog
+                    project={projectDialog.dialogProject}
+                    close={closeProjectDialog}
+                    users={dumUsers}
+                />
+            ) : null}
             <Grow in style={{ transformOrigin: 'center top' }} timeout={750}>
                 <Grid container justify="center" alignItems="center">
                     <Grid

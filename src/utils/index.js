@@ -9,6 +9,10 @@ export { UserUtils };
 
 export const defaultTheme = createMuiTheme();
 
+export const isValidUrl = (url) => {
+    return /^https?:\/\/[a-z.+*&%$#@!/]+/i.test(url);
+};
+
 export const strMapToObj = (strMap) => {
     const obj = Object.create(null);
     strMap.forEach((value, key) => {

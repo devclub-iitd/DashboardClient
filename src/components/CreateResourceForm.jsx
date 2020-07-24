@@ -8,6 +8,7 @@ import {
     TextField,
 } from '@material-ui/core';
 import PropTypes from 'prop-types';
+import * as Utils from '../utils';
 
 export default function CreateTasks(props) {
     const [state, setState] = React.useState({
@@ -59,7 +60,7 @@ export default function CreateTasks(props) {
                     ...state.newRes,
                     url: event.target.value,
                 },
-                urlError: validUrl.test(event.target.value),
+                urlError: Utils.isValidUrl(event.target.value),
             });
         } else {
             setState({

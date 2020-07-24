@@ -209,11 +209,9 @@ export default function EditOtherUserForm(props) {
         const urlMap = new Map();
         const { editUser } = props;
         state.urlFields.forEach((urlField) => {
-            const fixedUrl =
-                urlField.url.startsWith('https://') ||
-                urlField.url.startsWith('http://')
-                    ? urlField.url
-                    : ['https://', urlField.url].join('');
+            const fixedUrl = Utils.isValidUrl(urlField.url)
+                ? urlField.url
+                : ['https://', urlField.url].join('');
             urlMap.set(urlField.type, fixedUrl);
         });
         const newUser = {
@@ -271,9 +269,18 @@ export default function EditOtherUserForm(props) {
                 onClose={handleSuccessClose}
                 message="User updated Successfully !"
             />
-            <Fab onClick={() => handleFormOpen()} size="small" color="primary">
-                <EditRounded fontSize="small" style={{ color: '#636366' }} />
-            </Fab>
+            <Tooltip title="Edit User">
+                <Fab
+                    onClick={() => handleFormOpen()}
+                    size="small"
+                    color="primary"
+                >
+                    <EditRounded
+                        fontSize="small"
+                        style={{ color: '#636366' }}
+                    />
+                </Fab>
+            </Tooltip>
             <Dialog
                 open={isDailogOpen}
                 maxWidth="sm"
@@ -320,19 +327,19 @@ export default function EditOtherUserForm(props) {
                                 <FormControlLabel
                                     value="Unapproved_User"
                                     control={<Radio color="secondary" />}
-                                    label="Unapprove User"
+                                    label="Unapproved"
                                     labelPlacement="end"
                                 />
                                 <FormControlLabel
                                     value="Approved_User"
                                     control={<Radio color="secondary" />}
-                                    label="Approve User"
+                                    label="Approved"
                                     labelPlacement="end"
                                 />
                                 <FormControlLabel
                                     value="Admin"
                                     control={<Radio color="primary" />}
-                                    label="Make Admin"
+                                    label="Admin"
                                     labelPlacement="end"
                                 />
                             </RadioGroup>

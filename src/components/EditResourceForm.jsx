@@ -12,9 +12,11 @@ import {
     Fab,
     Grid,
     TextField,
+    Tooltip,
 } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import { EditRounded } from '@material-ui/icons';
+import * as Utils from '../utils';
 
 export default function EditResourceForm(props) {
     const { dumResources, index } = props;
@@ -73,7 +75,7 @@ export default function EditResourceForm(props) {
                     ...state.resource,
                     url: event.target.value,
                 },
-                urlError: validUrl.test(event.target.value),
+                urlError: Utils.isValidUrl(event.target.value),
             });
         } else {
             setState((prevState) => ({
@@ -168,9 +170,18 @@ export default function EditResourceForm(props) {
                 onClose={handleSuccessClose}
                 message="Resource updated successfully !"
             />
-            <Fab onClick={() => handleFormOpen()} size="small" color="primary">
-                <EditRounded fontSize="small" style={{ color: '#636366' }} />
-            </Fab>
+            <Tooltip title="Edit Resource">
+                <Fab
+                    onClick={() => handleFormOpen()}
+                    size="small"
+                    color="primary"
+                >
+                    <EditRounded
+                        fontSize="small"
+                        style={{ color: '#636366' }}
+                    />
+                </Fab>
+            </Tooltip>
             <Dialog
                 open={isDailogOpen}
                 maxWidth="sm"

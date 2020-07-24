@@ -78,6 +78,7 @@ const useStyles = makeStyles((theme) => ({
     specPaper: {
         backgroundColor: '#48484a',
         padding: theme.spacing(1, 1, 2, 2),
+        // height: '100%',
         borderRadius: '15px',
         [theme.breakpoints.down('sm')]: {
             marginTop: theme.spacing(4),
@@ -88,6 +89,8 @@ const useStyles = makeStyles((theme) => ({
         padding: theme.spacing(1, 1, 2, 2),
         borderRadius: '15px',
         marginTop: theme.spacing(4),
+        // marginLeft: theme.spacing(2.3),
+        // marginRight: theme.spacing(2.3),
     },
     categoryField: {
         [theme.breakpoints.down('md')]: {
@@ -135,6 +138,11 @@ const useStyles = makeStyles((theme) => ({
             marginLeft: theme.spacing(1),
         },
     },
+    passButton: {
+        [theme.breakpoints.up('md')]: {
+            marginTop: theme.spacing(2),
+        },
+    },
 }));
 
 const ProfileField = ({ title, value }) => {
@@ -166,6 +174,11 @@ export default function Profile({
     changePassword,
     users,
 }) {
+    let urlSpecHeight;
+    let specHeight;
+    let introHeight;
+    // const urlSpecRef =
+
     const [editMode, setEditMode] = React.useState(false);
 
     const toggleEditMode = () => {
@@ -300,11 +313,9 @@ export default function Profile({
         //     urlMap.set(urlField.type, urlField.url)
         // );
         state.urlFields.forEach((urlField) => {
-            const fixedUrl =
-                urlField.url.startsWith('https://') ||
-                urlField.url.startsWith('http://')
-                    ? urlField.url
-                    : ['https://', urlField.url].join('');
+            const fixedUrl = Utils.isValidUrl(urlField.url)
+                ? urlField.url
+                : ['https://', urlField.url].join('');
             urlMap.set(urlField.type, fixedUrl);
         });
         const newUser = {
@@ -439,7 +450,7 @@ export default function Profile({
                                         handleFormValuesChange(e, 'gender')
                                     }
                                     className={classes.categoryField}
-                                    margin="normal"
+                                    margin="dense"
                                     required
                                 >
                                     {['female', 'male', 'other'].map(
@@ -550,7 +561,7 @@ export default function Profile({
                                         handleFormValuesChange(e, 'category')
                                     }
                                     className={classes.categoryField}
-                                    margin="normal"
+                                    margin="dense"
                                     required
                                 >
                                     {categories.map((option) => (
@@ -593,7 +604,7 @@ export default function Profile({
                                             handleFormValuesChange(e, 'hostel')
                                         }
                                         style={{ width: '90%' }}
-                                        margin="normal"
+                                        margin="dense"
                                         required
                                     >
                                         {hostels.map((option) => (
@@ -754,12 +765,12 @@ export default function Profile({
                                 md={10}
                             >
                                 <Tooltip title="Edit Profile">
-                                    <IconButton onClick={toggleEditMode}>
-                                        <EditIcon
-                                            fontSize="large"
-                                            color="secondary"
-                                        />
-                                    </IconButton>
+                                    <Fab
+                                        color="primary"
+                                        onClick={toggleEditMode}
+                                    >
+                                        <EditIcon fontSize="large" />
+                                    </Fab>
                                 </Tooltip>
                             </Grid>
                             <Grid
@@ -768,16 +779,14 @@ export default function Profile({
                                 item
                                 xs={2}
                                 md={10}
+                                className={classes.passButton}
                             >
                                 <Tooltip title="Change your password">
                                     <Fab
                                         color="secondary"
                                         onClick={handlePasswordOpen}
                                     >
-                                        <VpnKeyRounded
-                                            fontSize="large"
-                                            color="error"
-                                        />
+                                        <VpnKeyRounded fontSize="large" />
                                     </Fab>
                                 </Tooltip>
                             </Grid>
@@ -983,7 +992,8 @@ export default function Profile({
                         container
                         className={classes.urlSpecContainer}
                         justify="space-evenly"
-                        alignItems="flex-start"
+                        // alignItems="flex-start"
+                        alignItems="stretch"
                         item
                         xs={12}
                     >
@@ -1157,7 +1167,9 @@ export default function Profile({
                                     <Grid
                                         container
                                         justify="flex-start"
-                                        alignItems
+                                        item
+                                        xs={12}
+                                        // alignItems
                                     >
                                         {state.urlFields.map(
                                             ({ type, url }, index) => (
@@ -1167,11 +1179,13 @@ export default function Profile({
                                                             marginTop: '8px',
                                                         }}
                                                         item
-                                                        xs={5}
+                                                        xs={8}
+                                                        md={5}
                                                     >
                                                         <TextField
                                                             required
                                                             small
+                                                            fullWidth
                                                             margin="dense"
                                                             label="type"
                                                             id="type"
@@ -1200,6 +1214,7 @@ export default function Profile({
                                                             <TextField
                                                                 required
                                                                 small
+                                                                fullWidth
                                                                 margin="dense"
                                                                 label="url"
                                                                 id="url"
@@ -1224,7 +1239,7 @@ export default function Profile({
                                                             <Grid item xs={2}>
                                                                 <Tooltip title="Delete this url field">
                                                                     <IconButton
-                                                                        edge="start"
+                                                                        edge="end"
                                                                         style={{
                                                                             color:
                                                                                 '#fff',
@@ -1300,8 +1315,10 @@ export default function Profile({
                                         required
                                         variant="outlined"
                                         small
+                                        fullWidth
                                         margin="dense"
                                         multiline
+                                        style={{ width: '90%' }}
                                         rowsMax={5}
                                         id="specialization"
                                         name="specialization"
@@ -1318,11 +1335,18 @@ export default function Profile({
                             )}
                         </Grid>
                     </Grid>
+                    {/* <Grid
+                        item
+                        xs={12}
+                        container
+                        justify="space-evenly"
+                        alignItems="stretch"
+                    > */}
                     <Grid
                         component={Paper}
                         className={classes.intPaper}
                         item
-                        xs={10}
+                        xs={11}
                     >
                         <Typography style={{ color: '#8e8e93' }} variant="h6">
                             Interests
@@ -1356,6 +1380,7 @@ export default function Profile({
                             </Grow>
                         )}
                     </Grid>
+                    {/* </Grid> */}
                 </Grid>
             </Grow>
         </Grid>

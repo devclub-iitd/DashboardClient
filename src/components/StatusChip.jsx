@@ -13,7 +13,8 @@ const chipColors = {
         background: '#7d7656',
     },
     completed: {
-        main: '#ff453a', // red
+        // main: '#ff453a', // red
+        main: '#ff675e',
         background: '#7d5e5e',
     },
 };
