@@ -1,62 +1,52 @@
 /* eslint-disable react/forbid-prop-types */
 /* eslint-disable no-underscore-dangle */
-import React, { Component } from 'react';
+import React from 'react';
 import {
     Typography,
     Dialog,
     DialogTitle,
     DialogContent,
-    FormControlLabel,
     Switch,
     Button,
     Snackbar,
+    Fab,
+    Grid,
+    TextField,
+    Tooltip,
 } from '@material-ui/core';
-import { Row, Col, Label } from 'reactstrap';
 import PropTypes from 'prop-types';
-import { LocalForm, Control, Errors } from 'react-redux-form';
+import { EditRounded } from '@material-ui/icons';
+import * as Utils from '../utils';
 
-class EditResourceForm extends Component {
-    constructor(props) {
-        super(props);
+export default function EditResourceForm(props) {
+    const { dumResources, index } = props;
 
-        this.state = {
-            internal_name: props.dumResources[props.index].internal_name,
-            directory_year: props.dumResources[props.index].directory_year,
-            subdirectory: props.dumResources[props.index].subdirectory,
-            name: props.dumResources[props.index].name,
-            archive: props.dumResources[props.index].archive,
-            description: props.dumResources[props.index].description,
-            url: props.dumResources[props.index].url,
-            new: props.dumResources[props.index].new,
-            display_on_website:
-                props.dumResources[props.index].display_on_website,
-            resource: props.dumResources[props.index],
-            orgResource: props.dumResources[props.index],
+    const [state, setState] = React.useState({
+        resource: dumResources[index],
+        orgResource: dumResources[index],
+        isDailogOpen: false,
+        isDeleteDailogOpen: false,
+        success: false,
+        deleteSucc: false,
+        urlError: true,
+    });
+
+    React.useEffect(() => {
+        setState({
+            resource: dumResources[index],
+            orgResource: dumResources[index],
             isDailogOpen: false,
             isDeleteDailogOpen: false,
             success: false,
-        };
+            deleteSucc: false,
+            urlError: true,
+        });
+    }, [dumResources, index]);
 
-        this.handleFormValuesChange = this.handleFormValuesChange.bind(this);
-        this.confirmDeleteOpen = this.confirmDeleteOpen.bind(this);
-        this.confirmDeleteClose = this.confirmDeleteClose.bind(this);
-        this.handleDelete = this.handleDelete.bind(this);
-        this.handleSuccessClose = this.handleSuccessClose.bind(this);
-        this.cancelEdit = this.cancelEdit.bind(this);
-    }
-
-    componentWillReceiveProps(props) {
-        this.setState((prevState) => ({
-            ...prevState,
-            orgResource: props.dumResources[props.index],
-            resource: props.dumResources[props.index],
-        }));
-    }
-
-    handleFormValuesChange = (event, fieldName) => {
+    const handleFormValuesChange = (event, fieldName) => {
         const { checked, value, name } = event.target;
         if (fieldName === 'archive') {
-            this.setState((prevState) => ({
+            setState((prevState) => ({
                 ...prevState,
                 resource: {
                     ...prevState.resource,
@@ -64,7 +54,7 @@ class EditResourceForm extends Component {
                 },
             }));
         } else if (fieldName === 'display_on_website') {
-            this.setState((prevState) => ({
+            setState((prevState) => ({
                 ...prevState,
                 resource: {
                     ...prevState.resource,
@@ -72,15 +62,24 @@ class EditResourceForm extends Component {
                 },
             }));
         } else if (fieldName === 'new') {
-            this.setState((prevState) => ({
+            setState((prevState) => ({
                 ...prevState,
                 resource: {
                     ...prevState.resource,
                     new: checked,
                 },
             }));
+        } else if (name === 'url') {
+            setState({
+                ...state,
+                resource: {
+                    ...state.resource,
+                    url: event.target.value,
+                },
+                urlError: Utils.isValidUrl(event.target.value),
+            });
         } else {
-            this.setState((prevState) => ({
+            setState((prevState) => ({
                 ...prevState,
                 resource: {
                     ...prevState.resource,
@@ -90,487 +89,399 @@ class EditResourceForm extends Component {
         }
     };
 
-    handleSuccessClose = () => {
-        this.setState((prevState) => ({
+    const handleSuccessClose = () => {
+        setState((prevState) => ({
             ...prevState,
             success: false,
+            deleteSucc: false,
         }));
     };
 
-    handleFormOpen = () => {
-        this.setState((prevState) => ({
+    const handleFormOpen = () => {
+        setState((prevState) => ({
             ...prevState,
             isDailogOpen: true,
         }));
     };
 
-    handleFormClose = () => {
-        this.setState((prevState) => ({
+    const handleFormClose = () => {
+        setState((prevState) => ({
             ...prevState,
             isDailogOpen: false,
         }));
     };
 
-    confirmDeleteOpen = () => {
-        this.setState((prevState) => ({
+    const confirmDeleteOpen = () => {
+        setState((prevState) => ({
             ...prevState,
             isDeleteDailogOpen: true,
         }));
     };
 
-    confirmDeleteClose = () => {
-        this.setState((prevState) => ({
+    const confirmDeleteClose = () => {
+        setState((prevState) => ({
             ...prevState,
             isDeleteDailogOpen: false,
         }));
     };
 
-    handleDelete = () => {
-        // Call delete thunk here,
-        const { deleteResource, dumResources, index } = this.props;
-        deleteResource(dumResources[index]._id);
-        // console.log('Deleting: ', this.state.name);
-        this.confirmDeleteClose();
+    const handleDelete = () => {
+        const { deleteResource, serverError } = props;
+        deleteResource(dumResources[index]._id, () => {
+            if (serverError === null) {
+                setState((prevState) => ({
+                    ...prevState,
+                    deleteSucc: true,
+                }));
+            }
+            handleFormClose();
+            confirmDeleteClose();
+        });
     };
 
-    cancelEdit = () => {
-        this.setState(
-            (prevState) => ({
-                ...prevState,
-                resource: {
-                    ...prevState.orgResource,
-                },
-            }),
-            () => this.handleFormClose()
-        );
-        // window.location.reload(false);
+    const cancelEdit = () => {
+        setState((prevState) => ({
+            ...prevState,
+            resource: {
+                ...prevState.orgResource,
+            },
+        }));
+        handleFormClose();
     };
 
-    handleSubmit = () => {
-        // const updatedResource = {
-        //   ...dumResources[index],
-        //   ...this.state,
-        // };
-
-        // delete updatedResource.isDailogOpen;
-        // delete updatedResource.isDeleteDailogOpen;
-        // delete updatedResource.serverError;
-
-        // this.props.editResource(updatedResource);
-        const { resource } = this.state;
-        const { editResource, serverError } = this.props;
-        editResource(resource);
-        if (serverError === null) {
-            this.setState((prevState) => ({
-                ...prevState,
-                success: true,
-            }));
-        }
-        // console.log('got values: ', this.state);
-        this.handleFormClose();
+    const handleSubmit = () => {
+        const { resource } = state;
+        const { editResource, serverError } = props;
+        editResource(resource, () => {
+            if (serverError === null) {
+                setState((prevState) => ({
+                    ...prevState,
+                    success: true,
+                }));
+            }
+            handleFormClose();
+        });
     };
 
-    render() {
-        const required = (val) => val && val.length;
-        const maxLength = (len) => (val) => !val || val.length <= len;
-        const minLength = (len) => (val) => val && val.length >= len;
-        // let { editFailed, removeFailed } = this.props;
+    const FieldSep = () => {
+        return <Grid item xs={12} style={{ height: '8px' }} />;
+    };
 
-        // const [serverError, setServerError] = React.useState(editFailed || removeFailed);
+    const {
+        success,
+        deleteSucc,
+        isDailogOpen,
+        resource,
+        isDeleteDailogOpen,
+    } = state;
 
-        // const handleClose = () => {
-        //   // setServerError(false);
-        //   editFailed = false;
-        //   removeFailed = false;
-        // };
-        const {
-            success,
-            isDailogOpen,
-            resource,
-            isDeleteDailogOpen,
-        } = this.state;
-
-        return (
-            <div>
-                <Snackbar
-                    anchorOrigin={{
-                        vertical: 'top',
-                        horizontal: 'center',
-                    }}
-                    open={success}
-                    autoHideDuration={2000}
-                    onClose={this.handleSuccessClose}
-                    message="Resource Edited successfully !"
-                />
-                <Button
-                    onClick={() => {
-                        this.handleFormOpen();
-                    }}
-                    variant="contained"
-                    color="secondary"
+    return (
+        <div>
+            <Snackbar
+                anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'center',
+                }}
+                open={success}
+                autoHideDuration={2000}
+                onClose={handleSuccessClose}
+                message="Resource updated successfully !"
+            />
+            <Snackbar
+                anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'center',
+                }}
+                open={deleteSucc}
+                autoHideDuration={2000}
+                onClose={handleSuccessClose}
+                message="Resource deleted successfully !"
+            />
+            <Tooltip title="Edit Resource">
+                <Fab
+                    onClick={() => handleFormOpen()}
+                    size="small"
+                    color="primary"
                 >
-                    Edit Resource
-                </Button>
-                <Dialog
-                    open={isDailogOpen}
-                    maxWidth="sm"
-                    fullWidth
-                    onClose={this.handleFormClose}
-                    scroll="paper"
-                >
-                    <DialogTitle>
-                        <Typography variant="h4">Edit Resource</Typography>
-                    </DialogTitle>
-                    <DialogContent>
-                        <LocalForm
-                            model="resourceForm"
-                            onSubmit={() => this.handleSubmit()}
+                    <EditRounded
+                        fontSize="small"
+                        style={{ color: '#636366' }}
+                    />
+                </Fab>
+            </Tooltip>
+            <Dialog
+                open={isDailogOpen}
+                maxWidth="sm"
+                fullWidth
+                onClose={handleFormClose}
+                scroll="paper"
+            >
+                <DialogTitle>
+                    <Typography variant="h4">Edit Resource</Typography>
+                </DialogTitle>
+                <DialogContent style={{ scrollbarWidth: 'none' }}>
+                    <Grid container justify="center" alignItems="center">
+                        <Grid item xs={4}>
+                            <Typography variant="h6">Internal Name:</Typography>
+                        </Grid>
+                        <Grid item xs={8}>
+                            <TextField
+                                name="internal_name"
+                                variant="outlined"
+                                required
+                                value={resource.internal_name}
+                                onChange={(e) =>
+                                    handleFormValuesChange(e, 'internal_name')
+                                }
+                                id="internal_name"
+                                label="Internal Name"
+                            />
+                        </Grid>
+                        <FieldSep />
+                        <FieldSep />
+                        <Grid item xs={4}>
+                            <Typography variant="h6">
+                                Directory year:
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={8}>
+                            <TextField
+                                name="directory_year"
+                                variant="outlined"
+                                required
+                                value={resource.directory_year}
+                                onChange={(e) =>
+                                    handleFormValuesChange(e, 'directory_year')
+                                }
+                                id="directory_year"
+                                label="Directory Year"
+                            />
+                        </Grid>
+                        <FieldSep />
+                        <FieldSep />
+                        <Grid item xs={4}>
+                            <Typography variant="h6">Sub-Directory:</Typography>
+                        </Grid>
+                        <Grid item xs={8}>
+                            <TextField
+                                name="subdirectory"
+                                variant="outlined"
+                                required
+                                value={resource.subdirectory}
+                                onChange={(e) =>
+                                    handleFormValuesChange(e, 'subdirectory')
+                                }
+                                id="subdirectory"
+                                label="Sub-Directory"
+                            />
+                        </Grid>
+                        <FieldSep />
+                        <FieldSep />
+                        <Grid item xs={4}>
+                            <Typography variant="h6">
+                                Name of Resource:
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={8}>
+                            <TextField
+                                name="name"
+                                variant="outlined"
+                                required
+                                value={resource.name}
+                                onChange={(e) =>
+                                    handleFormValuesChange(e, 'name')
+                                }
+                                id="name"
+                                label="Name"
+                            />
+                        </Grid>
+                        <FieldSep />
+                        <FieldSep />
+                        <Grid item xs={12}>
+                            <Typography variant="h6">Description:</Typography>
+                        </Grid>
+                        <Grid item xs={10} sm={8}>
+                            <TextField
+                                required
+                                variant="outlined"
+                                fullWidth
+                                margin="normal"
+                                multiline
+                                rowsMax={5}
+                                id="description"
+                                name="description"
+                                label="Description"
+                                value={resource.description}
+                                onChange={(e) =>
+                                    handleFormValuesChange(e, 'description')
+                                }
+                            />
+                        </Grid>
+                        <FieldSep />
+                        <FieldSep />
+                        <Grid item xs={4}>
+                            <Typography variant="h6">
+                                Url of Resource:
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={8}>
+                            <TextField
+                                name="url"
+                                variant="outlined"
+                                required
+                                value={resource.url}
+                                onChange={(e) =>
+                                    handleFormValuesChange(e, 'url')
+                                }
+                                id="url"
+                                label="Url"
+                                error={!state.urlError}
+                            />
+                        </Grid>
+                        <FieldSep />
+                        <FieldSep />
+                        <Grid container item xs={12} alignItems="center">
+                            <Grid item xs={5}>
+                                <Typography variant="h6">
+                                    Display on website:{' '}
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={2}>
+                                <Switch
+                                    checked={resource.display_on_website}
+                                    onChange={(e) =>
+                                        handleFormValuesChange(
+                                            e,
+                                            'display_on_website'
+                                        )
+                                    }
+                                />
+                            </Grid>
+                        </Grid>
+                        <FieldSep />
+                        <Grid container item xs={12} alignItems="center">
+                            <Grid item xs={5}>
+                                <Typography variant="h6">Archive: </Typography>
+                            </Grid>
+                            <Grid item xs={2}>
+                                <Switch
+                                    checked={resource.archive}
+                                    onChange={(e) =>
+                                        handleFormValuesChange(e, 'archive')
+                                    }
+                                />
+                            </Grid>
+                        </Grid>
+                        <FieldSep />
+                        <Grid container item xs={12} alignItems="center">
+                            <Grid item xs={5}>
+                                <Typography variant="h6">
+                                    New Resource:{' '}
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={2}>
+                                <Switch
+                                    checked={resource.new}
+                                    onChange={(e) =>
+                                        handleFormValuesChange(e, 'new')
+                                    }
+                                />
+                            </Grid>
+                        </Grid>
+                        <FieldSep />
+                        <FieldSep />
+                        <Grid
+                            container
+                            justify="center"
+                            alignItems="center"
+                            item
+                            xs={12}
                         >
-                            <Row className="form-group">
-                                <Label htmlFor="internal_name" md={4}>
-                                    <h6>Internal Name:</h6>
-                                </Label>
-                                <Col md={8}>
-                                    <Control.text
-                                        model=".internal_name"
-                                        id="internal_name"
-                                        name="internal_name"
-                                        defaultValue={resource.internal_name}
-                                        // onChange={this.changeInternalName}
-                                        onChange={this.handleFormValuesChange}
-                                        placeholder="Internal Name*"
-                                        className="form-control"
-                                        validators={{
-                                            required,
-                                            minLength: minLength(1),
-                                            maxLength: maxLength(20),
-                                        }}
-                                    />
-                                    <Errors
-                                        className="text-danger"
-                                        model=".internal_name"
-                                        show="touched"
-                                        messages={{
-                                            required: 'Required ',
-                                            minLength:
-                                                'Must be greater than 2 characters',
-                                            maxLength:
-                                                'Must be 25 characters or less',
-                                        }}
-                                    />
-                                </Col>
-                            </Row>
-                            <Row className="form-group">
-                                <Label htmlFor="directory_year" md={4}>
-                                    <h6>Directory year:</h6>
-                                </Label>
-                                <Col md={8}>
-                                    <Control.text
-                                        model=".directory_year"
-                                        id="directory_year"
-                                        name="directory_year"
-                                        placeholder="Directory Year*"
-                                        defaultValue={resource.directory_year}
-                                        // onChange={this.changeDirectoryYear}
-                                        onChange={this.handleFormValuesChange}
-                                        className="form-control"
-                                        validators={{
-                                            required,
-                                            minLength: minLength(1),
-                                            maxLength: maxLength(20),
-                                        }}
-                                    />
-                                    <Errors
-                                        className="text-danger"
-                                        model=".directory_year"
-                                        show="touched"
-                                        messages={{
-                                            required: 'Required ',
-                                            minLength:
-                                                'Must be greater than 2 characters',
-                                            maxLength:
-                                                'Must be 25 characters or less',
-                                        }}
-                                    />
-                                </Col>
-                            </Row>
-                            <Row className="form-group">
-                                <Label htmlFor="sub_directory" md={4}>
-                                    <h6>Sub-Directory:</h6>
-                                </Label>
-                                <Col md={8}>
-                                    <Control.text
-                                        model=".sub_directory"
-                                        id="sub_directory"
-                                        name="sub_directory"
-                                        placeholder="Sub-Directory*"
-                                        defaultValue={resource.subdirectory}
-                                        onChange={this.handleFormValuesChange}
-                                        // onChange={this.changeSubDirectory}
-                                        className="form-control"
-                                        validators={{
-                                            required,
-                                            minLength: minLength(1),
-                                            maxLength: maxLength(20),
-                                        }}
-                                    />
-                                    <Errors
-                                        className="text-danger"
-                                        model=".sub_directory"
-                                        show="touched"
-                                        messages={{
-                                            required: 'Required ',
-                                            minLength:
-                                                'Must be greater than 2 characters',
-                                            maxLength:
-                                                'Must be 25 characters or less',
-                                        }}
-                                    />
-                                </Col>
-                            </Row>
-                            <Row className="form-group">
-                                <Label htmlFor="name" md={4}>
-                                    <h6>Name of Resource:</h6>
-                                </Label>
-                                <Col md={8}>
-                                    <Control.text
-                                        model=".name"
-                                        id="name"
-                                        name="name"
-                                        placeholder="Resource Name*"
-                                        defaultValue={resource.name}
-                                        // onChange={this.changeName}
-                                        onChange={this.handleFormValuesChange}
-                                        className="form-control"
-                                        validators={{
-                                            required,
-                                            minLength: minLength(1),
-                                            maxLength: maxLength(30),
-                                        }}
-                                    />
-                                    <Errors
-                                        className="text-danger"
-                                        model=".name"
-                                        show="touched"
-                                        messages={{
-                                            required: 'Required ',
-                                            minLength:
-                                                'Must be greater than 2 characters',
-                                            maxLength:
-                                                'Must be 25 characters or less',
-                                        }}
-                                    />
-                                </Col>
-                            </Row>
-                            <Row className="form-group">
-                                <Label htmlFor="description" md={12}>
-                                    <h6>Description:</h6>
-                                </Label>
-                                <Col md={12}>
-                                    <Control.textarea
-                                        model=".description"
-                                        id="description"
-                                        name="description"
-                                        placeholder="Resource Description*"
-                                        defaultValue={resource.description}
-                                        // onChange={this.changeDescription}
-                                        onChange={this.handleFormValuesChange}
-                                        rows="8"
-                                        className="form-control"
-                                        validators={{
-                                            required,
-                                        }}
-                                    />
-                                    <Errors
-                                        className="text-danger"
-                                        model=".description"
-                                        show="touched"
-                                        messages={{
-                                            required: 'Required',
-                                        }}
-                                    />
-                                </Col>
-                            </Row>
-                            <Row className="form-group">
-                                <Label htmlFor="url" md={4}>
-                                    <h6>Url of Resource:</h6>
-                                </Label>
-                                <Col md={8}>
-                                    <Control.text
-                                        model=".url"
-                                        id="url"
-                                        name="url"
-                                        placeholder="Resource Url*"
-                                        defaultValue={resource.url}
-                                        // onChange={this.changeUrl}
-                                        onChange={this.handleFormValuesChange}
-                                        className="form-control"
-                                        validators={{
-                                            required,
-                                        }}
-                                    />
-                                    <Errors
-                                        className="text-danger"
-                                        model=".url"
-                                        show="touched"
-                                        messages={{
-                                            required: 'Required ',
-                                        }}
-                                    />
-                                </Col>
-                            </Row>
-                            <Row className="form-group">
-                                <Col>
-                                    <Label htmlFor="displayOnWebsite" sm={5}>
-                                        <h6>Display on website: </h6>
-                                    </Label>
-                                    <FormControlLabel
-                                        sm={2}
-                                        // label="Display on Website"
-                                        control={
-                                            <Switch
-                                                checked={
-                                                    resource.display_on_website
-                                                }
-                                                onChange={(event) =>
-                                                    this.handleFormValuesChange(
-                                                        event,
-                                                        'display_on_website'
-                                                    )
-                                                }
-                                            />
-                                        }
-                                    />
-                                </Col>
-                            </Row>
-                            <Row className="form-group">
-                                <Col>
-                                    <Label htmlFor="archive" sm={5}>
-                                        <h6>Archive: </h6>
-                                    </Label>
-                                    <FormControlLabel
-                                        sm={2}
-                                        // label="Display on Website"
-                                        control={
-                                            <Switch
-                                                checked={resource.archive}
-                                                onChange={(event) =>
-                                                    this.handleFormValuesChange(
-                                                        event,
-                                                        'archive'
-                                                    )
-                                                }
-                                            />
-                                        }
-                                    />
-                                </Col>
-                            </Row>
-                            <Row className="form-group">
-                                <Col>
-                                    <Label htmlFor="new" sm={5}>
-                                        <h6>New Resource: </h6>
-                                    </Label>
-                                    <FormControlLabel
-                                        sm={2}
-                                        // label="Display on Website"
-                                        control={
-                                            <Switch
-                                                checked={resource.new}
-                                                onChange={(event) =>
-                                                    this.handleFormValuesChange(
-                                                        event,
-                                                        'new'
-                                                    )
-                                                }
-                                            />
-                                        }
-                                    />
-                                </Col>
-                            </Row>
-                            <Row className="form-group">
-                                {/* md={{ size: 2 }} */}
-                                <Col sm={{ size: 6, offset: 3 }}>
-                                    <Button
-                                        fullWidth
-                                        variant="outlined"
-                                        color="primary"
-                                        onClick={this.confirmDeleteOpen}
-                                    >
-                                        Delete Resource
-                                    </Button>
-                                </Col>
-                                <Dialog
-                                    open={isDeleteDailogOpen}
-                                    onClose={this.confirmDeleteClose}
+                            <Grid item xs={6}>
+                                <Button
+                                    fullWidth
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={confirmDeleteOpen}
                                 >
-                                    <DialogContent>
-                                        <Typography variant="h5">
-                                            Are you sure you want to delete the
-                                            resource {resource.name}
-                                        </Typography>
-                                        <Row
-                                            style={{ marginTop: '2em' }}
-                                            className="form-group"
+                                    Delete Resource
+                                </Button>
+                            </Grid>
+                        </Grid>
+                        <FieldSep />
+                        <Dialog
+                            open={isDeleteDailogOpen}
+                            onClose={confirmDeleteClose}
+                        >
+                            <DialogContent>
+                                <Typography variant="h5">
+                                    Are you sure you want to delete the resource{' '}
+                                    {resource.name}
+                                </Typography>
+                                <Grid
+                                    container
+                                    justify="center"
+                                    alignItems="center"
+                                    spacing={3}
+                                    style={{ marginTop: '1em', width: '100%' }}
+                                >
+                                    <Grid item xs={8} sm={4}>
+                                        <Button
+                                            fullWidth
+                                            onClick={handleDelete}
+                                            variant="contained"
+                                            color="primary"
                                         >
-                                            <Col
-                                                xs={{ size: 7, offset: 1 }}
-                                                md={{ size: 4, offset: 3 }}
-                                            >
-                                                <Button
-                                                    variant="contained"
-                                                    onClick={this.handleDelete}
-                                                    color="primary"
-                                                >
-                                                    Confirm Delete
-                                                </Button>
-                                            </Col>
-                                            <Col xs={3} md={{ size: 2 }}>
-                                                <Button
-                                                    variant="outlined"
-                                                    color="primary"
-                                                    onClick={
-                                                        this.confirmDeleteClose
-                                                    }
-                                                >
-                                                    Cancel
-                                                </Button>
-                                            </Col>
-                                        </Row>
-                                    </DialogContent>
-                                </Dialog>
-                            </Row>
-                            <Row className="form-group">
-                                <Col
-                                    xs={{ size: 7, offset: 1 }}
-                                    md={{ size: 4, offset: 3 }}
+                                            Confirm Delete
+                                        </Button>
+                                    </Grid>
+                                    <Grid item xs={4}>
+                                        <Button
+                                            fullWidth
+                                            variant="outlined"
+                                            color="primary"
+                                            onClick={confirmDeleteClose}
+                                        >
+                                            Cancel
+                                        </Button>
+                                    </Grid>
+                                </Grid>
+                            </DialogContent>
+                        </Dialog>
+                        <Grid
+                            container
+                            justify="center"
+                            alignItems="center"
+                            item
+                            spacing={3}
+                            xs={12}
+                        >
+                            <Grid item xs={6} sm={4}>
+                                <Button
+                                    fullWidth
+                                    onClick={handleSubmit}
+                                    variant="contained"
+                                    color="primary"
                                 >
-                                    <Button
-                                        fullWidth
-                                        variant="contained"
-                                        type="submit"
-                                        color="primary"
-                                    >
-                                        Save Changes
-                                    </Button>
-                                </Col>
-                                <Col xs={3} md={2}>
-                                    <Button
-                                        fullWidth
-                                        variant="contained"
-                                        type="reset"
-                                        color="primary"
-                                        onClick={this.cancelEdit}
-                                    >
-                                        Cancel
-                                    </Button>
-                                </Col>
-                            </Row>
-                        </LocalForm>
-                    </DialogContent>
-                </Dialog>
-            </div>
-        );
-    }
+                                    Save changes
+                                </Button>
+                            </Grid>
+                            <Grid item xs={4}>
+                                <Button
+                                    fullWidth
+                                    variant="outlined"
+                                    color="primary"
+                                    onClick={cancelEdit}
+                                >
+                                    Cancel
+                                </Button>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </DialogContent>
+            </Dialog>
+        </div>
+    );
 }
 
 EditResourceForm.propTypes = {
@@ -580,5 +491,3 @@ EditResourceForm.propTypes = {
     editResource: PropTypes.func.isRequired,
     serverError: PropTypes.string.isRequired,
 };
-
-export default EditResourceForm;

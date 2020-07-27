@@ -29,7 +29,7 @@ const Users = (
                 usersLoading: false,
                 usersErrMess: null,
                 serverError: null,
-                allUsers: action.payload,
+                allUsers: [...action.payload],
             };
 
         case ActionTypes.USER_LOADING:
