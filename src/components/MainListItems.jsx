@@ -9,17 +9,9 @@ import DeveloperModeIcon from '@material-ui/icons/DeveloperMode';
 import EventNoteRoundedIcon from '@material-ui/icons/EventNoteRounded';
 import PeopleRoundedIcon from '@material-ui/icons/PeopleRounded';
 import AllInboxRoundedIcon from '@material-ui/icons/AllInboxRounded';
-// import PersonIcon from '@material-ui/icons/Person';
-// import AddBoxIcon from '@material-ui/icons/AddBox';
-// import ExitToAppOutlinedIcon from '@material-ui/icons/ExitToAppOutlined';
-// import EventIcon from '@material-ui/icons/Event';
-// import AllInboxIcon from '@material-ui/icons/AllInbox';
-
-// import PublishIcon from '@material-ui/icons/Publish';
-// import GroupIcon from '@material-ui/icons/Group';
-// import AssignmentIcon from '@material-ui/icons/Assignment';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
+import { AssignmentIndRounded } from '@material-ui/icons';
 
 function MainListItems(props) {
     const { history, isAdmin, closeDrawer, page: selectedItem } = props;
@@ -80,6 +72,33 @@ function MainListItems(props) {
                     </Typography>
                 </Tooltip>
             </ListItem>
+            {isAdmin ? (
+                <ListItem button onClick={redirectFunc('userTasks')}>
+                    <ListItemIcon>
+                        <AssignmentIndRounded
+                            fontSize="large"
+                            style={{
+                                color:
+                                    selectedItem === 'userTasks'
+                                        ? '#61cdff'
+                                        : 'white',
+                            }}
+                        />
+                    </ListItemIcon>
+                    <Tooltip title="View users tasks">
+                        <Typography
+                            color={
+                                selectedItem === 'userTasks'
+                                    ? 'secondary'
+                                    : '#fff'
+                            }
+                            variant="h5"
+                        >
+                            Users Tasks
+                        </Typography>
+                    </Tooltip>
+                </ListItem>
+            ) : null}
             <ListItem button onClick={redirectFunc('profile')}>
                 <ListItemIcon>
                     <PersonRoundedIcon
@@ -210,42 +229,6 @@ function MainListItems(props) {
                     </Typography>
                 </Tooltip>
             </ListItem>
-            {/* <ListItem button onClick={redirectFunc('createTasks')}>
-                <ListItemIcon>
-                    <AddBoxIcon
-                        style={{
-                            color:
-                                selectedItem === 'createTasks'
-                                    ? '#61cdff'
-                                    : 'white',
-                        }}
-                    />
-                </ListItemIcon>
-                <Tooltip title="Create new Events, Resources or Projects">
-                    <Typography
-                        color={
-                            selectedItem === 'createTasks'
-                                ? 'secondary'
-                                : '#fff'
-                        }
-                        variant="h5"
-                    >
-                        Create Tasks
-                    </Typography>
-                </Tooltip>
-            </ListItem>
-            <ListItem button onClick={logout}>
-                <ListItemIcon>
-                    <ExitToAppOutlinedIcon
-                        style={{
-                            color: 'white',
-                        }}
-                    />
-                </ListItemIcon>
-                <Tooltip title="Logout of dashboard">
-                    <Typography variant="h5">Logout</Typography>
-                </Tooltip>
-            </ListItem> */}
         </div>
     );
 }

@@ -9,12 +9,10 @@ import {
     Grid,
     Divider,
     Link,
-    Tooltip,
     Avatar,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
-import EventIcon from '@material-ui/icons/Event';
 import StatusChip from './StatusChip';
 import { UserUtils } from '../utils';
 
@@ -72,7 +70,14 @@ export default function UserDialog({ user, close }) {
                                 <Grid item xs={4} sm={2}>
                                     <Avatar
                                         className={classes.avatar}
-                                        src={user.url.get('picture_url') || ''}
+                                        src={
+                                            user.url.get('picture_url') !==
+                                                'https://' &&
+                                            user.url.get('picture_url') !==
+                                                'http://'
+                                                ? user.url.get('picture_url')
+                                                : ''
+                                        }
                                         alt=""
                                     />
                                 </Grid>
@@ -203,5 +208,4 @@ export default function UserDialog({ user, close }) {
 UserDialog.propTypes = {
     user: PropTypes.object.isRequired,
     close: PropTypes.func.isRequired,
-    // users: PropTypes.array.isRequired,
 };

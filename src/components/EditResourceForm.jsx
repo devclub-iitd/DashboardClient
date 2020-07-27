@@ -27,6 +27,7 @@ export default function EditResourceForm(props) {
         isDailogOpen: false,
         isDeleteDailogOpen: false,
         success: false,
+        deleteSucc: false,
         urlError: true,
     });
 
@@ -37,6 +38,7 @@ export default function EditResourceForm(props) {
             isDailogOpen: false,
             isDeleteDailogOpen: false,
             success: false,
+            deleteSucc: false,
             urlError: true,
         });
     }, [dumResources, index]);
@@ -68,7 +70,6 @@ export default function EditResourceForm(props) {
                 },
             }));
         } else if (name === 'url') {
-            const validUrl = /^https?:\/\/[a-z0-9.%+*$@]+\.[a-z]{2,5}$/;
             setState({
                 ...state,
                 resource: {
@@ -92,6 +93,7 @@ export default function EditResourceForm(props) {
         setState((prevState) => ({
             ...prevState,
             success: false,
+            deleteSucc: false,
         }));
     };
 
@@ -124,9 +126,17 @@ export default function EditResourceForm(props) {
     };
 
     const handleDelete = () => {
-        const { deleteResource } = props;
-        deleteResource(dumResources[index]._id);
-        confirmDeleteClose();
+        const { deleteResource, serverError } = props;
+        deleteResource(dumResources[index]._id, () => {
+            if (serverError === null) {
+                setState((prevState) => ({
+                    ...prevState,
+                    deleteSucc: true,
+                }));
+            }
+            handleFormClose();
+            confirmDeleteClose();
+        });
     };
 
     const cancelEdit = () => {
@@ -142,21 +152,28 @@ export default function EditResourceForm(props) {
     const handleSubmit = () => {
         const { resource } = state;
         const { editResource, serverError } = props;
-        editResource(resource);
-        if (serverError === null) {
-            setState((prevState) => ({
-                ...prevState,
-                success: true,
-            }));
-        }
-        handleFormClose();
+        editResource(resource, () => {
+            if (serverError === null) {
+                setState((prevState) => ({
+                    ...prevState,
+                    success: true,
+                }));
+            }
+            handleFormClose();
+        });
     };
 
     const FieldSep = () => {
         return <Grid item xs={12} style={{ height: '8px' }} />;
     };
 
-    const { success, isDailogOpen, resource, isDeleteDailogOpen } = state;
+    const {
+        success,
+        deleteSucc,
+        isDailogOpen,
+        resource,
+        isDeleteDailogOpen,
+    } = state;
 
     return (
         <div>
@@ -169,6 +186,16 @@ export default function EditResourceForm(props) {
                 autoHideDuration={2000}
                 onClose={handleSuccessClose}
                 message="Resource updated successfully !"
+            />
+            <Snackbar
+                anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'center',
+                }}
+                open={deleteSucc}
+                autoHideDuration={2000}
+                onClose={handleSuccessClose}
+                message="Resource deleted successfully !"
             />
             <Tooltip title="Edit Resource">
                 <Fab
@@ -192,7 +219,7 @@ export default function EditResourceForm(props) {
                 <DialogTitle>
                     <Typography variant="h4">Edit Resource</Typography>
                 </DialogTitle>
-                <DialogContent>
+                <DialogContent style={{ scrollbarWidth: 'none' }}>
                     <Grid container justify="center" alignItems="center">
                         <Grid item xs={4}>
                             <Typography variant="h6">Internal Name:</Typography>

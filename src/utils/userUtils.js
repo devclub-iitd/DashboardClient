@@ -1,9 +1,5 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable import/prefer-default-export */
-export const getUserFromLS = () => {
-    const userOb = JSON.parse(localStorage.getItem('currentUser'));
-    console.log(userOb);
-};
-
 export const userHostels = [
     'Aravali',
     'Girnar',
@@ -50,12 +46,7 @@ export const getStatus = (user) => {
 
 export const objToStrMap = (obj) => {
     const strMap = new Map();
-    // for (const k of Object.keys(obj)) {
-    //   strMap.set(k, obj[k]);
-    // }
-    // console.log('url object: ', obj);
     Object.keys(obj).map((k) => strMap.set(k, obj[k]));
-    // console.log('mapped url: ', strMap);
     return strMap;
 };
 
@@ -70,7 +61,6 @@ export const getProperUser = (dUser) => {
         birth_date:
             dUser.birth_date === null ? new Date() : new Date(dUser.birth_date),
     };
-    // console.log('fetched user: ', pUser);
     if (!pUser.url.has('fb_url')) {
         pUser.url.set('fb_url', '');
     }

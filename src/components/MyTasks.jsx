@@ -28,9 +28,6 @@ export default function MyTasks({ users, events, projects }) {
         },
     ];
 
-    // console.log('Ongoing Events: ', ongoingEvents.length);
-    // console.log('Upcoming Events: ', upcomingEvents.length);
-    // console.log('Completed Events: ', completedEvents.length);
     return (
         <Grid container justify="space-evenly" alignItems="flex-start">
             <Grid item lg={3} md={4} xs={12}>

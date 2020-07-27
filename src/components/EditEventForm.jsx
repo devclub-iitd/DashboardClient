@@ -38,8 +38,6 @@ import * as Utils from '../utils';
 export default function EditEventForm(props) {
     const { dumEvents, index, dumUsers } = props;
 
-    // const dumEvents[index] = dumEvents.filter((event) => event._id === eventId);
-
     const [state, setState] = React.useState({
         orgEvent: dumEvents[index],
         event: dumEvents[index],
@@ -50,12 +48,15 @@ export default function EditEventForm(props) {
         memberNames: dumUsers
             .filter((user) => user.privelege_level !== 'Unapproved_User')
             .map((user) => user.name),
-        selectedMembers: dumEvents[index].assignee.map(
-            (userId) => dumUsers.filter((user) => user._id === userId)[0].name
+        selectedMembers: dumEvents[index].assignee.map((userId) =>
+            dumUsers.filter((user) => user._id === userId)[0]
+                ? dumUsers.filter((user) => user._id === userId)[0].name
+                : ''
         ),
         isDailogOpen: false,
         isDeleteDailogOpen: false,
         success: false,
+        deleteSucc: false,
         cancelled: true,
     });
 
@@ -70,13 +71,15 @@ export default function EditEventForm(props) {
             memberNames: dumUsers
                 .filter((user) => user.privelege_level !== 'Unapproved_User')
                 .map((user) => user.name),
-            selectedMembers: dumEvents[index].assignee.map(
-                (userId) =>
-                    dumUsers.filter((user) => user._id === userId)[0].name
+            selectedMembers: dumEvents[index].assignee.map((userId) =>
+                dumUsers.filter((user) => user._id === userId)[0]
+                    ? dumUsers.filter((user) => user._id === userId)[0].name
+                    : ''
             ),
             isDailogOpen: false,
             isDeleteDailogOpen: false,
             success: false,
+            deleteSucc: false,
             cancelled: true,
         });
     }, [dumEvents, index, dumUsers]);
@@ -121,6 +124,7 @@ export default function EditEventForm(props) {
         setState((prevState) => ({
             ...prevState,
             success: false,
+            deleteSucc: false,
         }));
     };
 
@@ -217,11 +221,18 @@ export default function EditEventForm(props) {
     };
 
     const handleDelete = () => {
-        const { deleteEvent } = props;
+        const { deleteEvent, serverError } = props;
         const { event } = state;
-        deleteEvent(event._id);
-        confirmDeleteClose();
-        handleFormClose();
+        deleteEvent(event._id, () => {
+            if (serverError === null) {
+                setState((prevState) => ({
+                    ...prevState,
+                    deleteSucc: true,
+                }));
+            }
+            confirmDeleteClose();
+            handleFormClose();
+        });
     };
 
     const handleSubmit = () => {
@@ -243,14 +254,15 @@ export default function EditEventForm(props) {
             ),
         };
 
-        editEvent(updatedEvent);
-        if (serverError === null) {
-            setState((prevState) => ({
-                ...prevState,
-                success: true,
-            }));
-        }
-        handleFormClose();
+        editEvent(updatedEvent, () => {
+            if (serverError === null) {
+                setState((prevState) => ({
+                    ...prevState,
+                    success: true,
+                }));
+            }
+            handleFormClose();
+        });
     };
 
     const FieldSep = () => {
@@ -259,6 +271,7 @@ export default function EditEventForm(props) {
 
     const {
         success,
+        deleteSucc,
         isDailogOpen,
         event,
         urlFields,
@@ -278,6 +291,16 @@ export default function EditEventForm(props) {
                 autoHideDuration={2000}
                 onClose={handleSuccessClose}
                 message="Event updated Successfully !"
+            />
+            <Snackbar
+                anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'center',
+                }}
+                open={deleteSucc}
+                autoHideDuration={2000}
+                onClose={handleSuccessClose}
+                message="Event deleted Successfully !"
             />
             <Tooltip title="Edit Event">
                 <Fab
@@ -301,7 +324,7 @@ export default function EditEventForm(props) {
                 <DialogTitle>
                     <Typography variant="h4">Edit Event</Typography>
                 </DialogTitle>
-                <DialogContent>
+                <DialogContent style={{ scrollbarWidth: 'none' }}>
                     <Grid container justify="center" alignItems="center">
                         <Grid item xs={4}>
                             <Typography variant="h6">Name of Event:</Typography>

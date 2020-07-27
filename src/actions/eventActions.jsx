@@ -38,10 +38,8 @@ export const fetchAllEvents = () => (dispatch) => {
 
     return fetch(API.eventGetAllDBAPI, {
         method: 'GET',
-        // body: JSON.stringify(newComment),
         headers: {
             'Content-Type': 'application/json',
-            // Origin: 'localhost:3001/',
             Authorization: bearer,
         },
         credentials: 'same-origin',
@@ -52,7 +50,6 @@ export const fetchAllEvents = () => (dispatch) => {
                     return response;
                 }
                 response.json().then((res) => {
-                    // console.log('Server response: ', res);
                     if (res.name === 'Unauthorized') {
                         dispatch(logoutUser('timeout'));
                     }
@@ -61,7 +58,6 @@ export const fetchAllEvents = () => (dispatch) => {
                     `Error ${response.status}: ${response.statusText}`
                 );
                 error.response = response;
-                // console.log(error);
                 throw error;
             },
             (error) => {
@@ -72,7 +68,6 @@ export const fetchAllEvents = () => (dispatch) => {
         .then((response) => response.json())
         .then((events) => {
             const gotEvents = events.data;
-            // fetch gets url as an object, converting to map strings required
             const allEvents = gotEvents.map((event) => {
                 const upEvent = {
                     ...event,
@@ -101,7 +96,7 @@ export const fetchAllEvents = () => (dispatch) => {
         .catch((error) => dispatch(eventsFailed(error.message)));
 };
 
-export const createEvent = (event) => (dispatch) => {
+export const createEvent = (event, cb) => (dispatch) => {
     const bearer = `Bearer ${localStorage.getItem('dcIITDDashboardToken')}`;
 
     return fetch(API.eventAPI, {
@@ -119,7 +114,6 @@ export const createEvent = (event) => (dispatch) => {
                     return response;
                 }
                 response.json().then((res) => {
-                    // console.log('Server response: ', res);
                     if (res.name === 'Unauthorized') {
                         dispatch(logoutUser('timeout'));
                     }
@@ -136,13 +130,15 @@ export const createEvent = (event) => (dispatch) => {
         )
         .then((response) => response.json())
         .then(() => {
-            // console.log('New Event: ', cEvent);
+            if (cb) {
+                cb();
+            }
             dispatch(fetchAllEvents());
         })
         .catch((error) => dispatch(eventServerError(error.message)));
 };
 
-export const editEvent = (event) => (dispatch) => {
+export const editEvent = (event, cb) => (dispatch) => {
     const bearer = `Bearer ${localStorage.getItem('dcIITDDashboardToken')}`;
 
     return fetch(`${API.eventAPI}${event._id}`, {
@@ -160,7 +156,6 @@ export const editEvent = (event) => (dispatch) => {
                     return response;
                 }
                 response.json().then((res) => {
-                    // console.log('Server response: ', res);
                     if (res.name === 'Unauthorized') {
                         dispatch(logoutUser('timeout'));
                     }
@@ -177,13 +172,15 @@ export const editEvent = (event) => (dispatch) => {
         )
         .then((response) => response.json())
         .then(() => {
-            // console.log('Updated Event: ', cEvent);
+            if (cb) {
+                cb();
+            }
             dispatch(fetchAllEvents());
         })
         .catch((error) => dispatch(eventServerError(error.message)));
 };
 
-export const deleteEvent = (eventId) => (dispatch) => {
+export const deleteEvent = (eventId, cb) => (dispatch) => {
     const bearer = `Bearer ${localStorage.getItem('dcIITDDashboardToken')}`;
 
     return fetch(API.eventDeleteAPI, {
@@ -201,7 +198,6 @@ export const deleteEvent = (eventId) => (dispatch) => {
                     return response;
                 }
                 response.json().then((res) => {
-                    // console.log('Server response: ', res);
                     if (res.name === 'Unauthorized') {
                         dispatch(logoutUser('timeout'));
                     }
@@ -218,8 +214,9 @@ export const deleteEvent = (eventId) => (dispatch) => {
         )
         .then((response) => response.json())
         .then(() => {
-            // console.log('User data updated', user);
-            // console.log(res);
+            if (cb) {
+                cb();
+            }
             dispatch(fetchAllEvents());
         })
         .catch((error) => dispatch(eventServerError(error.message)));

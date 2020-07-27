@@ -1,14 +1,7 @@
 /* eslint-disable react/forbid-prop-types */
 /* eslint-disable no-underscore-dangle */
 import React, { Fragment } from 'react';
-import {
-    Grid,
-    Typography,
-    Backdrop,
-    CircularProgress,
-    Paper,
-    Tooltip,
-} from '@material-ui/core';
+import { Grid, Typography, Paper, Tooltip } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import EventCard from './EventCard';
@@ -30,15 +23,16 @@ const useStyles = makeStyles((theme) => ({
         marginTop: theme.spacing(3),
         cursor: 'pointer',
     },
-    container: {
-        // marginLeft: theme.spacing(2),
-        // marginRight: theme.spacing(2),
-        [theme.breakpoints.down('sm')]: {
-            height: '85vh',
-            overflowY: 'scroll',
-            scrollbarWidth: 'none',
-        },
-    },
+    // container: {
+    //     // marginLeft: theme.spacing(2),
+    //     // marginRight: theme.spacing(2),
+    //     // maxHeight: '85vh',
+    //     // [theme.breakpoints.down('sm')]: {
+    //     //     height: '85vh',
+    //     //     overflowY: 'scroll',
+    //     //     scrollbarWidth: '2px',
+    //     // },
+    // },
 }));
 
 const ActCard = ({ className, name, num, redirect }) => {
@@ -73,7 +67,6 @@ ActCard.propTypes = {
 
 export default function Home({ users, events, projects, resources, redirect }) {
     const classes = useStyles();
-    // const curUser = dumUsers[0];
     const curUser = users.user;
     const dumUsers = users.allUsers;
     const dumEvents = events.allEvents;
@@ -92,16 +85,9 @@ export default function Home({ users, events, projects, resources, redirect }) {
         <Grid
             id="pageContainer"
             container
-            // spacing={3}
             justify="center"
             className={classes.container}
         >
-            {/* <Backdrop
-                className={classes.backdrop}
-                open={events.isLoading || projects.isLoading || users.isLoading}
-            >
-                <CircularProgress color="inherit" />
-            </Backdrop> */}
             <Grid item md={4} sm={5} xs={11}>
                 <Typography
                     align="center"

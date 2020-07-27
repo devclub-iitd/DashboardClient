@@ -50,10 +50,11 @@ export default function ManageUsers({
             display_on_website: e.target.checked,
         };
 
-        editOtherUser(upUser);
-        if (users.usersErrMess === null) {
-            setEditSuccess(true);
-        }
+        editOtherUser(upUser, () => {
+            if (users.usersErrMess === null) {
+                setEditSuccess(true);
+            }
+        });
     };
 
     const [approveSuccess, setApproveSuccess] = React.useState(false);
@@ -345,8 +346,10 @@ export default function ManageUsers({
             label: 'On Main Website',
             options: {
                 filter: true,
+                display: curUser.privelege_level === 'Admin',
+                viewColumns: curUser.privelege_level === 'Admin',
                 customBodyRender: (value, tableMeta) => (
-                    <Tooltip title="Only Admins can change this">
+                    <Tooltip title="Click to toggle value">
                         <Switch
                             onChange={(e) => {
                                 if (curUser.privelege_level === 'Admin') {
@@ -409,7 +412,8 @@ export default function ManageUsers({
                     );
                     return (
                         <>
-                            {curUser.privelege_level === 'Admin' ? (
+                            {curUser.privelege_level === 'Admin' &&
+                            dumUsers[userIndex].entry_no !== 'DEVCLUBIITD' ? (
                                 <EditOtherUserForm
                                     removeUser={removeUser}
                                     dumUsers={dumUsers}

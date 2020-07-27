@@ -149,9 +149,18 @@ export default function ProjectDialog({ project, close, users }) {
                                                             classes.avatar
                                                         }
                                                         alt=""
-                                                        src={mem.url.get(
-                                                            'picture_url'
-                                                        )}
+                                                        src={
+                                                            mem.url.get(
+                                                                'picture_url'
+                                                            ) !== 'https://' &&
+                                                            mem.url.get(
+                                                                'picture_url'
+                                                            ) !== 'http://'
+                                                                ? mem.url.get(
+                                                                      'picture_url'
+                                                                  )
+                                                                : ''
+                                                        }
                                                     />
                                                 </Tooltip>
                                             </Grid>

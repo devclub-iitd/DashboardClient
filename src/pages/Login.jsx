@@ -22,20 +22,10 @@ const styles = (theme) => ({
         height: '100vh',
         backgroundColor: theme.palette.background.default,
     },
-    image: {
-        backgroundImage: `url(${logo})`,
-        backgroundRepeat: 'no-repeat',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-    },
     imagePaper: {
-        // height: document.documentElement.clientHeight * 0.5,
         backgroundColor: '#8e8e93',
         margin: theme.spacing(5, 5, 0),
         paddingBottom: '1.5em',
-    },
-    paper: {
-        margin: theme.spacing(4),
     },
     logo: {
         height: 'auto',
@@ -52,13 +42,6 @@ const styles = (theme) => ({
         color: '#d5d3d3',
         fontWeight: '600',
     },
-    inputs: {
-        color: '#8e8e93',
-    },
-    avatar: {
-        margin: theme.spacing(1),
-        backgroundColor: theme.palette.secondary.main,
-    },
     form: {
         marginLeft: theme.spacing(5),
         marginRight: theme.spacing(5),
@@ -69,14 +52,10 @@ const styles = (theme) => ({
         paddingTop: theme.spacing(0.05),
         paddingBottom: theme.spacing(0.05),
         marginTop: theme.spacing(2),
-        // marginBottom: theme.spacing(1),
         fontSize: '1.5rem',
         fontWeight: 600,
         marginLeft: '22%',
         marginRight: '22%',
-    },
-    errSnack: {
-        backgroundColor: 'black',
     },
     backdrop: {
         zIndex: theme.zIndex.drawer + 1,
@@ -221,14 +200,12 @@ function SignInSide(props) {
 
 SignInSide.propTypes = {
     classes: PropTypes.objectOf(PropTypes.string).isRequired,
-    // errorMsg: PropTypes.string.isRequired,
     login: PropTypes.func.isRequired,
     finishError: PropTypes.func.isRequired,
     auth: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = (state) => ({
-    // errorMsg: state.loginReducer.errorMsg,
     auth: state.Auth,
 });
 

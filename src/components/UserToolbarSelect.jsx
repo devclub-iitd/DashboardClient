@@ -63,7 +63,7 @@ export default function UserToolbarSelect(props) {
                         xs={6}
                     >
                         <Grid item xs={2} sm={1}>
-                            <Tooltip title="Approve all UNAPPROVED users">
+                            <Tooltip title="Approve user(s)">
                                 <IconButton
                                     className={classes.iconButton}
                                     onClick={approveAll}
@@ -74,7 +74,7 @@ export default function UserToolbarSelect(props) {
                             </Tooltip>
                         </Grid>
                         <Grid item xs={2} sm={1}>
-                            <Tooltip title="Reject all UNAPPROVED users">
+                            <Tooltip title="Reject user(s)">
                                 <IconButton
                                     className={classes.iconButton}
                                     onClick={rejectAll}

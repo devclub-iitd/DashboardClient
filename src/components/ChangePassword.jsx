@@ -4,28 +4,27 @@ import { TextField, Button, Grid, Snackbar } from '@material-ui/core';
 import PropTypes from 'prop-types';
 
 export default function ChangePassword(props) {
-    // const [confirmPassError, setConfirmPassError] = React.useState(false);
-    // const { closeDialog } = props;
-
     const [state, setState] = React.useState({
         password: '',
-        ChangePassword: '',
+        confirmPassword: '',
         confirmPassError: false,
         changePassError: false,
         changeSuccess: false,
     });
 
-    const handleChange = (e, type) => {
-        const { value } = e.target;
-        setState({
-            ...state,
-            [type]: value,
-        });
-        if (type === 'confirmPassword') {
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        if (name === 'confirmPassword') {
             const { password } = state;
             setState({
                 ...state,
+                [name]: value,
                 confirmPassError: value !== password,
+            });
+        } else {
+            setState({
+                ...state,
+                [name]: value,
             });
         }
     };
@@ -33,9 +32,6 @@ export default function ChangePassword(props) {
     const handlePassErrorClose = () => {
         setState({
             ...state,
-            // password: '',
-            // ChangePassword: '',
-            // confirmPassError: null,
             changePassError: false,
         });
     };
@@ -43,9 +39,6 @@ export default function ChangePassword(props) {
     const handleSuccessClose = () => {
         setState({
             ...state,
-            // password: '',
-            // ChangePassword: '',
-            // confirmPassError: null,
             changeSuccess: false,
         });
         props.closeDialog();
@@ -60,53 +53,28 @@ export default function ChangePassword(props) {
             return;
         }
 
-        props.changePass(state.password);
-        setState({
-            ...state,
-            password: '',
-            confirmPassword: '',
-            confirmPassError: false,
+        props.changePass(state.password, () => {
+            if (props.users.serverError === null) {
+                setState({
+                    ...state,
+                    password: '',
+                    confirmPassword: '',
+                    confirmPassError: false,
+                    changeSuccess: true,
+                });
+            } else {
+                setState({
+                    ...state,
+                    changePassError: true,
+                });
+            }
         });
-
-        if (props.users.serverError === null) {
-            setState({
-                ...state,
-                password: '',
-                ChangePassword: '',
-                confirmPassError: false,
-                changeSuccess: true,
-            });
-        } else {
-            setState({
-                ...state,
-                // password: '',
-                // ChangePassword: '',
-                // confirmPassError: null,
-                changePassError: true,
-            });
-        }
-        // props.closeDialog();
-        // window.location.reload(false);
     };
 
     const { closeDialog } = props;
 
     return (
         <div>
-            {/* <TextField
-        id="current-password"
-        label="Current Password"
-      />
-      <br />
-      <TextField
-        id="new-password"
-        label="New Password"
-      />
-      <br />
-      <TextField
-        id="confirm-new-password"
-        label="Confirm New Password"
-      /> */}
             <Snackbar
                 anchorOrigin={{
                     vertical: 'top',
@@ -136,16 +104,6 @@ export default function ChangePassword(props) {
                     xs={12}
                 >
                     <form onSubmit={handleSubmit}>
-                        {/* <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              name="c_password"
-              label="Current Password"
-              type="password"sm
-              id="password"
-            /> */}
                         <TextField
                             variant="outlined"
                             margin="normal"
@@ -155,9 +113,7 @@ export default function ChangePassword(props) {
                             value={state.password}
                             label="New Password"
                             type="password"
-                            onChange={(event) =>
-                                handleChange(event, 'password')
-                            }
+                            onChange={handleChange}
                             id="password"
                             autoFocus
                         />
@@ -171,9 +127,7 @@ export default function ChangePassword(props) {
                             label=" Confirm Password"
                             type="password"
                             error={state.confirmPassError}
-                            onChange={(event) =>
-                                handleChange(event, 'confirmPassword')
-                            }
+                            onChange={handleChange}
                             id="confirmPassword"
                         />
                         <Grid

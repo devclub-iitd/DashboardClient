@@ -58,10 +58,11 @@ const ResourcesPage = ({
             display_on_website: e.target.checked,
         };
 
-        editResource(upRes);
-        if (resourceError === null) {
-            setEditSuccess(true);
-        }
+        editResource(upRes, () => {
+            if (resourceError === null) {
+                setEditSuccess(true);
+            }
+        });
     };
 
     const toggleResNew = (e, id) => {
@@ -70,10 +71,11 @@ const ResourcesPage = ({
             new: e.target.checked,
         };
 
-        editResource(upRes);
-        if (resourceError === null) {
-            setEditSuccess(true);
-        }
+        editResource(upRes, () => {
+            if (resourceError === null) {
+                setEditSuccess(true);
+            }
+        });
     };
 
     const toggleResArchive = (e, id) => {
@@ -82,10 +84,11 @@ const ResourcesPage = ({
             archive: e.target.checked,
         };
 
-        editResource(upRes);
-        if (resourceError === null) {
-            setEditSuccess(true);
-        }
+        editResource(upRes, () => {
+            if (resourceError === null) {
+                setEditSuccess(true);
+            }
+        });
     };
 
     const [createOpen, setCreateOpen] = React.useState(false);
@@ -316,7 +319,6 @@ const ResourcesPage = ({
 
     const options = {
         filterType: 'checkbox',
-        // responsive: 'scrollMaxHeight',
         rowHover: false,
         responsive: 'standard',
         rowsPerPage: 6,
@@ -397,7 +399,7 @@ const ResourcesPage = ({
                         <CloseIcon />
                     </IconButton>
                 </DialogTitle>
-                <DialogContent>
+                <DialogContent style={{ scrollbarWidth: 'none' }}>
                     <CreateResourceForm
                         createResource={createResource}
                         resourceError={resourceError}

@@ -27,6 +27,7 @@ import CustomSearchRender from './CustomTableSearchBox';
 import TableTitle from './CustomTableTitle';
 import ProjectDialog from './ProjectDialog';
 import * as Utils from '../utils';
+import UserDialog from './UserDialog';
 
 const useStyles = makeStyles((theme) => ({
     closeButton: {
@@ -42,6 +43,7 @@ const useStyles = makeStyles((theme) => ({
     memAvatar: {
         width: theme.spacing(4),
         height: theme.spacing(4),
+        cursor: 'pointer',
     },
 }));
 
@@ -66,10 +68,11 @@ const ProjectsPage = ({
             display_on_website: e.target.checked,
         };
 
-        editProject(upProject);
-        if (projectError === null) {
-            setEditSuccess(true);
-        }
+        editProject(upProject, () => {
+            if (projectError === null) {
+                setEditSuccess(true);
+            }
+        });
     };
 
     const toggleProjectInternal = (e, id) => {
@@ -78,10 +81,11 @@ const ProjectsPage = ({
             is_internal: e.target.checked,
         };
 
-        editProject(upProject);
-        if (projectError === null) {
-            setEditSuccess(true);
-        }
+        editProject(upProject, () => {
+            if (projectError === null) {
+                setEditSuccess(true);
+            }
+        });
     };
 
     const toggleProjectShowcase = (e, id) => {
@@ -90,10 +94,11 @@ const ProjectsPage = ({
             showcase: e.target.checked,
         };
 
-        editProject(upProject);
-        if (projectError === null) {
-            setEditSuccess(true);
-        }
+        editProject(upProject, () => {
+            if (projectError === null) {
+                setEditSuccess(true);
+            }
+        });
     };
 
     const [projectDialog, setProjectDialog] = React.useState({
@@ -110,6 +115,24 @@ const ProjectsPage = ({
 
     const closeProjectDialog = () => {
         setProjectDialog({
+            open: false,
+        });
+    };
+
+    const [userDialog, setUserDialog] = React.useState({
+        open: false,
+        dialogUser: dumUsers[0],
+    });
+
+    const openUserDialog = (index) => {
+        setUserDialog({
+            dialogUser: { ...dumUsers[index] },
+            open: true,
+        });
+    };
+
+    const closeUserDialog = () => {
+        setUserDialog({
             open: false,
         });
     };
@@ -422,6 +445,13 @@ const ProjectsPage = ({
                                     <Tooltip title={mem.name}>
                                         <Avatar
                                             className={classes.memAvatar}
+                                            onClick={() =>
+                                                openUserDialog(
+                                                    dumUsers.findIndex(
+                                                        (u) => u._id === mem._id
+                                                    )
+                                                )
+                                            }
                                             src={
                                                 mem.url.get('picture_url') !==
                                                     'https://' &&
@@ -519,6 +549,7 @@ const ProjectsPage = ({
                 cellMeta.colIndex !== 9 &&
                 cellMeta.colIndex !== 10 &&
                 cellMeta.colIndex !== 11 &&
+                cellMeta.colIndex !== 13 &&
                 cellMeta.colIndex !== 14 &&
                 cellMeta.colIndex !== 15
             ) {
@@ -567,6 +598,12 @@ const ProjectsPage = ({
                     users={dumUsers}
                 />
             ) : null}
+            {userDialog.open ? (
+                <UserDialog
+                    user={userDialog.dialogUser}
+                    close={closeUserDialog}
+                />
+            ) : null}
             <Grow in style={{ transformOrigin: 'center top' }} timeout={750}>
                 <Grid container justify="center" alignItems="center">
                     <Grid
@@ -606,7 +643,7 @@ const ProjectsPage = ({
                         <CloseIcon />
                     </IconButton>
                 </DialogTitle>
-                <DialogContent>
+                <DialogContent style={{ scrollbarWidth: 'none' }}>
                     <CreateProjectForm
                         createProject={createProject}
                         projectError={projectError}

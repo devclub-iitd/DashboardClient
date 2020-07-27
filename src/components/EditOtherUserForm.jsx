@@ -44,6 +44,7 @@ export default function EditOtherUserForm(props) {
                   })),
         isDailogOpen: false,
         isDeleteDailogOpen: false,
+        deleteSucc: false,
         success: false,
     });
 
@@ -61,6 +62,7 @@ export default function EditOtherUserForm(props) {
             isDailogOpen: false,
             isDeleteDailogOpen: false,
             success: false,
+            deleteSucc: false,
         });
     }, [User]);
 
@@ -181,6 +183,7 @@ export default function EditOtherUserForm(props) {
         setState((prevState) => ({
             ...prevState,
             success: false,
+            deleteSucc: false,
         }));
     };
 
@@ -201,8 +204,16 @@ export default function EditOtherUserForm(props) {
     const handleDelete = () => {
         const { removeUser } = props;
         const { orgUser } = state;
-        removeUser(orgUser._id);
-        confirmDeleteClose();
+        removeUser(orgUser._id, () => {
+            if (serverError === null) {
+                setState({
+                    ...state,
+                    deleteSucc: true,
+                });
+            }
+            handleFormClose();
+            confirmDeleteClose();
+        });
     };
 
     const handleSubmit = () => {
@@ -219,26 +230,26 @@ export default function EditOtherUserForm(props) {
             url: Utils.UserUtils.strMapToObj(urlMap),
         };
 
-        editUser(newUser);
-
-        if (serverError === null) {
-            setState({
-                ...state,
-                success: true,
-                orgUser: {
-                    ...state.editUser,
-                    url: urlMap,
-                },
-                urlFields:
-                    urlMap === undefined
-                        ? []
-                        : Array.from(urlMap).map(([idx, value]) => ({
-                              type: idx,
-                              url: value,
-                          })),
-            });
-        }
-        handleFormClose();
+        editUser(newUser, () => {
+            if (serverError === null) {
+                setState({
+                    ...state,
+                    success: true,
+                    orgUser: {
+                        ...state.editUser,
+                        url: urlMap,
+                    },
+                    urlFields:
+                        urlMap === undefined
+                            ? []
+                            : Array.from(urlMap).map(([idx, value]) => ({
+                                  type: idx,
+                                  url: value,
+                              })),
+                });
+            }
+            handleFormClose();
+        });
     };
 
     const FieldSep = () => {
@@ -251,6 +262,7 @@ export default function EditOtherUserForm(props) {
 
     const {
         success,
+        deleteSucc,
         isDailogOpen,
         editUser,
         urlFields,
@@ -268,6 +280,16 @@ export default function EditOtherUserForm(props) {
                 autoHideDuration={2000}
                 onClose={handleSuccessClose}
                 message="User updated Successfully !"
+            />
+            <Snackbar
+                anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'center',
+                }}
+                open={deleteSucc}
+                autoHideDuration={2000}
+                onClose={handleSuccessClose}
+                message="User deleted Successfully !"
             />
             <Tooltip title="Edit User">
                 <Fab
@@ -291,7 +313,7 @@ export default function EditOtherUserForm(props) {
                 <DialogTitle>
                     <Typography variant="h4">Edit User</Typography>
                 </DialogTitle>
-                <DialogContent>
+                <DialogContent style={{ scrollbarWidth: 'none' }}>
                     <Grid container justify="center" alignItems="center">
                         <Grid item xs={4}>
                             <Typography variant="h6">Name: </Typography>
@@ -326,19 +348,25 @@ export default function EditOtherUserForm(props) {
                             >
                                 <FormControlLabel
                                     value="Unapproved_User"
-                                    control={<Radio color="secondary" />}
+                                    control={
+                                        <Radio style={{ color: '#ff675e' }} />
+                                    }
                                     label="Unapproved"
                                     labelPlacement="end"
                                 />
                                 <FormControlLabel
                                     value="Approved_User"
-                                    control={<Radio color="secondary" />}
+                                    control={
+                                        <Radio style={{ color: '#23fa58' }} />
+                                    }
                                     label="Approved"
                                     labelPlacement="end"
                                 />
                                 <FormControlLabel
                                     value="Admin"
-                                    control={<Radio color="primary" />}
+                                    control={
+                                        <Radio style={{ color: '#15f4ee' }} />
+                                    }
                                     label="Admin"
                                     labelPlacement="end"
                                 />

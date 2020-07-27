@@ -27,6 +27,7 @@ import CustomSearchRender from './CustomTableSearchBox';
 import StatusChip from './StatusChip';
 import * as Utils from '../utils';
 import EventDialog from './EventDialog';
+import UserDialog from './UserDialog';
 
 const useStyles = makeStyles((theme) => ({
     closeButton: {
@@ -42,6 +43,7 @@ const useStyles = makeStyles((theme) => ({
     memAvatar: {
         width: theme.spacing(4),
         height: theme.spacing(4),
+        cursor: 'pointer',
     },
 }));
 
@@ -66,10 +68,11 @@ const EventsPage = ({
             display_on_website: e.target.checked,
         };
 
-        editEvent(upEvent);
-        if (eventError === null) {
-            setEditSuccess(true);
-        }
+        editEvent(upEvent, () => {
+            if (eventError === null) {
+                setEditSuccess(true);
+            }
+        });
     };
 
     const [eventDialog, setEventDialog] = React.useState({
@@ -86,6 +89,24 @@ const EventsPage = ({
 
     const closeEventDialog = () => {
         setEventDialog({
+            open: false,
+        });
+    };
+
+    const [userDialog, setUserDialog] = React.useState({
+        open: false,
+        dialogUser: dumUsers[0],
+    });
+
+    const openUserDialog = (index) => {
+        setUserDialog({
+            dialogUser: { ...dumUsers[index] },
+            open: true,
+        });
+    };
+
+    const closeUserDialog = () => {
+        setUserDialog({
             open: false,
         });
     };
@@ -260,6 +281,13 @@ const EventsPage = ({
                                     <Tooltip title={mem.name}>
                                         <Avatar
                                             className={classes.memAvatar}
+                                            onClick={() =>
+                                                openUserDialog(
+                                                    dumUsers.findIndex(
+                                                        (u) => u._id === mem._id
+                                                    )
+                                                )
+                                            }
                                             src={
                                                 mem.url.get('picture_url') !==
                                                     'https://' &&
@@ -344,7 +372,6 @@ const EventsPage = ({
     const data = [...allEvents.map((event) => getEventRow(event))];
     const options = {
         filterType: 'checkbox',
-        // responsive: 'scrollMaxHeight',
         responsive: 'standard',
         rowsPerPage: 6,
         selectableRows: 'none',
@@ -354,6 +381,7 @@ const EventsPage = ({
         onCellClick: (colData, cellMeta) => {
             if (
                 cellMeta.colIndex !== 5 &&
+                cellMeta.colIndex !== 6 &&
                 cellMeta.colIndex !== 7 &&
                 cellMeta.colIndex !== 8
             ) {
@@ -406,10 +434,15 @@ const EventsPage = ({
             />
             {eventDialog.open ? (
                 <EventDialog
-                    // open={open}
                     event={eventDialog.dialogEvent}
                     close={closeEventDialog}
                     users={dumUsers}
+                />
+            ) : null}
+            {userDialog.open ? (
+                <UserDialog
+                    user={userDialog.dialogUser}
+                    close={closeUserDialog}
                 />
             ) : null}
             <Grow in style={{ transformOrigin: 'center top' }} timeout={750}>
@@ -451,7 +484,7 @@ const EventsPage = ({
                         <CloseIcon />
                     </IconButton>
                 </DialogTitle>
-                <DialogContent>
+                <DialogContent style={{ scrollbarWidth: 'none' }}>
                     <CreateEventForm
                         createEvent={createEvent}
                         eventError={eventError}

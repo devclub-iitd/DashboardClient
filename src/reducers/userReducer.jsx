@@ -1,29 +1,6 @@
 /* eslint-disable no-undef */
 import * as ActionTypes from '../actions/ActionTypes';
 
-const initUser = {
-    email: '',
-    name: '',
-    password: '',
-    entry_no: '',
-    hostel: '',
-    gender: '',
-    join_year: new Date(),
-    grad_year: new Date(),
-    birth_date: new Date(),
-    mobile_number: '',
-    hometown: '',
-    interests: '',
-    specialization: '',
-    intro: '',
-    category: '',
-    display_on_website: false,
-    url: new Map(),
-    created_by: '',
-    updated_by: '',
-    privelege_level: 'Unapproved_User',
-};
-
 const Users = (
     state = {
         userLoading: false,

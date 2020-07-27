@@ -58,6 +58,7 @@ export default function EditProjectForm(props) {
         orgProject: dumProjects[index],
         isDailogOpen: false,
         isDeleteDailogOpen: false,
+        deleteSucc: false,
         success: false,
     });
 
@@ -81,6 +82,7 @@ export default function EditProjectForm(props) {
             orgProject: dumProjects[index],
             isDailogOpen: false,
             isDeleteDailogOpen: false,
+            deleteSucc: false,
             success: false,
         });
     }, [dumProjects, index, dumUsers]);
@@ -89,6 +91,7 @@ export default function EditProjectForm(props) {
         setState((prevState) => ({
             ...prevState,
             success: false,
+            deleteSucc: false,
         }));
     };
 
@@ -259,9 +262,17 @@ export default function EditProjectForm(props) {
     };
 
     const handleDelete = () => {
-        const { deleteProject } = props;
-        deleteProject(dumProjects[index]._id);
-        confirmDeleteClose();
+        const { deleteProject, serverError } = props;
+        deleteProject(dumProjects[index]._id, () => {
+            if (serverError === null) {
+                setState((prevState) => ({
+                    ...prevState,
+                    deleteSucc: true,
+                }));
+            }
+            handleFormClose();
+            confirmDeleteClose();
+        });
     };
 
     const cancelEdit = () => {
@@ -276,10 +287,6 @@ export default function EditProjectForm(props) {
             memberNames: dumUsers
                 .filter((user) => user.privelege_level !== 'Unapproved_User')
                 .map((user) => user.name),
-            // selectedMembers: prevState.orgProject.members.map(
-            //     (userId) =>
-            //         dumUsers.filter((user) => user._id === userId)[0].name
-            // ),
             selectedMembers: dumUsers
                 .filter((user) =>
                     prevState.orgProject.members.includes(user._id)
@@ -303,22 +310,20 @@ export default function EditProjectForm(props) {
         const updatedProject = {
             ...project,
             url: Utils.strMapToObj(urlMap),
-            // members: selectedMembers.map(
-            //     (name) => dumUsers.filter((user) => user.name === name)[0]._id
-            // ),
             members: dumUsers
                 .filter((user) => selectedMembers.includes(user.name))
                 .map((user) => user._id),
         };
 
-        editProject(updatedProject);
-        if (serverError === null) {
-            setState((prevState) => ({
-                ...prevState,
-                success: true,
-            }));
-        }
-        handleFormClose();
+        editProject(updatedProject, () => {
+            if (serverError === null) {
+                setState((prevState) => ({
+                    ...prevState,
+                    success: true,
+                }));
+            }
+            handleFormClose();
+        });
     };
 
     const FieldSep = () => {
@@ -327,6 +332,7 @@ export default function EditProjectForm(props) {
 
     const {
         success,
+        deleteSucc,
         isDailogOpen,
         project,
         urlFields,
@@ -346,6 +352,16 @@ export default function EditProjectForm(props) {
                 autoHideDuration={2000}
                 onClose={handleSuccessClose}
                 message="Project updated Successfully !"
+            />
+            <Snackbar
+                anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'center',
+                }}
+                open={deleteSucc}
+                autoHideDuration={2000}
+                onClose={handleSuccessClose}
+                message="Project deleted Successfully !"
             />
             <Tooltip title="Edit Project">
                 <Fab
@@ -369,7 +385,7 @@ export default function EditProjectForm(props) {
                 <DialogTitle>
                     <Typography variant="h4">Edit Project</Typography>
                 </DialogTitle>
-                <DialogContent>
+                <DialogContent style={{ scrollbarWidth: 'none' }}>
                     <Grid container justify="center" alignItems="center">
                         <Grid item xs={4}>
                             <Typography variant="h6">
@@ -635,19 +651,25 @@ export default function EditProjectForm(props) {
                             >
                                 <FormControlLabel
                                     value="IDEA"
-                                    control={<Radio color="secondary" />}
+                                    control={
+                                        <Radio style={{ color: '#15f4ee' }} />
+                                    }
                                     label="Idea"
                                     labelPlacement="end"
                                 />
                                 <FormControlLabel
                                     value="ONGOING"
-                                    control={<Radio color="secondary" />}
+                                    control={
+                                        <Radio style={{ color: '#ffd60a' }} />
+                                    }
                                     label="Ongoing"
                                     labelPlacement="end"
                                 />
                                 <FormControlLabel
                                     value="COMPLETED"
-                                    control={<Radio color="primary" />}
+                                    control={
+                                        <Radio style={{ color: '#23fa58' }} />
+                                    }
                                     label="Completed"
                                     labelPlacement="end"
                                 />

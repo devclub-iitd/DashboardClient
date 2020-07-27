@@ -22,9 +22,7 @@ const useStyles = makeStyles((theme) => ({
         }),
     },
     left: {
-        // height: document.documentElement.clientHeight * 0.085,
         borderRadius: '10px',
-        // fontSize: '2.7849rem',
         marginLeft: theme.spacing(3),
         marginTop: theme.spacing(2),
         paddingLeft: theme.spacing(2),
@@ -34,12 +32,8 @@ const useStyles = makeStyles((theme) => ({
             marginLeft: 'auto',
             marginRight: 'auto',
         },
-        // [theme.breakpoints.up('md')]: {
-        //     paddingBottom: theme.spacing(1.8),
-        // },
     },
     right: {
-        // height: document.documentElement.clientHeight * 0.085,
         borderRadius: '10px',
         marginRight: theme.spacing(3),
         marginTop: theme.spacing(2),

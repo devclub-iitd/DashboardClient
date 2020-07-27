@@ -22,7 +22,7 @@ const useStyles = makeStyles(() => ({
 
 const CustomSearchRender = (props) => {
     const classes = useStyles();
-    const { options, onHide, searchText, onSearch } = props;
+    const { options, onHide, searchText, onSearch, searchLabel } = props;
     const handleTextChange = (event) => {
         onSearch(event.target.value);
     };
@@ -52,7 +52,7 @@ const CustomSearchRender = (props) => {
                     fullWidth
                     small
                     id="search"
-                    label={options.textLabels.toolbar.search}
+                    label={searchLabel || options.textLabels.toolbar.search}
                 />
                 <IconButton className={classes.clearIcon} onClick={onHide}>
                     <ClearIcon />
@@ -67,6 +67,7 @@ CustomSearchRender.propTypes = {
     onHide: PropTypes.func.isRequired,
     searchText: PropTypes.string.isRequired,
     onSearch: PropTypes.func.isRequired,
+    searchLabel: PropTypes.string.isRequired,
 };
 
 export default CustomSearchRender;

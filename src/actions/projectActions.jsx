@@ -27,9 +27,6 @@ export const projectErrorFin = () => ({
 
 function objToStrMap(obj) {
     const strMap = new Map();
-    // for (const k of Object.keys(obj)) {
-    //   strMap.set(k, obj[k]);
-    // }
     Object.keys(obj).map((k) => strMap.set(k, obj[k]));
     return strMap;
 }
@@ -53,7 +50,6 @@ export const fetchAllProjects = () => (dispatch) => {
                     return response;
                 }
                 response.json().then((res) => {
-                    // console.log('Server response: ', res);
                     if (res.name === 'Unauthorized') {
                         dispatch(logoutUser('timeout'));
                     }
@@ -62,7 +58,6 @@ export const fetchAllProjects = () => (dispatch) => {
                     `Error ${response.status}: ${response.statusText}`
                 );
                 error.response = response;
-                // console.log(error);
                 throw error;
             },
             (error) => {
@@ -73,7 +68,6 @@ export const fetchAllProjects = () => (dispatch) => {
         .then((response) => response.json())
         .then((projects) => {
             const gotProjects = projects.data;
-            // fetch gets url as an object, converting to map strings required
             const allProjects = gotProjects.map((pro) => {
                 const upPro = {
                     ...pro,
@@ -104,7 +98,7 @@ export const fetchAllProjects = () => (dispatch) => {
         .catch((error) => dispatch(projectsFailed(error.message)));
 };
 
-export const createProject = (project) => (dispatch) => {
+export const createProject = (project, cb) => (dispatch) => {
     const bearer = `Bearer ${localStorage.getItem('dcIITDDashboardToken')}`;
 
     return fetch(API.projectAPI, {
@@ -122,7 +116,6 @@ export const createProject = (project) => (dispatch) => {
                     return response;
                 }
                 response.json().then((res) => {
-                    // console.log('Server response: ', res);
                     if (res.name === 'Unauthorized') {
                         dispatch(logoutUser('timeout'));
                     }
@@ -139,15 +132,16 @@ export const createProject = (project) => (dispatch) => {
         )
         .then((response) => response.json())
         .then(() => {
-            // console.log('New Project: ', cProject);
+            if (cb) {
+                cb();
+            }
             dispatch(fetchAllProjects());
         })
         .catch((error) => dispatch(projectServerError(error.message)));
 };
 
-export const editProject = (project) => (dispatch) => {
+export const editProject = (project, cb) => (dispatch) => {
     const bearer = `Bearer ${localStorage.getItem('dcIITDDashboardToken')}`;
-
     return fetch(`${API.projectAPI}${project._id}`, {
         method: 'PUT',
         body: JSON.stringify(project),
@@ -163,7 +157,6 @@ export const editProject = (project) => (dispatch) => {
                     return response;
                 }
                 response.json().then((res) => {
-                    // console.log('Server response: ', res);
                     if (res.name === 'Unauthorized') {
                         dispatch(logoutUser('timeout'));
                     }
@@ -180,13 +173,15 @@ export const editProject = (project) => (dispatch) => {
         )
         .then((response) => response.json())
         .then(() => {
-            // console.log('Updated Project: ', cEvent);
+            if (cb) {
+                cb();
+            }
             dispatch(fetchAllProjects());
         })
         .catch((error) => dispatch(projectServerError(error.message)));
 };
 
-export const deleteProject = (projectId) => (dispatch) => {
+export const deleteProject = (projectId, cb) => (dispatch) => {
     const bearer = `Bearer ${localStorage.getItem('dcIITDDashboardToken')}`;
 
     return fetch(API.projectDeleteAPI, {
@@ -204,7 +199,6 @@ export const deleteProject = (projectId) => (dispatch) => {
                     return response;
                 }
                 response.json().then((res) => {
-                    // console.log('Server response: ', res);
                     if (res.name === 'Unauthorized') {
                         dispatch(logoutUser('timeout'));
                     }
@@ -221,8 +215,9 @@ export const deleteProject = (projectId) => (dispatch) => {
         )
         .then((response) => response.json())
         .then(() => {
-            // console.log('User data updated', user);
-            // console.log(res);
+            if (cb) {
+                cb();
+            }
             dispatch(fetchAllProjects());
         })
         .catch((error) => dispatch(projectServerError(error.message)));

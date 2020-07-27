@@ -142,25 +142,26 @@ export default function CreateTasks(props) {
             ...state.newEvent,
             url: Utils.strMapToObj(urlMap),
         };
-        props.createEvent(newEvent);
-        if (props.eventError === null) {
-            setState({
-                ...state,
-                newEvent: {
-                    ...state.newEvent,
-                    name: '',
-                    description: '',
-                    start_date: new Date(),
-                    end_date: new Date(),
-                    embed_code: '',
-                    display_on_website: false,
-                    url: new Map([['url', '']]),
-                    assignee: [],
-                },
-                urlFields: [{ type: 'url', url: '' }],
-                success: true,
-            });
-        }
+        props.createEvent(newEvent, () => {
+            if (props.eventError === null) {
+                setState({
+                    ...state,
+                    newEvent: {
+                        ...state.newEvent,
+                        name: '',
+                        description: '',
+                        start_date: new Date(),
+                        end_date: new Date(),
+                        embed_code: '',
+                        display_on_website: false,
+                        url: new Map([['url', '']]),
+                        assignee: [],
+                    },
+                    urlFields: [{ type: 'url', url: '' }],
+                    success: true,
+                });
+            }
+        });
     };
 
     const FieldSep = () => {

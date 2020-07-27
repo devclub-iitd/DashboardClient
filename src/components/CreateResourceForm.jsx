@@ -53,7 +53,6 @@ export default function CreateTasks(props) {
                 },
             });
         } else if (name === 'url') {
-            const validUrl = /^https?:\/\/[a-z0-9.%+*$@]+\.[a-z]{2,5}$/;
             setState({
                 ...state,
                 newRes: {
@@ -99,25 +98,26 @@ export default function CreateTasks(props) {
     };
 
     const submitResourceForm = () => {
-        props.createResource(state.newRes);
-        if (props.resourceError === null) {
-            setState({
-                ...state,
-                newRes: {
-                    ...state.newRes,
-                    internal_name: '',
-                    directory_year: '',
-                    subdirectory: '',
-                    name: '',
-                    archive: false,
-                    display_on_website: false,
-                    new: false,
-                    description: '',
-                    url: '',
-                },
-                success: true,
-            });
-        }
+        props.createResource(state.newRes, () => {
+            if (props.resourceError === null) {
+                setState({
+                    ...state,
+                    newRes: {
+                        ...state.newRes,
+                        internal_name: '',
+                        directory_year: '',
+                        subdirectory: '',
+                        name: '',
+                        archive: false,
+                        display_on_website: false,
+                        new: false,
+                        description: '',
+                        url: '',
+                    },
+                    success: true,
+                });
+            }
+        });
     };
 
     const FieldSep = () => {

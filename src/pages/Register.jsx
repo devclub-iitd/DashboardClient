@@ -15,27 +15,16 @@ import {
     Typography,
     Paper,
 } from '@material-ui/core';
-import { withRouter, Link } from 'react-router-dom';
+import { withRouter, Link, Redirect } from 'react-router-dom';
 import { registerUser, regErrorFin } from '../actions/userActions';
 import logo from '../images/LogoSquare.jpg';
 
 const styles = (theme) => ({
-    // '@global': {
-    //     body: {
-    //         backgroundColor: theme.palette.background.default,
-    //     },
-    // },
     root: {
         height: '100vh',
         backgroundColor: theme.palette.background.default,
         overflowY: 'auto',
         scrollbarWidth: 'none',
-    },
-    paper: {
-        marginTop: theme.spacing(8),
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
     },
     avatar: {
         margin: theme.spacing(2),
@@ -44,8 +33,6 @@ const styles = (theme) => ({
         backgroundColor: '#8e8e93',
     },
     form: {
-        // width: '100%', // Fix IE 11 issue.
-        // marginTop: theme.spacing(3),
         marginLeft: theme.spacing(5),
         marginRight: theme.spacing(5),
         marginTop: theme.spacing(1),
@@ -59,7 +46,6 @@ const styles = (theme) => ({
         },
     },
     submit: {
-        // margin: theme.spacing(3, 0, 2),
         width: '56%',
         paddingTop: theme.spacing(0.05),
         paddingBottom: theme.spacing(0.05),
@@ -75,24 +61,9 @@ const styles = (theme) => ({
             width: '80%',
         },
     },
-    buttonDiv: {
-        width: '56%',
-        // paddingTop: theme.spacing(0.05),
-        // paddingBottom: theme.spacing(0.05),
-        marginTop: theme.spacing(2),
-        marginBottom: theme.spacing(2),
-        // fontSize: '1.5rem',
-        // fontWeight: 600,
-        marginLeft: '22%',
-        marginRight: '22%',
-    },
     backdrop: {
         zIndex: theme.zIndex.drawer + 1,
         color: '#fff',
-    },
-    formControl: {
-        margin: theme.spacing(1),
-        minWidth: 120,
     },
 });
 
@@ -126,10 +97,6 @@ class SignUp extends React.Component {
             password: target.password.value,
         };
 
-        // console.log('Register body:', body);
-
-        // const { register } = this.props;
-        // window.location.reload(false);
         const { register, registerUser: registerUserDis } = this.props;
 
         registerUserDis(body);
@@ -156,7 +123,7 @@ class SignUp extends React.Component {
     };
 
     render() {
-        const { classes, register, sucErrFin } = this.props;
+        const { classes, register, sucErrFin, auth } = this.props;
 
         const { confirmPassError } = this.state;
         const categories = [
@@ -166,6 +133,10 @@ class SignUp extends React.Component {
             'Senior Undergraduate',
             'Alumni',
         ];
+
+        if (auth.isAuthenticated) {
+            return <Redirect to="/dashboard/home" />;
+        }
 
         return (
             <Grid
@@ -202,7 +173,6 @@ class SignUp extends React.Component {
                 >
                     <CircularProgress color="inherit" />
                 </Backdrop>
-                {/* <CssBaseline /> */}
                 <Grid
                     justify="center"
                     alignContent="center"
@@ -331,6 +301,7 @@ class SignUp extends React.Component {
 
 const mapStateToProps = (state) => ({
     register: state.Register,
+    auth: state.Auth,
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -341,6 +312,7 @@ const mapDispatchToProps = (dispatch) => ({
 SignUp.propTypes = {
     classes: PropTypes.objectOf(PropTypes.string).isRequired,
     register: PropTypes.objectOf(PropTypes.any).isRequired,
+    auth: PropTypes.objectOf(PropTypes.any).isRequired,
     registerUser: PropTypes.func.isRequired,
     sucErrFin: PropTypes.func.isRequired,
 };

@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import { createMuiTheme } from '@material-ui/core';
 import * as EventUtils from './eventUtils';
 import * as ProjectUtils from './projectUtils';
@@ -10,7 +11,7 @@ export { UserUtils };
 export const defaultTheme = createMuiTheme();
 
 export const isValidUrl = (url) => {
-    return /^https?:\/\//i.test(url);
+    return url.length === 0 || /^https?:\/\//i.test(url);
 };
 
 // [a-z.+*&%$#@!/]+$
@@ -25,21 +26,14 @@ export const strMapToObj = (strMap) => {
 
 export const objToStrMap = (obj) => {
     const strMap = new Map();
-    // for (const k of Object.keys(obj)) {
-    //   strMap.set(k, obj[k]);
-    // }
-    // console.log('url object: ', obj);
     Object.keys(obj).map((k) => strMap.set(k, obj[k]));
-    // console.log('mapped url: ', strMap);
     return strMap;
 };
 
 export const capitalizeString = (str) => {
-    // console.log(str);
     return str === undefined || str === null || str === ''
         ? ''
         : str.toString().charAt(0).toUpperCase() + str.toString().slice(1);
-    // return str;
 };
 
 export const objectHasUndefined = (obj) => {
@@ -63,4 +57,53 @@ export const getDefinedValue = (value, type = 'string') => {
         return '';
     }
     return value;
+};
+
+export const getsUserTasks = (users, projects, events) => {
+    const userWithTasks = [];
+
+    if (users) {
+        users.forEach((user) => {
+            const userId = user._id;
+            const userObject = {
+                user: {
+                    id: userId,
+                    name: user.name,
+                },
+                projects: [],
+                events: [],
+            };
+            if (projects) {
+                projects.forEach((pro) => {
+                    if (
+                        pro.members.includes(userId) &&
+                        !(pro.status === 'COMPLETED')
+                    ) {
+                        userObject.projects.push({
+                            id: pro._id,
+                            name: pro.name,
+                            members: pro.members,
+                        });
+                    }
+                });
+
+                if (events) {
+                    events.forEach((eve) => {
+                        if (
+                            eve.assignee.includes(userId) &&
+                            !(EventUtils.getStatus(eve) === 'completed')
+                        ) {
+                            userObject.events.push({
+                                id: eve._id,
+                                name: eve.name,
+                                members: eve.assignee,
+                            });
+                        }
+                    });
+                }
+            }
+            userWithTasks.push(userObject);
+        });
+    }
+    return userWithTasks;
 };

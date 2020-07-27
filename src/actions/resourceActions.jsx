@@ -34,7 +34,6 @@ export const fetchAllResources = () => (dispatch) => {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            // Origin: 'localhost:3001/',
             Authorization: bearer,
         },
         credentials: 'same-origin',
@@ -45,7 +44,6 @@ export const fetchAllResources = () => (dispatch) => {
                     return response;
                 }
                 response.json().then((res) => {
-                    // console.log('Server response: ', res);
                     if (res.name === 'Unauthorized') {
                         dispatch(logoutUser('timeout'));
                     }
@@ -54,7 +52,6 @@ export const fetchAllResources = () => (dispatch) => {
                     `Error ${response.status}: ${response.statusText}`
                 );
                 error.response = response;
-                // console.log(error);
                 throw error;
             },
             (error) => {
@@ -67,7 +64,7 @@ export const fetchAllResources = () => (dispatch) => {
         .catch((error) => dispatch(resourcesFailed(error.message)));
 };
 
-export const createResource = (resource) => (dispatch) => {
+export const createResource = (resource, cb) => (dispatch) => {
     const bearer = `Bearer ${localStorage.getItem('dcIITDDashboardToken')}`;
 
     return fetch(API.resourceAPI, {
@@ -85,7 +82,6 @@ export const createResource = (resource) => (dispatch) => {
                     return response;
                 }
                 response.json().then((res) => {
-                    // console.log('Server response: ', res);
                     if (res.name === 'Unauthorized') {
                         dispatch(logoutUser('timeout'));
                     }
@@ -102,13 +98,15 @@ export const createResource = (resource) => (dispatch) => {
         )
         .then((response) => response.json())
         .then(() => {
-            // console.log('New Resource: ', cResource);
+            if (cb) {
+                cb();
+            }
             dispatch(fetchAllResources());
         })
         .catch((error) => dispatch(resourceServerError(error.message)));
 };
 
-export const editResource = (resource) => (dispatch) => {
+export const editResource = (resource, cb) => (dispatch) => {
     const bearer = `Bearer ${localStorage.getItem('dcIITDDashboardToken')}`;
 
     return fetch(`${API.resourceAPI}${resource._id}`, {
@@ -126,7 +124,6 @@ export const editResource = (resource) => (dispatch) => {
                     return response;
                 }
                 response.json().then((res) => {
-                    // console.log('Server response: ', res);
                     if (res.name === 'Unauthorized') {
                         dispatch(logoutUser('timeout'));
                     }
@@ -143,13 +140,15 @@ export const editResource = (resource) => (dispatch) => {
         )
         .then((response) => response.json())
         .then(() => {
-            // console.log('Updated Resource: ', cResource);
+            if (cb) {
+                cb();
+            }
             dispatch(fetchAllResources());
         })
         .catch((error) => dispatch(resourceServerError(error.message)));
 };
 
-export const deleteResource = (resourceId) => (dispatch) => {
+export const deleteResource = (resourceId, cb) => (dispatch) => {
     const bearer = `Bearer ${localStorage.getItem('dcIITDDashboardToken')}`;
 
     return fetch(API.resourceDeleteAPI, {
@@ -167,7 +166,6 @@ export const deleteResource = (resourceId) => (dispatch) => {
                     return response;
                 }
                 response.json().then((res) => {
-                    // console.log('Server response: ', res);
                     if (res.name === 'Unauthorized') {
                         dispatch(logoutUser('timeout'));
                     }
@@ -184,8 +182,9 @@ export const deleteResource = (resourceId) => (dispatch) => {
         )
         .then((response) => response.json())
         .then(() => {
-            // console.log('User data updated', user);
-            // console.log(res);
+            if (cb) {
+                cb();
+            }
             dispatch(fetchAllResources());
         })
         .catch((error) => dispatch(resourceServerError(error.message)));

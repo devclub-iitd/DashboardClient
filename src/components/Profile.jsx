@@ -78,7 +78,6 @@ const useStyles = makeStyles((theme) => ({
     specPaper: {
         backgroundColor: '#48484a',
         padding: theme.spacing(1, 1, 2, 2),
-        // height: '100%',
         borderRadius: '15px',
         [theme.breakpoints.down('sm')]: {
             marginTop: theme.spacing(4),
@@ -89,8 +88,6 @@ const useStyles = makeStyles((theme) => ({
         padding: theme.spacing(1, 1, 2, 2),
         borderRadius: '15px',
         marginTop: theme.spacing(4),
-        // marginLeft: theme.spacing(2.3),
-        // marginRight: theme.spacing(2.3),
     },
     categoryField: {
         [theme.breakpoints.down('md')]: {
@@ -174,11 +171,6 @@ export default function Profile({
     changePassword,
     users,
 }) {
-    let urlSpecHeight;
-    let specHeight;
-    let introHeight;
-    // const urlSpecRef =
-
     const [editMode, setEditMode] = React.useState(false);
 
     const toggleEditMode = () => {
@@ -309,9 +301,6 @@ export default function Profile({
 
     const handleSubmit = () => {
         const urlMap = new Map();
-        // state.urlFields.map((urlField) =>
-        //     urlMap.set(urlField.type, urlField.url)
-        // );
         state.urlFields.forEach((urlField) => {
             const fixedUrl = Utils.isValidUrl(urlField.url)
                 ? urlField.url
@@ -323,26 +312,26 @@ export default function Profile({
             url: Utils.UserUtils.strMapToObj(urlMap),
         };
 
-        updateUser(newUser);
-
-        if (serverError === null) {
-            setState({
-                ...state,
-                editSuccess: true,
-                orgUser: {
-                    ...state.editUser,
-                    url: urlMap,
-                },
-                urlFields:
-                    urlMap === undefined
-                        ? []
-                        : Array.from(urlMap).map(([index, value]) => ({
-                              type: index,
-                              url: value,
-                          })),
-            });
-        }
-        toggleEditMode();
+        updateUser(newUser, () => {
+            if (serverError === null) {
+                setState({
+                    ...state,
+                    editSuccess: true,
+                    orgUser: {
+                        ...state.editUser,
+                        url: urlMap,
+                    },
+                    urlFields:
+                        urlMap === undefined
+                            ? []
+                            : Array.from(urlMap).map(([index, value]) => ({
+                                  type: index,
+                                  url: value,
+                              })),
+                });
+            }
+            toggleEditMode();
+        });
     };
 
     const cancelEdit = () => {
@@ -992,7 +981,6 @@ export default function Profile({
                         container
                         className={classes.urlSpecContainer}
                         justify="space-evenly"
-                        // alignItems="flex-start"
                         alignItems="stretch"
                         item
                         xs={12}
@@ -1039,6 +1027,7 @@ export default function Profile({
                                             }
                                         >
                                             <Link
+                                                target="_blank"
                                                 display="block"
                                                 style={{ width: '100%' }}
                                                 noWrap
@@ -1075,6 +1064,7 @@ export default function Profile({
                                             )}
                                         >
                                             <Link
+                                                target="_blank"
                                                 display="block"
                                                 style={{ width: '100%' }}
                                                 noWrap
@@ -1111,6 +1101,7 @@ export default function Profile({
                                             }
                                         >
                                             <Link
+                                                target="_blank"
                                                 display="block"
                                                 style={{ width: '100%' }}
                                                 noWrap
@@ -1144,6 +1135,7 @@ export default function Profile({
                                                 <Grid item xs={9}>
                                                     <Tooltip title={value}>
                                                         <Link
+                                                            target="_blank"
                                                             display="block"
                                                             style={{
                                                                 width: '100%',
@@ -1169,7 +1161,6 @@ export default function Profile({
                                         justify="flex-start"
                                         item
                                         xs={12}
-                                        // alignItems
                                     >
                                         {state.urlFields.map(
                                             ({ type, url }, index) => (
@@ -1335,13 +1326,6 @@ export default function Profile({
                             )}
                         </Grid>
                     </Grid>
-                    {/* <Grid
-                        item
-                        xs={12}
-                        container
-                        justify="space-evenly"
-                        alignItems="stretch"
-                    > */}
                     <Grid
                         component={Paper}
                         className={classes.intPaper}
@@ -1380,7 +1364,6 @@ export default function Profile({
                             </Grow>
                         )}
                     </Grid>
-                    {/* </Grid> */}
                 </Grid>
             </Grow>
         </Grid>

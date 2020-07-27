@@ -83,23 +83,11 @@ export const registerError = (message) => ({
     payload: message,
 });
 
-function objToStrMap(obj) {
-    const strMap = new Map();
-    // for (const k of Object.keys(obj)) {
-    //   strMap.set(k, obj[k]);
-    // }
-    // console.log('url object: ', obj);
-    Object.keys(obj).map((k) => strMap.set(k, obj[k]));
-    // console.log('mapped url: ', strMap);
-    return strMap;
-}
-
-// Logs the user out
 export const logoutUser = (type) => (dispatch) => {
     dispatch(requestLogout());
     localStorage.removeItem('dcIITDDashboardToken');
     localStorage.removeItem('userId');
-    // dispatch(userFailed('Error 401: Unauthorized'));
+    localStorage.removeItem('currentUser');
     dispatch(receiveLogout(type));
 };
 
@@ -113,100 +101,11 @@ export const fetchUser = (id) => (dispatch) => {
             _id: id,
         },
     };
-    return (
-        fetch(API.userQueryAPI, {
-            method: 'POST',
-            body: JSON.stringify(query),
-            headers: {
-                'Content-Type': 'application/json',
-                // Origin: 'localhost:3001/',
-                Authorization: bearer,
-            },
-            credentials: 'same-origin',
-        })
-            .then(
-                (response) => {
-                    if (response.ok || response.status === 304) {
-                        return response;
-                    }
-                    response.json().then((res) => {
-                        // // console.log('Server response: ', res);
-                        if (res.name === 'Unauthorized') {
-                            dispatch(logoutUser('timeout'));
-                        }
-                    });
-                    const error = new Error(
-                        `Error ${response.status}: ${response.statusText}`
-                    );
-                    error.response = response;
-                    // // console.log(error);
-                    throw error;
-                },
-                (error) => {
-                    const errmess = new Error(error.message);
-                    throw errmess;
-                }
-            )
-            .then((response) => response.json())
-            .then(({ data }) => {
-                // console.log('fetched user data: ', data);
-                // const acUser = {
-                //   ...data[0],
-                //   url: objToStrMap(data[0].url),
-                //   join_year: new Date(data[0].join_year),
-                //   grad_year: new Date(data[0].grad_year),
-                //   birth_date: new Date(data[0].birth_date),
-                // };
-                // const upUser = {
-                //     ...data[0],
-                //     url: objToStrMap(data[0].url),
-                //     join_year:
-                //         data[0].join_year === null
-                //             ? new Date()
-                //             : new Date(data[0].join_year),
-                //     grad_year:
-                //         data[0].grad_year === null
-                //             ? new Date()
-                //             : new Date(data[0].grad_year),
-                //     birth_date:
-                //         data[0].birth_date === null
-                //             ? new Date()
-                //             : new Date(data[0].birth_date),
-                // };
-                // // console.log('fetched user: ', upUser);
-                // if (!upUser.url.has('fb_url')) {
-                //     upUser.url.set('fb_url', '#');
-                // }
-                // if (!upUser.url.has('github_url')) {
-                //     upUser.url.set('github_url', '#');
-                // }
-                // if (!upUser.url.has('picture_url')) {
-                //     upUser.url.set('picture_url', '#');
-                // }
-                localStorage.setItem('currentUser', JSON.stringify(data[0]));
-                const upUser = UserUtils.getProperUser(data[0]);
-                // return upUser;
-                // console.log('urled fetched user: ', upUser);
-                // localStorage.setItem('currentUser', JSON.stringify(upUser));
-                dispatch(addUser(upUser));
-            })
-            // .then((upUser) => dispatch(addUser(upUser)))
-            .catch((error) => dispatch(userFailed(error.message)))
-    );
-};
-
-export const fetchAllUsers = () => (dispatch) => {
-    dispatch(usersLoading(true));
-
-    const bearer = `Bearer ${localStorage.getItem('dcIITDDashboardToken')}`;
-    // const bearer = 'Bearer ssfvsflknsljknljkfvnsjlkfn';
-
-    return fetch(`${API.userGetAllDBAPI}`, {
-        method: 'GET',
-        // body: JSON.stringify(newComment),
+    return fetch(API.userQueryAPI, {
+        method: 'POST',
+        body: JSON.stringify(query),
         headers: {
             'Content-Type': 'application/json',
-            // Origin: 'localhost:3001/',
             Authorization: bearer,
         },
         credentials: 'same-origin',
@@ -217,7 +116,6 @@ export const fetchAllUsers = () => (dispatch) => {
                     return response;
                 }
                 response.json().then((res) => {
-                    // // console.log('Server response: ', res);
                     if (res.name === 'Unauthorized') {
                         dispatch(logoutUser('timeout'));
                     }
@@ -226,7 +124,49 @@ export const fetchAllUsers = () => (dispatch) => {
                     `Error ${response.status}: ${response.statusText}`
                 );
                 error.response = response;
-                // // console.log(error);
+                throw error;
+            },
+            (error) => {
+                const errmess = new Error(error.message);
+                throw errmess;
+            }
+        )
+        .then((response) => response.json())
+        .then(({ data }) => {
+            localStorage.setItem('currentUser', JSON.stringify(data[0]));
+            const upUser = UserUtils.getProperUser(data[0]);
+            dispatch(addUser(upUser));
+        })
+        .catch((error) => dispatch(userFailed(error.message)));
+};
+
+export const fetchAllUsers = () => (dispatch) => {
+    dispatch(usersLoading(true));
+
+    const bearer = `Bearer ${localStorage.getItem('dcIITDDashboardToken')}`;
+
+    return fetch(`${API.userGetAllDBAPI}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: bearer,
+        },
+        credentials: 'same-origin',
+    })
+        .then(
+            (response) => {
+                if (response.ok || response.status === 304) {
+                    return response;
+                }
+                response.json().then((res) => {
+                    if (res.name === 'Unauthorized') {
+                        dispatch(logoutUser('timeout'));
+                    }
+                });
+                const error = new Error(
+                    `Error ${response.status}: ${response.statusText}`
+                );
+                error.response = response;
                 throw error;
             },
             (error) => {
@@ -236,7 +176,6 @@ export const fetchAllUsers = () => (dispatch) => {
         )
         .then((response) => response.json())
         .then((users) => {
-            // console.log('got users: ', users);
             const gotUsers = users.data;
             const allUsers = gotUsers.map((cUser) =>
                 UserUtils.getProperUser(cUser)
@@ -247,10 +186,6 @@ export const fetchAllUsers = () => (dispatch) => {
 };
 
 export const loginUser = (creds) => (dispatch) => {
-    // We dispatch requestLogin to kickoff the call to the API
-    // temporary logout
-    // dispatch(logout());
-
     dispatch(requestLogin(creds));
 
     return fetch(API.loginAPI, {
@@ -270,15 +205,10 @@ export const loginUser = (creds) => (dispatch) => {
                 );
                 error.response = response;
                 response.json().then((res) => {
-                    // // console.log('Server response: ', res);
                     if (res.name === 'Unapproved user') {
                         dispatch(loginError('Unapproved'));
                     }
                 });
-                // // // console.log('Response: ', response);
-                // const error = new Error(`Error ${response.status}: ${response.statusText}`);
-                // error.response = response;
-                // // // console.log('Error: ', error);
                 throw error;
             },
             (error) => {
@@ -288,21 +218,10 @@ export const loginUser = (creds) => (dispatch) => {
         .then((response) => response.json())
         .then((response) => {
             if (response.status === 200) {
-                // // console.log('Response: ', response.result);
-                // // console.log('Id: ', response.result._id);
-                // If login was successful, set the token in local storage
                 localStorage.setItem('dcIITDDashboardToken', response.token);
                 localStorage.setItem('userId', response.result._id);
-                // Dispatch the success action
-                // dispatch(addUser(response.result));
                 dispatch(receiveLogin(response));
-                // dispatch(fetchUser(response.result._id));
             }
-            // else {
-            //   const error = new Error(`Error ${response.status}`);
-            //   error.response = response;
-            //   throw error;
-            // }
         })
         .catch((error) => dispatch(loginError(error.message)));
 };
@@ -321,10 +240,6 @@ export const registerUser = (registerCreds) => (dispatch) => {
                 if (response.ok || response.status === 304) {
                     return response.json();
                 }
-
-                // response.json().then(() => {
-                //     // // console.log('Server response: ', res);
-                // });
                 const error = new Error(
                     `Error ${response.status}: ${response.statusText}`
                 );
@@ -335,19 +250,14 @@ export const registerUser = (registerCreds) => (dispatch) => {
                 throw error;
             }
         )
-        // .then((response) => response.json())
         .then(() => {
-            // // console.log('Response: ', response);
             dispatch(receiveRegister());
         })
         .catch((error) => dispatch(registerError(error.message)));
 };
 
-// update user profile data, only the user can update profile, not even the admin
-export const updateUser = (updatedUser) => (dispatch) => {
+export const updateUser = (updatedUser, cb) => (dispatch) => {
     const bearer = `Bearer ${localStorage.getItem('dcIITDDashboardToken')}`;
-    // const api = new String(API.userAPI + updatedUser._id);
-    // `${API.userAPI}${updatedUser._id}`
     dispatch(userLoading);
     return fetch(`${API.userAPI}${updatedUser._id}`, {
         method: 'PUT',
@@ -364,7 +274,6 @@ export const updateUser = (updatedUser) => (dispatch) => {
                     return response;
                 }
                 response.json().then((res) => {
-                    // // console.log('Server response: ', res);
                     if (res.name === 'Unauthorized') {
                         dispatch(logoutUser('timeout'));
                     }
@@ -381,15 +290,15 @@ export const updateUser = (updatedUser) => (dispatch) => {
         )
         .then((response) => response.json())
         .then(() => {
-            // // console.log('User data updated: ', userData);
+            if (cb) {
+                cb();
+            }
             dispatch(fetchUser(updatedUser._id));
-            // localStorage.setItem('currentUser', JSON.stringify(updatedUser));
-            // dispatch(addUser(updatedUser));
         })
         .catch((error) => dispatch(userServerError(error.message)));
 };
 
-export const removeOtherUser = (uId) => (dispatch) => {
+export const removeOtherUser = (uId, cb) => (dispatch) => {
     const bearer = `Bearer ${localStorage.getItem('dcIITDDashboardToken')}`;
 
     return fetch(`${API.userAPI}delete`, {
@@ -407,7 +316,6 @@ export const removeOtherUser = (uId) => (dispatch) => {
                     return response;
                 }
                 response.json().then((res) => {
-                    // // console.log('Server response: ', res);
                     if (res.name === 'Unauthorized') {
                         dispatch(logoutUser('timeout'));
                     }
@@ -424,8 +332,9 @@ export const removeOtherUser = (uId) => (dispatch) => {
         )
         .then((response) => response.json())
         .then(() => {
-            // // // console.log('User data updated', user);
-            // // console.log(res);
+            if (cb) {
+                cb();
+            }
             dispatch(fetchAllUsers());
         })
         .catch((error) => dispatch(userServerError(error)));
@@ -448,7 +357,6 @@ export const deleteAllUsers = () => (dispatch) => {
                     return response;
                 }
                 response.json().then((res) => {
-                    // // console.log('Server response: ', res);
                     if (res.name === 'Unauthorized') {
                         dispatch(logoutUser('timeout'));
                     }
@@ -465,14 +373,12 @@ export const deleteAllUsers = () => (dispatch) => {
         )
         .then((response) => response.json())
         .then(() => {
-            // // // console.log('User data updated', user);
-            // // console.log(res);
             dispatch(fetchAllUsers());
         })
         .catch((error) => dispatch(userServerError(error)));
 };
 
-export const rejectAllUnapproved = () => (dispatch) => {
+export const rejectAllUnapproved = (cb) => (dispatch) => {
     const bearer = `Bearer ${localStorage.getItem('dcIITDDashboardToken')}`;
 
     return fetch(`${API.userAPI}rejectAll`, {
@@ -489,7 +395,6 @@ export const rejectAllUnapproved = () => (dispatch) => {
                     return response;
                 }
                 response.json().then((res) => {
-                    // // console.log('Server response: ', res);
                     if (res.name === 'Unauthorized') {
                         dispatch(logoutUser('timeout'));
                     }
@@ -505,17 +410,16 @@ export const rejectAllUnapproved = () => (dispatch) => {
             }
         )
         .then(() => {
-            // // console.log('Rejection response', res);
-            // // console.log(res);
+            if (cb) {
+                cb();
+            }
             dispatch(fetchAllUsers());
         })
         .catch((error) => dispatch(userServerError(error)));
 };
-// change password
-export const changePassword = (newPass) => (dispatch) => {
+
+export const changePassword = (newPass, cb) => (dispatch) => {
     const bearer = `Bearer ${localStorage.getItem('dcIITDDashboardToken')}`;
-    // const creds = localStorage.getItem('creds');
-    // creds.password = updatedPass;
     return fetch(API.userChangePassAPI, {
         method: 'POST',
         body: JSON.stringify({ newPassword: newPass }),
@@ -531,7 +435,6 @@ export const changePassword = (newPass) => (dispatch) => {
                     return response;
                 }
                 response.json().then((res) => {
-                    // // console.log('Server response: ', res);
                     if (res.name === 'Unauthorized') {
                         dispatch(logoutUser('timeout'));
                     }
@@ -548,13 +451,14 @@ export const changePassword = (newPass) => (dispatch) => {
         )
         .then((response) => response.json())
         .then(() => {
-            // // console.log('User password changed', user);
-            // dispatch(addUser(user));
+            if (cb) {
+                cb();
+            }
         })
         .catch((error) => dispatch(userServerError(error.message)));
 };
 
-export const editOtherUser = (otherUser) => (dispatch) => {
+export const editOtherUser = (otherUser, cb) => (dispatch) => {
     const bearer = `Bearer ${localStorage.getItem('dcIITDDashboardToken')}`;
 
     return fetch(`${API.userAPI}${otherUser._id}`, {
@@ -572,7 +476,6 @@ export const editOtherUser = (otherUser) => (dispatch) => {
                     return response;
                 }
                 response.json().then((res) => {
-                    // // console.log('Server response: ', res);
                     if (res.name === 'Unauthorized') {
                         dispatch(logoutUser('timeout'));
                     }
@@ -589,21 +492,20 @@ export const editOtherUser = (otherUser) => (dispatch) => {
         )
         .then((response) => response.json())
         .then(() => {
-            // // // console.log('All users: \n', allUsers);
-            // dispatch(addAllUsers(allUsers));
+            if (cb) {
+                cb();
+            }
             dispatch(fetchAllUsers());
         })
         .catch((error) => dispatch(userServerError(error.message)));
 };
 
-export const approveAllUnapproved = (unapprovedIds) => (dispatch) => {
-    // dispatch(usersLoading);
+export const approveAllUnapproved = (unapprovedIds, cb) => (dispatch) => {
     unapprovedIds.forEach((id) => {
         const user = {
             _id: id,
             privelege_level: 'Approved_User',
         };
-        dispatch(editOtherUser(user));
+        dispatch(editOtherUser(user, cb));
     });
-    // dispatch(fetchAllUsers);
 };

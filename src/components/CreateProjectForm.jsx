@@ -217,38 +217,39 @@ export default function CreateTasks(props) {
             ...state.newProject,
             url: Utils.strMapToObj(urlMap),
         };
-        props.createProject(newProject);
-        if (props.projectError === null) {
-            setState({
-                ...state,
-                newProject: {
-                    ...state.newProject,
-                    name: '',
-                    description: '',
-                    status: 'IDEA',
-                    start_date: new Date(),
-                    end_date: new Date(),
-                    origin: '',
-                    origin_contact: '',
-                    perks: '',
-                    requirements: '',
-                    display_on_website: false,
-                    is_internal: true,
-                    showcase: false,
-                    labels: [],
-                    url: new Map([
-                        ['web_url', ''],
-                        ['photo_url', ''],
-                    ]),
-                    members: [],
-                },
-                urlFields: [
-                    { type: 'web_url', url: '' },
-                    { type: 'photo_url', url: '' },
-                ],
-                success: true,
-            });
-        }
+        props.createProject(newProject, () => {
+            if (props.projectError === null) {
+                setState({
+                    ...state,
+                    newProject: {
+                        ...state.newProject,
+                        name: '',
+                        description: '',
+                        status: 'IDEA',
+                        start_date: new Date(),
+                        end_date: new Date(),
+                        origin: '',
+                        origin_contact: '',
+                        perks: '',
+                        requirements: '',
+                        display_on_website: false,
+                        is_internal: true,
+                        showcase: false,
+                        labels: [],
+                        url: new Map([
+                            ['web_url', ''],
+                            ['photo_url', ''],
+                        ]),
+                        members: [],
+                    },
+                    urlFields: [
+                        { type: 'web_url', url: '' },
+                        { type: 'photo_url', url: '' },
+                    ],
+                    success: true,
+                });
+            }
+        });
     };
 
     const FieldSep = () => {
