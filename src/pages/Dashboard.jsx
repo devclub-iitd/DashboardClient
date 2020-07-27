@@ -1,38 +1,38 @@
+/* eslint-disable react/no-deprecated */
 /* eslint-disable react/forbid-prop-types */
 import React, { Component } from 'react';
 import clsx from 'clsx';
 import { withStyles } from '@material-ui/core/styles';
 import {
-    CssBaseline,
     Drawer,
-    AppBar,
-    Toolbar,
     List,
     Snackbar,
-    Typography,
     Divider,
     IconButton,
-    Badge,
     Container,
+    Hidden,
+    Tooltip,
+    Backdrop,
+    CircularProgress,
+    SwipeableDrawer,
 } from '@material-ui/core';
-import MenuIcon from '@material-ui/icons/Menu';
+
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import NotificationsIcon from '@material-ui/icons/Notifications';
 import { Redirect, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { actions } from 'react-redux-form';
+import { isMobile } from 'react-device-detect';
 import MainListItems from '../components/MainListItems';
 import Home from '../components/Home';
 import Profile from '../components/Profile';
-import ChangePassword from '../components/ChangePassword';
 import EventsPage from '../components/Events';
 import ProjectsPage from '../components/Projects';
 import ResourcesPage from '../components/Resources';
 import ManageUsers from '../components/ManageUsers';
+import TasksPage from '../components/UsersTasks';
 import MyTasks from '../components/MyTasks';
 import DeployManager from '../components/Deploy';
-import CreateTasks from '../components/CreateTasks';
+import AppBar from '../components/AppBar';
 import {
     fetchUser,
     fetchAllUsers,
@@ -44,6 +44,7 @@ import {
     userErrorFin,
     deleteAllUsers,
     rejectAllUnapproved,
+    approveAllUnapproved,
 } from '../actions/userActions';
 import {
     fetchAllEvents,
@@ -66,222 +67,101 @@ import {
     deleteResource,
     resourceErrorFin,
 } from '../actions/resourceActions';
+import drawerIcon from '../images/drawerImage.png';
 
-const drawerWidth = 240;
-
-// const useStyles = makeStyles(theme => ({
-//   root: {
-//     display: 'flex',
-//   },
-//   toolbar: {
-//     backgroundImage: "url('./logo.png')",
-//     backgroundRepeat: "no-repeat",
-//     backgroundPosition: "center center",
-//     paddingRight: 24, // keep right padding when drawer closed
-//   },
-//   toolbarIcon: {
-//     display: 'flex',
-//     alignItems: 'center',
-//     justifyContent: 'flex-end',
-//     padding: '0 8px',
-//     ...theme.mixins.toolbar,
-//   },
-//   appBar: {
-//     zIndex: theme.zIndex.drawer + 1,
-//     transition: theme.transitions.create(['width', 'margin'], {
-//       easing: theme.transitions.easing.sharp,
-//       duration: theme.transitions.duration.leavingScreen,
-//     }),
-//   },
-//   appBarShift: {
-//     marginLeft: drawerWidth,
-//     width: `calc(100% - ${drawerWidth}px)`,
-//     transition: theme.transitions.create(['width', 'margin'], {
-//       easing: theme.transitions.easing.sharp,
-//       duration: theme.transitions.duration.enteringScreen,
-//     }),
-//   },
-//   menuButton: {
-//     marginRight: 36,
-//   },
-//   menuButtonHidden: {
-//     display: 'none',
-//   },
-//   title: {
-//     flexGrow: 1,
-//   },
-//   drawerPaper: {
-//     position: 'relative',
-//     whiteSpace: 'nowrap',
-//     width: drawerWidth,
-//     transition: theme.transitions.create('width', {
-//       easing: theme.transitions.easing.sharp,
-//       duration: theme.transitions.duration.enteringScreen,
-//     }),
-//   },
-//   drawerPaperClose: {
-//     overflowX: 'hidden',
-//     transition: theme.transitions.create('width', {
-//       easing: theme.transitions.easing.sharp,
-//       duration: theme.transitions.duration.leavingScreen,
-//     }),
-//     width: theme.spacing(7),
-//     [theme.breakpoints.up('sm')]: {
-//       width: theme.spacing(9),
-//     },
-//   },
-//   appBarSpacer: theme.mixins.toolbar,
-//   content: {
-//     flexGrow: 1,
-//     height: '100vh',
-//     overflow: 'auto',
-//   },
-//   container: {
-//     paddingTop: theme.spacing(4),
-//     paddingBottom: theme.spacing(4),
-//   },
-//   paper: {
-//     padding: theme.spacing(2),
-//     display: 'flex',
-//     overflow: 'auto',
-//     flexDirection: 'column',
-//   },
-//   fixedHeight: {
-//     height: 240,
-//   },
-// }));
-
-// const classes = useStyles;
-
-// const redirectFunc = (subPath, closeDrawer) => () => {
-//   closeDrawer();
-//   props.history.push(`/dashboard/${subPath}`);
-// };
+const drawerWidth = 275;
 
 function renderPage(subPage, props, isAdmin, redirect, closeDrawer) {
-    let validSubPage = subPage;
-    if (subPage === 'users' || subPage === 'deploy') {
+    if (subPage === 'deploy' || subPage === 'userTasks') {
         if (!isAdmin) {
             redirect('home', closeDrawer);
-            // return;
-            validSubPage = '';
         }
     }
-    switch (validSubPage) {
+    switch (subPage) {
         case 'profile':
             return (
-                <div>
-                    <Profile
-                        // user={props.users.user}
-                        // error={props.users.errMess}
-                        // fetchUser={props.fetchUser}
-                        user={props.users.user}
-                        users={props.users}
-                        isLoading={props.users.userLoading}
-                        // events={props.events}
-                        // editEvent={props.editEvent}
-                        changePassword={props.changePass}
-                        serverError={props.users.serverError}
-                        updateUser={props.updateUser}
-                    />
-                </div>
-            );
-
-        case 'changePassword':
-            return (
-                <div>
-                    <ChangePassword
-                        changePass={props.changePass}
-                        users={props.users}
-                    />
-                </div>
-            );
-        // case 'approveUsers': return (<div><ApproveUsers /></div>);
-        case 'createTasks':
-            return (
-                <div>
-                    <CreateTasks
-                        // resetEventForm={props.resetEventForm}
-                        // resetProjectForm={props.resetProjectForm}
-                        // resetResourceForm={props.resetResourceForm}
-                        createEvent={props.createEvent}
-                        createProject={props.createProject}
-                        createResource={props.createResource}
-                        eventError={props.events.serverError}
-                        projectError={props.projects.serverError}
-                        resourceError={props.resources.serverError}
-                    />
-                </div>
+                <Profile
+                    users={props.users}
+                    changePassword={props.changePass}
+                    serverError={props.users.serverError}
+                    updateUser={props.updateUser}
+                />
             );
 
         case 'events':
             return (
-                <div>
-                    <EventsPage
-                        events={props.events}
-                        fetchAllEvents={props.fetchAllEvents}
-                        createEvent={props.createEvent}
-                        editEvent={props.editEvent}
-                        eventError={props.events.serverError}
-                        deleteEvent={props.deleteEvent}
-                        users={props.users}
-                    />
-                </div>
+                <EventsPage
+                    events={props.events}
+                    fetchAllEvents={props.fetchAllEvents}
+                    createEvent={props.createEvent}
+                    editEvent={props.editEvent}
+                    eventError={props.events.serverError}
+                    deleteEvent={props.deleteEvent}
+                    users={props.users}
+                />
             );
 
         case 'projects':
             return (
-                <div>
-                    <ProjectsPage
-                        projects={props.projects}
-                        createProject={props.createProject}
-                        projectError={props.projects.serverError}
-                        fetchAllProjects={props.fetchAllProjects}
-                        editProject={props.editProject}
-                        deleteProject={props.deleteProject}
-                        users={props.users}
-                    />
-                </div>
+                <ProjectsPage
+                    projects={props.projects}
+                    createProject={props.createProject}
+                    projectError={props.projects.serverError}
+                    fetchAllProjects={props.fetchAllProjects}
+                    editProject={props.editProject}
+                    deleteProject={props.deleteProject}
+                    users={props.users}
+                />
             );
 
         case 'resources':
             return (
-                <div>
-                    <ResourcesPage
-                        resources={props.resources}
-                        fetchAllResources={props.fetchAllResources}
-                        editResource={props.editResource}
-                        resourceError={props.resources.serverError}
-                        deleteResource={props.deleteResource}
-                        users={props.users}
-                    />
-                </div>
+                <ResourcesPage
+                    resources={props.resources}
+                    createResource={props.createResource}
+                    fetchAllResources={props.fetchAllResources}
+                    editResource={props.editResource}
+                    resourceError={props.resources.serverError}
+                    deleteResource={props.deleteResource}
+                    users={props.users}
+                />
             );
 
         case 'users':
             return (
-                <div>
-                    <ManageUsers
-                        users={props.users}
-                        fetchAllUsers={props.fetchAllUsers}
-                        removeUser={props.removeUser}
-                        createResource={props.createResource}
-                        deleteAllUsers={props.deleteAllUsers}
-                        rejectAllUnapproved={props.rejectAllUnapproved}
-                        editOtherUser={props.editOtherUser}
-                    />
-                </div>
+                <ManageUsers
+                    users={props.users}
+                    fetchAllUsers={props.fetchAllUsers}
+                    removeUser={props.removeUser}
+                    deleteAllUsers={props.deleteAllUsers}
+                    rejectAllUnapproved={props.rejectAllUnapproved}
+                    approveAll={props.approveAll}
+                    editOtherUser={props.editOtherUser}
+                />
             );
 
         case 'myTasks':
             return (
-                <div>
-                    <MyTasks
-                        users={props.users}
-                        events={props.events}
-                        projects={props.projects}
-                    />
-                </div>
+                <MyTasks
+                    users={props.users}
+                    events={props.events}
+                    projects={props.projects}
+                />
+            );
+
+        case 'userTasks':
+            return (
+                <TasksPage
+                    events={props.events}
+                    projects={props.projects}
+                    editEvent={props.editEvent}
+                    getTasks={props.getTasks}
+                    editProject={props.editProject}
+                    users={props.users}
+                    tasks={props.tasks}
+                    eventError={props.events.serverError}
+                    projectError={props.projects.serverError}
+                />
             );
 
         case 'deploy':
@@ -290,73 +170,71 @@ function renderPage(subPage, props, isAdmin, redirect, closeDrawer) {
                     <DeployManager />
                 </div>
             );
-        // case 'assignTasks': return (<div><AssignTasks /></div>);
-        // default: return (<div><Home fixedHeightPaper={classProp} paperClass={classPaper} /></div>);
         default:
             return (
-                <div>
-                    <Home
-                        events={props.events}
-                        projects={props.projects}
-                        resources={props.resources}
-                        fetchUser={props.fetchUser}
-                        fetchAllUsers={props.fetchAllUsers}
-                        fetchAllEvents={props.fetchAllEvents}
-                        fetchAllProjects={props.fetchAllProjects}
-                        fetchAllResources={props.fetchAllResources}
-                        history={props.history}
-                        // user={props.users.user}
-                        users={props.users}
-                        editEvent={props.editEvent}
-                        editProject={props.editProject}
-                        editResource={props.editResource}
-                        editOtherUser={props.editOtherUser}
-                        removeUser={props.removeUser}
-                        deleteEvent={props.deleteEvent}
-                        deleteProject={props.deleteProject}
-                        deleteResource={props.deleteResource}
-                    />
-                </div>
+                <Home
+                    events={props.events}
+                    projects={props.projects}
+                    resources={props.resources}
+                    fetchUser={props.fetchUser}
+                    fetchAllUsers={props.fetchAllUsers}
+                    fetchAllEvents={props.fetchAllEvents}
+                    fetchAllProjects={props.fetchAllProjects}
+                    fetchAllResources={props.fetchAllResources}
+                    history={props.history}
+                    users={props.users}
+                    editEvent={props.editEvent}
+                    editProject={props.editProject}
+                    editResource={props.editResource}
+                    editOtherUser={props.editOtherUser}
+                    removeUser={props.removeUser}
+                    deleteEvent={props.deleteEvent}
+                    deleteProject={props.deleteProject}
+                    deleteResource={props.deleteResource}
+                    redirect={redirect}
+                />
             );
     }
 }
 
 function getPageName(subPage, isAdmin) {
-    let validSubPage = subPage;
     if (!isAdmin) {
-        if (subPage === 'users' || subPage === 'deploy') {
-            validSubPage = '';
+        if (subPage === 'deploy' || subPage === 'userTasks') {
+            return 'Home';
         }
     }
 
-    switch (validSubPage) {
+    switch (subPage) {
         case 'profile':
             return 'Profile';
+
         case 'changePassword':
             return 'Change Password';
-        // case 'approveUsers': return (<div><ApproveUsers /></div>);
+
         case 'createTasks':
             return 'Create New Items';
 
         case 'events':
-            return 'Club Events';
+            return 'Events';
 
         case 'projects':
-            return 'Club Projects';
+            return 'Projects';
 
         case 'resources':
-            return 'Club Resources';
+            return 'Resources';
 
         case 'users':
-            return 'Manage Club Members';
+            return 'Members';
 
         case 'myTasks':
             return 'My Tasks';
 
+        case 'userTasks':
+            return 'User Tasks';
+
         case 'deploy':
             return 'Deployment Manager';
-        // case 'assignTasks': return (<div><AssignTasks /></div>);
-        // default: return (<div><Home fixedHeightPaper={classProp} paperClass={classPaper} /></div>);
+
         default:
             return 'Home';
     }
@@ -373,15 +251,6 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => ({
-    resetEventForm: () => {
-        dispatch(actions.reset('eventForm'));
-    },
-    resetProjectForm: () => {
-        dispatch(actions.reset('projectForm'));
-    },
-    resetResourceForm: () => {
-        dispatch(actions.reset('resourceForm'));
-    },
     fetchUser: (id) => {
         dispatch(fetchUser(id));
     },
@@ -391,23 +260,26 @@ const mapDispatchToProps = (dispatch) => ({
     logoutUser: () => {
         dispatch(logoutUser());
     },
-    updateUser: (user) => {
-        dispatch(updateUser(user));
+    updateUser: (user, cb) => {
+        dispatch(updateUser(user, cb));
     },
-    changePass: (newPass) => {
-        dispatch(changePassword(newPass));
+    changePass: (newPass, cb) => {
+        dispatch(changePassword(newPass, cb));
     },
-    editOtherUser: (user) => {
-        dispatch(editOtherUser(user));
+    editOtherUser: (user, cb) => {
+        dispatch(editOtherUser(user, cb));
     },
-    removeUser: (uId) => {
-        dispatch(removeOtherUser(uId));
+    removeUser: (uId, cb) => {
+        dispatch(removeOtherUser(uId, cb));
     },
     deleteAllUsers: () => {
         dispatch(deleteAllUsers());
     },
-    rejectAllUnapproved: () => {
-        dispatch(rejectAllUnapproved());
+    rejectAllUnapproved: (cb) => {
+        dispatch(rejectAllUnapproved(cb));
+    },
+    approveAll: (ids, cb) => {
+        dispatch(approveAllUnapproved(ids, cb));
     },
     userErrorFin: () => {
         dispatch(userErrorFin());
@@ -415,14 +287,14 @@ const mapDispatchToProps = (dispatch) => ({
     fetchAllEvents: () => {
         dispatch(fetchAllEvents());
     },
-    createEvent: (newEvent) => {
-        dispatch(createEvent(newEvent));
+    createEvent: (newEvent, cb) => {
+        dispatch(createEvent(newEvent, cb));
     },
-    editEvent: (updatedEvent) => {
-        dispatch(editEvent(updatedEvent));
+    editEvent: (updatedEvent, cb) => {
+        dispatch(editEvent(updatedEvent, cb));
     },
-    deleteEvent: (eventId) => {
-        dispatch(deleteEvent(eventId));
+    deleteEvent: (eventId, cb) => {
+        dispatch(deleteEvent(eventId, cb));
     },
     eventErrorFin: () => {
         dispatch(eventErrorFin());
@@ -430,14 +302,14 @@ const mapDispatchToProps = (dispatch) => ({
     fetchAllProjects: () => {
         dispatch(fetchAllProjects());
     },
-    createProject: (newProject) => {
-        dispatch(createProject(newProject));
+    createProject: (newProject, cb) => {
+        dispatch(createProject(newProject, cb));
     },
-    editProject: (updatedProject) => {
-        dispatch(editProject(updatedProject));
+    editProject: (updatedProject, cb) => {
+        dispatch(editProject(updatedProject, cb));
     },
-    deleteProject: (projectId) => {
-        dispatch(deleteProject(projectId));
+    deleteProject: (projectId, cb) => {
+        dispatch(deleteProject(projectId, cb));
     },
     projectErrorFin: () => {
         dispatch(projectErrorFin());
@@ -445,14 +317,14 @@ const mapDispatchToProps = (dispatch) => ({
     fetchAllResources: () => {
         dispatch(fetchAllResources());
     },
-    createResource: (newResource) => {
-        dispatch(createResource(newResource));
+    createResource: (newResource, cb) => {
+        dispatch(createResource(newResource, cb));
     },
-    editResource: (updatedResource) => {
-        dispatch(editResource(updatedResource));
+    editResource: (updatedResource, cb) => {
+        dispatch(editResource(updatedResource, cb));
     },
-    deleteResource: (resourceId) => {
-        dispatch(deleteResource(resourceId));
+    deleteResource: (resourceId, cb) => {
+        dispatch(deleteResource(resourceId, cb));
     },
     resourceErrorFin: () => {
         dispatch(resourceErrorFin());
@@ -463,12 +335,6 @@ const styles = (theme) => ({
     root: {
         display: 'flex',
     },
-    toolbar: {
-        backgroundImage: "url('./logo.png')",
-        backgroundRepeat: 'no-repeat',
-        backgroundPosition: 'center center',
-        paddingRight: 24, // keep right padding when drawer closed
-    },
     toolbarIcon: {
         display: 'flex',
         alignItems: 'center',
@@ -477,32 +343,22 @@ const styles = (theme) => ({
         ...theme.mixins.toolbar,
     },
     appBar: {
+        position: 'absolute',
         zIndex: theme.zIndex.drawer + 1,
         transition: theme.transitions.create(['width', 'margin'], {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen,
         }),
-    },
-    appBarShift: {
-        marginLeft: drawerWidth,
-        width: `calc(100% - ${drawerWidth}px)`,
-        transition: theme.transitions.create(['width', 'margin'], {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.enteringScreen,
-        }),
-    },
-    menuButton: {
-        marginRight: 36,
-    },
-    menuButtonHidden: {
-        display: 'none',
-    },
-    title: {
-        flexGrow: 1,
+        width: '100%',
+        [theme.breakpoints.up('drawerMin')]: {
+            marginLeft: drawerWidth,
+            width: `calc(100% - ${drawerWidth}px)`,
+        },
     },
     drawerPaper: {
         position: 'relative',
         whiteSpace: 'nowrap',
+        overflowY: 'hidden',
         width: drawerWidth,
         transition: theme.transitions.create('width', {
             easing: theme.transitions.easing.sharp,
@@ -510,34 +366,38 @@ const styles = (theme) => ({
         }),
     },
     drawerPaperClose: {
-        overflowX: 'hidden',
         transition: theme.transitions.create('width', {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen,
         }),
-        width: theme.spacing(7),
-        [theme.breakpoints.up('sm')]: {
-            width: theme.spacing(9),
-        },
+        width: drawerWidth,
     },
-    appBarSpacer: theme.mixins.toolbar,
     content: {
         flexGrow: 1,
         height: '100vh',
-        overflow: 'auto',
+        overflowY: 'auto',
+        scrollbarWidth: 'none',
     },
     container: {
         paddingTop: theme.spacing(4),
-        paddingBottom: theme.spacing(4),
+        paddingLeft: 0,
+        paddingRight: 0,
+        marginTop: theme.spacing(10),
+        marginBottom: theme.spacing(2),
+        maxHeight: '100%',
+        maxWidth: '100vw',
     },
-    paper: {
-        padding: theme.spacing(2),
-        display: 'flex',
-        overflow: 'auto',
-        flexDirection: 'column',
+    listPadding: {
+        paddingLeft: theme.spacing(3),
+        overflowY: 'auto',
+        scrollbarWidth: 'none',
     },
-    fixedHeight: {
-        height: 240,
+    drawerImg: {
+        marginBottom: theme.spacing(2),
+    },
+    backdrop: {
+        zIndex: theme.zIndex.drawer + 1,
+        color: '#fff',
     },
 });
 
@@ -548,11 +408,6 @@ class Dashboard extends Component {
         this.state = {
             open: false,
         };
-        // props.fetchAllUsers();
-        // props.fetchUser(localStorage.getItem('userId'));
-        // props.fetchAllProjects();
-        // props.fetchAllEvents();
-        // props.fetchAllResources();
 
         this.handleDrawerClose = this.handleDrawerClose.bind(this);
         this.handleDrawerOpen = this.handleDrawerOpen.bind(this);
@@ -567,21 +422,12 @@ class Dashboard extends Component {
             fetchAllEvents: fetchAllEventsT,
             fetchAllResources: fetchAllResourcesT,
         } = this.props;
-        // this.props.fetchAllUsers();
-        // this.props.fetchUser(localStorage.getItem('userId'));
-        // this.props.fetchAllProjects();
-        // this.props.fetchAllEvents();
-        // this.props.fetchAllResources();
         fetchAllUsersT();
         fetchUserT(localStorage.getItem('userId'));
         fetchAllProjectsT();
         fetchAllEventsT();
         fetchAllResourcesT();
     }
-
-    // shouldComponentUpdate(nextProps) {
-    //   return JSON.stringify(this.props.users.user) === JSON.stringify(nextProps.users.user);
-    // }
 
     redirectFunc = (subPath, closeDrawer) => () => {
         closeDrawer();
@@ -603,27 +449,9 @@ class Dashboard extends Component {
         }));
     };
 
-    // const [serverError, setServerError] = React.useState(props.users.passwordFailed || props.users.editFailed || props.users.removeFailed);
-
-    // console.log('Users: ', props.users.allUsers);
-    // console.log('Projects: ', props.projects.allProjects);
-    // console.log('Events: ', props.events.allEvents);
-    // console.log('Resources: ', props.resources.allResources);
-
     render() {
-        // const {
-        //   fetchUser,
-        //   fetchAllEvents,
-        //   fetchAllProjects,
-        //   fetchAllResources,
-        //   fetchAllUsers,
-        // } = this.props;
         const {
             classes,
-            // userErrorFin,
-            // eventErrorFin,
-            // projectErrorFin,
-            // resourceErrorFin,
             auth,
             users,
             events,
@@ -639,7 +467,6 @@ class Dashboard extends Component {
         const { open } = this.state;
 
         const handleErrorClose = () => {
-            // setServerError(false);
             userErrorFinT();
             eventErrorFinT();
             projectErrorFinT();
@@ -647,21 +474,17 @@ class Dashboard extends Component {
         };
 
         if (!auth.isAuthenticated) {
-            // console.log('NOT AUTHENTICATED!!!!!!!!!!!');
             return <Redirect to="/login" />;
         }
 
         const isAdmin = users.user.privelege_level === 'Admin';
 
-        // const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
-        // console.log(props);
         const { match } = this.props;
         const { params } = match;
         const { subPage } = params;
 
         return (
             <div className={classes.root}>
-                <CssBaseline />
                 <Snackbar
                     anchorOrigin={{
                         vertical: 'top',
@@ -677,81 +500,142 @@ class Dashboard extends Component {
                     onClose={handleErrorClose}
                     message="Server did not respond!!!"
                 />
-                <AppBar
-                    position="absolute"
-                    classes={{ paper: clsx(classes.bgimage) }}
-                    className={clsx(
-                        classes.appBar,
-                        open && classes.appBarShift
-                    )}
+                <Backdrop
+                    className={classes.backdrop}
+                    open={
+                        events.isLoading ||
+                        projects.isLoading ||
+                        users.userLoading ||
+                        users.usersLoading ||
+                        resources.isLoading ||
+                        auth.isLoading
+                    }
                 >
-                    <Toolbar className={classes.toolbar}>
-                        <IconButton
-                            edge="start"
-                            color="inherit"
-                            aria-label="open drawer"
-                            onClick={this.handleDrawerOpen}
-                            className={clsx(
-                                classes.menuButton,
-                                open && classes.menuButtonHidden
-                            )}
-                        >
-                            <MenuIcon />
-                        </IconButton>
-                        <Typography
-                            component="h1"
-                            variant="h6"
-                            color="inherit"
-                            noWrap
-                            className={classes.title}
-                        >
-                            {getPageName(subPage, isAdmin)}
-                        </Typography>
-                        <IconButton
-                            onClick={this.redirectFunc(
-                                'profile',
-                                this.handleDrawerClose
-                            )}
-                            color="inherit"
-                        >
-                            {`Hi ${users.user.name}! ${
-                                users.user.privelege_level === 'Admin'
-                                    ? '(You`re Admin)'
-                                    : ''
-                            }`}
-                            <Badge color="secondary">
-                                <NotificationsIcon />
-                            </Badge>
-                        </IconButton>
-                    </Toolbar>
-                </AppBar>
-                <Drawer
-                    // variant="permanent"
-                    classes={{
-                        paper: clsx(
-                            classes.drawerPaper,
-                            !open && classes.drawerPaperClose
-                        ),
-                    }}
-                    open={open}
-                >
-                    <div className={classes.toolbarIcon}>
-                        <IconButton onClick={this.handleDrawerClose}>
-                            <ChevronLeftIcon />
-                        </IconButton>
-                    </div>
-                    <Divider />
-                    <List>
-                        <MainListItems
-                            closeDrawer={this.handleDrawerClose}
-                            isAdmin={isAdmin}
-                            logout={logoutUserT}
+                    <CircularProgress color="inherit" />
+                </Backdrop>
+                <div className={classes.appBar}>
+                    <AppBar
+                        user={users.user.name}
+                        isAdmin={isAdmin}
+                        page={getPageName(subPage, isAdmin)}
+                        closeDrawer={this.handleDrawerClose}
+                        openDrawer={this.handleDrawerOpen}
+                        logout={logoutUserT}
+                    />
+                </div>
+                <Hidden only={['xs', 'sm', 'md', 'lg']}>
+                    <Drawer
+                        variant="permanent"
+                        classes={{
+                            paper: clsx(classes.drawerPaper),
+                        }}
+                        open
+                    >
+                        <img
+                            style={{ width: '100%', height: 'auto' }}
+                            src={drawerIcon}
+                            alt=""
+                            className={classes.drawerImg}
                         />
-                    </List>
-                </Drawer>
+                        <List className={classes.listPadding}>
+                            <MainListItems
+                                closeDrawer={this.handleDrawerClose}
+                                isAdmin={isAdmin}
+                                logout={logoutUserT}
+                                page={subPage}
+                            />
+                        </List>
+                    </Drawer>
+                </Hidden>
+                <Hidden only={['drawerMin']}>
+                    {isMobile ? (
+                        <SwipeableDrawer
+                            onClose={this.handleDrawerClose}
+                            classes={{
+                                paper: clsx(
+                                    classes.drawerPaper,
+                                    !open && classes.drawerPaperClose
+                                ),
+                            }}
+                            anchor="left"
+                            onOpen={this.handleDrawerOpen}
+                            open={open}
+                        >
+                            <img
+                                style={{ width: '100%', height: 'auto' }}
+                                src={drawerIcon}
+                                alt=""
+                                className={classes.drawerImg}
+                            />
+                            <div className={classes.toolbarIcon}>
+                                <Tooltip title="Slide it in">
+                                    <IconButton
+                                        onClick={this.handleDrawerClose}
+                                    >
+                                        <ChevronLeftIcon
+                                            style={{
+                                                color: '#fff',
+                                            }}
+                                            fontSize="large"
+                                        />
+                                    </IconButton>
+                                </Tooltip>
+                            </div>
+                            <Divider />
+                            <List className={classes.listPadding}>
+                                <MainListItems
+                                    closeDrawer={this.handleDrawerClose}
+                                    isAdmin={isAdmin}
+                                    logout={logoutUserT}
+                                    page={subPage}
+                                />
+                            </List>
+                        </SwipeableDrawer>
+                    ) : (
+                        <Drawer
+                            onClose={this.handleDrawerClose}
+                            classes={{
+                                paper: clsx(
+                                    classes.drawerPaper,
+                                    !open && classes.drawerPaperClose
+                                ),
+                            }}
+                            open={open}
+                        >
+                            <img
+                                style={{ width: '100%', height: 'auto' }}
+                                src={drawerIcon}
+                                alt=""
+                                className={classes.drawerImg}
+                            />
+                            <div className={classes.toolbarIcon}>
+                                <Tooltip title="Slide it in">
+                                    <IconButton
+                                        onClick={this.handleDrawerClose}
+                                    >
+                                        <ChevronLeftIcon
+                                            style={{
+                                                color: '#fff',
+                                            }}
+                                            fontSize="large"
+                                        />
+                                    </IconButton>
+                                </Tooltip>
+                            </div>
+                            <Divider />
+                            <List className={classes.listPadding}>
+                                <MainListItems
+                                    closeDrawer={this.handleDrawerClose}
+                                    isAdmin={isAdmin}
+                                    logout={logoutUserT}
+                                    page={subPage}
+                                />
+                            </List>
+                        </Drawer>
+                    )}
+                </Hidden>
                 <main className={classes.content}>
-                    <div className={classes.appBarSpacer} />
-                    <Container maxWidth="lg" className={classes.container}>
+                    <Container maxWidth="xl" className={classes.container}>
                         {renderPage(
                             subPage,
                             this.props,
@@ -772,9 +656,6 @@ renderPage.propTypes = {
     events: PropTypes.object.isRequired,
     projects: PropTypes.object.isRequired,
     resources: PropTypes.object.isRequired,
-    // resetEventForm: PropTypes.func.isRequired,
-    // resetProjectForm: PropTypes.func.isRequired,
-    // resetResourceForm: PropTypes.func.isRequired,
     fetchUser: PropTypes.func.isRequired,
     fetchAllUsers: PropTypes.func.isRequired,
     updateUser: PropTypes.func.isRequired,
@@ -782,6 +663,7 @@ renderPage.propTypes = {
     removeUser: PropTypes.func.isRequired,
     deleteAllUsers: PropTypes.func.isRequired,
     rejectAllUnapproved: PropTypes.func.isRequired,
+    approveAll: PropTypes.func.isRequired,
     editOtherUser: PropTypes.func.isRequired,
     fetchAllEvents: PropTypes.func.isRequired,
     createEvent: PropTypes.func.isRequired,
@@ -795,44 +677,9 @@ renderPage.propTypes = {
     createResource: PropTypes.func.isRequired,
     editResource: PropTypes.func.isRequired,
     deleteResource: PropTypes.func.isRequired,
+    tasks: PropTypes.object.isRequired,
+    getTasks: PropTypes.func.isRequired,
 };
-
-// Dashboard.propTypes = {
-//     auth: PropTypes.object.isRequired,
-//     users: PropTypes.object.isRequired,
-//     events: PropTypes.object.isRequired,
-//     projects: PropTypes.object.isRequired,
-//     resources: PropTypes.object.isRequired,
-//     // resetEventForm: PropTypes.func.isRequired,
-//     // resetProjectForm: PropTypes.func.isRequired,
-//     // resetResourceForm: PropTypes.func.isRequired,
-//     fetchUser: PropTypes.func.isRequired,
-//     fetchAllUsers: PropTypes.func.isRequired,
-//     logoutUser: PropTypes.func.isRequired,
-//     updateUser: PropTypes.func.isRequired,
-//     changePass: PropTypes.func.isRequired,
-//     removeUser: PropTypes.func.isRequired,
-//     deleteAllUsers: PropTypes.func.isRequired,
-//     rejectAllUnapproved: PropTypes.func.isRequired,
-//     userErrorFin: PropTypes.func.isRequired,
-//     editOtherUser: PropTypes.func.isRequired,
-//     fetchAllEvents: PropTypes.func.isRequired,
-//     createEvent: PropTypes.func.isRequired,
-//     editEvent: PropTypes.func.isRequired,
-//     deleteEvent: PropTypes.func.isRequired,
-//     eventErrorFin: PropTypes.func.isRequired,
-//     fetchAllProjects: PropTypes.func.isRequired,
-//     createProject: PropTypes.func.isRequired,
-//     editProject: PropTypes.func.isRequired,
-//     deleteProject: PropTypes.func.isRequired,
-//     projectErrorFin: PropTypes.func.isRequired,
-//     fetchAllResources: PropTypes.func.isRequired,
-//     createResource: PropTypes.func.isRequired,
-//     editResource: PropTypes.func.isRequired,
-//     deleteResource: PropTypes.func.isRequired,
-//     resourceErrorFin: PropTypes.func.isRequired,
-//     classes: PropTypes.objectOf(PropTypes.string).isRequired,
-// };
 
 Dashboard.propTypes = {
     history: PropTypes.any.isRequired,
@@ -842,9 +689,6 @@ Dashboard.propTypes = {
     events: PropTypes.object.isRequired,
     projects: PropTypes.object.isRequired,
     resources: PropTypes.object.isRequired,
-    // resetEventForm: PropTypes.func.isRequired,
-    // resetProjectForm: PropTypes.func.isRequired,
-    // resetResourceForm: PropTypes.func.isRequired,
     fetchUser: PropTypes.func.isRequired,
     fetchAllUsers: PropTypes.func.isRequired,
     logoutUser: PropTypes.func.isRequired,

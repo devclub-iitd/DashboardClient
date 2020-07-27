@@ -3,8 +3,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
-    Paper,
-    TextField,
     Tooltip,
     Fab,
     Dialog,
@@ -12,75 +10,40 @@ import {
     DialogContent,
     Typography,
     Grid,
-    Backdrop,
-    CircularProgress,
-    InputAdornment,
     IconButton,
+    Switch,
+    Avatar,
+    Grow,
+    Snackbar,
 } from '@material-ui/core';
-import SearchIcon from '@material-ui/icons/Search';
 import CloseIcon from '@material-ui/icons/Close';
-import AddIcon from '@material-ui/icons/Add';
-import {
-    Card,
-    CardBody,
-    CardText,
-    CardTitle,
-    CardFooter,
-    CardHeader,
-    CardLink,
-} from 'reactstrap';
 import PropTypes from 'prop-types';
+import { CallMadeRounded } from '@material-ui/icons';
+import MUIDataTable from 'mui-datatables';
 import EditProjectForm from './EditProjectForm';
 import CreateProjectForm from './CreateProjectForm';
+import StatusChip from './StatusChip';
+import CustomSearchRender from './CustomTableSearchBox';
+import TableTitle from './CustomTableTitle';
+import ProjectDialog from './ProjectDialog';
+import * as Utils from '../utils';
+import UserDialog from './UserDialog';
 
 const useStyles = makeStyles((theme) => ({
-    root: {
-        width: '100%',
-        marginTop: theme.spacing(3),
-        border: `1px solid ${theme.palette.divider}`,
-        overflowX: 'auto',
-    },
-    popCardBody: {
-        fontSize: '0.75rem',
-    },
-    popCardFooter: {
-        fontSize: '0.5rem',
-    },
-    tileScroll: {
-        overflowY: 'scroll',
-        scrollBehavior: 'smooth',
-    },
-    gridList: {
-        width: 500,
-        height: 450,
-        // Promote the list into his own layer on Chrome. This cost memory but helps keeping high FPS.
-        transform: 'translateZ(0)',
-    },
-    grid: {
-        padding: '1em',
-        height: '29em',
-        overflowY: 'scroll',
-        scrollBehavior: 'smooth',
-    },
-    head: {
-        padding: '0.5em',
-    },
-    search: {
-        marginTop: '0.5em',
-    },
-    paper: {
-        margin: '2em',
-        height: document.documentElement.clientHeight * 0.63,
-    },
-    backdrop: {
-        zIndex: theme.zIndex.drawer + 1,
-        color: '#fff',
-    },
     closeButton: {
         position: 'absolute',
         right: theme.spacing(1),
         top: theme.spacing(1),
         color: theme.palette.grey[500],
+    },
+    tablePaper: {
+        borderRadius: '4px',
+        padding: theme.spacing(0, 2),
+    },
+    memAvatar: {
+        width: theme.spacing(4),
+        height: theme.spacing(4),
+        cursor: 'pointer',
     },
 }));
 
@@ -95,37 +58,84 @@ const ProjectsPage = ({
     const classes = useStyles();
     const { allProjects } = projects;
     const curUser = users.user;
+    const dumUsers = users.allUsers;
 
-    const [search, setSearch] = React.useState({
-        idea: '',
-        ongoing: '',
-        completed: '',
-    });
+    const [editSuccess, setEditSuccess] = React.useState(false);
 
-    const searchChange = (event) => {
-        event.preventDefault();
+    const toggleProjectOnWebsite = (e, id) => {
+        const upProject = {
+            _id: id,
+            display_on_website: e.target.checked,
+        };
 
-        setSearch({
-            ...search,
-            [event.target.name]: event.target.value,
+        editProject(upProject, () => {
+            if (projectError === null) {
+                setEditSuccess(true);
+            }
         });
     };
 
-    const ideas = allProjects
-        .filter((project) => project.status === 'IDEA')
-        .filter((pro) =>
-            pro.name.toLowerCase().startsWith(search.idea.toLowerCase())
-        );
-    const ongoing = allProjects
-        .filter((project) => project.status === 'ONGOING')
-        .filter((pro) =>
-            pro.name.toLowerCase().startsWith(search.ongoing.toLowerCase())
-        );
-    const completed = allProjects
-        .filter((project) => project.status === 'COMPLETED')
-        .filter((pro) =>
-            pro.name.toLowerCase().startsWith(search.completed.toLowerCase())
-        );
+    const toggleProjectInternal = (e, id) => {
+        const upProject = {
+            _id: id,
+            is_internal: e.target.checked,
+        };
+
+        editProject(upProject, () => {
+            if (projectError === null) {
+                setEditSuccess(true);
+            }
+        });
+    };
+
+    const toggleProjectShowcase = (e, id) => {
+        const upProject = {
+            _id: id,
+            showcase: e.target.checked,
+        };
+
+        editProject(upProject, () => {
+            if (projectError === null) {
+                setEditSuccess(true);
+            }
+        });
+    };
+
+    const [projectDialog, setProjectDialog] = React.useState({
+        open: false,
+        dialogProject: allProjects[0],
+    });
+
+    const openProjectDialog = (index) => {
+        setProjectDialog({
+            dialogProject: { ...allProjects[index] },
+            open: true,
+        });
+    };
+
+    const closeProjectDialog = () => {
+        setProjectDialog({
+            open: false,
+        });
+    };
+
+    const [userDialog, setUserDialog] = React.useState({
+        open: false,
+        dialogUser: dumUsers[0],
+    });
+
+    const openUserDialog = (index) => {
+        setUserDialog({
+            dialogUser: { ...dumUsers[index] },
+            open: true,
+        });
+    };
+
+    const closeUserDialog = () => {
+        setUserDialog({
+            open: false,
+        });
+    };
 
     const [createOpen, setCreateOpen] = React.useState(false);
 
@@ -137,386 +147,493 @@ const ProjectsPage = ({
         setCreateOpen(false);
     };
 
-    return (
+    const getProjectRow = (project) => {
+        return [
+            project.name,
+            project.status.toLowerCase(),
+            project.description,
+            project.start_date.toDateString(),
+            project.end_date.toDateString(),
+            project.origin,
+            project.origin_contact,
+            project.perks,
+            project.requirements,
+            project.display_on_website ? 'True' : 'False',
+            project.is_internal ? 'True' : 'False',
+            project.showcase ? 'True' : 'False',
+            [...project.labels],
+            [
+                ...dumUsers
+                    .filter((user) => project.members.includes(user._id))
+                    .map((user) => user.name),
+            ],
+            project.url.get('web_url'),
+            project._id,
+        ];
+    };
+
+    const columns = [
+        {
+            name: 'name',
+            label: 'Name',
+            options: {
+                filter: false,
+                sort: true,
+                customBodyRender: (value) => {
+                    return (
+                        <Typography variant="body1" style={{ fontWeight: 500 }}>
+                            {value}
+                        </Typography>
+                    );
+                },
+            },
+        },
+        {
+            name: 'status',
+            label: 'Status',
+            options: {
+                filter: true,
+                sort: true,
+                customBodyRender: (value) => {
+                    return <StatusChip status={value} />;
+                },
+            },
+        },
+        {
+            name: 'description',
+            label: 'Description',
+            options: {
+                filter: false,
+                display: false,
+                customBodyRender: (value) => {
+                    return (
+                        <Typography variant="body1" style={{ fontWeight: 500 }}>
+                            {value}
+                        </Typography>
+                    );
+                },
+            },
+        },
+        {
+            name: 'startDate',
+            label: 'Start Date',
+            options: {
+                filter: false,
+                sort: true,
+                display: false,
+                customBodyRender: (value) => {
+                    return (
+                        <Typography variant="body1" style={{ fontWeight: 500 }}>
+                            {value}
+                        </Typography>
+                    );
+                },
+            },
+        },
+        {
+            name: 'endDate',
+            label: 'End Date',
+            options: {
+                filter: false,
+                sort: true,
+                display: false,
+                customBodyRender: (value) => {
+                    return (
+                        <Typography variant="body1" style={{ fontWeight: 500 }}>
+                            {value}
+                        </Typography>
+                    );
+                },
+            },
+        },
+        {
+            name: 'origin',
+            label: 'Origin',
+            options: {
+                filter: false,
+                sort: true,
+                display: false,
+                customBodyRender: (value) => {
+                    return (
+                        <Typography variant="body1" style={{ fontWeight: 500 }}>
+                            {value}
+                        </Typography>
+                    );
+                },
+            },
+        },
+        {
+            name: 'origin contact',
+            label: 'Origin Contact',
+            options: {
+                filter: false,
+                sort: true,
+                display: false,
+                customBodyRender: (value) => {
+                    return (
+                        <Typography variant="body1" style={{ fontWeight: 500 }}>
+                            {value}
+                        </Typography>
+                    );
+                },
+            },
+        },
+        {
+            name: 'perks',
+            label: 'Perks',
+            options: {
+                filter: false,
+                sort: true,
+                display: false,
+                customBodyRender: (value) => {
+                    return (
+                        <Typography variant="body1" style={{ fontWeight: 500 }}>
+                            {value}
+                        </Typography>
+                    );
+                },
+            },
+        },
+        {
+            name: 'requirements',
+            label: 'Requirements',
+            options: {
+                filter: false,
+                sort: true,
+                customBodyRender: (value) => {
+                    return (
+                        <Typography variant="body1" style={{ fontWeight: 500 }}>
+                            {value}
+                        </Typography>
+                    );
+                },
+            },
+        },
+        {
+            name: 'display',
+            label: 'On Main Website',
+            options: {
+                filter: true,
+                customBodyRender: (value, tableMeta) => (
+                    <Tooltip title="Click to toggle value">
+                        <Switch
+                            onChange={(e) =>
+                                toggleProjectOnWebsite(
+                                    e,
+                                    [...tableMeta.rowData].pop()
+                                )
+                            }
+                            checked={value === 'True'}
+                        />
+                    </Tooltip>
+                ),
+            },
+        },
+        {
+            name: 'internal',
+            label: 'Internal',
+            options: {
+                filter: true,
+                customBodyRender: (value, tableMeta) => (
+                    <Tooltip title="Click to toggle value">
+                        <Switch
+                            onChange={(e) =>
+                                toggleProjectInternal(
+                                    e,
+                                    [...tableMeta.rowData].pop()
+                                )
+                            }
+                            checked={value === 'True'}
+                        />
+                    </Tooltip>
+                ),
+            },
+        },
+        {
+            name: 'showcase',
+            label: 'Showcase',
+            options: {
+                filter: true,
+                customBodyRender: (value, tableMeta) => (
+                    <Tooltip title="Click to toggle value">
+                        <Switch
+                            onChange={(e) =>
+                                toggleProjectShowcase(
+                                    e,
+                                    [...tableMeta.rowData].pop()
+                                )
+                            }
+                            checked={value === 'True'}
+                        />
+                    </Tooltip>
+                ),
+            },
+        },
+        {
+            name: 'labels',
+            label: 'Labels',
+            options: {
+                filter: false,
+                sort: true,
+                display: false,
+                customBodyRender: (value) => {
+                    return (
+                        <Typography variant="body1" style={{ fontWeight: 500 }}>
+                            {value.join(', ')}
+                        </Typography>
+                    );
+                },
+            },
+        },
+        {
+            name: 'mems',
+            label: 'Members',
+            options: {
+                filter: false,
+                customBodyRender: (value) => {
+                    const eventMems = dumUsers.filter((user) =>
+                        value.includes(user.name)
+                    );
+                    let itemWidth;
+                    let flag;
+                    if (value.length === 0) {
+                        flag = 0;
+                        itemWidth = 12;
+                    } else if (value.length >= 1 && value.length <= 4) {
+                        flag = 1;
+                        itemWidth = 12 / value.length;
+                    } else if (value.length === 5 || value.length === 6) {
+                        flag = 1;
+                        itemWidth = 2;
+                    } else if (value.length > 6 && value.length <= 12) {
+                        flag = 1;
+                        itemWidth = 1;
+                    } else {
+                        flag = 2;
+                        itemWidth = 2;
+                    }
+                    return (
+                        <Grid
+                            container
+                            justify="flex-start"
+                            alignItems="center"
+                        >
+                            {flag === 0 && (
+                                <Typography
+                                    variant="body1"
+                                    style={{
+                                        fontFamily: 'Monospace',
+                                        fontWeight: 'bold',
+                                    }}
+                                >
+                                    No Members Assigned
+                                </Typography>
+                            )}
+                            {flag === 2 && (
+                                <Typography
+                                    variant="body1"
+                                    style={{
+                                        fontFamily: 'Monospace',
+                                        fontWeight: 'bold',
+                                    }}
+                                >
+                                    Too many members !
+                                </Typography>
+                            )}
+                            {eventMems.map((mem) => (
+                                <Grid item xs={itemWidth}>
+                                    <Tooltip title={mem.name}>
+                                        <Avatar
+                                            className={classes.memAvatar}
+                                            onClick={() =>
+                                                openUserDialog(
+                                                    dumUsers.findIndex(
+                                                        (u) => u._id === mem._id
+                                                    )
+                                                )
+                                            }
+                                            src={
+                                                mem.url.get('picture_url') !==
+                                                    'https://' &&
+                                                mem.url.get('picture_url') !==
+                                                    'http://'
+                                                    ? mem.url.get('picture_url')
+                                                    : ''
+                                            }
+                                            alt=""
+                                        />
+                                    </Tooltip>
+                                </Grid>
+                            ))}
+                        </Grid>
+                    );
+                },
+            },
+        },
+        {
+            name: 'url',
+            label: 'URL',
+            options: {
+                filter: false,
+                customBodyRender: (url) =>
+                    Utils.isValidUrl(url) ? (
+                        <Tooltip title="Go to project website">
+                            <Fab
+                                size="small"
+                                color="secondary"
+                                target="_blank"
+                                href={url}
+                            >
+                                <CallMadeRounded
+                                    style={{
+                                        color: '#636366',
+                                        fontWeight: 'bold',
+                                    }}
+                                />
+                            </Fab>
+                        </Tooltip>
+                    ) : (
+                        <Typography
+                            variant="body1"
+                            style={{ fontFamily: 'Monospace' }}
+                        >
+                            Invalid url
+                        </Typography>
+                    ),
+            },
+        },
+        {
+            name: 'edit',
+            label: 'Edit',
+            options: {
+                filter: false,
+                download: false,
+                print: false,
+                display: curUser.privelege_level === 'Admin',
+                viewColumn:
+                    curUser.privelege_level === 'Admin' ||
+                    curUser.privelege_level === 'Approved_User',
+                customBodyRender: (value) => {
+                    const pIndex = allProjects.findIndex(
+                        (pro) => pro._id === value
+                    );
+                    return (
+                        <>
+                            <EditProjectForm
+                                deleteProject={deleteProject}
+                                dumProjects={allProjects}
+                                dumUsers={users.allUsers}
+                                editProject={editProject}
+                                index={pIndex}
+                                serverError={projects.serverError}
+                            />
+                        </>
+                    );
+                },
+            },
+        },
+    ];
+
+    const data = [...allProjects.map((project) => getProjectRow(project))];
+
+    const options = {
+        filterType: 'checkbox',
+        // responsive: 'scrollMaxHeight',
+        responsive: 'standard',
+        rowsPerPage: 6,
+        selectableRows: 'none',
+        fixedHeader: false,
+        fixedSelectColumn: false,
+        onCellClick: (colData, cellMeta) => {
+            if (
+                cellMeta.colIndex !== 9 &&
+                cellMeta.colIndex !== 10 &&
+                cellMeta.colIndex !== 11 &&
+                cellMeta.colIndex !== 13 &&
+                cellMeta.colIndex !== 14 &&
+                cellMeta.colIndex !== 15
+            ) {
+                openProjectDialog(cellMeta.dataIndex);
+            }
+        },
+        rowsPerPageOptions: [5, 6, 10, 15, 25, 50, 100],
+        customSearchRender: (searchText, handleSearch, hideSearch, opt) => {
+            return (
+                <CustomSearchRender
+                    searchText={searchText}
+                    onSearch={handleSearch}
+                    onHide={hideSearch}
+                    options={opt}
+                />
+            );
+        },
+        searchPlaceholder: 'Search Event',
+    };
+
+    return projects.errMess !== null ? (
+        <Typography
+            style={{ width: '100%' }}
+            align="center"
+            variant="h4"
+            color="textSecondary"
+        >
+            Failed to fetch Projects
+        </Typography>
+    ) : (
         <>
-            {projects.errMess !== null ? (
-                <Typography variant="h4" color="textSecondary">
-                    Failed to fetch Projects
-                </Typography>
+            <Snackbar
+                anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'center',
+                }}
+                open={editSuccess}
+                autoHideDuration={2000}
+                onClose={() => setEditSuccess(false)}
+                message="Project updated Successfully !"
+            />
+            {projectDialog.open ? (
+                <ProjectDialog
+                    project={projectDialog.dialogProject}
+                    close={closeProjectDialog}
+                    users={dumUsers}
+                />
             ) : null}
-            <Tooltip title="Create New Project" aria-label="add">
-                <Fab color="secondary" onClick={handleCreateOpen}>
-                    <AddIcon />
-                </Fab>
-            </Tooltip>
-            <Backdrop className={classes.backdrop} open={projects.isLoading}>
-                <CircularProgress color="inherit" />
-            </Backdrop>
-            <Paper elevation={3} variant="outlined" className={classes.paper}>
-                {/* <GridList spacing={1} className={classes.gridList}> */}
-                {/* <Typography variant='h4' color="primary" className={classes.head}>Ideated</Typography> */}
-                <Grid container justify="flthis.this.ex-start">
-                    <Grid item xs={12} sm={4}>
-                        <Typography
-                            variant="h4"
-                            color="primary"
-                            className={classes.head}
-                        >
-                            Ideated
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={10} sm={6}>
-                        <TextField
-                            className={classes.search}
-                            label="Search"
-                            name="idea"
-                            fullWidth
-                            style={{ marginLeft: '1em' }}
-                            value={search.idea}
-                            onChange={searchChange}
-                            InputProps={{
-                                endAdornment: (
-                                    <InputAdornment>
-                                        {search.idea === '' ? (
-                                            <IconButton>
-                                                <SearchIcon />
-                                            </IconButton>
-                                        ) : (
-                                            <IconButton
-                                                onClick={() => {
-                                                    setSearch({
-                                                        ...search,
-                                                        idea: '',
-                                                    });
-                                                }}
-                                            >
-                                                <CloseIcon />
-                                            </IconButton>
-                                        )}
-                                    </InputAdornment>
-                                ),
-                            }}
+            {userDialog.open ? (
+                <UserDialog
+                    user={userDialog.dialogUser}
+                    close={closeUserDialog}
+                />
+            ) : null}
+            <Grow in style={{ transformOrigin: 'center top' }} timeout={750}>
+                <Grid container justify="center" alignItems="center">
+                    <Grid
+                        item
+                        style={{
+                            maxHeight: '85vh',
+                            overflowY: 'auto',
+                            scrollbarWidth: 'none',
+                        }}
+                        xs={11}
+                    >
+                        <MUIDataTable
+                            title={
+                                <TableTitle
+                                    title="Add Project"
+                                    addAction={handleCreateOpen}
+                                />
+                            }
+                            data={data}
+                            columns={columns}
+                            options={options}
+                            className={classes.tablePaper}
                         />
                     </Grid>
                 </Grid>
-                <Grid container spacing={2} className={classes.grid}>
-                    {ideas.length === 0 ? (
-                        <Typography variant="h4" color="textSecondary">
-                            No ideated projects
-                        </Typography>
-                    ) : (
-                        ideas.map((project, index) => (
-                            // <GridListTile key={`${project}~${index}`} cols={2} rows={2}>
-                            <Grid key={`${project}`} item xs={12} md={6} lg={4}>
-                                <Card body style={{ borderColor: '#00c853' }}>
-                                    <CardHeader>
-                                        <Typography variant="h4">
-                                            {project.name}
-                                        </Typography>
-                                    </CardHeader>
-                                    <CardBody>
-                                        <CardTitle>
-                                            <Typography variant="h6">{`${project.start_date.toDateString()} - ${project.end_date.toDateString()}`}</Typography>
-                                        </CardTitle>
-                                        <CardText>
-                                            <Typography variant="body1">
-                                                {project.description}
-                                            </Typography>
-                                            {Array.from(project.url).map(
-                                                ([key, value]) => {
-                                                    return (
-                                                        <Typography variant="body1">
-                                                            {`${key}: `}
-                                                            <CardLink
-                                                                href={value}
-                                                            >{`${value.substr(
-                                                                0,
-                                                                30
-                                                            )}...`}</CardLink>
-                                                        </Typography>
-                                                    );
-                                                }
-                                            )}
-                                        </CardText>
-                                    </CardBody>
-                                    <CardFooter>
-                                        {/* Assigned to: {project.members.map((memId) => users.allUsers.filter((user) => user._id === memId).name + ', ')} */}
-                                        Assigned to:{' '}
-                                        {users.allUsers
-                                            .filter((user) =>
-                                                project.members.includes(
-                                                    user._id
-                                                )
-                                            )
-                                            .map((user) => `${user.name}, `)}
-                                        {curUser.privelege_level === 'Admin' ? (
-                                            <EditProjectForm
-                                                deleteProject={deleteProject}
-                                                dumProjects={ideas}
-                                                dumUsers={users.allUsers}
-                                                editProject={editProject}
-                                                index={index}
-                                                serverError={
-                                                    projects.serverError
-                                                }
-                                            />
-                                        ) : null}
-                                    </CardFooter>
-                                    {/* <CardFooter>
-                                    Assigned to: {project.assignee}
-                                </CardFooter> */}
-                                </Card>
-                            </Grid>
-                            // </GridListTile>
-                        ))
-                    )}
-                </Grid>
-                {/* </GridList> */}
-            </Paper>
-            <Paper elevation={3} variant="outlined" className={classes.paper}>
-                {/* <GridList spacing={1} className={classes.gridList}> */}
-                {/* <Typography variant='h4' color="primary" className={classes.head}>Ongoing</Typography> */}
-                <Grid container justify="flex-start">
-                    <Grid item xs={12} sm={4}>
-                        <Typography
-                            variant="h4"
-                            color="primary"
-                            className={classes.head}
-                        >
-                            Ongoing
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={10} sm={6}>
-                        <TextField
-                            className={classes.search}
-                            label="Search"
-                            name="ongoing"
-                            fullWidth
-                            style={{ marginLeft: '1em' }}
-                            value={search.ongoing}
-                            onChange={searchChange}
-                            InputProps={{
-                                endAdornment: (
-                                    <InputAdornment>
-                                        {search.ongoing === '' ? (
-                                            <IconButton>
-                                                <SearchIcon />
-                                            </IconButton>
-                                        ) : (
-                                            <IconButton
-                                                onClick={() => {
-                                                    setSearch({
-                                                        ...search,
-                                                        ongoing: '',
-                                                    });
-                                                }}
-                                            >
-                                                <CloseIcon />
-                                            </IconButton>
-                                        )}
-                                    </InputAdornment>
-                                ),
-                            }}
-                        />
-                    </Grid>
-                </Grid>
-                <Grid container spacing={2} className={classes.grid}>
-                    {ongoing.length === 0 ? (
-                        <Typography variant="h4" color="textSecondary">
-                            No ongoing projects
-                        </Typography>
-                    ) : (
-                        ongoing.map((project, index) => (
-                            // <GridListTile key={`${project}~${index}`} cols={2} rows={2}>
-                            <Grid key={`${project}`} item xs={12} md={6} lg={4}>
-                                <Card body style={{ borderColor: '#00c853' }}>
-                                    <CardHeader>
-                                        <Typography variant="h4">
-                                            {project.name}
-                                        </Typography>
-                                    </CardHeader>
-                                    <CardBody>
-                                        <CardTitle>
-                                            <Typography variant="h6">{`${project.start_date.toDateString()} - ${project.end_date.toDateString()}`}</Typography>
-                                        </CardTitle>
-                                        <CardText>
-                                            <Typography variant="body1">
-                                                {project.description}
-                                            </Typography>
-                                            {Array.from(project.url).map(
-                                                ([key, value]) => {
-                                                    return (
-                                                        <Typography variant="body1">
-                                                            {`${key}: `}
-                                                            <CardLink
-                                                                href={value}
-                                                            >{`${value.substr(
-                                                                0,
-                                                                30
-                                                            )}...`}</CardLink>
-                                                        </Typography>
-                                                    );
-                                                }
-                                            )}
-                                        </CardText>
-                                    </CardBody>
-                                    <CardFooter>
-                                        Assigned to:{' '}
-                                        {users.allUsers
-                                            .filter((user) =>
-                                                project.members.includes(
-                                                    user._id
-                                                )
-                                            )
-                                            .map((user) => `${user.name}, `)}
-                                        {curUser.privelege_level === 'Admin' ? (
-                                            <EditProjectForm
-                                                deleteProject={deleteProject}
-                                                dumProjects={ongoing}
-                                                dumUsers={users.allUsers}
-                                                editProject={editProject}
-                                                index={index}
-                                                serverError={
-                                                    projects.serverError
-                                                }
-                                            />
-                                        ) : null}
-                                    </CardFooter>
-                                    {/* <CardFooter>
-                                    Assigned to: {project.assignee}
-                                </CardFooter> */}
-                                </Card>
-                            </Grid>
-                            // </GridListTile>
-                        ))
-                    )}
-                </Grid>
-                {/* </GridList> */}
-            </Paper>
-            <Paper elevation={3} variant="outlined" className={classes.paper}>
-                {/* <GridList spacing={1} className={classes.gridList}> */}
-                {/* <Typography variant='h4' color="primary" className={classes.head}>Completed</Typography> */}
-                <Grid container justify="flex-start">
-                    <Grid item xs={12} sm={4}>
-                        <Typography
-                            variant="h4"
-                            color="primary"
-                            className={classes.head}
-                        >
-                            Completed
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={10} sm={6}>
-                        <TextField
-                            className={classes.search}
-                            label="Search"
-                            name="completed"
-                            fullWidth
-                            style={{ marginLeft: '1em' }}
-                            value={search.completed}
-                            onChange={searchChange}
-                            InputProps={{
-                                endAdornment: (
-                                    <InputAdornment>
-                                        {search.completed === '' ? (
-                                            <IconButton>
-                                                <SearchIcon />
-                                            </IconButton>
-                                        ) : (
-                                            <IconButton
-                                                onClick={() => {
-                                                    setSearch({
-                                                        ...search,
-                                                        completed: '',
-                                                    });
-                                                }}
-                                            >
-                                                <CloseIcon />
-                                            </IconButton>
-                                        )}
-                                    </InputAdornment>
-                                ),
-                            }}
-                        />
-                    </Grid>
-                </Grid>
-                <Grid container spacing={2} className={classes.grid}>
-                    {completed.length === 0 ? (
-                        <Typography variant="h4" color="textSecondary">
-                            No completed projects
-                        </Typography>
-                    ) : (
-                        completed.map((project, index) => (
-                            // <GridListTile key={`${project}~${index}`} cols={2} rows={2}>
-                            <Grid key={`${project}`} item xs={12} md={6} lg={4}>
-                                <Card body style={{ borderColor: '#00c853' }}>
-                                    <CardHeader>
-                                        <Typography variant="h4">
-                                            {project.name}
-                                        </Typography>
-                                    </CardHeader>
-                                    <CardBody>
-                                        <CardTitle>
-                                            <Typography variant="h6">{`${project.start_date.toDateString()} - ${project.end_date.toDateString()}`}</Typography>
-                                        </CardTitle>
-                                        <CardText>
-                                            <Typography variant="body1">
-                                                {project.description}
-                                            </Typography>
-                                            {Array.from(project.url).map(
-                                                ([key, value]) => {
-                                                    return (
-                                                        <Typography variant="body1">
-                                                            {`${key}: `}
-                                                            <CardLink
-                                                                href={value}
-                                                            >{`${value.substr(
-                                                                0,
-                                                                30
-                                                            )}...`}</CardLink>
-                                                        </Typography>
-                                                    );
-                                                }
-                                            )}
-                                        </CardText>
-                                    </CardBody>
-                                    <CardFooter>
-                                        Assigned to:{' '}
-                                        {users.allUsers
-                                            .filter((user) =>
-                                                project.members.includes(
-                                                    user._id
-                                                )
-                                            )
-                                            .map((user) => `${user.name}, `)}
-                                        {curUser.privelege_level === 'Admin' ? (
-                                            <EditProjectForm
-                                                deleteProject={deleteProject}
-                                                dumProjects={completed}
-                                                dumUsers={users.allUsers}
-                                                editProject={editProject}
-                                                index={index}
-                                                serverError={
-                                                    projects.serverError
-                                                }
-                                            />
-                                        ) : null}
-                                    </CardFooter>
-                                    {/* <CardFooter>
-                                    Assigned to: {project.assignee}
-                                </CardFooter> */}
-                                </Card>
-                            </Grid>
-                            // </GridListTile>
-                        ))
-                    )}
-                </Grid>
-                {/* </GridList> */}
-            </Paper>
-            <Dialog open={createOpen} maxWidth="md" onClose={handleCreateClose}>
+            </Grow>
+            <Dialog open={createOpen} maxWidth="sm" onClose={handleCreateClose}>
                 <DialogTitle>
-                    <Typography variaeventErrornt="h5" align="center" fullWidth>
-                        Create a Project
+                    <Typography variant="h5" align="center" fullWidth>
+                        Create A Project
                     </Typography>
                     <IconButton
                         aria-label="close"
@@ -526,7 +643,7 @@ const ProjectsPage = ({
                         <CloseIcon />
                     </IconButton>
                 </DialogTitle>
-                <DialogContent>
+                <DialogContent style={{ scrollbarWidth: 'none' }}>
                     <CreateProjectForm
                         createProject={createProject}
                         projectError={projectError}

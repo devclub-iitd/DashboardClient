@@ -24,6 +24,34 @@
 // export const resourceGetAllDBAPI =
 //     'http://localhost:3001/api/resource/getAllDB/';
 // export const resourceDeleteAPI = 'http://localhost:3001/api/resource/delete/';
+/// //////////////////////////////////////////////////////////////////
+
+// export const loginAPI = 'https://b7c05fa720e9.ngrok.io/api/user/login';
+// export const registerAPI = 'https://b7c05fa720e9.ngrok.io/api/user/register';
+
+// export const userAPI = 'https://b7c05fa720e9.ngrok.io/api/user/';
+// export const userGetAllDBAPI =
+//     'https://b7c05fa720e9.ngrok.io/api/user/getAllDB/';
+// export const userChangePassAPI =
+//     'https://b7c05fa720e9.ngrok.io/api/user/changePassword/';
+// export const userQueryAPI = 'https://b7c05fa720e9.ngrok.io/api/user/query/';
+
+// export const eventAPI = 'https://b7c05fa720e9.ngrok.io/api/event/';
+// export const eventGetAllDBAPI =
+//     'https://b7c05fa720e9.ngrok.io/api/event/getAllDB/';
+// export const eventDeleteAPI = 'https://b7c05fa720e9.ngrok.io/api/event/delete/';
+
+// export const projectAPI = 'https://b7c05fa720e9.ngrok.io/api/project/';
+// export const projectGetAllDBAPI =
+//     'https://b7c05fa720e9.ngrok.io/api/project/getAllDB/';
+// export const projectDeleteAPI =
+//     'https://b7c05fa720e9.ngrok.io/api/project/delete/';
+
+// export const resourceAPI = 'https://b7c05fa720e9.ngrok.io/api/resource/';
+// export const resourceGetAllDBAPI =
+//     'https://b7c05fa720e9.ngrok.io/api/resource/getAllDB/';
+// export const resourceDeleteAPI =
+//     'https://b7c05fa720e9.ngrok.io/api/resource/delete/';
 
 /*
     ----------------------------------------------------------------------------------

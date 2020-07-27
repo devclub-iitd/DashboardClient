@@ -1,119 +1,202 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable react/forbid-prop-types */
-import React, { Fragment } from 'react';
+import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
     Grid,
-    Card,
-    CardContent,
     Typography,
     Dialog,
     DialogTitle,
     Tooltip,
     DialogContent,
-    Avatar,
     TextField,
     Fab,
-    FormControl,
-    InputLabel,
     MenuItem,
-    Select,
-    FormControlLabel,
-    Radio,
-    RadioGroup,
     Snackbar,
+    Paper,
+    Button,
+    Link,
+    IconButton,
+    Grow,
 } from '@material-ui/core';
 import EmailOutlinedIcon from '@material-ui/icons/EmailOutlined';
 import PhoneIcon from '@material-ui/icons/Phone';
 import EditIcon from '@material-ui/icons/Edit';
-import { Control, LocalForm, Errors } from 'react-redux-form';
 import DateFnsUtils from '@date-io/date-fns';
-import AddIcon from '@material-ui/icons/Add';
-import VPNKeyIcon from '@material-ui/icons/VpnKey';
 import {
     MuiPickersUtilsProvider,
     KeyboardDatePicker,
 } from '@material-ui/pickers';
 import PropTypes from 'prop-types';
-import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutline';
-import { Label, Button, Row, Col, CardLink } from 'reactstrap';
+import {
+    Facebook,
+    GitHub,
+    PhotoCamera,
+    AddCircleRounded,
+    Delete,
+    VpnKeyRounded,
+} from '@material-ui/icons';
 import ChangePassword from './ChangePassword';
+import * as Utils from '../utils';
 
 const useStyles = makeStyles((theme) => ({
     container: {
-        display: 'flex',
-        flexWrap: 'wrap',
-    },
-    textField: {
-        marginLeft: theme.spacing(1),
-        marginRight: theme.spacing(1),
-        width: 200,
-    },
-    dense: {
-        marginTop: 19,
-    },
-    menu: {
-        width: 200,
-    },
-    card: {
-        maxWidth: '100%',
-    },
-    media: {
-        height: 0,
-        paddingTop: '56.25%',
-        marginLeft: 'auto',
-        marginRight: 'auto',
+        marginTop: theme.spacing(2),
+        [theme.breakpoints.down('sm')]: {
+            marginBottom: theme.spacing(2),
+        },
+        boxSizing: 'auto',
     },
     image: {
-        width: 'auto',
-        maxHeight: document.documentElement.clientHeight * 0.4,
+        [theme.breakpoints.down('sm')]: {
+            marginTop: theme.spacing(1),
+        },
     },
-    imgcontainer: {},
-    pad: {
-        padding: '1em',
-        font: '2rem',
+    fieldPaper: {
+        padding: theme.spacing(3, 4, 3, 4),
+        borderRadius: '15px',
+        [theme.breakpoints.down('sm')]: {
+            paddingRight: theme.spacing(2),
+            paddingLeft: theme.spacing(2),
+        },
     },
-    iconright: {
-        position: 'fixed',
+    picPaper: {
+        padding: theme.spacing(4, 0, 3, 0),
+        borderRadius: '15px',
+        maxHeight: '79vh',
+        overflowY: 'auto',
+        scrollbarWidth: 'none',
     },
-    modal: {
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
+    urlPaper: {
+        backgroundColor: '#48484a',
+        padding: theme.spacing(1, 1, 2, 2),
+        borderRadius: '15px',
+        maxHeight: '47vh',
+        overflowY: 'auto',
+        scrollbarWidth: 'none',
     },
-    backdrop: {
-        zIndex: theme.zIndex.drawer + 1,
-        color: '#fff',
+    specPaper: {
+        backgroundColor: '#48484a',
+        padding: theme.spacing(1, 1, 2, 2),
+        borderRadius: '15px',
+        [theme.breakpoints.down('sm')]: {
+            marginTop: theme.spacing(4),
+        },
     },
-    large: {
-        width: theme.spacing(28),
-        height: theme.spacing(28),
-        marginLeft: '1em',
+    intPaper: {
+        backgroundColor: '#48484a',
+        padding: theme.spacing(1, 1, 2, 2),
+        borderRadius: '15px',
+        marginTop: theme.spacing(4),
     },
-    formControl: {
-        margin: theme.spacing(1),
-        minWidth: 120,
+    categoryField: {
+        [theme.breakpoints.down('md')]: {
+            width: '100%',
+        },
+        [theme.breakpoints.up('md')]: {
+            width: '50%',
+        },
+    },
+    intro: {
+        marginTop: theme.spacing(2),
+    },
+    urlField: {
+        marginTop: theme.spacing(1),
+    },
+    urlSpecContainer: {
+        marginTop: theme.spacing(4),
+    },
+    namePart: {
+        [theme.breakpoints.down('sm')]: {
+            marginTop: theme.spacing(2),
+        },
+    },
+    buttonBox: {
+        marginTop: 'auto',
+        marginBottom: 'auto',
+        [theme.breakpoints.down('sm')]: {
+            marginTop: theme.spacing(1),
+            marginBottom: theme.spacing(1),
+        },
+    },
+    save: {
+        [theme.breakpoints.up('md')]: {
+            marginBottom: theme.spacing(1),
+        },
+        [theme.breakpoints.down('sm')]: {
+            marginRight: theme.spacing(1),
+        },
+    },
+    cancel: {
+        [theme.breakpoints.up('md')]: {
+            marginTop: theme.spacing(1),
+        },
+        [theme.breakpoints.down('sm')]: {
+            marginLeft: theme.spacing(1),
+        },
+    },
+    passButton: {
+        [theme.breakpoints.up('md')]: {
+            marginTop: theme.spacing(2),
+        },
     },
 }));
 
+const ProfileField = ({ title, value }) => {
+    return (
+        <>
+            <Typography
+                style={{ fontWeight: 500, color: '#8e8e93' }}
+                variant="h5"
+            >
+                {title}
+            </Typography>
+            <Typography style={{ fontWeight: 500 }} variant="h5">
+                {value}
+            </Typography>
+        </>
+    );
+};
+
+ProfileField.propTypes = {
+    title: PropTypes.string.isRequired,
+    value: PropTypes.string.isRequired,
+};
+
+const FieldSep = () => <Grid item xs={12} style={{ height: '16px' }} />;
+
 export default function Profile({
-    user,
     serverError,
     updateUser,
     changePassword,
     users,
 }) {
+    const [editMode, setEditMode] = React.useState(false);
+
+    const toggleEditMode = () => {
+        setEditMode(!editMode);
+    };
+
+    const [User] = React.useState(
+        Utils.UserUtils.getProperUser(
+            JSON.parse(localStorage.getItem('currentUser'))
+        )
+    );
+
     const [state, setState] = React.useState({
-        editUser: user,
-        orgUser: user,
-        urlFields: Array.from(user.url).map(([index, value]) => ({
-            type: index,
-            url: value,
-        })),
+        editUser: { ...User },
+        orgUser: { ...User },
+        urlFields:
+            User.url === undefined
+                ? []
+                : Array.from(User.url).map(([index, value]) => ({
+                      type: index,
+                      url: value,
+                  })),
         editSuccess: false,
         isModalOpen: false,
         isChangePassOpen: false,
         password: '',
-        // confirmPassword: '',
         confirmPassError: null,
         changeSuccess: false,
     });
@@ -129,13 +212,6 @@ export default function Profile({
     };
 
     const handleFormValuesChange = (event, name) => {
-        // setUser({
-        //   ...user,
-        //   [event.target.name]: [event.target.value],
-        // });
-        // // console.log('Name: ', name);
-        // // console.log('Event: ', event);
-
         if (name === 'birth_date') {
             setState({
                 ...state,
@@ -169,23 +245,6 @@ export default function Profile({
                 },
             });
         }
-        // setState({
-        //   ...state,
-        //   editUser: {
-        //     ...state.editUser,
-        //     [event.target.name]: [event.target.value],
-        //   },
-        // });
-    };
-
-    // const [isModalOpen, setIsModalOpen] = React.useState(false);
-
-    const handleOpen = () => {
-        // setIsModalOpen(true);
-        setState({
-            ...state,
-            isModalOpen: true,
-        });
     };
 
     const handlePasswordOpen = () => {
@@ -202,14 +261,6 @@ export default function Profile({
         });
     };
 
-    const handleClose = () => {
-        // setIsModalOpen(false);
-        setState({
-            ...state,
-            isModalOpen: false,
-        });
-    };
-
     const handleAddUrlFields = () => {
         const values = [...state.urlFields];
         values.push({ type: '', url: '' });
@@ -217,17 +268,6 @@ export default function Profile({
             ...state,
             urlFields: values,
         });
-        // setUrlFields(values);
-        // setUser({
-        //   ...user,
-        //   url: urlFields,
-        // });
-        // const urlVals = user.url;
-        // urlVals.set('type', 'url');
-        // setUser({
-        //   ...user,
-        //   url: urlVals,
-        // });
     };
 
     const handleRemoveUrlFields = (index) => {
@@ -237,17 +277,6 @@ export default function Profile({
             ...state,
             urlFields: values,
         });
-        // setUrlFields(values);
-        // setUser({
-        //   ...user,
-        //   url: urlFields,
-        // });
-        // const urlVals = user.url;
-        // urlVals.delete(index);
-        // setUser({
-        //   ...user,
-        //   url: urlVals,
-        // });
     };
 
     const handleUrlFieldChange = (index, event) => {
@@ -255,7 +284,7 @@ export default function Profile({
         if (event.target.name === 'type') {
             if (
                 values[index].type === 'picture_url' ||
-                values[index].type === 'facebook_url' ||
+                values[index].type === 'fb_url' ||
                 values[index].type === 'github_url'
             ) {
                 return;
@@ -268,1213 +297,1080 @@ export default function Profile({
             ...state,
             urlFields: values,
         });
-        // setUrlFields(values);
-        // setUser({
-        //   ...user,
-        //   url: urlFields,
-        // });
-        // const urlVals = user.url;
-        // urlVals.set(index, event.target.value);
-        // setUser({
-        //   ...user,
-        //   url: urlVals,
-        // });
     };
 
     const handleSubmit = () => {
-        // setUser({
-        //   ...user,
-        //   values,
-        // });
-        // setUser({
-        //   ...user,
-        //   birth_date: DOB,
-        //   join_year: joinDate,
-        //   grad_year: gradDate,
-        // });
-
-        // const newUser = {
-        //   ...user,
-        //   birth_date: DOB,
-        //   join_year: joinDate,
-        //   grad_year: gradDate,
-        // };
         const urlMap = new Map();
-        state.urlFields.map((urlField) =>
-            urlMap.set(urlField.type, urlField.url)
-        );
+        state.urlFields.forEach((urlField) => {
+            const fixedUrl = Utils.isValidUrl(urlField.url)
+                ? urlField.url
+                : ['https://', urlField.url].join('');
+            urlMap.set(urlField.type, fixedUrl);
+        });
         const newUser = {
             ...state.editUser,
-            url: urlMap,
+            url: Utils.UserUtils.strMapToObj(urlMap),
         };
 
-        updateUser(newUser);
-        // setUserOrg(user);
-        if (serverError === null) {
-            setState({
-                ...state,
-                editSuccess: true,
-                orgUser: {
-                    ...state.editUser,
-                },
-            });
-        }
-        // console.log('Submitting user details update info: ', state.editUser);
-        handleClose();
+        updateUser(newUser, () => {
+            if (serverError === null) {
+                setState({
+                    ...state,
+                    editSuccess: true,
+                    orgUser: {
+                        ...state.editUser,
+                        url: urlMap,
+                    },
+                    urlFields:
+                        urlMap === undefined
+                            ? []
+                            : Array.from(urlMap).map(([index, value]) => ({
+                                  type: index,
+                                  url: value,
+                              })),
+                });
+            }
+            toggleEditMode();
+        });
     };
 
-    // const handlePassFormChange = (e, type) => {
-    //     const { value } = e.target;
-    //     setState({
-    //         ...state,
-    //         [type]: value,
-    //     });
-    //     if (type === 'confirmPassword') {
-    //         const { password } = state;
-    //         setState({
-    //             ...state,
-    //             confirmPassError: value !== password,
-    //         });
-    //     }
-    // };
-
-    // const changePass = () => {
-    //     // e.preventDefault();
-
-    //     const { confirmPassError } = state;
-
-    //     if (confirmPassError) {
-    //         return;
-    //     }
-
-    //     changePassword(state.password);
-    //     // setState({
-    //     //   ...state,
-    //     //   password: '',
-    //     //   confirmPassword: '',
-    //     //   confirmPassError: null,
-    //     // });
-
-    //     if (serverError === null) {
-    //         setState({
-    //             ...state,
-    //             password: '',
-    //             confirmPassword: '',
-    //             confirmPassError: null,
-    //             changeSuccess: true,
-    //         });
-    //     } else {
-    //         setState({
-    //             ...state,
-    //             password: '',
-    //             confirmPassword: '',
-    //             confirmPassError: null,
-    //             changeSuccess: false,
-    //         });
-    //     }
-    //     handlePasswordClose();
-    //     // window.location.reload(false);
-    // };
-
     const cancelEdit = () => {
-        // setUser({
-        //   ...user,
-        //   userOrg,
-        // });
         setState({
             ...state,
             editUser: {
-                ...state.orgUser,
+                ...User,
             },
+            urlFields:
+                User.url === undefined
+                    ? []
+                    : Array.from(User.url).map(([index, value]) => ({
+                          type: index,
+                          url: value,
+                      })),
         });
-        handleClose();
-        // console.log(state.editUser);
+        toggleEditMode();
     };
 
-    const hostels = [
-        'Aravali',
-        'Girnar',
-        'Jwalamukhi',
-        'Karakoram',
-        'Kumaon',
-        'Nilgiri',
-        'Shivalik',
-        'Satpura',
-        'Udaigiri',
-        'Vindhyanchal',
-        'Zanskar',
-        'Kailash',
-        'Himadri',
-        'New Kailash',
-    ];
+    const hostels = Utils.UserUtils.userHostels;
 
-    const required = (val) => val && val.length;
-    const maxLength = (len) => (val) => !val || val.length <= len;
-    const minLength = (len) => (val) => val && val.length >= len;
+    const categories = Utils.UserUtils.userCategories;
 
     return (
-        <>
-            {/* <Backdrop className={classes.backdrop} open={isLoading}>
-        <CircularProgress color="inherit" />
-      </Backdrop> */}
-            <Grid
-                container
-                direction="row"
-                justify="space-evenly"
-                alignItems="flex-start"
+        <Grid
+            className={classes.container}
+            container
+            justify="center"
+            alignItems="flex-start"
+        >
+            <Snackbar
+                anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'center',
+                }}
+                open={state.editSuccess}
+                autoHideDuration={3000}
+                onClose={handleSuccessClose}
+                message="Profile updated Successfully !"
+            />
+            <Snackbar
+                anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'center',
+                }}
+                open={state.changeSuccess}
+                autoHideDuration={2000}
+                onClose={handleSuccessClose}
+                message="Password changed succesfully !"
+            />
+            <Dialog
+                open={state.isChangePassOpen}
+                maxWidth="xs"
+                onClose={handlePasswordClose}
             >
-                <Snackbar
-                    anchorOrigin={{
-                        vertical: 'top',
-                        horizontal: 'center',
-                    }}
-                    open={state.editSuccess}
-                    autoHideDuration={2000}
-                    onClose={handleSuccessClose}
-                    message="Profile updated Successfully !"
-                />
-                <Snackbar
-                    anchorOrigin={{
-                        vertical: 'top',
-                        horizontal: 'center',
-                    }}
-                    open={state.changeSuccess}
-                    autoHideDuration={2000}
-                    onClose={handleSuccessClose}
-                    message="Password changed succesfully !"
-                />
-                <div>
-                    <Dialog
-                        open={state.isModalOpen}
-                        maxWidth="md"
+                <DialogTitle>
+                    <Typography
                         fullWidth
-                        onClose={() => {
-                            cancelEdit();
-                        }}
-                        scroll="paper"
+                        align="center"
+                        variant="h4"
+                        className={classes.head}
                     >
-                        <DialogTitle>
-                            <Typography variant="h4" className={classes.head}>
-                                Edit Your Profile
-                            </Typography>
-                        </DialogTitle>
-                        <DialogContent>
-                            <LocalForm>
-                                <Row className="form-group">
-                                    <Label htmlFor="name" md={4}>
-                                        <h6>Name:</h6>
-                                    </Label>
-                                    <Col md={8}>
-                                        <Control.text
-                                            model=".name"
-                                            id="name"
-                                            name="name"
-                                            placeholder="Name*"
-                                            // defaultValue={user.name}
-                                            defaultValue={state.editUser.name}
-                                            onChange={handleFormValuesChange}
-                                            className="form-control"
-                                            validators={{
-                                                required,
-                                                minLength: minLength(1),
-                                                maxLength: maxLength(20),
-                                            }}
-                                        />
-                                        <Errors
-                                            className="text-danger"
-                                            model=".name"
-                                            show="touched"
-                                            messages={{
-                                                required: 'Required ',
-                                                minLength:
-                                                    'Must be greater than 2 characters',
-                                                maxLength:
-                                                    'Must be 25 characters or less',
-                                            }}
-                                        />
-                                    </Col>
-                                </Row>
-                                <Row className="form-group">
-                                    <Label htmlFor="entry_no" md={4}>
-                                        <h6>Entry Number:</h6>
-                                    </Label>
-                                    <Col md={8}>
-                                        <Control.text
-                                            model=".entry_no"
-                                            id="entry_no"
-                                            name="entry_no"
-                                            // defaultValue={user.entry_no}
-                                            defaultValue={
-                                                state.editUser.entry_no
-                                            }
-                                            onChange={handleFormValuesChange}
-                                            placeholder="Entry Number*"
-                                            className="form-control"
-                                            validators={{
-                                                required,
-                                                minLength: minLength(11),
-                                                maxLength: maxLength(11),
-                                            }}
-                                        />
-                                        <Errors
-                                            className="text-danger"
-                                            model=".entry_no"
-                                            show="touched"
-                                            messages={{
-                                                required: 'Required ',
-                                                minLength:
-                                                    'Enter 11 character Entry Number',
-                                                maxLength:
-                                                    'Enter 11 character Entry Number',
-                                            }}
-                                        />
-                                    </Col>
-                                </Row>
-                                <Row className="form-group">
-                                    <Label htmlFor="entry_no" md={4}>
-                                        <h6>Email:</h6>
-                                    </Label>
-                                    <Col md={8}>
-                                        <Control.text
-                                            model=".email"
-                                            id="email"
-                                            name="email"
-                                            // defaultValue={user.email}
-                                            defaultValue={state.editUser.email}
-                                            onChange={handleFormValuesChange}
-                                            placeholder="Email*"
-                                            className="form-control"
-                                            validators={{
-                                                required,
-                                            }}
-                                        />
-                                        <Errors
-                                            className="text-danger"
-                                            model=".email"
-                                            show="touched"
-                                            messages={{
-                                                required: 'Required ',
-                                                minLength:
-                                                    'Must be greater than 2 characters',
-                                                maxLength:
-                                                    'Must be 25 characters or less',
-                                            }}
-                                        />
-                                    </Col>
-                                </Row>
-                                <Row className="form-group">
-                                    <Label htmlFor="hostel" md={4}>
-                                        <h6>Hostel:</h6>
-                                    </Label>
-                                    <Col md={8}>
-                                        <FormControl
-                                            variant="outlined"
-                                            className={classes.formControl}
-                                        >
-                                            <InputLabel id="hostel">
-                                                Hostel
-                                            </InputLabel>
-                                            <Select
-                                                required
-                                                labelId="hostel"
-                                                id="hostel"
-                                                name="hostel"
-                                                label="Hostel"
-                                                defaultValue={
-                                                    state.orgUser.hostel
-                                                }
-                                                onChange={
-                                                    handleFormValuesChange
-                                                }
-                                            >
-                                                <MenuItem value="">
-                                                    <em>None</em>
-                                                </MenuItem>
-                                                {hostels.map((hostel) => (
-                                                    <MenuItem
-                                                        value={hostel.toUpperCase()}
-                                                    >
-                                                        {hostel}
-                                                    </MenuItem>
-                                                ))}
-                                            </Select>
-                                        </FormControl>
-                                    </Col>
-                                </Row>
-                                <Row className="form-group">
-                                    <Label htmlFor="intro" md={12}>
-                                        <h6>Introduction:</h6>
-                                    </Label>
-                                    <Col md={12}>
-                                        <Control.textarea
-                                            model=".intro"
-                                            id="intro"
-                                            name="intro"
-                                            // defaultValue={user.intro}
-                                            defaultValue={state.editUser.intro}
-                                            onChange={handleFormValuesChange}
-                                            placeholder="Introduction*"
-                                            rows="8"
-                                            className="form-control"
-                                            validators={{
-                                                required,
-                                            }}
-                                        />
-                                        <Errors
-                                            className="text-danger"
-                                            model=".intro"
-                                            show="touched"
-                                            messages={{
-                                                required: 'Required',
-                                            }}
-                                        />
-                                    </Col>
-                                </Row>
-                                <Row className="form-group">
-                                    <Col>
-                                        <MuiPickersUtilsProvider
-                                            utils={DateFnsUtils}
-                                        >
-                                            <KeyboardDatePicker
-                                                margin="normal"
-                                                id="date-picker-dialog"
-                                                label="Date of Birth"
-                                                format="MM/dd/yyyy"
-                                                // value={DOB}
-                                                value={
-                                                    state.editUser.birth_date
-                                                }
-                                                name="birth_date"
-                                                // onChange={DOBChange}
-                                                onChange={(date) =>
-                                                    handleFormValuesChange(
-                                                        date,
-                                                        'birth_date'
-                                                    )
-                                                }
-                                                maxDate={Date.now()}
-                                                KeyboardButtonProps={{
-                                                    'aria-label': 'change date',
-                                                }}
-                                            />
-                                        </MuiPickersUtilsProvider>
-                                    </Col>
-                                </Row>
-                                <Row className="form-group">
-                                    <Label htmlFor="intro" md={12}>
-                                        <h6>Gender:</h6>
-                                    </Label>
-                                    <Col sm={12}>
-                                        <RadioGroup
-                                            row
-                                            aria-label="gender"
-                                            name="gender"
-                                            defaultValue={state.editUser.gender}
-                                            onChange={handleFormValuesChange}
-                                        >
-                                            <FormControlLabel
-                                                value="female"
-                                                control={
-                                                    <Radio color="primary" />
-                                                }
-                                                label="female"
-                                                labelPlacement="end"
-                                            />
-                                            <FormControlLabel
-                                                value="male"
-                                                control={
-                                                    <Radio color="primary" />
-                                                }
-                                                label="male"
-                                                labelPlacement="end"
-                                            />
-                                            <FormControlLabel
-                                                value="other"
-                                                control={
-                                                    <Radio color="primary" />
-                                                }
-                                                label="other"
-                                                labelPlacement="end"
-                                            />
-                                            {/* <FormControlLabel value="end" control={<Radio color="primary" />} label="End" /> */}
-                                        </RadioGroup>
-                                    </Col>
-                                </Row>
-                                <Row className="form-group">
-                                    <Label htmlFor="join_year" md={4}>
-                                        <h6>Date of Joining Club:</h6>
-                                    </Label>
-                                    <Col md={8}>
-                                        <MuiPickersUtilsProvider
-                                            utils={DateFnsUtils}
-                                        >
-                                            <KeyboardDatePicker
-                                                margin="normal"
-                                                id="date-picker-dialog"
-                                                label="Date of Joining Club"
-                                                format="MM/dd/yyyy"
-                                                value={state.editUser.join_year}
-                                                name="join_year"
-                                                // onChange={DOBChange}
-                                                onChange={(date) =>
-                                                    handleFormValuesChange(
-                                                        date,
-                                                        'join_year'
-                                                    )
-                                                }
-                                                maxDate={Date.now()}
-                                                KeyboardButtonProps={{
-                                                    'aria-label': 'change date',
-                                                }}
-                                            />
-                                        </MuiPickersUtilsProvider>
-                                    </Col>
-                                </Row>
-                                <Row className="form-group">
-                                    <Label htmlFor="grad_year" md={4}>
-                                        <h6>Date of Graduation:</h6>
-                                    </Label>
-                                    <Col md={8}>
-                                        <MuiPickersUtilsProvider
-                                            utils={DateFnsUtils}
-                                        >
-                                            <KeyboardDatePicker
-                                                margin="normal"
-                                                id="date-picker-dialog"
-                                                label="Date of Graduation"
-                                                format="MM/dd/yyyy"
-                                                value={state.editUser.grad_year}
-                                                name="grad_year"
-                                                // onChange={DOBChange}
-                                                onChange={(date) =>
-                                                    handleFormValuesChange(
-                                                        date,
-                                                        'grad_year'
-                                                    )
-                                                }
-                                                // maxDate={Date.now()}
-                                                KeyboardButtonProps={{
-                                                    'aria-label': 'change date',
-                                                }}
-                                            />
-                                        </MuiPickersUtilsProvider>
-                                    </Col>
-                                </Row>
-                                <Row className="form-group">
-                                    <Label htmlFor="mobile_number" md={4}>
-                                        <h6>Mobile Number:</h6>
-                                    </Label>
-                                    <Col md={8}>
-                                        <Control.text
-                                            model=".mobile_number"
-                                            id="mobile_number"
-                                            name="mobile_number"
-                                            // defaultValue={user.mobile_number}
-                                            defaultValue={
-                                                state.editUser.mobile_number
-                                            }
-                                            onChange={handleFormValuesChange}
-                                            placeholder="Mobile Number*"
-                                            className="form-control"
-                                            validators={{
-                                                required,
-                                                minLength: minLength(10),
-                                                maxLength: maxLength(10),
-                                            }}
-                                        />
-                                        <Errors
-                                            className="text-danger"
-                                            model=".mobile_nhumber"
-                                            show="touched"
-                                            messages={{
-                                                required: 'Required ',
-                                                minLength:
-                                                    'Enter 10 digit mobile number',
-                                                maxLength:
-                                                    'Enter 10 digit mobile number',
-                                            }}
-                                        />
-                                    </Col>
-                                </Row>
-                                <Row className="form-group">
-                                    <Label htmlFor="hometown" md={4}>
-                                        <h6>Hometown:</h6>
-                                    </Label>
-                                    <Col md={8}>
-                                        <Control.text
-                                            model=".hometown"
-                                            id="hometown"
-                                            name="hometown"
-                                            // defaultValue={user.hometown}
-                                            defaultValue={
-                                                state.editUser.hometown
-                                            }
-                                            onChange={handleFormValuesChange}
-                                            placeholder="Hometown*"
-                                            className="form-control"
-                                            validators={{
-                                                required,
-                                            }}
-                                        />
-                                        <Errors
-                                            className="text-danger"
-                                            model=".hometown"
-                                            show="touched"
-                                            messages={{
-                                                required: 'Required ',
-                                            }}
-                                        />
-                                    </Col>
-                                </Row>
-                                <Row className="form-group">
-                                    <Label htmlFor="interests" md={12}>
-                                        <h6>Interests:</h6>
-                                    </Label>
-                                    <Col md={12}>
-                                        <Control.textarea
-                                            model=".interests"
-                                            id="interests"
-                                            name="interests"
-                                            // defaultValue={user.interests}
-                                            defaultValue={
-                                                state.editUser.interests
-                                            }
-                                            onChange={handleFormValuesChange}
-                                            placeholder="Interests*"
-                                            rows="8"
-                                            className="form-control"
-                                            validators={{
-                                                required,
-                                            }}
-                                        />
-                                        <Errors
-                                            className="text-danger"
-                                            model=".interests"
-                                            show="touched"
-                                            messages={{
-                                                required: 'Required',
-                                            }}
-                                        />
-                                    </Col>
-                                </Row>
-                                <Row className="form-group">
-                                    <Label htmlFor="specialization" md={12}>
-                                        <h6>Specializations:</h6>
-                                    </Label>
-                                    <Col md={12}>
-                                        <Control.textarea
-                                            model=".specialization"
-                                            id="specialization"
-                                            name="specialization"
-                                            // defaultValue={user.specialization}
-                                            defaultValue={
-                                                state.editUser.specialization
-                                            }
-                                            onChange={handleFormValuesChange}
-                                            placeholder="Interests*"
-                                            rows="8"
-                                            className="form-control"
-                                            validators={{
-                                                required,
-                                            }}
-                                        />
-                                        <Errors
-                                            className="text-danger"
-                                            model=".specialization"
-                                            show="touched"
-                                            messages={{
-                                                required: 'Required',
-                                            }}
-                                        />
-                                    </Col>
-                                </Row>
-                                <Row className="form-group">
-                                    <Label htmlFor="category" md={2}>
-                                        <h6>Category: </h6>
-                                    </Label>
-                                    <Col md={10}>
-                                        <FormControl
-                                            variant="filled"
-                                            className={classes.formControl}
-                                        >
-                                            <InputLabel id="category">
-                                                Category
-                                            </InputLabel>
-                                            <Select
-                                                required
-                                                labelId="category"
-                                                id="category"
-                                                name="category"
-                                                label="Category"
-                                                defaultValue={
-                                                    state.orgUser.category
-                                                }
-                                                onChange={
-                                                    handleFormValuesChange
-                                                }
-                                            >
-                                                <MenuItem value="">
-                                                    <em>None</em>
-                                                </MenuItem>
-                                                <MenuItem value="Fresher">
-                                                    Fresher
-                                                </MenuItem>
-                                                <MenuItem value="Sophomore">
-                                                    Sophomore
-                                                </MenuItem>
-                                                <MenuItem value="Junior Undergraduate">
-                                                    Junior Undergraduate
-                                                </MenuItem>
-                                                <MenuItem value="Senior Undergraduate">
-                                                    Senior Undergraduate
-                                                </MenuItem>
-                                                <MenuItem value="Alumni">
-                                                    Alumni
-                                                </MenuItem>
-                                            </Select>
-                                        </FormControl>
-                                    </Col>
-                                </Row>
-                                <Row className="form-group">
-                                    <Label htmlFor="urlFields" md={12}>
-                                        <h6>Url:</h6>
-                                    </Label>
-                                    <Col sm={12}>
-                                        {state.urlFields.map(
-                                            (urlField, index) => (
-                                                <Fragment key={`${urlField}`}>
-                                                    <Row className="form-group">
-                                                        <Col
-                                                            sm={{
-                                                                size: 4,
-                                                                offset: 1,
-                                                            }}
-                                                        >
-                                                            <TextField
-                                                                sm={5}
-                                                                label="type"
-                                                                className="form-control"
-                                                                id="type"
-                                                                name="type"
-                                                                variant="filled"
-                                                                value={
-                                                                    urlField.type
-                                                                }
-                                                                onChange={(
-                                                                    event
-                                                                ) =>
-                                                                    handleUrlFieldChange(
-                                                                        index,
-                                                                        event
-                                                                    )
-                                                                }
-                                                            />
-                                                        </Col>
-                                                        <Col sm={4}>
-                                                            <TextField
-                                                                sm={5}
-                                                                label="url"
-                                                                className="form-control"
-                                                                id="url"
-                                                                name="url"
-                                                                variant="filled"
-                                                                value={
-                                                                    urlField.url
-                                                                }
-                                                                onChange={(
-                                                                    event
-                                                                ) =>
-                                                                    handleUrlFieldChange(
-                                                                        index,
-                                                                        event
-                                                                    )
-                                                                }
-                                                            />
-                                                        </Col>
-                                                        {urlField.type ===
-                                                            'picture_url' ||
-                                                        urlField.type ===
-                                                            'facebook_url' ||
-                                                        urlField.type ===
-                                                            'github_url' ? null : (
-                                                            <Col sm={2}>
-                                                                <Fab
-                                                                    sm={2}
-                                                                    size="small"
-                                                                    aria-label="delete"
-                                                                    onClick={() =>
-                                                                        handleRemoveUrlFields(
-                                                                            index
-                                                                        )
-                                                                    }
-                                                                >
-                                                                    <DeleteOutlinedIcon />
-                                                                </Fab>
-                                                            </Col>
-                                                        )}
-                                                    </Row>
-                                                </Fragment>
-                                            )
-                                        )}
-                                        {/* {Array.from(user.url).map(([index, value]) => (
-                      <Fragment key={`${index}`}>
-                        <Row className="form-group">
-                          sm={12} md={{ size: 4, offset: 1 }}
-                          <Col sm={12} md={{ size: 4, offset: 1 }}>
-                            <TextField
-                              label="type"
-                              // className="form-control"
-                              // className={classes.urlField}
-                              id="type"
-                              name="type"
-                              variant="filled"
-                              value={index}
-                              onChange={event => handleUrlFieldChange(index, event)}
-                            />
-                          </Col>
-                          sm={12} md={4}
-                          <Col sm={12} md={4}>
-                            <TextField
-                              label="url"
-                              // className="form-control"
-                              // className={classes.urlField}
-                              id="url"
-                              name="url"
-                              variant="filled"
-                              value={value}
-                              onChange={event => handleUrlFieldChange(index, event)}
-                            />
-                          </Col>
-                          sm={2}
-                          <Col md={2}>
-                            <Fab size="small" aria-label="delete" onClick={() => handleRemoveUrlFields(index)}>
-                              <DeleteOutlinedIcon />
-                            </Fab>
-                          </Col>
-                        </Row>
-                      </Fragment>
-                    ))} */}
-                                        <Fab
-                                            size="small"
-                                            color="primary"
-                                            aria-label="add"
-                                            onClick={() => handleAddUrlFields()}
-                                        >
-                                            <AddIcon />
-                                        </Fab>
-                                    </Col>
-                                </Row>
-                                <Row className="form-group">
-                                    <Col sm={{ size: 4, offset: 3 }}>
-                                        <Button
-                                            color="primary"
-                                            onClick={handleSubmit}
-                                        >
-                                            Save Changes
-                                        </Button>
-                                    </Col>
-                                    <Col sm={{ size: 2 }}>
-                                        <Button
-                                            color="primary"
-                                            onClick={cancelEdit}
-                                        >
-                                            Cancel
-                                        </Button>
-                                    </Col>
-                                </Row>
-                            </LocalForm>
-                        </DialogContent>
-                        {/* </ModalBody> */}
-                    </Dialog>
-                </div>
-                <Dialog
-                    open={state.isChangePassOpen}
-                    maxWidth="md"
-                    fullWidth
-                    onClose={handlePasswordClose}
+                        Change Your Password
+                    </Typography>
+                </DialogTitle>
+                <DialogContent>
+                    <ChangePassword
+                        changePass={changePassword}
+                        users={users}
+                        closeDialog={handlePasswordClose}
+                    />
+                </DialogContent>
+            </Dialog>
+            <Grow in style={{ transformOrigin: 'center top' }} timeout={750}>
+                <Grid
+                    component={Paper}
+                    className={classes.fieldPaper}
+                    item
+                    xs={10}
+                    md={5}
+                    container
+                    justify="flex-start"
+                    alignItems="center"
                 >
-                    <DialogTitle>
-                        <Typography
-                            fullWidth
-                            align="center"
-                            variant="h4"
-                            className={classes.head}
-                        >
-                            Change Your Password
-                        </Typography>
-                    </DialogTitle>
-                    <DialogContent>
-                        <ChangePassword
-                            changePass={changePassword}
-                            users={users}
-                            closeDialog={handlePasswordClose}
-                        />
-                    </DialogContent>
-                </Dialog>
-                <Grid item xs={12}>
-                    <Tooltip title="Edit Profile" aria-label="edit">
-                        <Fab onClick={handleOpen} color="secondary">
-                            <EditIcon color="action" />
-                        </Fab>
-                    </Tooltip>
-                    <Tooltip title="Change Password" aria-label="edit">
-                        <Fab
-                            style={{ margin: '1em' }}
-                            onClick={handlePasswordOpen}
-                            color="secondary"
-                        >
-                            <VPNKeyIcon color="action" />
-                        </Fab>
-                    </Tooltip>
-                </Grid>
-                <Grid item sm={9} lg={5}>
-                    <Card className={classes.card}>
-                        <Grid
-                            style={{ marginTop: '2em' }}
-                            container
-                            alignContent="center"
-                            justify="center"
-                        >
-                            <Grid item xs={{ size: 6, offset: 3 }}>
-                                <Avatar
-                                    alt={state.orgUser.name.substr(0, 1)}
-                                    src={state.orgUser.url.get('picture_url')}
-                                    className={classes.large}
+                    <Grid item xs={12}>
+                        {!editMode ? (
+                            <ProfileField
+                                title="Gender"
+                                value={state.orgUser.gender}
+                            />
+                        ) : (
+                            <Grow
+                                in={editMode}
+                                style={{ transformOrigin: '100 100 0' }}
+                                timeout={editMode ? 1000 : 0}
+                            >
+                                <TextField
+                                    id="gender"
+                                    select
+                                    name="gender"
+                                    label="Gender"
+                                    variant="outlined"
+                                    value={state.editUser.gender}
+                                    onChange={(e) =>
+                                        handleFormValuesChange(e, 'gender')
+                                    }
+                                    className={classes.categoryField}
+                                    margin="dense"
+                                    required
+                                >
+                                    {['female', 'male', 'other'].map(
+                                        (option) => (
+                                            <MenuItem
+                                                key={option}
+                                                value={option}
+                                            >
+                                                {option}
+                                            </MenuItem>
+                                        )
+                                    )}
+                                </TextField>
+                            </Grow>
+                        )}
+                    </Grid>
+                    <FieldSep />
+                    <Grid item xs={12}>
+                        {!editMode ? (
+                            <ProfileField
+                                title="Date Of Birth"
+                                value={
+                                    state.orgUser.birth_date
+                                        ? state.orgUser.birth_date.toDateString()
+                                        : new Date().toDateString()
+                                }
+                            />
+                        ) : (
+                            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                <Grow
+                                    in={editMode}
+                                    style={{ transformOrigin: '100 100 0' }}
+                                    timeout={editMode ? 1000 : 0}
+                                >
+                                    <KeyboardDatePicker
+                                        margin="normal"
+                                        id="birth_date"
+                                        label="Date of Birth"
+                                        format="MM/dd/yyyy"
+                                        value={state.editUser.birth_date}
+                                        name="birth_date"
+                                        onChange={(date) =>
+                                            handleFormValuesChange(
+                                                date,
+                                                'birth_date'
+                                            )
+                                        }
+                                        maxDate={Date.now()}
+                                        KeyboardButtonProps={{
+                                            'aria-label': 'change date',
+                                        }}
+                                        required
+                                        inputVariant="outlined"
+                                    />
+                                </Grow>
+                            </MuiPickersUtilsProvider>
+                        )}
+                    </Grid>
+                    <FieldSep />
+                    <Grid item xs={12}>
+                        {!editMode ? (
+                            <ProfileField
+                                title="Entry Number"
+                                value={state.orgUser.entry_no}
+                            />
+                        ) : (
+                            <Grow
+                                in={editMode}
+                                style={{ transformOrigin: '100 100 0' }}
+                                timeout={editMode ? 1000 : 0}
+                            >
+                                <TextField
+                                    name="entry_no"
+                                    variant="outlined"
+                                    required
+                                    value={state.editUser.entry_no}
+                                    onChange={(e) =>
+                                        handleFormValuesChange(e, 'entry_no')
+                                    }
+                                    margin="normal"
+                                    id="entry_no"
+                                    label="Entry Number"
                                 />
-                            </Grid>
-                        </Grid>
-                        <CardContent>
-                            <Typography
-                                gutterBottom
-                                variant="h5"
-                                component="h2"
-                                align="right"
+                            </Grow>
+                        )}
+                    </Grid>
+                    <FieldSep />
+                    <Grid item xs={12}>
+                        {!editMode ? (
+                            <ProfileField
+                                title="Category"
+                                value={state.orgUser.category}
+                            />
+                        ) : (
+                            <Grow
+                                in={editMode}
+                                style={{ transformOrigin: '100 100 0' }}
+                                timeout={editMode ? 1000 : 0}
                             >
-                                {state.orgUser.name}
-                            </Typography>
-                            <Typography
-                                width="75%"
-                                variant="body2"
-                                color="textSecondary"
-                                component="p"
-                                align="right"
-                            >
-                                {state.orgUser.intro}
-                            </Typography>
-                        </CardContent>
-                        <CardContent>
-                            <Grid container>
-                                <Grid item xs={2}>
-                                    <EmailOutlinedIcon color="primary" />
-                                </Grid>
-                                <Grid item>
-                                    <Typography
-                                        gutterBottom
-                                        variant="body2"
-                                        color="textPrimary"
-                                        align="left"
-                                        display="inline"
-                                    >
-                                        {state.orgUser.email}
-                                    </Typography>
-                                </Grid>
-                            </Grid>
-                            <Grid container>
-                                <Grid item xs={2}>
-                                    <PhoneIcon color="primary" />
-                                </Grid>
-                                <Grid item>
-                                    <Typography
-                                        variant="body2"
-                                        color="textPrimary"
-                                        align="left"
-                                    >
-                                        {state.orgUser.mobile_number}
-                                    </Typography>
-                                </Grid>
-                            </Grid>
-                        </CardContent>
-                    </Card>
-                </Grid>
-                <Grid item sm={9} lg={5}>
+                                <TextField
+                                    id="category"
+                                    select
+                                    name="category"
+                                    label="Category"
+                                    variant="outlined"
+                                    value={state.editUser.category}
+                                    onChange={(e) =>
+                                        handleFormValuesChange(e, 'category')
+                                    }
+                                    className={classes.categoryField}
+                                    margin="dense"
+                                    required
+                                >
+                                    {categories.map((option) => (
+                                        <MenuItem key={option} value={option}>
+                                            {option}
+                                        </MenuItem>
+                                    ))}
+                                </TextField>
+                            </Grow>
+                        )}
+                    </Grid>
+                    <FieldSep />
                     <Grid
+                        item
                         container
-                        direction="column"
-                        justify="center"
+                        justify="flex-start"
                         alignItems="center"
-                        spacing={4}
+                        xs={12}
                     >
-                        <Grid style={{ width: '100%' }} item xs={12}>
-                            <Card className={classes.card}>
-                                <CardContent>
-                                    <Grid
-                                        container
-                                        direction="row"
-                                        justify="center"
+                        <Grid item xs={12} sm={6}>
+                            {!editMode ? (
+                                <ProfileField
+                                    title="Hostel"
+                                    value={state.orgUser.hostel}
+                                />
+                            ) : (
+                                <Grow
+                                    in={editMode}
+                                    style={{ transformOrigin: '100 100 0' }}
+                                    timeout={editMode ? 1000 : 0}
+                                >
+                                    <TextField
+                                        id="hostel"
+                                        select
+                                        name="hostel"
+                                        label="Hostel"
+                                        variant="outlined"
+                                        value={state.editUser.hostel}
+                                        onChange={(e) =>
+                                            handleFormValuesChange(e, 'hostel')
+                                        }
+                                        style={{ width: '90%' }}
+                                        margin="dense"
+                                        required
                                     >
-                                        <Grid item xs={5}>
-                                            <Typography
-                                                className={classes.pad}
-                                                gutterBottom
-                                                variant="p"
-                                                color="textPrimary"
-                                                align="right"
+                                        {hostels.map((option) => (
+                                            <MenuItem
+                                                key={option}
+                                                value={option.toUpperCase()}
                                             >
-                                                <b>Entry Number:</b>
-                                            </Typography>
-                                        </Grid>
-                                        <Grid item xs={5}>
-                                            <Typography
-                                                className={classes.pad}
-                                                gutterBottom
-                                                variant="p"
-                                                color="textPrimary"
-                                                align="left"
-                                            >
-                                                {state.orgUser.entry_no}
-                                            </Typography>
-                                        </Grid>
-                                        <Grid item xs={5}>
-                                            <Typography
-                                                className={classes.pad}
-                                                gutterBottom
-                                                variant="p"
-                                                color="textPrimary"
-                                                align="right"
-                                            >
-                                                <b>Hostel:</b>
-                                            </Typography>
-                                        </Grid>
-                                        <Grid item xs={5}>
-                                            <Typography
-                                                className={classes.pad}
-                                                gutterBottom
-                                                variant="p"
-                                                color="textPrimary"
-                                                align="left"
-                                            >
-                                                {state.orgUser.hostel}
-                                            </Typography>
-                                        </Grid>
-                                        <Grid item xs={5}>
-                                            <Typography
-                                                className={classes.pad}
-                                                gutterBottom
-                                                variant="p"
-                                                color="textPrimary"
-                                                align="right"
-                                            >
-                                                <b>Gender:</b>
-                                            </Typography>
-                                        </Grid>
-                                        <Grid item xs={5}>
-                                            <Typography
-                                                className={classes.pad}
-                                                gutterBottom
-                                                variant="p"
-                                                color="textPrimary"
-                                                align="left"
-                                            >
-                                                {state.orgUser.gender}
-                                            </Typography>
-                                        </Grid>
-                                        <Grid item xs={5}>
-                                            <Typography
-                                                className={classes.pad}
-                                                gutterBottom
-                                                variant="p"
-                                                color="textPrimary"
-                                                align="right"
-                                            >
-                                                <b>DOB:</b>
-                                            </Typography>
-                                        </Grid>
-                                        <Grid item xs={5}>
-                                            <Typography
-                                                className={classes.pad}
-                                                gutterBottom
-                                                variant="p"
-                                                color="textPrimary"
-                                                align="left"
-                                            >
-                                                {state.orgUser.birth_date.toDateString()}
-                                            </Typography>
-                                        </Grid>
-                                        <Grid item xs={5}>
-                                            <Typography
-                                                className={classes.pad}
-                                                gutterBottom
-                                                variant="p"
-                                                color="textPrimary"
-                                                align="right"
-                                            >
-                                                <b>Join Year:</b>
-                                            </Typography>
-                                        </Grid>
-                                        <Grid item xs={5}>
-                                            <Typography
-                                                className={classes.pad}
-                                                gutterBottom
-                                                variant="p"
-                                                color="textPrimary"
-                                                align="left"
-                                            >
-                                                {state.orgUser.join_year.toDateString()}
-                                            </Typography>
-                                        </Grid>
-                                        <Grid item xs={5}>
-                                            <Typography
-                                                className={classes.pad}
-                                                gutterBottom
-                                                variant="p"
-                                                color="textPrimary"
-                                                align="right"
-                                            >
-                                                <b>Grad Year:</b>
-                                            </Typography>
-                                        </Grid>
-                                        <Grid item xs={5}>
-                                            <Typography
-                                                className={classes.pad}
-                                                gutterBottom
-                                                variant="p"
-                                                color="textPrimary"
-                                                align="left"
-                                            >
-                                                {state.orgUser.grad_year.toDateString()}
-                                            </Typography>
-                                        </Grid>
-                                        <Grid item xs={5}>
-                                            <Typography
-                                                className={classes.pad}
-                                                gutterBottom
-                                                variant="p"
-                                                color="textPrimary"
-                                                align="right"
-                                            >
-                                                <b>Hometown:</b>
-                                            </Typography>
-                                        </Grid>
-                                        <Grid item xs={5}>
-                                            <Typography
-                                                className={classes.pad}
-                                                gutterBottom
-                                                variant="p"
-                                                color="textPrimary"
-                                                align="left"
-                                            >
-                                                {state.orgUser.hometown}
-                                            </Typography>
-                                        </Grid>
-                                        <Grid item xs={5}>
-                                            <Typography
-                                                className={classes.pad}
-                                                gutterBottom
-                                                variant="p"
-                                                color="textPrimary"
-                                                align="right"
-                                            >
-                                                <b>Category:</b>
-                                            </Typography>
-                                        </Grid>
-                                        <Grid item xs={5}>
-                                            <Typography
-                                                className={classes.pad}
-                                                gutterBottom
-                                                variant="p"
-                                                color="textPrimary"
-                                                align="left"
-                                            >
-                                                {state.orgUser.category}
-                                            </Typography>
-                                        </Grid>
-                                        <Grid item xs={5}>
-                                            <Typography
-                                                className={classes.pad}
-                                                gutterBottom
-                                                variant="p"
-                                                color="textPrimary"
-                                                align="right"
-                                            >
-                                                <b>Urls:</b>
-                                            </Typography>
-                                        </Grid>
-                                        <Grid item xs={5}>
-                                            {Array.from(state.orgUser.url).map(
-                                                ([key, value]) => (
-                                                    <Typography
-                                                        color="textPrimary"
-                                                        variant="body1"
-                                                    >
-                                                        {`${key}: `}
-                                                        <CardLink
-                                                            href={value}
-                                                        >{`${value.substr(
-                                                            0,
-                                                            30
-                                                        )}...`}</CardLink>
-                                                    </Typography>
+                                                {option}
+                                            </MenuItem>
+                                        ))}
+                                    </TextField>
+                                </Grow>
+                            )}
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            {!editMode ? (
+                                <ProfileField
+                                    title="Hometown"
+                                    value={state.orgUser.hometown}
+                                />
+                            ) : (
+                                <Grow
+                                    in={editMode}
+                                    style={{ transformOrigin: '100 100 0' }}
+                                    timeout={editMode ? 1000 : 0}
+                                >
+                                    <TextField
+                                        name="hometown"
+                                        variant="outlined"
+                                        required
+                                        value={state.editUser.hometown}
+                                        onChange={(e) =>
+                                            handleFormValuesChange(
+                                                e,
+                                                'hometown'
+                                            )
+                                        }
+                                        margin="normal"
+                                        id="hometown"
+                                        label="Hometown"
+                                    />
+                                </Grow>
+                            )}
+                        </Grid>
+                    </Grid>
+                    <FieldSep />
+                    <Grid
+                        item
+                        container
+                        justify="flex-start"
+                        alignItems="center"
+                        xs={12}
+                    >
+                        <Grid item xs={12} sm={6}>
+                            {!editMode ? (
+                                <ProfileField
+                                    title="Join Date"
+                                    value={
+                                        state.orgUser.join_year
+                                            ? state.orgUser.join_year.toDateString()
+                                            : new Date().toDateString()
+                                    }
+                                />
+                            ) : (
+                                <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                    <Grow
+                                        in={editMode}
+                                        style={{ transformOrigin: '100 100 0' }}
+                                        timeout={editMode ? 1000 : 0}
+                                    >
+                                        <KeyboardDatePicker
+                                            margin="normal"
+                                            id="join_year"
+                                            label="Date of Joining DevClub"
+                                            format="MM/dd/yyyy"
+                                            value={state.editUser.join_year}
+                                            name="join_year"
+                                            onChange={(date) =>
+                                                handleFormValuesChange(
+                                                    date,
+                                                    'join_year'
                                                 )
-                                            )}
-                                        </Grid>
-                                    </Grid>
-                                </CardContent>
-                            </Card>
+                                            }
+                                            maxDate={Date.now()}
+                                            KeyboardButtonProps={{
+                                                'aria-label': 'change date',
+                                            }}
+                                            required
+                                            style={{ width: '90%' }}
+                                            inputVariant="outlined"
+                                        />
+                                    </Grow>
+                                </MuiPickersUtilsProvider>
+                            )}
                         </Grid>
-                        <Grid style={{ width: '100%' }} item xs={12}>
-                            <Card className={classes.card}>
-                                <CardContent>
-                                    <Typography
-                                        variant="h5"
-                                        gutterBottom
-                                        color="textPrimary"
-                                        align="left"
+                        <Grid item xs={12} sm={5} md={6}>
+                            {!editMode ? (
+                                <ProfileField
+                                    title="Grad Date"
+                                    value={
+                                        state.orgUser.grad_year
+                                            ? state.orgUser.grad_year.toDateString()
+                                            : new Date().toDateString()
+                                    }
+                                />
+                            ) : (
+                                <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                    <Grow
+                                        in={editMode}
+                                        style={{ transformOrigin: '100 100 0' }}
+                                        timeout={editMode ? 1000 : 0}
                                     >
-                                        <b>Interests</b>
-                                    </Typography>
-                                    <Typography
-                                        variant="p"
-                                        gutterBottom
-                                        color="textPrimary"
-                                        align="left"
-                                    >
-                                        {state.orgUser.interests}
-                                    </Typography>
-                                </CardContent>
-                            </Card>
-                        </Grid>
-                        <Grid style={{ width: '100%' }} item xs={12}>
-                            <Card className={classes.card}>
-                                <CardContent>
-                                    <Typography
-                                        variant="h5"
-                                        gutterBottom
-                                        color="textPrimary"
-                                        align="left"
-                                    >
-                                        <b>Specializations</b>
-                                    </Typography>
-                                    <Typography
-                                        variant="p"
-                                        gutterBottom
-                                        color="textPrimary"
-                                        align="left"
-                                    >
-                                        {state.orgUser.specialization}
-                                    </Typography>
-                                </CardContent>
-                            </Card>
+                                        <KeyboardDatePicker
+                                            margin="normal"
+                                            id="grad_year"
+                                            label="Date of Graduating"
+                                            format="MM/dd/yyyy"
+                                            value={state.editUser.grad_year}
+                                            name="grad_year"
+                                            onChange={(date) =>
+                                                handleFormValuesChange(
+                                                    date,
+                                                    'grad_year'
+                                                )
+                                            }
+                                            minDate={state.editUser.join_year}
+                                            KeyboardButtonProps={{
+                                                'aria-label': 'change date',
+                                            }}
+                                            required
+                                            style={{ width: '90%' }}
+                                            inputVariant="outlined"
+                                        />
+                                    </Grow>
+                                </MuiPickersUtilsProvider>
+                            )}
                         </Grid>
                     </Grid>
                 </Grid>
-            </Grid>
-        </>
+            </Grow>
+            <Grow in style={{ transformOrigin: 'center bottom' }} timeout={750}>
+                <Grid
+                    container
+                    justify="center"
+                    alignItems="center"
+                    className={classes.buttonBox}
+                    item
+                    md={1}
+                    xs={10}
+                >
+                    {!editMode ? (
+                        <>
+                            <Grid
+                                container
+                                justify="center"
+                                item
+                                xs={2}
+                                md={10}
+                            >
+                                <Tooltip title="Edit Profile">
+                                    <Fab
+                                        color="primary"
+                                        onClick={toggleEditMode}
+                                    >
+                                        <EditIcon fontSize="large" />
+                                    </Fab>
+                                </Tooltip>
+                            </Grid>
+                            <Grid
+                                container
+                                justify="center"
+                                item
+                                xs={2}
+                                md={10}
+                                className={classes.passButton}
+                            >
+                                <Tooltip title="Change your password">
+                                    <Fab
+                                        color="secondary"
+                                        onClick={handlePasswordOpen}
+                                    >
+                                        <VpnKeyRounded fontSize="large" />
+                                    </Fab>
+                                </Tooltip>
+                            </Grid>
+                        </>
+                    ) : (
+                        <>
+                            <Grid
+                                container
+                                justify="center"
+                                item
+                                xs={3}
+                                md={10}
+                                className={classes.save}
+                            >
+                                <Button
+                                    onClick={handleSubmit}
+                                    variant="contained"
+                                    color="primary"
+                                    fullWidth
+                                >
+                                    Save
+                                </Button>
+                            </Grid>
+                            <Grid
+                                container
+                                justify="center"
+                                item
+                                xs={3}
+                                md={10}
+                                className={classes.cancel}
+                            >
+                                <Button
+                                    onClick={cancelEdit}
+                                    variant="outlined"
+                                    color="primary"
+                                    fullWidth
+                                >
+                                    Cancel
+                                </Button>
+                            </Grid>
+                        </>
+                    )}
+                </Grid>
+            </Grow>
+            <Grow in style={{ transformOrigin: 'center top' }} timeout={750}>
+                <Grid
+                    component={Paper}
+                    className={classes.picPaper}
+                    item
+                    xs={10}
+                    md={5}
+                    container
+                    justify="space-evenly"
+                    alignItems="center"
+                >
+                    <Grid className={classes.image} item xs={8} sm={5}>
+                        <img
+                            style={{ width: '100%', height: 'auto' }}
+                            src={state.orgUser.url.get('picture_url')}
+                            alt="DP"
+                        />
+                    </Grid>
+                    <Grid className={classes.namePart} item xs={8} sm={5}>
+                        {!editMode ? (
+                            <Typography
+                                style={{ fontWeight: 500 }}
+                                variant="h5"
+                            >
+                                {state.orgUser.name}
+                            </Typography>
+                        ) : (
+                            <Grow
+                                in={editMode}
+                                style={{ transformOrigin: '100 100 0' }}
+                                timeout={editMode ? 1000 : 0}
+                            >
+                                <TextField
+                                    name="name"
+                                    variant="outlined"
+                                    required
+                                    value={state.editUser.name}
+                                    onChange={(e) =>
+                                        handleFormValuesChange(e, 'name')
+                                    }
+                                    margin="normal"
+                                    id="name"
+                                    label="Name"
+                                />
+                            </Grow>
+                        )}
+                        <Grid
+                            container
+                            justify="flex-start"
+                            alignItems="center"
+                        >
+                            <Grid item xs={2}>
+                                <PhoneIcon fontSize="small" />
+                            </Grid>
+                            <Grid item xs={10}>
+                                {!editMode ? (
+                                    <Typography variant="h6">
+                                        {state.orgUser.mobile_number}
+                                    </Typography>
+                                ) : (
+                                    <Grow
+                                        in={editMode}
+                                        style={{ transformOrigin: '100 100 0' }}
+                                        timeout={editMode ? 1000 : 0}
+                                    >
+                                        <TextField
+                                            name="mobile_number"
+                                            variant="outlined"
+                                            required
+                                            value={state.editUser.mobile_number}
+                                            onChange={(e) =>
+                                                handleFormValuesChange(
+                                                    e,
+                                                    'mobile_number'
+                                                )
+                                            }
+                                            margin="normal"
+                                            id="mobile_number"
+                                            label="Mobile"
+                                        />
+                                    </Grow>
+                                )}
+                            </Grid>
+                            <Grid item xs={2}>
+                                <EmailOutlinedIcon fontSize="small" />
+                            </Grid>
+                            <Grid item xs={10}>
+                                {!editMode ? (
+                                    <Tooltip title={state.orgUser.email}>
+                                        <Typography
+                                            noWrap
+                                            style={{ fontWeight: 400 }}
+                                            variant="h6"
+                                        >
+                                            {state.orgUser.email}
+                                        </Typography>
+                                    </Tooltip>
+                                ) : (
+                                    <Grow
+                                        in={editMode}
+                                        style={{ transformOrigin: '100 100 0' }}
+                                        timeout={editMode ? 1000 : 0}
+                                    >
+                                        <TextField
+                                            name="email"
+                                            variant="outlined"
+                                            required
+                                            value={state.editUser.email}
+                                            onChange={(e) =>
+                                                handleFormValuesChange(
+                                                    e,
+                                                    'email'
+                                                )
+                                            }
+                                            margin="normal"
+                                            id="email"
+                                            label="Email"
+                                        />
+                                    </Grow>
+                                )}
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                    <Grid className={classes.intro} item xs={10}>
+                        {!editMode ? (
+                            <Typography
+                                style={{ fontWeight: 500 }}
+                                variant="body1"
+                                align="center"
+                            >
+                                {state.orgUser.intro}
+                            </Typography>
+                        ) : (
+                            <Grow
+                                in={editMode}
+                                style={{ transformOrigin: '100 100 0' }}
+                                timeout={editMode ? 1000 : 0}
+                            >
+                                <TextField
+                                    required
+                                    variant="outlined"
+                                    small
+                                    fullWidth
+                                    margin="dense"
+                                    multiline
+                                    rowsMax={5}
+                                    id="intro"
+                                    name="intro"
+                                    label="Introduction"
+                                    value={state.editUser.intro}
+                                    onChange={(e) =>
+                                        handleFormValuesChange(e, 'intro')
+                                    }
+                                />
+                            </Grow>
+                        )}
+                    </Grid>
+                    <Grid
+                        container
+                        className={classes.urlSpecContainer}
+                        justify="space-evenly"
+                        alignItems="stretch"
+                        item
+                        xs={12}
+                    >
+                        <Grid
+                            component={Paper}
+                            className={classes.urlPaper}
+                            item
+                            md={6}
+                            xs={10}
+                            container
+                            justify="flex-start"
+                            alignItems="center"
+                        >
+                            <Grid className={classes.urlField} item xs={12}>
+                                <Typography
+                                    style={{ color: '#8e8e93' }}
+                                    variant="h6"
+                                >
+                                    URLs
+                                </Typography>
+                            </Grid>
+                            {!editMode ? (
+                                <>
+                                    <Grid
+                                        className={classes.urlField}
+                                        item
+                                        xs={2}
+                                    >
+                                        <Facebook fontSize="large" />
+                                    </Grid>
+                                    <Grid
+                                        className={classes.urlField}
+                                        item
+                                        xs={10}
+                                    >
+                                        <Tooltip
+                                            title={
+                                                state.orgUser.url
+                                                    ? state.orgUser.url.get(
+                                                          'fb_url'
+                                                      )
+                                                    : 'None'
+                                            }
+                                        >
+                                            <Link
+                                                target="_blank"
+                                                display="block"
+                                                style={{ width: '100%' }}
+                                                noWrap
+                                                variant="body1"
+                                                href={
+                                                    state.orgUser.url
+                                                        ? state.orgUser.url.get(
+                                                              'fb_url'
+                                                          )
+                                                        : '#'
+                                                }
+                                            >
+                                                {state.orgUser.url.get(
+                                                    'fb_url'
+                                                )}
+                                            </Link>
+                                        </Tooltip>
+                                    </Grid>
+                                    <Grid
+                                        className={classes.urlField}
+                                        item
+                                        xs={2}
+                                    >
+                                        <GitHub fontSize="large" />
+                                    </Grid>
+                                    <Grid
+                                        className={classes.urlField}
+                                        item
+                                        xs={10}
+                                    >
+                                        <Tooltip
+                                            title={state.orgUser.url.get(
+                                                'github_url'
+                                            )}
+                                        >
+                                            <Link
+                                                target="_blank"
+                                                display="block"
+                                                style={{ width: '100%' }}
+                                                noWrap
+                                                variant="body1"
+                                                href={state.orgUser.url.get(
+                                                    'github_url'
+                                                )}
+                                            >
+                                                {state.orgUser.url.get(
+                                                    'github_url'
+                                                )}
+                                            </Link>
+                                        </Tooltip>
+                                    </Grid>
+                                    <Grid
+                                        className={classes.urlField}
+                                        item
+                                        xs={2}
+                                    >
+                                        <PhotoCamera fontSize="large" />
+                                    </Grid>
+                                    <Grid
+                                        className={classes.urlField}
+                                        item
+                                        xs={10}
+                                    >
+                                        <Tooltip
+                                            title={
+                                                state.orgUser.url
+                                                    ? state.orgUser.url.get(
+                                                          'picture_url'
+                                                      )
+                                                    : 'None'
+                                            }
+                                        >
+                                            <Link
+                                                target="_blank"
+                                                display="block"
+                                                style={{ width: '100%' }}
+                                                noWrap
+                                                variant="body1"
+                                                href={
+                                                    state.orgUser.url
+                                                        ? state.orgUser.url.get(
+                                                              'picture_url'
+                                                          )
+                                                        : '#'
+                                                }
+                                            >
+                                                {state.orgUser.url
+                                                    .get('picture_url')
+                                                    .substr(0, 50)}
+                                            </Link>
+                                        </Tooltip>
+                                    </Grid>
+                                    {Array.from(state.orgUser.url)
+                                        .slice(3)
+                                        .map(([key, value]) => (
+                                            <>
+                                                <Grid item xs={3}>
+                                                    <Typography
+                                                        noWrap
+                                                        variant="body1"
+                                                    >
+                                                        {key}
+                                                    </Typography>
+                                                </Grid>
+                                                <Grid item xs={9}>
+                                                    <Tooltip title={value}>
+                                                        <Link
+                                                            target="_blank"
+                                                            display="block"
+                                                            style={{
+                                                                width: '100%',
+                                                            }}
+                                                            noWrap
+                                                            href={value}
+                                                        >
+                                                            {value}
+                                                        </Link>
+                                                    </Tooltip>
+                                                </Grid>
+                                            </>
+                                        ))}
+                                </>
+                            ) : (
+                                <Grow
+                                    in={editMode}
+                                    style={{ transformOrigin: '100 100 0' }}
+                                    timeout={editMode ? 1000 : 0}
+                                >
+                                    <Grid
+                                        container
+                                        justify="flex-start"
+                                        item
+                                        xs={12}
+                                    >
+                                        {state.urlFields.map(
+                                            ({ type, url }, index) => (
+                                                <>
+                                                    <Grid
+                                                        style={{
+                                                            marginTop: '8px',
+                                                        }}
+                                                        item
+                                                        xs={8}
+                                                        md={5}
+                                                    >
+                                                        <TextField
+                                                            required
+                                                            small
+                                                            fullWidth
+                                                            margin="dense"
+                                                            label="type"
+                                                            id="type"
+                                                            name="type"
+                                                            variant="outlined"
+                                                            value={type}
+                                                            onChange={(event) =>
+                                                                handleUrlFieldChange(
+                                                                    index,
+                                                                    event
+                                                                )
+                                                            }
+                                                        />
+                                                    </Grid>
+                                                    <Grid
+                                                        item
+                                                        container
+                                                        xs={12}
+                                                        justify="space-between"
+                                                        alignItems="center"
+                                                        style={{
+                                                            marginBottom: '8px',
+                                                        }}
+                                                    >
+                                                        <Grid item xs={10}>
+                                                            <TextField
+                                                                required
+                                                                small
+                                                                fullWidth
+                                                                margin="dense"
+                                                                label="url"
+                                                                id="url"
+                                                                name="url"
+                                                                variant="outlined"
+                                                                value={url}
+                                                                onChange={(
+                                                                    event
+                                                                ) =>
+                                                                    handleUrlFieldChange(
+                                                                        index,
+                                                                        event
+                                                                    )
+                                                                }
+                                                            />
+                                                        </Grid>
+                                                        {type ===
+                                                            'picture_url' ||
+                                                        type === 'fb_url' ||
+                                                        type ===
+                                                            'github_url' ? null : (
+                                                            <Grid item xs={2}>
+                                                                <Tooltip title="Delete this url field">
+                                                                    <IconButton
+                                                                        edge="end"
+                                                                        style={{
+                                                                            color:
+                                                                                '#fff',
+                                                                        }}
+                                                                        onClick={() =>
+                                                                            handleRemoveUrlFields(
+                                                                                index
+                                                                            )
+                                                                        }
+                                                                    >
+                                                                        <Delete fontSize="small" />
+                                                                    </IconButton>
+                                                                </Tooltip>
+                                                            </Grid>
+                                                        )}
+                                                    </Grid>
+                                                </>
+                                            )
+                                        )}
+                                        <Tooltip title="Add new url field">
+                                            <IconButton
+                                                style={{
+                                                    color: '#fff',
+                                                    marginTop: '-0.5em',
+                                                }}
+                                                onClick={() =>
+                                                    handleAddUrlFields()
+                                                }
+                                            >
+                                                <AddCircleRounded fontSize="small" />
+                                            </IconButton>
+                                        </Tooltip>
+                                    </Grid>
+                                </Grow>
+                            )}
+                        </Grid>
+                        <Grid
+                            component={Paper}
+                            className={classes.specPaper}
+                            container
+                            justify="flex-start"
+                            alignItems="center"
+                            alignContent="flex-start"
+                            item
+                            md={5}
+                            xs={10}
+                        >
+                            <Grid item xs={12}>
+                                <Typography
+                                    style={{ color: '#8e8e93' }}
+                                    variant="h6"
+                                >
+                                    Specializations
+                                </Typography>
+                            </Grid>
+                            {!editMode ? (
+                                state.orgUser.specialization
+                                    .split(',')
+                                    .map((spec) => (
+                                        <Grid item xs={9}>
+                                            <Typography noWrap variant="body1">
+                                                {spec}
+                                            </Typography>
+                                        </Grid>
+                                    ))
+                            ) : (
+                                <Grow
+                                    in={editMode}
+                                    style={{ transformOrigin: '100 100 0' }}
+                                    timeout={editMode ? 1000 : 0}
+                                >
+                                    <TextField
+                                        required
+                                        variant="outlined"
+                                        small
+                                        fullWidth
+                                        margin="dense"
+                                        multiline
+                                        style={{ width: '90%' }}
+                                        rowsMax={5}
+                                        id="specialization"
+                                        name="specialization"
+                                        label="Specialization"
+                                        value={state.editUser.specialization}
+                                        onChange={(e) =>
+                                            handleFormValuesChange(
+                                                e,
+                                                'specialization'
+                                            )
+                                        }
+                                    />
+                                </Grow>
+                            )}
+                        </Grid>
+                    </Grid>
+                    <Grid
+                        component={Paper}
+                        className={classes.intPaper}
+                        item
+                        xs={11}
+                    >
+                        <Typography style={{ color: '#8e8e93' }} variant="h6">
+                            Interests
+                        </Typography>
+                        {!editMode ? (
+                            <Typography variant="body1">
+                                {state.orgUser.interests}
+                            </Typography>
+                        ) : (
+                            <Grow
+                                in={editMode}
+                                style={{ transformOrigin: '100 100 0' }}
+                                timeout={editMode ? 1000 : 0}
+                            >
+                                <TextField
+                                    required
+                                    variant="outlined"
+                                    small
+                                    style={{ width: '90%' }}
+                                    margin="dense"
+                                    multiline
+                                    rowsMax={5}
+                                    id="interests"
+                                    name="interests"
+                                    label="Interests"
+                                    value={state.editUser.interests}
+                                    onChange={(e) =>
+                                        handleFormValuesChange(e, 'interests')
+                                    }
+                                />
+                            </Grow>
+                        )}
+                    </Grid>
+                </Grid>
+            </Grow>
+        </Grid>
     );
-    // }
 }
 
 Profile.propTypes = {
-    user: PropTypes.object.isRequired,
     serverError: PropTypes.string.isRequired,
     updateUser: PropTypes.func.isRequired,
     changePassword: PropTypes.func.isRequired,

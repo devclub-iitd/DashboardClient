@@ -1,13 +1,81 @@
+@font-face {
+    font-family: 'Cereal';
+    src: url('./fonts/AirbnbCerealLight.ttf');
+    src: local('CerealLight'),
+        url('./fonts/AirbnbCerealLight.ttf') format('truetype');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Cereal';
+    src: url('./fonts/AirbnbCerealBook.ttf');
+    src: local('CerealReg'),
+        url('./fonts/AirbnbCerealBook.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Cereal';
+    src: url('./fonts/AirbnbCerealMedium.ttf');
+    src: local('CerealMed'),
+        url('./fonts/AirbnbCerealMedium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Cereal';
+    src: url('./fonts/AirbnbCerealBold.ttf');
+    src: local('CerealBold'),
+        url('./fonts/AirbnbCerealBold.ttf') format('truetype');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Cereal';
+    src: url('./fonts/AirbnbCerealExtraBold.ttf');
+    src: local('CerealExtraBold'),
+        url('./fonts/AirbnbCerealExtraBold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Cereal';
+    src: url('./fonts/AirbnbCerealBlack.ttf');
+    src: local('CerealBlack'),
+        url('./fonts/AirbnbCerealBlack.ttf') format('truetype');
+    font-weight: 800;
+    font-style: normal;
+    font-display: swap;
+}
+
 body {
     margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
-        'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
+    font-family: 'Cereal', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+        'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
         'Helvetica Neue', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    -ms-overflow-style: none; /* Internet Explorer 10+ */
+    scrollbar-width: none; /* Firefox */
+    overflow-y: hidden;
 }
 
 code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
         monospace;
+}
+
+::-webkit-scrollbar {
+    width: 0px; /* Remove scrollbar space */
+    background: transparent; /* Optional: just make scrollbar invisible */
 }
