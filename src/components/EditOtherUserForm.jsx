@@ -230,7 +230,10 @@ export default function EditOtherUserForm(props) {
             url: Utils.UserUtils.strMapToObj(urlMap),
         };
 
-        editUser(newUser, () => {
+        // atomic update
+        const finUser = Utils.getNewFields(state.orgUser, newUser);
+
+        editUser(finUser, () => {
             if (serverError === null) {
                 setState({
                     ...state,

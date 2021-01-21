@@ -150,9 +150,13 @@ export default function EditResourceForm(props) {
     };
 
     const handleSubmit = () => {
-        const { resource } = state;
+        const { resource, orgResource } = state;
         const { editResource, serverError } = props;
-        editResource(resource, () => {
+
+        // atomic update
+        const finRes = Utils.getNewFields(orgResource, resource);
+
+        editResource(finRes, () => {
             if (serverError === null) {
                 setState((prevState) => ({
                     ...prevState,

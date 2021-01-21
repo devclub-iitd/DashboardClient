@@ -238,7 +238,7 @@ export default function EditEventForm(props) {
     const handleSubmit = () => {
         const urlMap = new Map();
         const { serverError, editEvent } = props;
-        const { event, urlFields, selectedMembers } = state;
+        const { event, orgEvent, urlFields, selectedMembers } = state;
         urlFields.forEach((urlField) => {
             const fixedUrl = Utils.isValidUrl(urlField.url)
                 ? urlField.url
@@ -254,7 +254,10 @@ export default function EditEventForm(props) {
             ),
         };
 
-        editEvent(updatedEvent, () => {
+        // atomic update
+        const finEvent = Utils.getNewFields(orgEvent, updatedEvent);
+
+        editEvent(finEvent, () => {
             if (serverError === null) {
                 setState((prevState) => ({
                     ...prevState,
