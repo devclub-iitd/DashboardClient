@@ -298,7 +298,7 @@ export default function EditProjectForm(props) {
 
     const handleSubmit = () => {
         const urlMap = new Map();
-        const { urlFields, project, selectedMembers } = state;
+        const { urlFields, project, orgProject, selectedMembers } = state;
         const { editProject, serverError } = props;
         urlFields.forEach((urlField) => {
             const fixedUrl = Utils.isValidUrl(urlField.url)
@@ -315,7 +315,10 @@ export default function EditProjectForm(props) {
                 .map((user) => user._id),
         };
 
-        editProject(updatedProject, () => {
+        // atomic update
+        const finProject = Utils.getNewFields(orgProject, updatedProject);
+
+        editProject(finProject, () => {
             if (serverError === null) {
                 setState((prevState) => ({
                     ...prevState,

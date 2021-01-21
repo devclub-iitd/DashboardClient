@@ -59,6 +59,63 @@ export const getDefinedValue = (value, type = 'string') => {
     return value;
 };
 
+const isArrayEqual = (org, upd) => {
+    return (
+        org.length === upd.length &&
+        org.every((val, index) => val === upd[index])
+    );
+};
+
+const areUnequal = (org, upd) => {
+    const typeOfVar = Object.prototype.toString.call(org);
+
+    if (typeOfVar === '[object String]' || typeOfVar === '[object Boolean]') {
+        return org !== upd;
+    }
+    if (typeOfVar === '[object Date]') {
+        return org.getTime() !== upd.getTime();
+    }
+    if (typeOfVar === '[object Map]') {
+        // original object will have url as map but the new object while sending as object
+        const orgKeys = Array.from(org.keys());
+        const updKeys = Object.keys(upd);
+        if (!isArrayEqual(orgKeys, updKeys)) {
+            return true;
+        }
+
+        for (let i = 0; i < orgKeys.length; i += 1) {
+            if (org.get(orgKeys[i]) !== upd[orgKeys[i]]) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+    if (typeOfVar === '[object Array]') {
+        return !isArrayEqual(org, upd);
+    }
+    return false;
+};
+
+export const getNewFields = (org, upd) => {
+    const keys = Object.keys(org);
+
+    let objectWithUpdFields = {
+        _id: upd._id,
+    };
+
+    keys.forEach((key) => {
+        if (areUnequal(upd[key], org[key])) {
+            objectWithUpdFields = {
+                ...objectWithUpdFields,
+                [key]: upd[key],
+            };
+        }
+    });
+
+    return objectWithUpdFields;
+};
+
 export const getsUserTasks = (users, projects, events) => {
     const userWithTasks = [];
 

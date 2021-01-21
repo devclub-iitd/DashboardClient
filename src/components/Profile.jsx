@@ -312,7 +312,10 @@ export default function Profile({
             url: Utils.UserUtils.strMapToObj(urlMap),
         };
 
-        updateUser(newUser, () => {
+        // atomic update
+        const finUser = Utils.getNewFields(state.orgUser, newUser);
+
+        updateUser(finUser, () => {
             if (serverError === null) {
                 setState({
                     ...state,
