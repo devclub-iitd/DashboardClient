@@ -43,9 +43,9 @@ export const requestLogin = (creds) => ({
     creds,
 });
 
-export const receiveLogin = (response) => ({
+export const receiveLogin = () => ({
     type: ActionTypes.LOGIN_SUCCESS,
-    token: response.token,
+    // token: response.token,
 });
 
 export const loginError = (message) => ({
@@ -83,30 +83,104 @@ export const registerError = (message) => ({
     payload: message,
 });
 
+export const newReg = () => ({
+    type: ActionTypes.NEW_REG,
+});
+
+export const newRegDone = () => ({
+    type: ActionTypes.NEW_REG_DONE,
+});
+
 export const logoutUser = (type) => (dispatch) => {
     dispatch(requestLogout());
-    localStorage.removeItem('dcIITDDashboardToken');
-    localStorage.removeItem('userId');
-    localStorage.removeItem('currentUser');
-    dispatch(receiveLogout(type));
-};
-
-export const fetchUser = (id) => (dispatch) => {
-    dispatch(userLoading(true));
-
-    const bearer = `Bearer ${localStorage.getItem('dcIITDDashboardToken')}`;
-
-    const query = {
-        query: {
-            _id: id,
-        },
-    };
-    return fetch(API.userQueryAPI, {
+    // localStorage.removeItem('dcIITDDashboardToken');
+    // localStorage.removeItem('userId');
+    return fetch(`${API.logoutAPI}`, {
         method: 'POST',
-        body: JSON.stringify(query),
         headers: {
             'Content-Type': 'application/json',
-            Authorization: bearer,
+        },
+        credentials: 'same-origin',
+    })
+        .then(
+            (response) => {
+                if (response.ok || response.status === 304) {
+                    localStorage.removeItem('currentUser');
+                    dispatch(receiveLogout(type));
+                } else {
+                    const error = new Error(
+                        `Error ${response.status}: ${response.statusText}`
+                    );
+                    error.response = response;
+                    throw error;
+                }  
+            },
+            (error) => {
+                const errmess = new Error(error.message);
+                throw errmess;
+            }
+        )
+        .catch((error) => dispatch(userFailed(error.message)));
+};
+
+// export const fetchUser = (id) => (dispatch) => {
+//     dispatch(userLoading(true));
+
+//     const bearer = `Bearer ${localStorage.getItem('dcIITDDashboardToken')}`;
+
+//     const query = {
+//         query: {
+//             _id: id,
+//         },
+//     };
+//     return fetch(API.userQueryAPI, {
+//         method: 'POST',
+//         body: JSON.stringify(query),
+//         headers: {
+//             'Content-Type': 'application/json',
+//             Authorization: bearer,
+//         },
+//         credentials: 'same-origin',
+//     })
+//         .then(
+//             (response) => {
+//                 if (response.ok || response.status === 304) {
+//                     return response;
+//                 }
+//                 response.json().then((res) => {
+//                     if (res.name === 'Unauthorized') {
+//                         dispatch(logoutUser('timeout'));
+//                     }
+//                 });
+//                 const error = new Error(
+//                     `Error ${response.status}: ${response.statusText}`
+//                 );
+//                 error.response = response;
+//                 throw error;
+//             },
+//             (error) => {
+//                 const errmess = new Error(error.message);
+//                 throw errmess;
+//             }
+//         )
+//         .then((response) => response.json())
+//         .then(({ data }) => {
+//             localStorage.setItem('currentUser', JSON.stringify(data[0]));
+//             const upUser = UserUtils.getProperUser(data[0]);
+//             dispatch(addUser(upUser));
+//         })
+//         .catch((error) => dispatch(userFailed(error.message)));
+// };
+
+export const fetchUser = () => (dispatch) => {
+    dispatch(userLoading(true));
+
+    return fetch(API.userProfileAPI, {
+        method: 'GET',
+        // body: JSON.stringify(query),
+        headers: {
+            'Content-Type': 'application/json',
+            // Authorization: bearer,
         },
         credentials: 'same-origin',
     })
@@ -114,6 +188,9 @@ export const fetchUser = (id) => (dispatch) => {
             (response) => {
                 if (response.ok || response.status === 304) {
                     return response;
+                }
+                if (response.status === 404) {
+                    dispatch(registerError('register'));
                 }
                 response.json().then((res) => {
                     if (res.name === 'Unauthorized') {
@@ -132,10 +209,15 @@ export const fetchUser = (id) => (dispatch) => {
             }
         )
         .then((response) => response.json())
-        .then(({ data }) => {
-            localStorage.setItem('currentUser', JSON.stringify(data[0]));
-            const upUser = UserUtils.getProperUser(data[0]);
+        .then(({ user }) => {
+            localStorage.setItem('currentUser', JSON.stringify(user));
+            const upUser = UserUtils.getProperUser(user);
+
+            if (user.privelege_level === 'Unapproved_user') {
+                dispatch(loginError('Unapproved'));
+            }
             dispatch(addUser(upUser));
+            dispatch(receiveLogin());
         })
         .catch((error) => dispatch(userFailed(error.message)));
 };
@@ -185,46 +267,46 @@ export const fetchAllUsers = () => (dispatch) => {
         .catch((error) => dispatch(usersFailed(error.message)));
 };
 
-export const loginUser = (creds) => (dispatch) => {
-    dispatch(requestLogin(creds));
+// export const loginUser = (creds) => (dispatch) => {
+//     dispatch(requestLogin(creds));
 
-    return fetch(API.loginAPI, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(creds),
-    })
-        .then(
-            (response) => {
-                if (response.ok || response.status === 304) {
-                    return response;
-                }
-                const error = new Error(
-                    `Error ${response.status}: ${response.statusText}`
-                );
-                error.response = response;
-                response.json().then((res) => {
-                    if (res.name === 'Unapproved user') {
-                        dispatch(loginError('Unapproved'));
-                    }
-                });
-                throw error;
-            },
-            (error) => {
-                throw error;
-            }
-        )
-        .then((response) => response.json())
-        .then((response) => {
-            if (response.status === 200) {
-                localStorage.setItem('dcIITDDashboardToken', response.token);
-                localStorage.setItem('userId', response.result._id);
-                dispatch(receiveLogin(response));
-            }
-        })
-        .catch((error) => dispatch(loginError(error.message)));
-};
+//     return fetch(API.loginAPI, {
+//         method: 'POST',
+//         headers: {
+//             'Content-Type': 'application/json',
+//         },
+//         body: JSON.stringify(creds),
+//     })
+//         .then(
+//             (response) => {
+//                 if (response.ok || response.status === 304) {
+//                     return response;
+//                 }
+//                 const error = new Error(
+//                     `Error ${response.status}: ${response.statusText}`
+//                 );
+//                 error.response = response;
+//                 response.json().then((res) => {
+//                     if (res.name === 'Unapproved user') {
+//                         dispatch(loginError('Unapproved'));
+//                     }
+//                 });
+//                 throw error;
+//             },
+//             (error) => {
+//                 throw error;
+//             }
+//         )
+//         .then((response) => response.json())
+//         .then((response) => {
+//             if (response.status === 200) {
+//                 localStorage.setItem('dcIITDDashboardToken', response.token);
+//                 localStorage.setItem('userId', response.result._id);
+//                 dispatch(receiveLogin(response));
+//             }
+//         })
+//         .catch((error) => dispatch(loginError(error.message)));
+// };
 
 export const registerUser = (registerCreds) => (dispatch) => {
     dispatch(requestRegister);
@@ -252,6 +334,7 @@ export const registerUser = (registerCreds) => (dispatch) => {
         )
         .then(() => {
             dispatch(receiveRegister());
+            dispatch(loginError('registered'));
         })
         .catch((error) => dispatch(registerError(error.message)));
 };

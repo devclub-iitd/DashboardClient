@@ -5,7 +5,8 @@ const Register = (
     state = {
         isLoading: false,
         errMess: null,
-        isRegistered: false,
+        isRegistered: true,
+        newReg: false,
     },
     action
 ) => {
@@ -14,7 +15,7 @@ const Register = (
             return {
                 ...state,
                 isLoading: false,
-                errMess: 'Error',
+                errMess: action.payload === 'register' ? 'register':'Error',
                 isRegistered: false,
             };
 
@@ -38,6 +39,18 @@ const Register = (
             return {
                 ...state,
                 errMess: null,
+            };
+        
+        case ActionTypes.NEW_REG:
+            return {
+                ...state,
+                newReg: true,
+            };
+        
+        case ActionTypes.NEW_REG_DONE:
+            return {
+                ...state,
+                newReg: false,
             };
 
         default:

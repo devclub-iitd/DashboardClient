@@ -3,9 +3,10 @@ import * as ActionTypes from '../actions/ActionTypes';
 export default function Auth(
     state = {
         isLoading: false,
-        isAuthenticated: localStorage.getItem('dcIITDDashboardToken') !== null,
+        isAuthenticated: false,
+        isRegistered: false,
         sessionTimeout: false,
-        token: localStorage.getItem('dcIITDDashboardToken'),
+        // token: localStorage.getItem('dcIITDDashboardToken'),
         errMess: null,
     },
     action
@@ -25,7 +26,7 @@ export default function Auth(
                 isAuthenticated: true,
                 sessionTimeout: false,
                 errMess: null,
-                token: action.token,
+                // token: action.token,
             };
         case ActionTypes.LOGIN_FAILURE:
             return {
@@ -33,6 +34,7 @@ export default function Auth(
                 isLoading: false,
                 sessionTimeout: false,
                 isAuthenticated: false,
+                isRegistered: action.message === 'registered',
                 errMess: action.message,
             };
 
@@ -42,6 +44,7 @@ export default function Auth(
                 isLoading: false,
                 sessionTimeout: false,
                 isAuthenticated: false,
+                isRegistered: false,
                 errMess: null,
             };
 
@@ -57,7 +60,7 @@ export default function Auth(
                 isLoading: false,
                 sessionTimeout: action.payload === 'timeout',
                 isAuthenticated: false,
-                token: null,
+                // token: null,
             };
         default:
             return state;

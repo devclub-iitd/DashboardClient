@@ -18,12 +18,11 @@ export const userHostels = [
 ];
 
 export const userCategories = [
-    'Fresher',
-    'Sophomore',
-    'Junior Undergraduate',
-    'Senior Undergraduate',
+    'Overall Coordinator',
+    'Executive',
+    'Developer',
+    'Event Coordinator',
     'Alumni',
-    'Organisation',
 ];
 
 export const strMapToObj = (strMap) => {

@@ -34,13 +34,13 @@ function objToStrMap(obj) {
 export const fetchAllEvents = () => (dispatch) => {
     dispatch(eventsLoading(true));
 
-    const bearer = `Bearer ${localStorage.getItem('dcIITDDashboardToken')}`;
+    // const bearer = `Bearer ${localStorage.getItem('dcIITDDashboardToken')}`;
 
     return fetch(API.eventGetAllDBAPI, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            Authorization: bearer,
+            // Authorization: bearer,
         },
         credentials: 'same-origin',
     })

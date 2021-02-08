@@ -2,7 +2,7 @@
 import React from 'react';
 import {
     Button,
-    TextField,
+    // TextField,
     Paper,
     Grid,
     Backdrop,
@@ -13,9 +13,10 @@ import {
 import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Redirect, withRouter, Link } from 'react-router-dom';
-import { loginUser, loginErrorFin } from '../actions/userActions';
+import { Redirect, withRouter } from 'react-router-dom';
+import { loginErrorFin } from '../actions/userActions';
 import logo from '../images/LogoSVG.svg';
+import {casiAuthURL} from '../data/api_links.js';
 
 const styles = (theme) => ({
     root: {
@@ -47,15 +48,16 @@ const styles = (theme) => ({
         marginRight: theme.spacing(5),
         marginTop: theme.spacing(1),
     },
-    submit: {
-        width: '56%',
-        paddingTop: theme.spacing(0.05),
-        paddingBottom: theme.spacing(0.05),
+    casiLogin: {
+        width: '80%',
+        paddingTop: theme.spacing(0.1),
+        paddingBottom: theme.spacing(0.1),
         marginTop: theme.spacing(2),
         fontSize: '1.5rem',
         fontWeight: 600,
-        marginLeft: '22%',
-        marginRight: '22%',
+        marginLeft: '10%',
+        marginRight: '10%',
+        marginBottom: theme.spacing(3),
     },
     backdrop: {
         zIndex: theme.zIndex.drawer + 1,
@@ -64,28 +66,29 @@ const styles = (theme) => ({
 });
 
 function SignInSide(props) {
-    const { classes, login, auth } = props;
+    const { classes, auth } = props;
 
-    const [uname, setUsername] = React.useState('');
-    const changeUsername = (event) => {
-        setUsername(event.target.value);
-    };
+    // const [uname, setUsername] = React.useState('');
+    // const changeUsername = (event) => {
+    //     setUsername(event.target.value);
+    // };
 
-    const [pass, setPassword] = React.useState('');
-    const changePassword = (event) => {
-        setPassword(event.target.value);
-    };
+    // const [pass, setPassword] = React.useState('');
+    // const changePassword = (event) => {
+    //     setPassword(event.target.value);
+    // };
 
     const handleClose = () => {
         props.finishError();
     };
 
     const handleSubmit = () => {
-        const creds = {
-            entry_no: uname,
-            password: pass,
-        };
-        login(creds);
+        // const creds = {
+        //     entry_no: uname,
+        //     password: pass,
+        // };
+        // login(creds);
+        window.location.href = casiAuthURL;
     };
 
     if (auth.isLoading) {
@@ -97,8 +100,12 @@ function SignInSide(props) {
     }
 
     if (auth.isAuthenticated) {
-        return <Redirect to="/dashboard/home" />;
+        return <Redirect to="/dashboard" />;
     }
+
+    // if (!auth.isRegistered) {
+    //     return <Redirect to="/register" />;
+    // }
 
     return (
         <Grid
@@ -132,6 +139,16 @@ function SignInSide(props) {
                 onClose={handleClose}
                 message="Your session has timed out!! Login again"
             />
+            <Snackbar
+                anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'center',
+                }}
+                open={auth.isRegistered}
+                autoHideDuration={5000}
+                onClose={handleClose}
+                message="Registration Successful! Request for approval sent to Administrator. Wait before logging in."
+            />
             <Grid item xs={10} sm={8} md={6} lg={4} component={Paper}>
                 <Paper className={classes.imagePaper}>
                     <img className={classes.logo} src={logo} alt="Logo" />
@@ -144,7 +161,7 @@ function SignInSide(props) {
                     </Typography>
                 </Paper>
                 <form className={classes.form} onSubmit={handleSubmit}>
-                    <TextField
+                    {/* <TextField
                         variant="outlined"
                         size="small"
                         margin="normal"
@@ -169,16 +186,16 @@ function SignInSide(props) {
                         onChange={changePassword}
                         type="password"
                         id="password"
-                    />
+                    /> */}
                     <Button
                         type="submit"
                         variant="contained"
                         color="primary"
-                        className={classes.submit}
+                        className={classes.casiLogin}
                     >
-                        Sign In
+                        Login with DevClub CASI
                     </Button>
-                    <Grid container justify="center">
+                    {/* <Grid container justify="center">
                         <Grid item>
                             <Link to="/register" variant="body2">
                                 <p
@@ -191,7 +208,7 @@ function SignInSide(props) {
                                 </p>
                             </Link>
                         </Grid>
-                    </Grid>
+                    </Grid> */}
                 </form>
             </Grid>
         </Grid>
@@ -200,7 +217,7 @@ function SignInSide(props) {
 
 SignInSide.propTypes = {
     classes: PropTypes.objectOf(PropTypes.string).isRequired,
-    login: PropTypes.func.isRequired,
+    // login: PropTypes.func.isRequired,
     finishError: PropTypes.func.isRequired,
     auth: PropTypes.object.isRequired,
 };
@@ -210,7 +227,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-    login: (creds) => dispatch(loginUser(creds)),
+    // login: (creds) => dispatch(loginUser(creds)),
     finishError: () => dispatch(loginErrorFin()),
 });
 
