@@ -196,21 +196,22 @@ export default function UserDialog({ user, close, isSuper }) {
                                     </Typography>
                                 </Grid>
                                 <FielSep />
-                                {
-                                    isSuper ?
+                                {isSuper ? (
                                     <>
                                         <FielSep />
-                                            <Grid item xs={6}>
-                                                <Typography variant="h6">CASI Email:</Typography>
-                                            </Grid>
-                                            <Grid item xs={6}>
-                                                <Typography variant="body1">
-                                                    {user.casi_email}
-                                                </Typography>
-                                            </Grid>
+                                        <Grid item xs={6}>
+                                            <Typography variant="h6">
+                                                CASI Email:
+                                            </Typography>
+                                        </Grid>
+                                        <Grid item xs={6}>
+                                            <Typography variant="body1">
+                                                {user.casi_email}
+                                            </Typography>
+                                        </Grid>
                                         <FielSep />
-                                    </>:null
-                                }
+                                    </>
+                                ) : null}
                             </Grid>
                         </CardContent>
                     </Card>

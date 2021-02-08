@@ -113,7 +113,7 @@ export const logoutUser = (type) => (dispatch) => {
                     );
                     error.response = response;
                     throw error;
-                }  
+                }
             },
             (error) => {
                 const errmess = new Error(error.message);
@@ -189,7 +189,7 @@ export const fetchUser = () => (dispatch) => {
                 if (response.ok || response.status === 304) {
                     return response;
                 }
-                if (response.status === 404) {
+                if (response.status === 401) {
                     dispatch(registerError('register'));
                 }
                 response.json().then((res) => {

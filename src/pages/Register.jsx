@@ -18,7 +18,7 @@ import {
 import { withRouter, Redirect } from 'react-router-dom';
 import { registerUser, regErrorFin, newRegDone } from '../actions/userActions';
 import logo from '../images/LogoSquare.jpg';
-import {userCategories} from '../utils/userUtils';
+import { userCategories } from '../utils/userUtils';
 
 const styles = (theme) => ({
     root: {
@@ -124,7 +124,13 @@ class SignUp extends React.Component {
     };
 
     render() {
-        const { classes, register, sucErrFin, auth, newRegDone } = this.props;
+        const {
+            classes,
+            register,
+            sucErrFin,
+            auth,
+            newRegDone: newRegDoneT,
+        } = this.props;
 
         // const { confirmPassError } = this.state;
         if (auth.isAuthenticated) {
@@ -132,7 +138,7 @@ class SignUp extends React.Component {
         }
 
         if (register.isRegistered) {
-            return <Redirect to="/login" />
+            return <Redirect to="/login" />;
         }
 
         return (
@@ -151,7 +157,7 @@ class SignUp extends React.Component {
                     }}
                     open={register.newReg}
                     autoHideDuration={4000}
-                    onClose={newRegDone}
+                    onClose={newRegDoneT}
                     message="Just a few more details required to get you started with Dashboard"
                 />
                 <Snackbar

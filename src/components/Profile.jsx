@@ -165,12 +165,7 @@ ProfileField.propTypes = {
 
 const FieldSep = () => <Grid item xs={12} style={{ height: '16px' }} />;
 
-export default function Profile({
-    serverError,
-    updateUser,
-    changePassword,
-    users,
-}) {
+export default function Profile({ serverError, updateUser }) {
     const [editMode, setEditMode] = React.useState(false);
 
     const toggleEditMode = () => {
@@ -1376,6 +1371,6 @@ export default function Profile({
 Profile.propTypes = {
     serverError: PropTypes.string.isRequired,
     updateUser: PropTypes.func.isRequired,
-    changePassword: PropTypes.func.isRequired,
-    users: PropTypes.object.isRequired,
+    // changePassword: PropTypes.func.isRequired,
+    // users: PropTypes.object.isRequired,
 };

@@ -487,7 +487,7 @@ class Dashboard extends Component {
 
         if (!register.isRegistered) {
             newRegT();
-            return <Redirect to="/register" />
+            return <Redirect to="/register" />;
         }
 
         const isAdmin = users.user.privelege_level === 'Admin';
@@ -698,10 +698,12 @@ Dashboard.propTypes = {
     history: PropTypes.any.isRequired,
     match: PropTypes.any.isRequired,
     auth: PropTypes.object.isRequired,
+    register: PropTypes.object.isRequired,
     users: PropTypes.object.isRequired,
     events: PropTypes.object.isRequired,
     projects: PropTypes.object.isRequired,
     resources: PropTypes.object.isRequired,
+    newReg: PropTypes.func.isRequired,
     fetchUser: PropTypes.func.isRequired,
     fetchAllUsers: PropTypes.func.isRequired,
     logoutUser: PropTypes.func.isRequired,

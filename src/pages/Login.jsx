@@ -16,7 +16,7 @@ import PropTypes from 'prop-types';
 import { Redirect, withRouter } from 'react-router-dom';
 import { loginErrorFin } from '../actions/userActions';
 import logo from '../images/LogoSVG.svg';
-import {casiAuthURL} from '../data/api_links.js';
+import { casiAuthURL } from '../data/api_links';
 
 const styles = (theme) => ({
     root: {

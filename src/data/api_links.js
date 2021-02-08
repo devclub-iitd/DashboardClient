@@ -26,7 +26,8 @@ export const resourceAPI = 'http://localhost:3001/api/resource/';
 export const resourceGetAllDBAPI =
     'http://localhost:3001/api/resource/getAllDB/';
 export const resourceDeleteAPI = 'http://localhost:3001/api/resource/delete/';
-export const casiAuthURL = 'https://auth.devclub.in/user/login?serviceURL=localhost:3000/';
+export const casiAuthURL =
+    'https://auth.devclub.in/user/login?serviceURL=localhost:3000/';
 /// //////////////////////////////////////////////////////////////////
 
 // export const loginAPI = 'https://0a6e34dbc6f6.ngrok.io/api/user/login';
@@ -56,7 +57,6 @@ export const casiAuthURL = 'https://auth.devclub.in/user/login?serviceURL=localh
 // export const resourceDeleteAPI =
 //     'https://0a6e34dbc6f6.ngrok.io/api/resource/delete/';
 // export const casiAuthURL = 'https://auth.devclub.in/user/login?serviceURL=localhost:3000/';
-
 
 /*
     ----------------------------------------------------------------------------------

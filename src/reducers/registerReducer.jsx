@@ -15,7 +15,7 @@ const Register = (
             return {
                 ...state,
                 isLoading: false,
-                errMess: action.payload === 'register' ? 'register':'Error',
+                errMess: action.payload === 'register' ? 'register' : 'Error',
                 isRegistered: false,
             };
 
@@ -40,13 +40,13 @@ const Register = (
                 ...state,
                 errMess: null,
             };
-        
+
         case ActionTypes.NEW_REG:
             return {
                 ...state,
                 newReg: true,
             };
-        
+
         case ActionTypes.NEW_REG_DONE:
             return {
                 ...state,
