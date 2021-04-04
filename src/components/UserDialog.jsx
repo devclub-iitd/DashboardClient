@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function UserDialog({ user, close }) {
+export default function UserDialog({ user, close, isSuper }) {
     const classes = useStyles();
     const closeDialog = () => {
         close();
@@ -196,6 +196,22 @@ export default function UserDialog({ user, close }) {
                                     </Typography>
                                 </Grid>
                                 <FielSep />
+                                {isSuper ? (
+                                    <>
+                                        <FielSep />
+                                        <Grid item xs={6}>
+                                            <Typography variant="h6">
+                                                CASI Email:
+                                            </Typography>
+                                        </Grid>
+                                        <Grid item xs={6}>
+                                            <Typography variant="body1">
+                                                {user.casi_email}
+                                            </Typography>
+                                        </Grid>
+                                        <FielSep />
+                                    </>
+                                ) : null}
                             </Grid>
                         </CardContent>
                     </Card>
@@ -208,4 +224,5 @@ export default function UserDialog({ user, close }) {
 UserDialog.propTypes = {
     user: PropTypes.object.isRequired,
     close: PropTypes.func.isRequired,
+    isSuper: PropTypes.bool.isRequired,
 };

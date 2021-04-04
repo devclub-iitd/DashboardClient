@@ -29,6 +29,8 @@ export const REGISTER_REQUEST = 'REGISTER_REQUEST';
 export const REGISTER_FAILED = 'REGISTER_FAILED';
 export const REGISTER_SUCCESS = 'REGISTER_SUCCESS';
 export const REGISTER_FIN = 'REGISTER_FIN';
+export const NEW_REG = 'NEW_REG';
+export const NEW_REG_DONE = 'NEW_REG_DONE';
 
 export const LOGIN_REQUEST = 'LOGIN_REQUEST';
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';

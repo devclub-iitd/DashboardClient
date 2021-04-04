@@ -511,6 +511,7 @@ export default function ManageUsers({
                 <UserDialog
                     user={userDialog.dialogUser}
                     close={closeUserDialog}
+                    isSuper={curUser.entry_no === 'DEVCLUBIITD'}
                 />
             ) : null}
             <Grow in style={{ transformOrigin: 'center top' }} timeout={750}>

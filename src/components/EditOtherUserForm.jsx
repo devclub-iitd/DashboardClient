@@ -596,6 +596,42 @@ export default function EditOtherUserForm(props) {
                         </Grid>
                         <FieldSep />
                         <FieldSep />
+                        <Grid item xs={4}>
+                            <Typography variant="h6">Email: </Typography>
+                        </Grid>
+                        <Grid item xs={8}>
+                            <TextField
+                                name="email"
+                                variant="outlined"
+                                required
+                                value={editUser.email}
+                                onChange={(e) =>
+                                    handleFormValuesChange(e, 'email')
+                                }
+                                id="email"
+                                label="Email"
+                            />
+                        </Grid>
+                        <FieldSep />
+                        <FieldSep />
+                        <Grid item xs={4}>
+                            <Typography variant="h6">CASI Email: </Typography>
+                        </Grid>
+                        <Grid item xs={8}>
+                            <TextField
+                                name="casi_email"
+                                variant="outlined"
+                                required
+                                value={editUser.casi_email}
+                                onChange={(e) =>
+                                    handleFormValuesChange(e, 'casi_email')
+                                }
+                                id="casi_email"
+                                label="CASI Email"
+                            />
+                        </Grid>
+                        <FieldSep />
+                        <FieldSep />
                         <Grid item xs={12}>
                             <Typography variant="h6">Interests: </Typography>
                         </Grid>

@@ -37,6 +37,7 @@ import {
     fetchUser,
     fetchAllUsers,
     logoutUser,
+    newReg,
     updateUser,
     editOtherUser,
     changePassword,
@@ -243,6 +244,7 @@ function getPageName(subPage, isAdmin) {
 const mapStateToProps = (state) => {
     return {
         auth: state.Auth,
+        register: state.Register,
         users: state.Users,
         events: state.Events,
         projects: state.Projects,
@@ -251,14 +253,17 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => ({
-    fetchUser: (id) => {
-        dispatch(fetchUser(id));
+    fetchUser: () => {
+        dispatch(fetchUser());
     },
     fetchAllUsers: () => {
         dispatch(fetchAllUsers());
     },
     logoutUser: () => {
         dispatch(logoutUser());
+    },
+    newReg: () => {
+        dispatch(newReg());
     },
     updateUser: (user, cb) => {
         dispatch(updateUser(user, cb));
@@ -422,8 +427,9 @@ class Dashboard extends Component {
             fetchAllEvents: fetchAllEventsT,
             fetchAllResources: fetchAllResourcesT,
         } = this.props;
+        // fetchUserT(localStorage.getItem('userId'));
+        fetchUserT();
         fetchAllUsersT();
-        fetchUserT(localStorage.getItem('userId'));
         fetchAllProjectsT();
         fetchAllEventsT();
         fetchAllResourcesT();
@@ -453,6 +459,7 @@ class Dashboard extends Component {
         const {
             classes,
             auth,
+            register,
             users,
             events,
             projects,
@@ -462,6 +469,7 @@ class Dashboard extends Component {
             eventErrorFin: eventErrorFinT,
             projectErrorFin: projectErrorFinT,
             resourceErrorFin: resourceErrorFinT,
+            newReg: newRegT,
         } = this.props;
 
         const { open } = this.state;
@@ -475,6 +483,11 @@ class Dashboard extends Component {
 
         if (!auth.isAuthenticated) {
             return <Redirect to="/login" />;
+        }
+
+        if (!register.isRegistered) {
+            newRegT();
+            return <Redirect to="/register" />;
         }
 
         const isAdmin = users.user.privelege_level === 'Admin';
@@ -685,10 +698,12 @@ Dashboard.propTypes = {
     history: PropTypes.any.isRequired,
     match: PropTypes.any.isRequired,
     auth: PropTypes.object.isRequired,
+    register: PropTypes.object.isRequired,
     users: PropTypes.object.isRequired,
     events: PropTypes.object.isRequired,
     projects: PropTypes.object.isRequired,
     resources: PropTypes.object.isRequired,
+    newReg: PropTypes.func.isRequired,
     fetchUser: PropTypes.func.isRequired,
     fetchAllUsers: PropTypes.func.isRequired,
     logoutUser: PropTypes.func.isRequired,

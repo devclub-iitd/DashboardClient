@@ -5,10 +5,10 @@ import { makeStyles } from '@material-ui/core/styles';
 import {
     Grid,
     Typography,
-    Dialog,
-    DialogTitle,
+    // Dialog,
+    // DialogTitle,
     Tooltip,
-    DialogContent,
+    // DialogContent,
     TextField,
     Fab,
     MenuItem,
@@ -34,9 +34,9 @@ import {
     PhotoCamera,
     AddCircleRounded,
     Delete,
-    VpnKeyRounded,
+    // VpnKeyRounded,
 } from '@material-ui/icons';
-import ChangePassword from './ChangePassword';
+// import ChangePassword from './ChangePassword';
 import * as Utils from '../utils';
 
 const useStyles = makeStyles((theme) => ({
@@ -165,12 +165,7 @@ ProfileField.propTypes = {
 
 const FieldSep = () => <Grid item xs={12} style={{ height: '16px' }} />;
 
-export default function Profile({
-    serverError,
-    updateUser,
-    changePassword,
-    users,
-}) {
+export default function Profile({ serverError, updateUser }) {
     const [editMode, setEditMode] = React.useState(false);
 
     const toggleEditMode = () => {
@@ -247,19 +242,19 @@ export default function Profile({
         }
     };
 
-    const handlePasswordOpen = () => {
-        setState({
-            ...state,
-            isChangePassOpen: true,
-        });
-    };
+    // const handlePasswordOpen = () => {
+    //     setState({
+    //         ...state,
+    //         isChangePassOpen: true,
+    //     });
+    // };
 
-    const handlePasswordClose = () => {
-        setState({
-            ...state,
-            isChangePassOpen: false,
-        });
-    };
+    // const handlePasswordClose = () => {
+    //     setState({
+    //         ...state,
+    //         isChangePassOpen: false,
+    //     });
+    // };
 
     const handleAddUrlFields = () => {
         const values = [...state.urlFields];
@@ -385,7 +380,7 @@ export default function Profile({
                 onClose={handleSuccessClose}
                 message="Password changed succesfully !"
             />
-            <Dialog
+            {/* <Dialog
                 open={state.isChangePassOpen}
                 maxWidth="xs"
                 onClose={handlePasswordClose}
@@ -407,7 +402,7 @@ export default function Profile({
                         closeDialog={handlePasswordClose}
                     />
                 </DialogContent>
-            </Dialog>
+            </Dialog> */}
             <Grow in style={{ transformOrigin: 'center top' }} timeout={750}>
                 <Grid
                     component={Paper}
@@ -753,8 +748,8 @@ export default function Profile({
                                 container
                                 justify="center"
                                 item
-                                xs={2}
-                                md={10}
+                                xs={10}
+                                // md={10}
                             >
                                 <Tooltip title="Edit Profile">
                                     <Fab
@@ -765,7 +760,7 @@ export default function Profile({
                                     </Fab>
                                 </Tooltip>
                             </Grid>
-                            <Grid
+                            {/* <Grid
                                 container
                                 justify="center"
                                 item
@@ -781,7 +776,7 @@ export default function Profile({
                                         <VpnKeyRounded fontSize="large" />
                                     </Fab>
                                 </Tooltip>
-                            </Grid>
+                            </Grid> */}
                         </>
                     ) : (
                         <>
@@ -1376,6 +1371,6 @@ export default function Profile({
 Profile.propTypes = {
     serverError: PropTypes.string.isRequired,
     updateUser: PropTypes.func.isRequired,
-    changePassword: PropTypes.func.isRequired,
-    users: PropTypes.object.isRequired,
+    // changePassword: PropTypes.func.isRequired,
+    // users: PropTypes.object.isRequired,
 };
