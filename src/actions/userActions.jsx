@@ -180,7 +180,6 @@ export const fetchUser = () => (dispatch) => {
         // body: JSON.stringify(query),
         headers: {
             'Content-Type': 'application/json',
-            // Authorization: bearer,
         },
         credentials: 'same-origin',
     })
@@ -235,13 +234,10 @@ export const fetchUser = () => (dispatch) => {
 export const fetchAllUsers = () => (dispatch) => {
     dispatch(usersLoading(true));
 
-    const bearer = `Bearer ${localStorage.getItem('dcIITDDashboardToken')}`;
-
     return fetch(`${API.userGetAllDBAPI}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            Authorization: bearer,
         },
         credentials: 'same-origin',
     })
@@ -362,14 +358,12 @@ export const registerUser = (registerCreds) => (dispatch) => {
 };
 
 export const updateUser = (updatedUser, cb) => (dispatch) => {
-    const bearer = `Bearer ${localStorage.getItem('dcIITDDashboardToken')}`;
     dispatch(userLoading);
     return fetch(`${API.userAPI}${updatedUser._id}`, {
         method: 'PUT',
         body: JSON.stringify(updatedUser),
         headers: {
             'Content-Type': 'application/json',
-            Authorization: bearer,
         },
         credentials: 'same-origin',
     })
@@ -416,14 +410,11 @@ export const updateUser = (updatedUser, cb) => (dispatch) => {
 };
 
 export const removeOtherUser = (uId, cb) => (dispatch) => {
-    const bearer = `Bearer ${localStorage.getItem('dcIITDDashboardToken')}`;
-
     return fetch(`${API.userAPI}delete`, {
         method: 'POST',
         body: JSON.stringify({ id: uId }),
         headers: {
             'Content-Type': 'application/json',
-            Authorization: bearer,
         },
         credentials: 'same-origin',
     })
@@ -470,13 +461,10 @@ export const removeOtherUser = (uId, cb) => (dispatch) => {
 };
 
 export const deleteAllUsers = () => (dispatch) => {
-    const bearer = `Bearer ${localStorage.getItem('dcIITDDashboardToken')}`;
-
     return fetch(`${API.userAPI}deleteAll`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            Authorization: bearer,
         },
         credentials: 'same-origin',
     })
@@ -520,13 +508,10 @@ export const deleteAllUsers = () => (dispatch) => {
 };
 
 export const rejectAllUnapproved = (cb) => (dispatch) => {
-    const bearer = `Bearer ${localStorage.getItem('dcIITDDashboardToken')}`;
-
     return fetch(`${API.userAPI}rejectAll`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            Authorization: bearer,
         },
         credentials: 'same-origin',
     })
@@ -572,13 +557,11 @@ export const rejectAllUnapproved = (cb) => (dispatch) => {
 };
 
 export const changePassword = (newPass, cb) => (dispatch) => {
-    const bearer = `Bearer ${localStorage.getItem('dcIITDDashboardToken')}`;
     return fetch(API.userChangePassAPI, {
         method: 'POST',
         body: JSON.stringify({ newPassword: newPass }),
         headers: {
             'Content-Type': 'application/json',
-            Authorization: bearer,
         },
         credentials: 'same-origin',
     })
@@ -624,14 +607,11 @@ export const changePassword = (newPass, cb) => (dispatch) => {
 };
 
 export const editOtherUser = (otherUser, cb) => (dispatch) => {
-    const bearer = `Bearer ${localStorage.getItem('dcIITDDashboardToken')}`;
-
     return fetch(`${API.userAPI}${otherUser._id}`, {
         method: 'PUT',
         body: JSON.stringify(otherUser),
         headers: {
             'Content-Type': 'application/json',
-            Authorization: bearer,
         },
         credentials: 'same-origin',
     })

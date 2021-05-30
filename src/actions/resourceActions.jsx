@@ -27,14 +27,10 @@ export const resourceErrorFin = () => ({
 
 export const fetchAllResources = () => (dispatch) => {
     dispatch(resourcesLoading(true));
-
-    const bearer = `Bearer ${localStorage.getItem('dcIITDDashboardToken')}`;
-
     return fetch(API.resourceGetAllDBAPI, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            Authorization: bearer,
         },
         credentials: 'same-origin',
     })
@@ -77,14 +73,11 @@ export const fetchAllResources = () => (dispatch) => {
 };
 
 export const createResource = (resource, cb) => (dispatch) => {
-    const bearer = `Bearer ${localStorage.getItem('dcIITDDashboardToken')}`;
-
     return fetch(API.resourceAPI, {
         method: 'POST',
         body: JSON.stringify(resource),
         headers: {
             'Content-Type': 'application/json',
-            Authorization: bearer,
         },
         credentials: 'same-origin',
     })
@@ -131,14 +124,11 @@ export const createResource = (resource, cb) => (dispatch) => {
 };
 
 export const editResource = (resource, cb) => (dispatch) => {
-    const bearer = `Bearer ${localStorage.getItem('dcIITDDashboardToken')}`;
-
     return fetch(`${API.resourceAPI}${resource._id}`, {
         method: 'PUT',
         body: JSON.stringify(resource),
         headers: {
             'Content-Type': 'application/json',
-            Authorization: bearer,
         },
         credentials: 'same-origin',
     })
@@ -185,14 +175,11 @@ export const editResource = (resource, cb) => (dispatch) => {
 };
 
 export const deleteResource = (resourceId, cb) => (dispatch) => {
-    const bearer = `Bearer ${localStorage.getItem('dcIITDDashboardToken')}`;
-
     return fetch(API.resourceDeleteAPI, {
         method: 'POST',
         body: JSON.stringify({ id: resourceId }),
         headers: {
             'Content-Type': 'application/json',
-            Authorization: bearer,
         },
         credentials: 'same-origin',
     })

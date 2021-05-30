@@ -33,14 +33,10 @@ function objToStrMap(obj) {
 
 export const fetchAllProjects = () => (dispatch) => {
     dispatch(projectsLoading(true));
-
-    const bearer = `Bearer ${localStorage.getItem('dcIITDDashboardToken')}`;
-
     return fetch(`${API.projectGetAllDBAPI}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            Authorization: bearer,
         },
         credentials: 'same-origin',
     })
@@ -111,14 +107,11 @@ export const fetchAllProjects = () => (dispatch) => {
 };
 
 export const createProject = (project, cb) => (dispatch) => {
-    const bearer = `Bearer ${localStorage.getItem('dcIITDDashboardToken')}`;
-
     return fetch(API.projectAPI, {
         method: 'POST',
         body: JSON.stringify(project),
         headers: {
             'Content-Type': 'application/json',
-            Authorization: bearer,
         },
         credentials: 'same-origin',
     })
@@ -165,13 +158,11 @@ export const createProject = (project, cb) => (dispatch) => {
 };
 
 export const editProject = (project, cb) => (dispatch) => {
-    const bearer = `Bearer ${localStorage.getItem('dcIITDDashboardToken')}`;
     return fetch(`${API.projectAPI}${project._id}`, {
         method: 'PUT',
         body: JSON.stringify(project),
         headers: {
             'Content-Type': 'application/json',
-            Authorization: bearer,
         },
         credentials: 'same-origin',
     })
@@ -218,14 +209,11 @@ export const editProject = (project, cb) => (dispatch) => {
 };
 
 export const deleteProject = (projectId, cb) => (dispatch) => {
-    const bearer = `Bearer ${localStorage.getItem('dcIITDDashboardToken')}`;
-
     return fetch(API.projectDeleteAPI, {
         method: 'POST',
         body: JSON.stringify({ id: projectId }),
         headers: {
             'Content-Type': 'application/json',
-            Authorization: bearer,
         },
         credentials: 'same-origin',
     })

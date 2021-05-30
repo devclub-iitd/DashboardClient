@@ -33,14 +33,10 @@ function objToStrMap(obj) {
 
 export const fetchAllEvents = () => (dispatch) => {
     dispatch(eventsLoading(true));
-
-    // const bearer = `Bearer ${localStorage.getItem('dcIITDDashboardToken')}`;
-
     return fetch(API.eventGetAllDBAPI, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            // Authorization: bearer,
         },
         credentials: 'same-origin',
     })
@@ -109,14 +105,11 @@ export const fetchAllEvents = () => (dispatch) => {
 };
 
 export const createEvent = (event, cb) => (dispatch) => {
-    const bearer = `Bearer ${localStorage.getItem('dcIITDDashboardToken')}`;
-
     return fetch(API.eventAPI, {
         method: 'POST',
         body: JSON.stringify(event),
         headers: {
             'Content-Type': 'application/json',
-            Authorization: bearer,
         },
         credentials: 'same-origin',
     })
@@ -163,14 +156,11 @@ export const createEvent = (event, cb) => (dispatch) => {
 };
 
 export const editEvent = (event, cb) => (dispatch) => {
-    const bearer = `Bearer ${localStorage.getItem('dcIITDDashboardToken')}`;
-
     return fetch(`${API.eventAPI}${event._id}`, {
         method: 'PUT',
         body: JSON.stringify(event),
         headers: {
             'Content-Type': 'application/json',
-            Authorization: bearer,
         },
         credentials: 'same-origin',
     })
@@ -217,14 +207,11 @@ export const editEvent = (event, cb) => (dispatch) => {
 };
 
 export const deleteEvent = (eventId, cb) => (dispatch) => {
-    const bearer = `Bearer ${localStorage.getItem('dcIITDDashboardToken')}`;
-
     return fetch(API.eventDeleteAPI, {
         method: 'POST',
         body: JSON.stringify({ id: eventId }),
         headers: {
             'Content-Type': 'application/json',
-            Authorization: bearer,
         },
         credentials: 'same-origin',
     })
