@@ -1,7 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 import * as ActionTypes from './ActionTypes';
 import * as API from '../data/api_links';
-import { logoutUser } from './userActions';
+import { logoutUser, registerError, loginError } from './userActions';
 
 export const addResources = (resources) => ({
     type: ActionTypes.ADD_RESOURCES,
@@ -43,9 +43,21 @@ export const fetchAllResources = () => (dispatch) => {
                 if (response.ok || response.status === 304) {
                     return response;
                 }
+                // response.json().then((res) => {
+                //     if (res.name === 'Unauthorized') {
+                //         dispatch(logoutUser('timeout'));
+                //     }
+                // });
                 response.json().then((res) => {
                     if (res.name === 'Unauthorized') {
                         dispatch(logoutUser('timeout'));
+                    } else if (res.name === 'Unregistered') {
+                        dispatch(registerError('register'));
+                        // dispatch(newReg());
+                    } else if (res.name === 'Unapproved') {
+                        dispatch(loginError('Unapproved'));
+                    } else {
+                        return null;
                     }
                 });
                 const error = new Error(
@@ -81,9 +93,21 @@ export const createResource = (resource, cb) => (dispatch) => {
                 if (response.ok || response.status === 304) {
                     return response;
                 }
+                // response.json().then((res) => {
+                //     if (res.name === 'Unauthorized') {
+                //         dispatch(logoutUser('timeout'));
+                //     }
+                // });
                 response.json().then((res) => {
                     if (res.name === 'Unauthorized') {
                         dispatch(logoutUser('timeout'));
+                    } else if (res.name === 'Unregistered') {
+                        dispatch(registerError('register'));
+                        // dispatch(newReg());
+                    } else if (res.name === 'Unapproved') {
+                        dispatch(loginError('Unapproved'));
+                    } else {
+                        return null;
                     }
                 });
                 const error = new Error(
@@ -123,9 +147,21 @@ export const editResource = (resource, cb) => (dispatch) => {
                 if (response.ok || response.status === 304) {
                     return response;
                 }
+                // response.json().then((res) => {
+                //     if (res.name === 'Unauthorized') {
+                //         dispatch(logoutUser('timeout'));
+                //     }
+                // });
                 response.json().then((res) => {
                     if (res.name === 'Unauthorized') {
                         dispatch(logoutUser('timeout'));
+                    } else if (res.name === 'Unregistered') {
+                        dispatch(registerError('register'));
+                        // dispatch(newReg());
+                    } else if (res.name === 'Unapproved') {
+                        dispatch(loginError('Unapproved'));
+                    } else {
+                        return null;
                     }
                 });
                 const error = new Error(
@@ -165,9 +201,21 @@ export const deleteResource = (resourceId, cb) => (dispatch) => {
                 if (response.ok || response.status === 304) {
                     return response;
                 }
+                // response.json().then((res) => {
+                //     if (res.name === 'Unauthorized') {
+                //         dispatch(logoutUser('timeout'));
+                //     }
+                // });
                 response.json().then((res) => {
                     if (res.name === 'Unauthorized') {
                         dispatch(logoutUser('timeout'));
+                    } else if (res.name === 'Unregistered') {
+                        dispatch(registerError('register'));
+                        // dispatch(newReg());
+                    } else if (res.name === 'Unapproved') {
+                        dispatch(loginError('Unapproved'));
+                    } else {
+                        return null;
                     }
                 });
                 const error = new Error(

@@ -116,7 +116,11 @@ class SignUp extends React.Component {
 
     handleChange = (e, type) => {
         const { value } = e.target;
-        this.setState({ [type]: value });
+        // this.setState({ [type]: value });
+        this.setState((prevState) => ({
+            ...prevState,
+            [type]: value,
+        }));
         // if (type === 'confirmPassword') {
         //     const { password } = this.state;
         //     this.setState({ confirmPassError: value !== password });
@@ -156,7 +160,7 @@ class SignUp extends React.Component {
                         horizontal: 'center',
                     }}
                     open={register.newReg}
-                    autoHideDuration={4000}
+                    autoHideDuration={6000}
                     onClose={newRegDoneT}
                     message="Just a few more details required to get you started with Dashboard"
                 />
@@ -180,7 +184,7 @@ class SignUp extends React.Component {
                     onClose={sucErrFin}
                     message="Registration Failed !! Please try again."
                 />
-                <Snackbar
+                {/* <Snackbar
                     anchorOrigin={{
                         vertical: 'top',
                         horizontal: 'center',
@@ -189,7 +193,7 @@ class SignUp extends React.Component {
                     autoHideDuration={6000}
                     onClose={sucErrFin}
                     message="A few more details required before approval request is sent to DevClub Admin"
-                />
+                /> */}
                 <Backdrop
                     className={classes.backdrop}
                     open={register.isLoading}

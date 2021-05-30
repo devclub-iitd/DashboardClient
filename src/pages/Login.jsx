@@ -91,13 +91,13 @@ function SignInSide(props) {
         window.location.href = casiAuthURL;
     };
 
-    if (auth.isLoading) {
-        return (
-            <Backdrop className={classes.backdrop} open={auth.isLoading}>
-                <CircularProgress color="inherit" />
-            </Backdrop>
-        );
-    }
+    // if (auth.isLoading) {
+    //     return (
+    //         <Backdrop className={classes.backdrop} open={auth.isLoading}>
+    //             <CircularProgress color="inherit" />
+    //         </Backdrop>
+    //     );
+    // }
 
     if (auth.isAuthenticated) {
         return <Redirect to="/dashboard" />;
@@ -115,6 +115,9 @@ function SignInSide(props) {
             justify="center"
             alignItems="center"
         >
+            <Backdrop className={classes.backdrop} open={auth.isLoading}>
+                <CircularProgress color="inherit" />
+            </Backdrop>
             <Snackbar
                 anchorOrigin={{
                     vertical: 'top',
