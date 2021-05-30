@@ -59,6 +59,7 @@ export const getProperUser = (dUser) => {
             dUser.grad_year === null ? new Date() : new Date(dUser.grad_year),
         birth_date:
             dUser.birth_date === null ? new Date() : new Date(dUser.birth_date),
+        casi_email: dUser.casi_email === null ? '' : dUser.casi_email,
     };
     if (!pUser.url.has('fb_url')) {
         pUser.url.set('fb_url', '');
@@ -69,6 +70,9 @@ export const getProperUser = (dUser) => {
     if (!pUser.url.has('picture_url')) {
         pUser.url.set('picture_url', '');
     }
+
+    // console.log('pUser:');
+    // console.log(pUser);
 
     return pUser;
 };

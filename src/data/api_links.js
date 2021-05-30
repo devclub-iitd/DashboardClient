@@ -32,6 +32,7 @@ export const resourceDeleteAPI =
     'https://dboards.devclub.in/api/resource/delete/';
 export const casiAuthURL =
     'https://auth.devclub.in/user/login?serviceURL=https://dboard.devclub.in/';
+
 /// //////////////////////////////////////////////////////////////////
 
 // export const loginAPI = 'https://0a6e34dbc6f6.ngrok.io/api/user/login';

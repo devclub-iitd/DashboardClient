@@ -165,19 +165,20 @@ ProfileField.propTypes = {
 
 const FieldSep = () => <Grid item xs={12} style={{ height: '16px' }} />;
 
-export default function Profile({ serverError, updateUser }) {
+export default function Profile({ user, serverError, updateUser }) {
     const [editMode, setEditMode] = React.useState(false);
 
     const toggleEditMode = () => {
         setEditMode(!editMode);
     };
 
-    const [User] = React.useState(
-        Utils.UserUtils.getProperUser(
-            JSON.parse(localStorage.getItem('currentUser'))
-        )
-    );
-
+    // const [User] = React.useState(
+    //     Utils.UserUtils.getProperUser(
+    //         JSON.parse(localStorage.getItem('currentUser'))
+    //     )
+    // );
+    // const [User, setUser] = React.useState(user);
+    const User = { ...user };
     const [state, setState] = React.useState({
         editUser: { ...User },
         orgUser: { ...User },
@@ -1369,6 +1370,7 @@ export default function Profile({ serverError, updateUser }) {
 }
 
 Profile.propTypes = {
+    user: PropTypes.object.isRequired,
     serverError: PropTypes.string.isRequired,
     updateUser: PropTypes.func.isRequired,
     // changePassword: PropTypes.func.isRequired,

@@ -1,7 +1,8 @@
 /* eslint-disable no-underscore-dangle */
+/* eslint-disable consistent-return */
 import * as ActionTypes from './ActionTypes';
 import * as API from '../data/api_links';
-import { logoutUser } from './userActions';
+import { receiveLogout, registerError, loginError } from './userActions';
 
 export const addEvents = (events) => ({
     type: ActionTypes.ADD_EVENTS,
@@ -33,25 +34,33 @@ function objToStrMap(obj) {
 
 export const fetchAllEvents = () => (dispatch) => {
     dispatch(eventsLoading(true));
-
-    // const bearer = `Bearer ${localStorage.getItem('dcIITDDashboardToken')}`;
-
     return fetch(API.eventGetAllDBAPI, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            // Authorization: bearer,
         },
-        credentials: 'same-origin',
+        credentials: 'include',
     })
         .then(
             (response) => {
                 if (response.ok || response.status === 304) {
                     return response;
                 }
+                // response.json().then((res) => {
+                //     if (res.name === 'Unauthorized') {
+                //         dispatch(receiveLogout('logout'));
+                //     }
+                // });
                 response.json().then((res) => {
                     if (res.name === 'Unauthorized') {
-                        dispatch(logoutUser('timeout'));
+                        dispatch(receiveLogout('logout'));
+                    } else if (res.name === 'Unregistered') {
+                        dispatch(registerError('register'));
+                        // dispatch(newReg());
+                    } else if (res.name === 'Unapproved') {
+                        dispatch(loginError('Unapproved'));
+                    } else {
+                        return null;
                     }
                 });
                 const error = new Error(
@@ -97,25 +106,34 @@ export const fetchAllEvents = () => (dispatch) => {
 };
 
 export const createEvent = (event, cb) => (dispatch) => {
-    const bearer = `Bearer ${localStorage.getItem('dcIITDDashboardToken')}`;
-
     return fetch(API.eventAPI, {
         method: 'POST',
         body: JSON.stringify(event),
         headers: {
             'Content-Type': 'application/json',
-            Authorization: bearer,
         },
-        credentials: 'same-origin',
+        credentials: 'include',
     })
         .then(
             (response) => {
                 if (response.ok || response.status === 304) {
                     return response;
                 }
+                // response.json().then((res) => {
+                //     if (res.name === 'Unauthorized') {
+                //         dispatch(receiveLogout('logout'));
+                //     }
+                // });
                 response.json().then((res) => {
                     if (res.name === 'Unauthorized') {
-                        dispatch(logoutUser('timeout'));
+                        dispatch(receiveLogout('logout'));
+                    } else if (res.name === 'Unregistered') {
+                        dispatch(registerError('register'));
+                        // dispatch(newReg());
+                    } else if (res.name === 'Unapproved') {
+                        dispatch(loginError('Unapproved'));
+                    } else {
+                        return null;
                     }
                 });
                 const error = new Error(
@@ -139,25 +157,34 @@ export const createEvent = (event, cb) => (dispatch) => {
 };
 
 export const editEvent = (event, cb) => (dispatch) => {
-    const bearer = `Bearer ${localStorage.getItem('dcIITDDashboardToken')}`;
-
     return fetch(`${API.eventAPI}${event._id}`, {
         method: 'PUT',
         body: JSON.stringify(event),
         headers: {
             'Content-Type': 'application/json',
-            Authorization: bearer,
         },
-        credentials: 'same-origin',
+        credentials: 'include',
     })
         .then(
             (response) => {
                 if (response.ok || response.status === 304) {
                     return response;
                 }
+                // response.json().then((res) => {
+                //     if (res.name === 'Unauthorized') {
+                //         dispatch(receiveLogout('logout'));
+                //     }
+                // });
                 response.json().then((res) => {
                     if (res.name === 'Unauthorized') {
-                        dispatch(logoutUser('timeout'));
+                        dispatch(receiveLogout('logout'));
+                    } else if (res.name === 'Unregistered') {
+                        dispatch(registerError('register'));
+                        // dispatch(newReg());
+                    } else if (res.name === 'Unapproved') {
+                        dispatch(loginError('Unapproved'));
+                    } else {
+                        return null;
                     }
                 });
                 const error = new Error(
@@ -181,25 +208,34 @@ export const editEvent = (event, cb) => (dispatch) => {
 };
 
 export const deleteEvent = (eventId, cb) => (dispatch) => {
-    const bearer = `Bearer ${localStorage.getItem('dcIITDDashboardToken')}`;
-
     return fetch(API.eventDeleteAPI, {
         method: 'POST',
         body: JSON.stringify({ id: eventId }),
         headers: {
             'Content-Type': 'application/json',
-            Authorization: bearer,
         },
-        credentials: 'same-origin',
+        credentials: 'include',
     })
         .then(
             (response) => {
                 if (response.ok || response.status === 304) {
                     return response;
                 }
+                // response.json().then((res) => {
+                //     if (res.name === 'Unauthorized') {
+                //         dispatch(receiveLogout('logout'));
+                //     }
+                // });
                 response.json().then((res) => {
                     if (res.name === 'Unauthorized') {
-                        dispatch(logoutUser('timeout'));
+                        dispatch(receiveLogout('logout'));
+                    } else if (res.name === 'Unregistered') {
+                        dispatch(registerError('register'));
+                        // dispatch(newReg());
+                    } else if (res.name === 'Unapproved') {
+                        dispatch(loginError('Unapproved'));
+                    } else {
+                        return null;
                     }
                 });
                 const error = new Error(

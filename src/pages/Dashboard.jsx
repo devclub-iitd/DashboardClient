@@ -82,7 +82,7 @@ function renderPage(subPage, props, isAdmin, redirect, closeDrawer) {
         case 'profile':
             return (
                 <Profile
-                    users={props.users}
+                    user={props.users.user}
                     changePassword={props.changePass}
                     serverError={props.users.serverError}
                     updateUser={props.updateUser}
