@@ -219,13 +219,13 @@ export const fetchUser = () => (dispatch) => {
         )
         .then((response) => response.json())
         .then(({ user }) => {
-            dispatch(receiveLogin());
+            // dispatch(receiveLogin());
             localStorage.setItem('currentUser', JSON.stringify(user));
             const upUser = UserUtils.getProperUser(user);
 
-            if (user.privelege_level === 'Unapproved_user') {
-                dispatch(loginError('Unapproved'));
-            }
+            // if (user.privelege_level === 'Unapproved_user') {
+            //     dispatch(loginError('Unapproved'));
+            // }
             dispatch(addUser(upUser));
             // dispatch(receiveLogin());
         })
