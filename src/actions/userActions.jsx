@@ -219,6 +219,7 @@ export const fetchUser = () => (dispatch) => {
         )
         .then((response) => response.json())
         .then(({ user }) => {
+            dispatch(receiveLogin());
             localStorage.setItem('currentUser', JSON.stringify(user));
             const upUser = UserUtils.getProperUser(user);
 
@@ -226,7 +227,7 @@ export const fetchUser = () => (dispatch) => {
                 dispatch(loginError('Unapproved'));
             }
             dispatch(addUser(upUser));
-            dispatch(receiveLogin());
+            // dispatch(receiveLogin());
         })
         .catch((error) => dispatch(userFailed(error.message)));
 };

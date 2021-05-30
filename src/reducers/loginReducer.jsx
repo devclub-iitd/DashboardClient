@@ -3,7 +3,7 @@ import * as ActionTypes from '../actions/ActionTypes';
 export default function Auth(
     state = {
         isLoading: false,
-        isAuthenticated: false,
+        isAuthenticated: document.cookie !== '',
         isRegistered: false,
         sessionTimeout: false,
         // token: localStorage.getItem('dcIITDDashboardToken'),
