@@ -100,7 +100,7 @@ export const logoutUser = (type) => (dispatch) => {
         headers: {
             'Content-Type': 'application/json',
         },
-        credentials: 'same-origin',
+        credentials: 'include',
     })
         .then(
             (response) => {
@@ -140,7 +140,7 @@ export const logoutUser = (type) => (dispatch) => {
 //             'Content-Type': 'application/json',
 //             Authorization: bearer,
 //         },
-//         credentials: 'same-origin',
+//         credentials: 'include',
 //     })
 //         .then(
 //             (response) => {
@@ -181,7 +181,7 @@ export const fetchUser = () => (dispatch) => {
         headers: {
             'Content-Type': 'application/json',
         },
-        credentials: 'same-origin',
+        credentials: 'include',
     })
         .then(
             (response) => {
@@ -239,7 +239,7 @@ export const fetchAllUsers = () => (dispatch) => {
         headers: {
             'Content-Type': 'application/json',
         },
-        credentials: 'same-origin',
+        credentials: 'include',
     })
         .then(
             (response) => {
@@ -334,6 +334,7 @@ export const registerUser = (registerCreds) => (dispatch) => {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(registerCreds),
+        credentials: 'include',
     })
         .then(
             (response) => {
@@ -365,7 +366,7 @@ export const updateUser = (updatedUser, cb) => (dispatch) => {
         headers: {
             'Content-Type': 'application/json',
         },
-        credentials: 'same-origin',
+        credentials: 'include',
     })
         .then(
             (response) => {
@@ -416,7 +417,7 @@ export const removeOtherUser = (uId, cb) => (dispatch) => {
         headers: {
             'Content-Type': 'application/json',
         },
-        credentials: 'same-origin',
+        credentials: 'include',
     })
         .then(
             (response) => {
@@ -466,7 +467,7 @@ export const deleteAllUsers = () => (dispatch) => {
         headers: {
             'Content-Type': 'application/json',
         },
-        credentials: 'same-origin',
+        credentials: 'include',
     })
         .then(
             (response) => {
@@ -513,7 +514,7 @@ export const rejectAllUnapproved = (cb) => (dispatch) => {
         headers: {
             'Content-Type': 'application/json',
         },
-        credentials: 'same-origin',
+        credentials: 'include',
     })
         .then(
             (response) => {
@@ -563,7 +564,7 @@ export const changePassword = (newPass, cb) => (dispatch) => {
         headers: {
             'Content-Type': 'application/json',
         },
-        credentials: 'same-origin',
+        credentials: 'include',
     })
         .then(
             (response) => {
@@ -613,7 +614,7 @@ export const editOtherUser = (otherUser, cb) => (dispatch) => {
         headers: {
             'Content-Type': 'application/json',
         },
-        credentials: 'same-origin',
+        credentials: 'include',
     })
         .then(
             (response) => {

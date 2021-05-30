@@ -32,7 +32,7 @@ export const fetchAllResources = () => (dispatch) => {
         headers: {
             'Content-Type': 'application/json',
         },
-        credentials: 'same-origin',
+        credentials: 'include',
     })
         .then(
             (response) => {
@@ -79,7 +79,7 @@ export const createResource = (resource, cb) => (dispatch) => {
         headers: {
             'Content-Type': 'application/json',
         },
-        credentials: 'same-origin',
+        credentials: 'include',
     })
         .then(
             (response) => {
@@ -130,7 +130,7 @@ export const editResource = (resource, cb) => (dispatch) => {
         headers: {
             'Content-Type': 'application/json',
         },
-        credentials: 'same-origin',
+        credentials: 'include',
     })
         .then(
             (response) => {
@@ -181,7 +181,7 @@ export const deleteResource = (resourceId, cb) => (dispatch) => {
         headers: {
             'Content-Type': 'application/json',
         },
-        credentials: 'same-origin',
+        credentials: 'include',
     })
         .then(
             (response) => {

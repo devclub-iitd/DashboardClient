@@ -38,7 +38,7 @@ export const fetchAllEvents = () => (dispatch) => {
         headers: {
             'Content-Type': 'application/json',
         },
-        credentials: 'same-origin',
+        credentials: 'include',
     })
         .then(
             (response) => {
@@ -111,7 +111,7 @@ export const createEvent = (event, cb) => (dispatch) => {
         headers: {
             'Content-Type': 'application/json',
         },
-        credentials: 'same-origin',
+        credentials: 'include',
     })
         .then(
             (response) => {
@@ -162,7 +162,7 @@ export const editEvent = (event, cb) => (dispatch) => {
         headers: {
             'Content-Type': 'application/json',
         },
-        credentials: 'same-origin',
+        credentials: 'include',
     })
         .then(
             (response) => {
@@ -213,7 +213,7 @@ export const deleteEvent = (eventId, cb) => (dispatch) => {
         headers: {
             'Content-Type': 'application/json',
         },
-        credentials: 'same-origin',
+        credentials: 'include',
     })
         .then(
             (response) => {

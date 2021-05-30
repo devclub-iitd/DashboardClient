@@ -38,7 +38,7 @@ export const fetchAllProjects = () => (dispatch) => {
         headers: {
             'Content-Type': 'application/json',
         },
-        credentials: 'same-origin',
+        credentials: 'include',
     })
         .then(
             (response) => {
@@ -113,7 +113,7 @@ export const createProject = (project, cb) => (dispatch) => {
         headers: {
             'Content-Type': 'application/json',
         },
-        credentials: 'same-origin',
+        credentials: 'include',
     })
         .then(
             (response) => {
@@ -164,7 +164,7 @@ export const editProject = (project, cb) => (dispatch) => {
         headers: {
             'Content-Type': 'application/json',
         },
-        credentials: 'same-origin',
+        credentials: 'include',
     })
         .then(
             (response) => {
@@ -215,7 +215,7 @@ export const deleteProject = (projectId, cb) => (dispatch) => {
         headers: {
             'Content-Type': 'application/json',
         },
-        credentials: 'same-origin',
+        credentials: 'include',
     })
         .then(
             (response) => {
