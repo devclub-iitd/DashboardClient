@@ -98,7 +98,7 @@ const areUnequal = (org, upd) => {
 };
 
 export const getNewFields = (org, upd) => {
-    const keys = Object.keys(org);
+    const keys = Object.keys(upd);
 
     let objectWithUpdFields = {
         _id: upd._id,
