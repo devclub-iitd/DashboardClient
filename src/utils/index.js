@@ -105,7 +105,7 @@ export const getNewFields = (org, upd) => {
     };
 
     keys.forEach((key) => {
-        if (areUnequal(upd[key], org[key])) {
+        if (areUnequal(org[key], upd[key])) {
             objectWithUpdFields = {
                 ...objectWithUpdFields,
                 [key]: upd[key],
