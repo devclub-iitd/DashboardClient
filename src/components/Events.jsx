@@ -459,9 +459,10 @@ const EventsPage = ({
                         <MUIDataTable
                             title={
                                 <TableTitle
-                                    title="Add Event"
                                     addAction={handleCreateOpen}
-                                />
+                                >
+                                Add Event
+                                </TableTitle>
                             }
                             data={data}
                             columns={columns}

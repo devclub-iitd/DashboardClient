@@ -3,13 +3,13 @@ import { Grid, Typography, IconButton, Hidden } from '@material-ui/core';
 import { AddCircleRounded } from '@material-ui/icons';
 import PropTypes from 'prop-types';
 
-export default function TableTitle({ title, addAction }) {
+export default function TableTitle({ addAction, children }) {
     return (
         <>
             <Hidden xsDown>
                 <Grid container justify="flex-start" alignItems="center">
                     <Typography variant="h6" style={{ fontWeight: 500 }}>
-                        {title}
+                        {children}
                     </Typography>
                     <Grid item xs={1}>
                         <IconButton
@@ -47,6 +47,6 @@ export default function TableTitle({ title, addAction }) {
 }
 
 TableTitle.propTypes = {
-    title: PropTypes.string.isRequired,
+    children: PropTypes.string.isRequired,
     addAction: PropTypes.func.isRequired,
 };
