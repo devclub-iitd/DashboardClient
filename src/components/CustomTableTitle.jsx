@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 export default function TableTitle({ addAction, children }) {
     return (
         <>
-            <Hidden xsDown>
+            <Hidden only={'xs'}>
                 <Grid container justify="flex-start" alignItems="center">
                     <Typography variant="h6" style={{ fontWeight: 500 }}>
                         {children}
