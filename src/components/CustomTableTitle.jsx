@@ -27,7 +27,7 @@ export default function TableTitle({ addAction, children }) {
             <Hidden only={['sm', 'md', 'lg', 'drawerMin', 'xl']}>
                 <Grid container justify="center" alignItems="center">
                     <Typography variant="h6" style={{ fontWeight: 500 }}>
-                        {title}
+                        {children}
                     </Typography>
                     <Grid item xs={1}>
                         <IconButton

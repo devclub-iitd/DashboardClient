@@ -373,10 +373,9 @@ const ResourcesPage = ({
                     >
                         <MUIDataTable
                             title={
-                                <TableTitle
-                                    title="Add Resource"
-                                    addAction={handleCreateOpen}
-                                />
+                                <TableTitle addAction={handleCreateOpen}>
+                                    Add Resource
+                                </TableTitle>
                             }
                             data={data}
                             columns={columns}

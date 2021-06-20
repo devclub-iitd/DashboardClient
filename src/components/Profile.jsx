@@ -1231,8 +1231,7 @@ export default function Profile({ user, serverError, updateUser }) {
                                                                     <IconButton
                                                                         edge="end"
                                                                         style={{
-                                                                            color:
-                                                                                '#fff',
+                                                                            color: '#fff',
                                                                         }}
                                                                         onClick={() =>
                                                                             handleRemoveUrlFields(

@@ -16,8 +16,7 @@ const dumUsers = [
         interests:
             'Arduino, Machine Learning, RaspberryPi, Python, WebDev, Signal Processing',
         specialization: 'Python, C++, Java, Frontend Webdev',
-        intro:
-            'My name is Anweshan Bor. My name is Anweshan Bor. My name is Anweshan Bor',
+        intro: 'My name is Anweshan Bor. My name is Anweshan Bor. My name is Anweshan Bor',
         category: 'frontend',
         display_on_website: true,
         url: new Map([
@@ -45,8 +44,7 @@ const dumUsers = [
         interests:
             'Arduino, Machine Learning, RaspberryPi, Python, WebDev, Signal Processing',
         specialization: 'Python, C++, Java, Frontend Webdev',
-        intro:
-            'My name is Anweshan Bor. My name is Anweshan Bor. My name is Anweshan Bor',
+        intro: 'My name is Anweshan Bor. My name is Anweshan Bor. My name is Anweshan Bor',
         category: 'frontend',
         display_on_website: false,
         url: new Map([
@@ -74,8 +72,7 @@ const dumUsers = [
         interests:
             'Arduino, Machine Learning, RaspberryPi, Python, WebDev, Signal Processing',
         specialization: 'Python, C++, Java, Frontend Webdev',
-        intro:
-            'My name is Anweshan Bor. My name is Anweshan Bor. My name is Anweshan Bor',
+        intro: 'My name is Anweshan Bor. My name is Anweshan Bor. My name is Anweshan Bor',
         category: 'frontend',
         display_on_website: true,
         url: new Map([
@@ -103,8 +100,7 @@ const dumUsers = [
         interests:
             'Arduino, Machine Learning, RaspberryPi, Python, WebDev, Signal Processing',
         specialization: 'Python, C++, Java, Frontend Webdev',
-        intro:
-            'My name is Anweshan Bor. My name is Anweshan Bor. My name is Anweshan Bor',
+        intro: 'My name is Anweshan Bor. My name is Anweshan Bor. My name is Anweshan Bor',
         category: 'frontend',
         display_on_website: false,
         url: new Map([
@@ -132,8 +128,7 @@ const dumUsers = [
         interests:
             'Arduino, Machine Learning, RaspberryPi, Python, WebDev, Signal Processing',
         specialization: 'Python, C++, Java, Frontend Webdev',
-        intro:
-            'My name is Anweshan Bor. My name is Anweshan Bor. My name is Anweshan Bor',
+        intro: 'My name is Anweshan Bor. My name is Anweshan Bor. My name is Anweshan Bor',
         category: 'frontend',
         display_on_website: true,
         url: new Map([
@@ -161,8 +156,7 @@ const dumUsers = [
         interests:
             'Arduino, Machine Learning, RaspberryPi, Python, WebDev, Signal Processing',
         specialization: 'Python, C++, Java, Frontend Webdev',
-        intro:
-            'My name is Anweshan Bor. My name is Anweshan Bor. My name is Anweshan Bor',
+        intro: 'My name is Anweshan Bor. My name is Anweshan Bor. My name is Anweshan Bor',
         category: 'frontend',
         display_on_website: false,
         url: new Map([

@@ -281,9 +281,9 @@ export default function EditProjectForm(props) {
             project: {
                 ...prevState.orgProject,
             },
-            urlFields: Array.from(
-                prevState.orgProject.url
-            ).map(([key, value]) => ({ type: key, url: value })),
+            urlFields: Array.from(prevState.orgProject.url).map(
+                ([key, value]) => ({ type: key, url: value })
+            ),
             memberNames: dumUsers
                 .filter((user) => user.privelege_level !== 'Unapproved_User')
                 .map((user) => user.name),

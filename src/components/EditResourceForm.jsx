@@ -171,13 +171,8 @@ export default function EditResourceForm(props) {
         return <Grid item xs={12} style={{ height: '8px' }} />;
     };
 
-    const {
-        success,
-        deleteSucc,
-        isDailogOpen,
-        resource,
-        isDeleteDailogOpen,
-    } = state;
+    const { success, deleteSucc, isDailogOpen, resource, isDeleteDailogOpen } =
+        state;
 
     return (
         <div>

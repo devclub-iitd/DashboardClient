@@ -617,10 +617,9 @@ const ProjectsPage = ({
                     >
                         <MUIDataTable
                             title={
-                                <TableTitle
-                                    title="Add Project"
-                                    addAction={handleCreateOpen}
-                                />
+                                <TableTitle addAction={handleCreateOpen}>
+                                    Add Project
+                                </TableTitle>
                             }
                             data={data}
                             columns={columns}

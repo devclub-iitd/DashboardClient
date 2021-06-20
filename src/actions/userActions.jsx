@@ -92,37 +92,39 @@ export const newRegDone = () => ({
     type: ActionTypes.NEW_REG_DONE,
 });
 
-export const logoutUser = (type = '') => (dispatch) => {
-    dispatch(requestLogout());
-    // localStorage.removeItem('dcIITDDashboardToken');
-    // localStorage.removeItem('userId');
-    return fetch(`${API.logoutAPI}`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-    })
-        .then(
-            (response) => {
-                if (response.status === 401 || response.ok) {
-                    // localStorage.removeItem('currentUser');
-                    dispatch(receiveLogout(type));
-                } else {
-                    const error = new Error(
-                        `Error ${response.status}: ${response.statusText}`
-                    );
-                    error.response = response;
-                    throw error;
-                }
+export const logoutUser =
+    (type = '') =>
+    (dispatch) => {
+        dispatch(requestLogout());
+        // localStorage.removeItem('dcIITDDashboardToken');
+        // localStorage.removeItem('userId');
+        return fetch(`${API.logoutAPI}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
             },
-            (error) => {
-                const errmess = new Error(error.message);
-                throw errmess;
-            }
-        )
-        .catch((error) => dispatch(userFailed(error.message)));
-};
+            credentials: 'include',
+        })
+            .then(
+                (response) => {
+                    if (response.status === 401 || response.ok) {
+                        // localStorage.removeItem('currentUser');
+                        dispatch(receiveLogout(type));
+                    } else {
+                        const error = new Error(
+                            `Error ${response.status}: ${response.statusText}`
+                        );
+                        error.response = response;
+                        throw error;
+                    }
+                },
+                (error) => {
+                    const errmess = new Error(error.message);
+                    throw errmess;
+                }
+            )
+            .catch((error) => dispatch(userFailed(error.message)));
+    };
 
 // export const fetchUser = (id) => (dispatch) => {
 //     dispatch(userLoading(true));
