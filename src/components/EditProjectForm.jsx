@@ -562,23 +562,24 @@ export default function EditProjectForm(props) {
                         </Grid>
                         <FieldSep />
                         <FieldSep />
-                        <Grid item xs={12} sm={4}>
+                        <Grid item xs={12}>
                             <Typography variant="h6">Requirements:</Typography>
                         </Grid>
-                        <Hidden only={['sm', 'md', 'lg', 'drawerMin', 'xl']}>
-                            <FieldSep />
-                        </Hidden>
                         <Grid item xs={10} sm={8}>
                             <TextField
-                                name="requirements"
-                                variant="outlined"
                                 required
+                                variant="outlined"
+                                fullWidth
+                                margin="normal"
+                                multiline
+                                rowsMax={5}
+                                id="requirements"
+                                name="requirements"
+                                label="Requirements"
                                 value={project.requirements}
                                 onChange={(e) =>
                                     handleFormValuesChange(e, 'requirements')
                                 }
-                                id="requirements"
-                                label="Requirements"
                             />
                         </Grid>
                         <FieldSep />
