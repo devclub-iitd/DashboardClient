@@ -392,7 +392,7 @@ export default function EditEventForm(props) {
                                             'start_date'
                                         )
                                     }
-                                    miaxDate={new Date()}
+                                    // maxDate={new Date()}
                                     KeyboardButtonProps={{
                                         'aria-label': 'change date',
                                     }}
@@ -416,12 +416,12 @@ export default function EditEventForm(props) {
                                     id="end_date"
                                     label="Ending Date of Event"
                                     format="MM/dd/yyyy"
-                                    value={event.start_date}
+                                    value={event.end_date}
                                     name="end_date"
                                     onChange={(date) =>
                                         handleFormValuesChange(date, 'end_date')
                                     }
-                                    miaxDate={new Date()}
+                                    minDate={event.start_date}
                                     KeyboardButtonProps={{
                                         'aria-label': 'change date',
                                     }}

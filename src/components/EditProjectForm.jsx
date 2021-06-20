@@ -445,7 +445,7 @@ export default function EditProjectForm(props) {
                                 <KeyboardDatePicker
                                     margin="normal"
                                     id="start_date"
-                                    label="Starting Date of Event"
+                                    label="Starting Date of Project"
                                     format="MM/dd/yyyy"
                                     value={project.start_date}
                                     name="start_date"
@@ -476,9 +476,9 @@ export default function EditProjectForm(props) {
                                 <KeyboardDatePicker
                                     margin="normal"
                                     id="end_date"
-                                    label="Ending Date of Event"
+                                    label="Ending Date of Project"
                                     format="MM/dd/yyyy"
-                                    value={project.start_date}
+                                    value={project.end_date}
                                     name="end_date"
                                     onChange={(date) =>
                                         handleFormValuesChange(date, 'end_date')
@@ -557,7 +557,7 @@ export default function EditProjectForm(props) {
                                     handleFormValuesChange(e, 'perks')
                                 }
                                 id="perks"
-                                label="Pe5rks"
+                                label="Perks"
                             />
                         </Grid>
                         <FieldSep />

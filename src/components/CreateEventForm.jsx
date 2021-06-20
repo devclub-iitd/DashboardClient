@@ -258,7 +258,7 @@ export default function CreateTasks(props) {
                             id="end_date"
                             label="Ending Date of Event"
                             format="MM/dd/yyyy"
-                            value={state.newEvent.start_date}
+                            value={state.newEvent.end_date}
                             name="end_date"
                             onChange={(date) =>
                                 handleFormValuesChange(date, 'end_date')

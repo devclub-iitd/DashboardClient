@@ -318,7 +318,7 @@ export default function CreateTasks(props) {
                         <KeyboardDatePicker
                             margin="normal"
                             id="start_date"
-                            label="Starting Date of Event"
+                            label="Starting Date of Project"
                             format="MM/dd/yyyy"
                             value={state.newProject.start_date}
                             name="start_date"
@@ -344,9 +344,9 @@ export default function CreateTasks(props) {
                         <KeyboardDatePicker
                             margin="normal"
                             id="end_date"
-                            label="Ending Date of Event"
+                            label="Ending Date of Project"
                             format="MM/dd/yyyy"
-                            value={state.newProject.start_date}
+                            value={state.newProject.end_date}
                             name="end_date"
                             onChange={(date) =>
                                 handleFormValuesChange(date, 'end_date')
@@ -409,20 +409,24 @@ export default function CreateTasks(props) {
                     />
                 </Grid>
                 <FieldSep />
-                <Grid item xs={4}>
+                <Grid item xs={12}>
                     <Typography variant="h6">Requirements:</Typography>
                 </Grid>
-                <Grid item xs={8}>
+                <Grid item xs={10} sm={8}>
                     <TextField
-                        name="requirements"
-                        variant="outlined"
                         required
+                        variant="outlined"
+                        fullWidth
+                        margin="normal"
+                        multiline
+                        rowsMax={5}
+                        id="requirements"
+                        name="requirements"
+                        label="Requirements"
                         value={state.newProject.requirements}
                         onChange={(e) =>
                             handleFormValuesChange(e, 'requirements')
                         }
-                        id="requirements"
-                        label="Requirements"
                     />
                 </Grid>
                 <FieldSep />

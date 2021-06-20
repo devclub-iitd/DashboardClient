@@ -594,6 +594,29 @@ export default function EditOtherUserForm(props) {
                                 label="Mobile"
                             />
                         </Grid>
+                        {/* {
+                            editUser.category === 'Alumni'?
+                            <>
+                                <FieldSep />
+                                <FieldSep />
+                                <Grid item xs={4}>
+                                    <Typography variant="h6">Company/University: </Typography>
+                                </Grid>
+                                <Grid item xs={8}>
+                                    <TextField
+                                        name="company"
+                                        variant="outlined"
+                                        required
+                                        value={editUser.company}
+                                        onChange={(e) =>
+                                            handleFormValuesChange(e, 'company')
+                                        }
+                                        id="company"
+                                        label="Company/University"
+                                    />
+                                </Grid>
+                            </> : null
+                        } */}
                         <FieldSep />
                         <FieldSep />
                         <Grid item xs={4}>

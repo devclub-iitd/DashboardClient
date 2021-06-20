@@ -20,6 +20,7 @@ import {
     Grow,
 } from '@material-ui/core';
 import EmailOutlinedIcon from '@material-ui/icons/EmailOutlined';
+import BusinessRoundedIcon from '@material-ui/icons/BusinessRounded';
 import PhoneIcon from '@material-ui/icons/Phone';
 import EditIcon from '@material-ui/icons/Edit';
 import DateFnsUtils from '@date-io/date-fns';
@@ -940,6 +941,49 @@ export default function Profile({ user, serverError, updateUser }) {
                                     </Grow>
                                 )}
                             </Grid>
+                            {/* {
+                                state.orgUser.category === 'Alumni'?
+                                <>
+                                    <Grid item xs={2}>
+                                        <Tooltip title='Company/University'>
+                                            <BusinessRoundedIcon fontSize="small" />
+                                        </Tooltip>
+                                    </Grid>
+                                    <Grid item xs={10}>
+                                        {!editMode ? (
+                                            <Tooltip title={state.orgUser.company}>
+                                                <Typography
+                                                    noWrap
+                                                    style={{ fontWeight: 400 }}
+                                                    variant="h6"
+                                                >
+                                                    {state.orgUser.company}
+                                                </Typography>
+                                            </Tooltip>
+                                        ) : (
+                                            <Grow
+                                                in={editMode}
+                                                style={{ transformOrigin: '100 100 0' }}
+                                                timeout={editMode ? 1000 : 0}
+                                            >
+                                                <TextField
+                                                    name="company"
+                                                    variant="outlined"
+                                                    required
+                                                    value={state.editUser.company}
+                                                    onChange={(e) =>
+                                                        handleFormValuesChange(e, 'company')
+                                                    }
+                                                    margin="normal"
+                                                    id="company"
+                                                    label="Company/University"
+                                                />
+                                            </Grow>
+                                        )}
+                                    </Grid>
+                                </>
+                                : null
+                            } */}
                         </Grid>
                     </Grid>
                     <Grid className={classes.intro} item xs={10}>
