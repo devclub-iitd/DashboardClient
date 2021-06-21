@@ -134,6 +134,7 @@ export default function EditOtherUserForm(props) {
             if (
                 values[idx].type === 'picture_url' ||
                 values[idx].type === 'fb_url' ||
+                values[idx].type === 'linkedin_url' ||
                 values[idx].type === 'github_url'
             ) {
                 return;

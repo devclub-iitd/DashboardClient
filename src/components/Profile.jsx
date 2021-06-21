@@ -283,6 +283,7 @@ export default function Profile({ user, serverError, updateUser }) {
             if (
                 values[index].type === 'picture_url' ||
                 values[index].type === 'fb_url' ||
+                values[index].type === 'linkedin_url' ||
                 values[index].type === 'github_url'
             ) {
                 return;
