@@ -31,6 +31,7 @@ import {
 import PropTypes from 'prop-types';
 import {
     Facebook,
+    LinkedIn,
     GitHub,
     PhotoCamera,
     AddCircleRounded,
@@ -1094,6 +1095,47 @@ export default function Profile({ user, serverError, updateUser }) {
                                         item
                                         xs={2}
                                     >
+                                        <LinkedIn fontSize="large" />
+                                    </Grid>
+                                    <Grid
+                                        className={classes.urlField}
+                                        item
+                                        xs={10}
+                                    >
+                                        <Tooltip
+                                            title={
+                                                state.orgUser.url
+                                                    ? state.orgUser.url.get(
+                                                          'linkedin_url'
+                                                      )
+                                                    : 'None'
+                                            }
+                                        >
+                                            <Link
+                                                target="_blank"
+                                                display="block"
+                                                style={{ width: '100%' }}
+                                                noWrap
+                                                variant="body1"
+                                                href={
+                                                    state.orgUser.url
+                                                        ? state.orgUser.url.get(
+                                                              'linkedin_url'
+                                                          )
+                                                        : '#'
+                                                }
+                                            >
+                                                {state.orgUser.url.get(
+                                                    'linkedin_url'
+                                                )}
+                                            </Link>
+                                        </Tooltip>
+                                    </Grid>
+                                    <Grid
+                                        className={classes.urlField}
+                                        item
+                                        xs={2}
+                                    >
                                         <GitHub fontSize="large" />
                                     </Grid>
                                     <Grid
@@ -1268,6 +1310,7 @@ export default function Profile({ user, serverError, updateUser }) {
                                                         {type ===
                                                             'picture_url' ||
                                                         type === 'fb_url' ||
+                                                        type === 'linkedin_url' ||
                                                         type ===
                                                             'github_url' ? null : (
                                                             <Grid item xs={2}>

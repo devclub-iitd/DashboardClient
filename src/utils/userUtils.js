@@ -70,6 +70,9 @@ export const getProperUser = (dUser) => {
     if (!pUser.url.has('picture_url')) {
         pUser.url.set('picture_url', '');
     }
+    if (!pUser.url.has('linkedin_url')) {
+        pUser.url.set('linkedin_url', '');
+    }
 
     // console.log('pUser:');
     // console.log(pUser);

@@ -761,6 +761,7 @@ export default function EditOtherUserForm(props) {
                                     </Grid>
                                     {type === 'picture_url' ||
                                     type === 'fb_url' ||
+                                    type === 'linkedin_url' ||
                                     type === 'github_url' ? null : (
                                         <Grid item xs={2}>
                                             <Tooltip title="Delete this url field">
