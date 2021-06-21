@@ -1206,7 +1206,7 @@ export default function Profile({ user, serverError, updateUser }) {
                                         </Tooltip>
                                     </Grid>
                                     {Array.from(state.orgUser.url)
-                                        .slice(3)
+                                        .slice(4)
                                         .map(([key, value]) => (
                                             <>
                                                 <Grid item xs={3}>
