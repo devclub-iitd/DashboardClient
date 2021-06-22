@@ -82,7 +82,8 @@ function SignInSide(props) {
         props.finishError();
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = (e) => {
+        e.preventDefault();
         // const creds = {
         //     entry_no: uname,
         //     password: pass,
